@@ -45,77 +45,71 @@ var __param = (this && this.__param) || function (paramIndex, decorator) {
     return function (target, key) { decorator(target, key, paramIndex); }
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.AdminController = void 0;
+exports.DemoController = void 0;
 const common_1 = require("@nestjs/common");
-const admin_service_1 = require("../services/admin.service");
-const swagger_1 = require("@nestjs/swagger");
+const prisma_service_1 = require("../../prisma/services/prisma.service");
 const path = __importStar(require("path"));
 const fs = __importStar(require("fs"));
-let AdminController = class AdminController {
-    adminService;
-    constructor(adminService) {
-        this.adminService = adminService;
+let DemoController = class DemoController {
+    prisma;
+    constructor(prisma) {
+        this.prisma = prisma;
     }
-    getAdminPanel(res) {
-        const htmlPath = path.join(__dirname, '..', 'views', 'admin.html');
+    getDemoPage(res) {
+        const htmlPath = path.join(__dirname, '..', 'views', 'demo.html');
         const html = fs.readFileSync(htmlPath, 'utf8');
         res.type('text/html').send(html);
     }
-    async getDonors() {
-        return this.adminService.findAllDonors();
-    }
-    async getPrograms() {
-        return this.adminService.findAllPrograms();
-    }
-    async createProgram(body) {
-        return this.adminService.createProgram(body);
-    }
-    async postReport(body) {
-        return { success: true, message: 'Report posted successfully' };
+    async donateDummy(body) {
+        const { name, email, mobile, pan, address, amount } = body;
+        const donor = await this.prisma.donor.upsert({
+            where: { email },
+            update: { name, mobile, pan, address },
+            create: {
+                donorId: `DNR${Date.now()}`,
+                email,
+                name,
+                mobile,
+                pan,
+                address,
+            }
+        });
+        const program = await this.prisma.program.findFirst() || await this.prisma.program.create({
+            data: { name: 'General Fund', description: 'General Fund', targetAmount: 100000 }
+        });
+        const donation = await this.prisma.donation.create({
+            data: {
+                amount: Number(amount),
+                currency: 'INR',
+                status: 'SUCCESS',
+                razorpayOrderId: `dummy_order_${Date.now()}`,
+                razorpayPaymentId: `dummy_pay_${Date.now()}`,
+                donorId: donor.id,
+                programId: program.id,
+                displayName: true,
+                receiptNumber: `REC-${Date.now()}`
+            }
+        });
+        return { success: true, donationId: donation.id };
     }
 };
-exports.AdminController = AdminController;
+exports.DemoController = DemoController;
 __decorate([
-    (0, common_1.Get)('panel'),
-    (0, swagger_1.ApiOperation)({ summary: 'Admin panel (demo HTML)' }),
+    (0, common_1.Get)(),
     __param(0, (0, common_1.Res)()),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [Object]),
     __metadata("design:returntype", void 0)
-], AdminController.prototype, "getAdminPanel", null);
+], DemoController.prototype, "getDemoPage", null);
 __decorate([
-    (0, common_1.Get)('donors'),
-    (0, swagger_1.ApiOperation)({ summary: 'List all donors' }),
-    __metadata("design:type", Function),
-    __metadata("design:paramtypes", []),
-    __metadata("design:returntype", Promise)
-], AdminController.prototype, "getDonors", null);
-__decorate([
-    (0, common_1.Get)('programs'),
-    (0, swagger_1.ApiOperation)({ summary: 'List all programs' }),
-    __metadata("design:type", Function),
-    __metadata("design:paramtypes", []),
-    __metadata("design:returntype", Promise)
-], AdminController.prototype, "getPrograms", null);
-__decorate([
-    (0, common_1.Post)('programs'),
-    (0, swagger_1.ApiOperation)({ summary: 'Create a new donation program' }),
+    (0, common_1.Post)('donate'),
     __param(0, (0, common_1.Body)()),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [Object]),
     __metadata("design:returntype", Promise)
-], AdminController.prototype, "createProgram", null);
-__decorate([
-    (0, common_1.Post)('reports'),
-    (0, swagger_1.ApiOperation)({ summary: 'Post a progress report' }),
-    __param(0, (0, common_1.Body)()),
-    __metadata("design:type", Function),
-    __metadata("design:paramtypes", [Object]),
-    __metadata("design:returntype", Promise)
-], AdminController.prototype, "postReport", null);
-exports.AdminController = AdminController = __decorate([
-    (0, swagger_1.ApiTags)('Admin Panel'),
-    (0, common_1.Controller)('api/admin'),
-    __metadata("design:paramtypes", [admin_service_1.AdminService])
-], AdminController);
-//# sourceMappingURL=admin.controller.js.map
+], DemoController.prototype, "donateDummy", null);
+exports.DemoController = DemoController = __decorate([
+    (0, common_1.Controller)('api/demo'),
+    __metadata("design:paramtypes", [prisma_service_1.PrismaService])
+], DemoController);
+//# sourceMappingURL=demo.controller.js.map

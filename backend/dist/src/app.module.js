@@ -19,6 +19,7 @@ const certificate_module_1 = require("./certificate/certificate.module");
 const program_module_1 = require("./program/program.module");
 const blog_module_1 = require("./blog/blog.module");
 const admin_module_1 = require("./admin/admin.module");
+const demo_module_1 = require("./demo/demo.module");
 let AppModule = class AppModule {
 };
 exports.AppModule = AppModule;
@@ -34,6 +35,7 @@ exports.AppModule = AppModule = __decorate([
             program_module_1.ProgramModule,
             blog_module_1.BlogModule,
             admin_module_1.AdminModule,
+            demo_module_1.DemoModule,
         ],
         controllers: [app_controller_1.AppController],
         providers: [app_service_1.AppService],

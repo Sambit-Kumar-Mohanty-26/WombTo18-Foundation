@@ -26,6 +26,8 @@ export declare class AdminService {
         donorId: string;
         email: string;
         mobile: string | null;
+        pan: string | null;
+        address: string | null;
         tier: import(".prisma/client").$Enums.DonorTier;
         totalDonated: number;
         otpHash: string | null;

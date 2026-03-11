@@ -1,11 +1,22 @@
-import { Controller, Get, Post, Body } from '@nestjs/common';
+import { Controller, Get, Post, Body, Res } from '@nestjs/common';
 import { AdminService } from '../services/admin.service';
 import { ApiTags, ApiOperation } from '@nestjs/swagger';
+import * as path from 'path';
+import * as fs from 'fs';
+import type { Response } from 'express';
 
 @ApiTags('Admin Panel')
 @Controller('api/admin')
 export class AdminController {
   constructor(private readonly adminService: AdminService) {}
+
+  @Get('panel')
+  @ApiOperation({ summary: 'Admin panel (demo HTML)' })
+  getAdminPanel(@Res() res: Response) {
+    const htmlPath = path.join(__dirname, '..', 'views', 'admin.html');
+    const html = fs.readFileSync(htmlPath, 'utf8');
+    res.type('text/html').send(html);
+  }
 
   @Get('donors')
   @ApiOperation({ summary: 'List all donors' })

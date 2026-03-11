@@ -1,7 +1,9 @@
 import { AdminService } from '../services/admin.service';
+import type { Response } from 'express';
 export declare class AdminController {
     private readonly adminService;
     constructor(adminService: AdminService);
+    getAdminPanel(res: Response): void;
     getDonors(): Promise<({
         donations: {
             id: string;
@@ -26,6 +28,8 @@ export declare class AdminController {
         donorId: string;
         email: string;
         mobile: string | null;
+        pan: string | null;
+        address: string | null;
         tier: import(".prisma/client").$Enums.DonorTier;
         totalDonated: number;
         otpHash: string | null;

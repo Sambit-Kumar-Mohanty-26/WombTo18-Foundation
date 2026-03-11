@@ -13,6 +13,8 @@ model Donor {
   email          String     @unique
   name           String?
   mobile         String?
+  pan            String?
+  address        String?
   tier           DonorTier  @default(DONOR)
   totalDonated   Float      @default(0)
   otpHash        String?
