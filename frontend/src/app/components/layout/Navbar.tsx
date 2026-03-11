@@ -1,7 +1,8 @@
 import { useState, useEffect } from "react";
 import { Link, useLocation } from "react-router";
 import { Button } from "../ui/button";
-import { Menu, X, Heart } from "lucide-react";
+import { Menu, X, Heart, LayoutDashboard } from "lucide-react";
+import { auth } from "../../lib/auth";
 
 const navLinks = [
   { href: "/", label: "Home" },
@@ -15,6 +16,7 @@ const navLinks = [
 export function Navbar() {
   const [mobileOpen, setMobileOpen] = useState(false);
   const [isScrolled, setIsScrolled] = useState(false);
+  const [isLoggedIn, setIsLoggedIn] = useState(false);
   const location = useLocation();
 
   useEffect(() => {
@@ -24,6 +26,11 @@ export function Navbar() {
     window.addEventListener("scroll", handleScroll);
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
+
+  // Re-check session on every route change
+  useEffect(() => {
+    setIsLoggedIn(!!auth.getSession());
+  }, [location.pathname]);
 
   return (
     <header 
@@ -42,7 +49,7 @@ export function Navbar() {
               alt="WombTo18 Foundation" 
               className="h-10 w-auto object-contain"
             />
-            <div className="hidden xs:flex flex-col leading-tight">
+            <div className="flex flex-col leading-tight">
               <span className="text-lg text-white" style={{ fontWeight: 800, lineHeight: 1.2 }}>WombTo18</span>
               <span className="text-[10px] text-emerald-400 font-bold uppercase tracking-wider" style={{ lineHeight: 1 }}>Foundation</span>
             </div>
@@ -67,8 +74,14 @@ export function Navbar() {
 
           {/* CTA Buttons */}
           <div className="hidden md:flex items-center gap-2">
-            <Link to="/dashboard">
-              <Button variant="ghost" size="sm" className="text-emerald-100/70 hover:text-white hover:bg-white/5 font-medium">Donor Login</Button>
+            <Link to={isLoggedIn ? "/dashboard" : "/donor/login"}>
+              <Button variant="ghost" size="sm" className="text-emerald-100/70 hover:text-white hover:bg-white/5 font-medium">
+                {isLoggedIn ? (
+                  <><LayoutDashboard className="h-4 w-4 mr-1.5" />My Dashboard</>
+                ) : (
+                  "Donor Login"
+                )}
+              </Button>
             </Link>
             <Link to="/donate">
               <Button size="sm" className="bg-primary hover:bg-primary/90 text-primary-foreground font-bold shadow-lg shadow-orange-500/20">
@@ -106,8 +119,14 @@ export function Navbar() {
               </Link>
             ))}
             <div className="pt-3 border-t border-white/10 flex flex-col gap-2">
-              <Link to="/dashboard" onClick={() => setMobileOpen(false)}>
-                <Button variant="ghost" size="sm" className="w-full text-emerald-100/70 hover:text-white hover:bg-white/5 font-medium justify-start">Donor Login</Button>
+              <Link to={isLoggedIn ? "/dashboard" : "/donor/login"} onClick={() => setMobileOpen(false)}>
+                <Button variant="ghost" size="sm" className="w-full text-emerald-100/70 hover:text-white hover:bg-white/5 font-medium justify-start">
+                  {isLoggedIn ? (
+                    <><LayoutDashboard className="h-4 w-4 mr-1.5" />My Dashboard</>
+                  ) : (
+                    "Donor Login"
+                  )}
+                </Button>
               </Link>
               <Link to="/donate" onClick={() => setMobileOpen(false)}>
                 <Button size="sm" className="w-full bg-primary hover:bg-primary/90 text-primary-foreground font-bold shadow-lg shadow-orange-500/20">

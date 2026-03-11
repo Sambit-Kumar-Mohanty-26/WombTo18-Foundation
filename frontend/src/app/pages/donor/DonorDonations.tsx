@@ -1,9 +1,10 @@
 import { useState } from "react";
+import { Link } from "react-router";
 import { Card, CardContent, CardHeader, CardTitle } from "../../components/ui/card";
 import { Badge } from "../../components/ui/badge";
 import { Button } from "../../components/ui/button";
 import { Input } from "../../components/ui/input";
-import { Search, Download, Filter } from "lucide-react";
+import { Search, Download, Filter, ChevronLeft } from "lucide-react";
 
 const donations = [
   { id: "TXN001", date: "Mar 5, 2026", amount: 15000, program: "Education", method: "UPI", status: "Completed", receipt: true },
@@ -30,6 +31,9 @@ export function DonorDonations() {
     <div className="space-y-6">
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <div>
+          <Link to="/dashboard" className="inline-flex items-center gap-1 text-sm text-muted-foreground hover:text-primary mb-1 transition-colors">
+            <ChevronLeft className="h-3.5 w-3.5" /> Back to Dashboard
+          </Link>
           <h1 className="text-2xl text-foreground" style={{ fontWeight: 700 }}>My Donations</h1>
           <p className="text-muted-foreground">Complete history of all your contributions.</p>
         </div>

@@ -1,6 +1,7 @@
 import { Card, CardContent } from "../components/ui/card";
 import { Badge } from "../components/ui/badge";
 import { Calendar, Clock, ArrowRight } from "lucide-react";
+import { useContent } from "../context/ContentContext";
 
 const posts = [
   {
@@ -63,8 +64,10 @@ const categoryColors: Record<string, string> = {
 };
 
 export function BlogPage() {
-  const featured = posts[0];
-  const rest = posts.slice(1);
+  const { posts: allPosts } = useContent();
+  const publishedPosts = allPosts.filter((p) => p.status === "published");
+  const featured = publishedPosts[0];
+  const rest = publishedPosts.slice(1);
 
   return (
     <>

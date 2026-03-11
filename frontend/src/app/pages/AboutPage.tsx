@@ -127,7 +127,7 @@ export function AboutPage() {
               <Target className="h-10 w-10 text-primary mb-4" />
               <h3 className="text-2xl mb-4 text-white" style={{ fontWeight: 700 }}>Our Mission</h3>
               <p className="text-emerald-200/70">
-                To create a continuum of care for children from conception to age 18, addressing healthcare, nutrition, education, and empowerment through community-driven, transparent, and scalable programs across India.
+                To promote child and family well-being through prevention, awarness, preparedness, and community engagement ensuring care reaches children before challenges become crises.
               </p>
             </div>
             <div className="p-8 rounded-2xl bg-orange-950/10 border border-orange-500/20">

@@ -20,6 +20,8 @@ import { AdminDashboard } from "./pages/admin/AdminDashboard";
 import { AdminDonors } from "./pages/admin/AdminDonors";
 import { AdminPrograms } from "./pages/admin/AdminPrograms";
 import { AdminReports } from "./pages/admin/AdminReports";
+import { AdminBlog } from "./pages/admin/AdminBlog";
+import { AdminCaseStudies } from "./pages/admin/AdminCaseStudies";
 
 export const router = createBrowserRouter([
   {
@@ -56,6 +58,8 @@ export const router = createBrowserRouter([
       { path: "donors", Component: AdminDonors },
       { path: "programs", Component: AdminPrograms },
       { path: "reports", Component: AdminReports },
+      { path: "blog", Component: AdminBlog },
+      { path: "case-studies", Component: AdminCaseStudies },
     ],
   },
 ]);

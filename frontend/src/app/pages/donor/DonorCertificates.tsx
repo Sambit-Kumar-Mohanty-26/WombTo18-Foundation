@@ -1,7 +1,8 @@
+import { Link } from "react-router";
 import { Card, CardContent, CardHeader, CardTitle } from "../../components/ui/card";
 import { Button } from "../../components/ui/button";
 import { Badge } from "../../components/ui/badge";
-import { Download, Award, FileText, Calendar } from "lucide-react";
+import { Download, Award, FileText, Calendar, ChevronLeft } from "lucide-react";
 
 const certificates = [
   {
@@ -55,7 +56,10 @@ export function DonorCertificates() {
   return (
     <div className="space-y-6">
       <div>
-        <h1 className="text-2xl text-foreground" style={{ fontWeight: 700 }}>Certificates & Receipts</h1>
+        <Link to="/dashboard" className="inline-flex items-center gap-1 text-sm text-muted-foreground hover:text-primary mb-1 transition-colors">
+          <ChevronLeft className="h-3.5 w-3.5" /> Back to Dashboard
+        </Link>
+        <h1 className="text-2xl text-foreground" style={{ fontWeight: 700 }}>Certificates &amp; Receipts</h1>
         <p className="text-muted-foreground">Download your 80G certificates, donation receipts, and appreciation letters.</p>
       </div>
 
