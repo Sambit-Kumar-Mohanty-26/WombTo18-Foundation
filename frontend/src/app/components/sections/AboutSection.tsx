@@ -1,4 +1,5 @@
 import { CheckCircle } from "lucide-react";
+import { ScrollReveal } from "../ui/ScrollReveal";
 
 const highlights = [
   "Registered 80G & 12A certified NGO",
@@ -10,7 +11,7 @@ const highlights = [
 export function AboutSection() {
   return (
     <section className="py-20 bg-background text-white">
-      <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+      <ScrollReveal className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
         <div className="grid lg:grid-cols-2 gap-16 items-center">
           <div className="relative">
             <img
@@ -45,7 +46,7 @@ export function AboutSection() {
             </div>
           </div>
         </div>
-      </div>
+      </ScrollReveal>
     </section>
   );
 }

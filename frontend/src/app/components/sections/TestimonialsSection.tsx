@@ -39,14 +39,14 @@ export function TestimonialsSection() {
             <Card key={t.name} className="bg-emerald-950/20 border-white/10 text-white">
               <CardContent className="pt-6">
                 <Quote className="h-8 w-8 text-primary/10 mb-4" />
-                <p className="text-emerald-100/70 text-sm mb-6 italic">"{t.quote}"</p>
+                <p className="text-emerald-50/90 text-sm mb-6 italic">"{t.quote}"</p>
                 <div className="flex items-center gap-3 pt-4 border-t border-white/10">
                   <Avatar className="h-10 w-10">
                     <AvatarFallback className="bg-primary/10 text-primary text-sm">{t.initials}</AvatarFallback>
                   </Avatar>
                   <div>
                     <p className="text-sm text-white" style={{ fontWeight: 600 }}>{t.name}</p>
-                    <p className="text-xs text-emerald-200/50">{t.role}</p>
+                    <p className="text-xs text-emerald-100/70">{t.role}</p>
                   </div>
                 </div>
               </CardContent>

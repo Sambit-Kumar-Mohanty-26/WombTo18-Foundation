@@ -1,20 +1,48 @@
-import { useState } from "react";
-import { Link, Outlet, useLocation } from "react-router";
+import { useState, useEffect } from "react";
+import { Link, Outlet, useLocation, useNavigate } from "react-router";
 import { Heart, LayoutDashboard, Receipt, FileText, Award, LogOut, Menu, X, ChevronLeft, CalendarDays } from "lucide-react";
 import { Button } from "../ui/button";
 import { Avatar, AvatarFallback } from "../ui/avatar";
+import { auth, DonorSession } from "../../lib/auth";
 
-const donorLinks = [
-  { href: "/dashboard", label: "Overview", icon: LayoutDashboard },
-  { href: "/dashboard/donations", label: "My Donations", icon: Receipt },
-  { href: "/dashboard/reports", label: "Impact Reports", icon: FileText },
-  { href: "/dashboard/certificates", label: "Certificates", icon: Award },
-  { href: "/dashboard/events", label: "Events", icon: CalendarDays },
+const allDonorLinks = [
+  { href: "/dashboard", label: "Overview", icon: LayoutDashboard, requiredEligibility: true },
+  { href: "/dashboard/donations", label: "My Donations", icon: Receipt, requiredEligibility: false },
+  { href: "/dashboard/reports", label: "Impact Reports", icon: FileText, requiredEligibility: true },
+  { href: "/dashboard/certificates", label: "Receipts & Certificates", icon: Award, requiredEligibility: false },
+  { href: "/dashboard/events", label: "Events", icon: CalendarDays, requiredEligibility: true },
 ];
 
 export function DashboardLayout() {
   const [sidebarOpen, setSidebarOpen] = useState(false);
+  const [session, setSession] = useState<DonorSession | null>(null);
+  const [isLoading, setIsLoading] = useState(true);
   const location = useLocation();
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    const currentSession = auth.getSession();
+    if (!currentSession) {
+      navigate("/donor/login", { replace: true });
+    } else {
+      setSession(currentSession);
+      setIsLoading(false);
+    }
+  }, [navigate]);
+
+  if (isLoading || !session) {
+    return <div className="min-h-screen bg-emerald-950/50 flex items-center justify-center text-emerald-200/50">Loading dashboard...</div>;
+  }
+
+  // Filter links based on donor eligibility
+  const visibleLinks = allDonorLinks.filter(link => 
+    !link.requiredEligibility || session.eligible
+  );
+
+  const handleLogout = () => {
+    auth.logout();
+    navigate("/");
+  };
 
   return (
     <div className="min-h-screen flex bg-emerald-950/50">
@@ -46,15 +74,19 @@ export function DashboardLayout() {
                 <AvatarFallback className="bg-primary/20 text-primary text-sm">PS</AvatarFallback>
               </Avatar>
               <div>
-                <p className="text-sm font-semibold">Priya Sharma</p>
-                <p className="text-xs text-emerald-400 font-medium">Platinum Donor</p>
+                <p className="text-sm font-semibold truncate max-w-[140px]" title={session.identifier}>
+                  {session.identifier.split("@")[0]}
+                </p>
+                <p className="text-xs text-emerald-400 font-medium">
+                  {session.eligible ? "Premium Donor" : "Donor"}
+                </p>
               </div>
             </div>
           </div>
 
           {/* Nav */}
           <nav className="flex-1 p-3 space-y-1">
-            {donorLinks.map((link) => (
+            {visibleLinks.map((link) => (
               <Link
                 key={link.href}
                 to={link.href}
@@ -79,7 +111,10 @@ export function DashboardLayout() {
               <ChevronLeft className="h-4 w-4" />
               Back to Website
             </Link>
-            <button className="flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm text-emerald-100/60 hover:text-rose-400 hover:bg-rose-400/5 transition-colors w-full">
+            <button 
+              onClick={handleLogout}
+              className="flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm text-emerald-100/60 hover:text-rose-400 hover:bg-rose-400/5 transition-colors w-full"
+            >
               <LogOut className="h-4 w-4" />
               Sign Out
             </button>

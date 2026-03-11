@@ -7,22 +7,16 @@ import { Avatar, AvatarFallback } from "../../components/ui/avatar";
 import { Search, Plus, Mail, Phone, MoreHorizontal, Download } from "lucide-react";
 
 const donors = [
-  { id: 1, name: "Priya Sharma", email: "priya@email.com", phone: "+91 98765 43210", total: "5,00,000", tier: "Platinum", lastDonation: "Mar 5, 2026", status: "Active", initials: "PS" },
-  { id: 2, name: "Rajesh Kumar", email: "rajesh@email.com", phone: "+91 87654 32109", total: "3,00,000", tier: "Gold", lastDonation: "Feb 28, 2026", status: "Active", initials: "RK" },
-  { id: 3, name: "Anita Desai", email: "anita@email.com", phone: "+91 76543 21098", total: "2,50,000", tier: "Gold", lastDonation: "Feb 15, 2026", status: "Active", initials: "AD" },
-  { id: 4, name: "Vikram Singh", email: "vikram@email.com", phone: "+91 65432 10987", total: "1,50,000", tier: "Silver", lastDonation: "Jan 20, 2026", status: "Active", initials: "VS" },
-  { id: 5, name: "Meera Patel", email: "meera@email.com", phone: "+91 54321 09876", total: "1,00,000", tier: "Silver", lastDonation: "Jan 10, 2026", status: "Active", initials: "MP" },
-  { id: 6, name: "Suresh Nair", email: "suresh@email.com", phone: "+91 43210 98765", total: "75,000", tier: "Bronze", lastDonation: "Dec 5, 2025", status: "Inactive", initials: "SN" },
-  { id: 7, name: "Kavita Joshi", email: "kavita@email.com", phone: "+91 32109 87654", total: "50,000", tier: "Bronze", lastDonation: "Nov 18, 2025", status: "Active", initials: "KJ" },
-  { id: 8, name: "Patel Foundation", email: "csr@patelfdn.org", phone: "+91 22 4567 8900", total: "10,00,000", tier: "Platinum", lastDonation: "Mar 1, 2026", status: "Active", initials: "PF" },
+  { id: 1, name: "Priya Sharma", email: "priya@email.com", phone: "+91 98765 43210", total: "5,00,000", lastDonation: "Mar 5, 2026", status: "Active", initials: "PS" },
+  { id: 2, name: "Rajesh Kumar", email: "rajesh@email.com", phone: "+91 87654 32109", total: "3,00,000", lastDonation: "Feb 28, 2026", status: "Active", initials: "RK" },
+  { id: 3, name: "Anita Desai", email: "anita@email.com", phone: "+91 76543 21098", total: "2,50,000", lastDonation: "Feb 15, 2026", status: "Active", initials: "AD" },
+  { id: 4, name: "Vikram Singh", email: "vikram@email.com", phone: "+91 65432 10987", total: "1,50,000", lastDonation: "Jan 20, 2026", status: "Active", initials: "VS" },
+  { id: 5, name: "Meera Patel", email: "meera@email.com", phone: "+91 54321 09876", total: "1,00,000", lastDonation: "Jan 10, 2026", status: "Active", initials: "MP" },
+  { id: 6, name: "Suresh Nair", email: "suresh@email.com", phone: "+91 43210 98765", total: "75,000", lastDonation: "Dec 5, 2025", status: "Inactive", initials: "SN" },
+  { id: 7, name: "Kavita Joshi", email: "kavita@email.com", phone: "+91 32109 87654", total: "50,000", lastDonation: "Nov 18, 2025", status: "Active", initials: "KJ" },
+  { id: 8, name: "Patel Foundation", email: "csr@patelfdn.org", phone: "+91 22 4567 8900", total: "10,00,000", lastDonation: "Mar 1, 2026", status: "Active", initials: "PF" },
 ];
 
-const tierColors: Record<string, string> = {
-  Platinum: "bg-gray-100 text-gray-800",
-  Gold: "bg-amber-50 text-amber-800",
-  Silver: "bg-gray-50 text-gray-700",
-  Bronze: "bg-orange-50 text-orange-800",
-};
 
 export function AdminDonors() {
   const [search, setSearch] = useState("");
@@ -70,7 +64,6 @@ export function AdminDonors() {
                   <th className="text-left py-3 px-4 text-muted-foreground" style={{ fontWeight: 500 }}>Donor</th>
                   <th className="text-left py-3 px-4 text-muted-foreground" style={{ fontWeight: 500 }}>Contact</th>
                   <th className="text-left py-3 px-4 text-muted-foreground" style={{ fontWeight: 500 }}>Total</th>
-                  <th className="text-left py-3 px-4 text-muted-foreground" style={{ fontWeight: 500 }}>Tier</th>
                   <th className="text-left py-3 px-4 text-muted-foreground" style={{ fontWeight: 500 }}>Last Donation</th>
                   <th className="text-left py-3 px-4 text-muted-foreground" style={{ fontWeight: 500 }}>Status</th>
                   <th className="text-left py-3 px-4 text-muted-foreground" style={{ fontWeight: 500 }}>Actions</th>
@@ -94,9 +87,6 @@ export function AdminDonors() {
                       </div>
                     </td>
                     <td className="py-3 px-4" style={{ fontWeight: 600 }}>₹{d.total}</td>
-                    <td className="py-3 px-4">
-                      <Badge className={tierColors[d.tier]}>{d.tier}</Badge>
-                    </td>
                     <td className="py-3 px-4 text-muted-foreground">{d.lastDonation}</td>
                     <td className="py-3 px-4">
                       <Badge variant="secondary" className={d.status === "Active" ? "bg-green-50 text-green-700" : "bg-gray-50 text-gray-600"}>

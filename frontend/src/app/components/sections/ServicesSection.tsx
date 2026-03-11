@@ -1,5 +1,6 @@
 import { Baby, GraduationCap, HeartPulse, Apple, Users, Shield } from "lucide-react";
 import { Card, CardHeader, CardTitle, CardDescription } from "../ui/card";
+import { ScrollReveal } from "../ui/ScrollReveal";
 
 const programs = [
   {
@@ -43,7 +44,7 @@ const programs = [
 export function ServicesSection() {
   return (
     <section className="py-20 bg-background">
-      <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+      <ScrollReveal className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
         <div className="text-center mb-14">
           <p className="text-primary text-sm mb-2" style={{ fontWeight: 600, textTransform: "uppercase", letterSpacing: "0.05em" }}>Our Programs</p>
           <h2 className="text-3xl sm:text-4xl text-foreground mb-4" style={{ fontWeight: 700 }}>
@@ -67,7 +68,7 @@ export function ServicesSection() {
             </Card>
           ))}
         </div>
-      </div>
+      </ScrollReveal>
     </section>
   );
 }

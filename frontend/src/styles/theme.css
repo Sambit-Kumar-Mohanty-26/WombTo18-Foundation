@@ -2,7 +2,8 @@
 
 :root {
   --font-size: 16px;
-  --background: #022c22; /* Very Dark Emerald */
+  /* Reduced darkness for better visual appearance */
+  --background: #0a4f3c; /* Very Dark Emerald */
   --foreground: #ffffff;
   --card: #064e3b; /* Dark Emerald */
   --card-foreground: #ffffff;
@@ -10,9 +11,9 @@
   --popover-foreground: #ffffff;
   --primary: #f59e0b; /* Amber/Orange */
   --primary-foreground: #022c22;
-  --secondary: #065f46; /* Emerald 700 */
+  --secondary: #07684e; /* Emerald 700ish */
   --secondary-foreground: #ffffff;
-  --muted: #064e3b;
+  --muted: #06543e;
   --muted-foreground: #a7f3d0; /* Light Emerald */
   --accent: #fbbf24; /* Amber 400 */
   --accent-foreground: #022c22;
@@ -20,7 +21,7 @@
   --destructive-foreground: #ffffff;
   --border: rgba(255, 255, 255, 0.1);
   --input: transparent;
-  --input-background: #064e3b;
+  --input-background: #06543e;
   --ring: #f59e0b;
   --radius: 0.75rem;
 }
@@ -63,6 +64,9 @@
 }
 
 @theme inline {
+  --color-emerald-950: var(--background);
+  --color-emerald-900: var(--card);
+  --color-emerald-800: var(--secondary);
   --color-background: var(--background);
   --color-foreground: var(--foreground);
   --color-card: var(--card);
@@ -115,8 +119,8 @@
 
   /* Custom Scrollbar Styles */
   ::-webkit-scrollbar {
-    width: 10px;
-    height: 10px;
+    width: 8px;
+    height: 8px;
   }
 
   ::-webkit-scrollbar-track {
@@ -124,12 +128,21 @@
   }
 
   ::-webkit-scrollbar-thumb {
-    @apply bg-emerald-800 rounded-full border-2 border-background;
+    @apply bg-emerald-700 rounded-full border-2 border-background;
     transition: background-color 0.2s;
   }
 
   ::-webkit-scrollbar-thumb:hover {
     @apply bg-primary;
+  }
+
+  /* Utility to hide scrollbar while keeping scroll functionality */
+  .scroll-hide::-webkit-scrollbar {
+    display: none;
+  }
+  .scroll-hide {
+    -ms-overflow-style: none;
+    scrollbar-width: none;
   }
 
   /* Firefox Scrollbar */

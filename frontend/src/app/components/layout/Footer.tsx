@@ -10,7 +10,7 @@ export function Footer() {
           <div>
             <div className="flex items-center gap-2 mb-4">
               <img 
-                src="/Foundation logo .png" 
+                src="/Wombto18 foundation logo.svg" 
                 alt="WombTo18 Foundation" 
                 className="h-10 w-auto object-contain"
               />
@@ -19,7 +19,7 @@ export function Footer() {
                 <p className="text-[10px] text-emerald-400 font-bold uppercase tracking-wider" style={{ lineHeight: 1 }}>Foundation</p>
               </div>
             </div>
-            <p className="text-sm text-emerald-200/50 mb-4">
+            <p className="text-sm text-emerald-100/80 mb-4">
               Nurturing every child from conception to adulthood. Building a foundation of health, education, and opportunity.
             </p>
             <div className="flex gap-3">
@@ -44,7 +44,7 @@ export function Footer() {
               <Link
                 key={link.href}
                 to={link.href}
-                className="block text-sm text-emerald-200/50 hover:text-primary py-1.5 transition-colors"
+                className="block text-sm text-emerald-100/80 hover:text-primary py-1.5 transition-colors"
               >
                 {link.label}
               </Link>
@@ -61,7 +61,7 @@ export function Footer() {
               "Health & Nutrition",
               "Youth Empowerment",
             ].map((item) => (
-              <p key={item} className="text-sm text-emerald-200/50 py-1.5">{item}</p>
+              <p key={item} className="text-sm text-emerald-100/80 py-1.5">{item}</p>
             ))}
           </div>
 
@@ -71,26 +71,26 @@ export function Footer() {
             <div className="space-y-3">
               <div className="flex items-start gap-3">
                 <MapPin className="h-4 w-4 mt-0.5 text-primary shrink-0" />
-                <p className="text-sm text-emerald-200/50">123 Foundation Street, Mumbai, Maharashtra 400001, India</p>
+                <p className="text-sm text-emerald-100/80">123 Foundation Street, Mumbai, Maharashtra 400001, India</p>
               </div>
               <div className="flex items-center gap-3">
                 <Phone className="h-4 w-4 text-primary shrink-0" />
-                <p className="text-sm text-emerald-200/50">+91 98765 43210</p>
+                <p className="text-sm text-emerald-100/80">+91 98765 43210</p>
               </div>
               <div className="flex items-center gap-3">
                 <Mail className="h-4 w-4 text-primary shrink-0" />
-                <p className="text-sm text-emerald-200/50">hello@wombto18.org</p>
+                <p className="text-sm text-emerald-100/80">hello@wombto18.org</p>
               </div>
             </div>
           </div>
         </div>
 
         <div className="border-t border-white/10 mt-12 pt-8 flex flex-col sm:flex-row justify-between items-center gap-4">
-          <p className="text-sm text-emerald-100/20">&copy; 2026 WombTo18 Foundation. All rights reserved.</p>
+          <p className="text-sm text-emerald-100/60">&copy; 2026 WombTo18 Foundation. All rights reserved.</p>
           <div className="flex gap-6">
-            <a href="#" className="text-sm text-emerald-100/20 hover:text-primary transition-colors">Privacy Policy</a>
-            <a href="#" className="text-sm text-emerald-100/20 hover:text-primary transition-colors">Terms of Use</a>
-            <a href="#" className="text-sm text-emerald-100/20 hover:text-primary transition-colors">80G Certificate</a>
+            <a href="#" className="text-sm text-emerald-100/60 hover:text-primary transition-colors">Privacy Policy</a>
+            <a href="#" className="text-sm text-emerald-100/60 hover:text-primary transition-colors">Terms of Use</a>
+            <a href="#" className="text-sm text-emerald-100/60 hover:text-primary transition-colors">80G Certificate</a>
           </div>
         </div>
       </div>

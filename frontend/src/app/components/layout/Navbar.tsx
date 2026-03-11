@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Link, useLocation } from "react-router";
 import { Button } from "../ui/button";
 import { Menu, X, Heart } from "lucide-react";
@@ -14,16 +14,31 @@ const navLinks = [
 
 export function Navbar() {
   const [mobileOpen, setMobileOpen] = useState(false);
+  const [isScrolled, setIsScrolled] = useState(false);
   const location = useLocation();
 
+  useEffect(() => {
+    const handleScroll = () => {
+      setIsScrolled(window.scrollY > 20);
+    };
+    window.addEventListener("scroll", handleScroll);
+    return () => window.removeEventListener("scroll", handleScroll);
+  }, []);
+
   return (
-    <header className="sticky top-0 z-50 bg-background/80 backdrop-blur-md border-b border-white/10">
+    <header 
+      className={`sticky top-0 z-50 transition-all duration-300 ${
+        isScrolled 
+          ? "bg-background/95 backdrop-blur-lg border-b border-emerald-800/50 shadow-lg shadow-black/20 py-0" 
+          : "bg-background/60 backdrop-blur-md border-b border-transparent py-2"
+      }`}
+    >
       <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
         <div className="flex h-16 items-center justify-between">
           {/* Logo */}
           <Link to="/" className="flex items-center gap-2">
             <img 
-              src="Frontend/public/Wombto18 foundation logo.png" 
+              src="/Wombto18 foundation logo.svg" 
               alt="WombTo18 Foundation" 
               className="h-10 w-auto object-contain"
             />

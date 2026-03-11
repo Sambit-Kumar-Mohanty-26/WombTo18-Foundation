@@ -1,5 +1,6 @@
 import { TrendingUp, Users, Heart, GraduationCap, Home, Stethoscope } from "lucide-react";
 import { motion } from "motion/react";
+import { ScrollReveal } from "../ui/ScrollReveal";
 
 const metrics = [
   { icon: Users, value: "15,234", label: "Children Supported", color: "text-primary" },
@@ -13,7 +14,7 @@ const metrics = [
 export function ImpactSection() {
   return (
     <section className="py-20 bg-background text-white border-t border-white/5">
-      <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+      <ScrollReveal className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
         <div className="text-center mb-14 text-white">
           <p className="text-primary text-sm mb-2" style={{ fontWeight: 600, textTransform: "uppercase", letterSpacing: "0.05em" }}>Our Impact</p>
           <h2 className="text-3xl sm:text-4xl text-white mb-4" style={{ fontWeight: 700 }}>
@@ -42,7 +43,7 @@ export function ImpactSection() {
             </motion.div>
           ))}
         </div>
-      </div>
+      </ScrollReveal>
     </section>
   );
 }

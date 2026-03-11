@@ -3,22 +3,16 @@ import { Badge } from "../ui/badge";
 import { Star } from "lucide-react";
 
 const donors = [
-  { name: "Priya Sharma", amount: "5,00,000", tier: "Platinum", initials: "PS" },
-  { name: "Rajesh Kumar", amount: "3,00,000", tier: "Gold", initials: "RK" },
-  { name: "Anita Desai", amount: "2,50,000", tier: "Gold", initials: "AD" },
-  { name: "Vikram Singh", amount: "1,50,000", tier: "Silver", initials: "VS" },
-  { name: "Meera Patel", amount: "1,00,000", tier: "Silver", initials: "MP" },
-  { name: "Suresh Nair", amount: "75,000", tier: "Bronze", initials: "SN" },
-  { name: "Kavita Joshi", amount: "50,000", tier: "Bronze", initials: "KJ" },
-  { name: "Arjun Reddy", amount: "50,000", tier: "Bronze", initials: "AR" },
+  { name: "Priya Sharma", amount: "5,00,000", initials: "PS" },
+  { name: "Rajesh Kumar", amount: "3,00,000", initials: "RK" },
+  { name: "Anita Desai", amount: "2,50,000", initials: "AD" },
+  { name: "Vikram Singh", amount: "1,50,000", initials: "VS" },
+  { name: "Meera Patel", amount: "1,00,000", initials: "MP" },
+  { name: "Suresh Nair", amount: "75,000", initials: "SN" },
+  { name: "Kavita Joshi", amount: "50,000", initials: "KJ" },
+  { name: "Arjun Reddy", amount: "50,000", initials: "AR" },
 ];
 
-const tierColors: Record<string, string> = {
-  Platinum: "bg-gradient-to-r from-gray-300 to-gray-100 text-gray-800",
-  Gold: "bg-gradient-to-r from-amber-200 to-yellow-100 text-amber-800",
-  Silver: "bg-gradient-to-r from-gray-200 to-gray-100 text-gray-700",
-  Bronze: "bg-gradient-to-r from-orange-200 to-orange-100 text-orange-800",
-};
 
 export function DonorWall() {
   return (
@@ -49,10 +43,6 @@ export function DonorWall() {
                 <p className="text-sm truncate text-white" style={{ fontWeight: 600 }}>{donor.name}</p>
                 <div className="flex items-center gap-2">
                   <span className="text-xs text-emerald-200/50">&#8377;{donor.amount}</span>
-                  <Badge variant="secondary" className={`text-[10px] px-1.5 py-0 border-none ${tierColors[donor.tier]}`}>
-                    {donor.tier === "Platinum" && <Star className="h-2.5 w-2.5 mr-0.5" />}
-                    {donor.tier}
-                  </Badge>
                 </div>
               </div>
             </div>

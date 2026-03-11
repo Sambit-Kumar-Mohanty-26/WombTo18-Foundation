@@ -93,7 +93,7 @@ export function BlogPage() {
               <Badge className={`${categoryColors[featured.category]} mb-3`}>{featured.category}</Badge>
               <h2 className="text-2xl sm:text-3xl text-white mb-3" style={{ fontWeight: 700 }}>{featured.title}</h2>
               <p className="text-emerald-200/70 mb-4">{featured.excerpt}</p>
-              <div className="flex items-center gap-4 text-sm text-emerald-200/50 mb-6">
+              <div className="flex items-center gap-4 text-sm text-emerald-100/70 mb-6">
                 <span className="flex items-center gap-1"><Calendar className="h-3.5 w-3.5" />{featured.date}</span>
                 <span className="flex items-center gap-1"><Clock className="h-3.5 w-3.5" />{featured.readTime}</span>
               </div>

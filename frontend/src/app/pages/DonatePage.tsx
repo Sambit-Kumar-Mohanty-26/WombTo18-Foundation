@@ -207,7 +207,6 @@ export function DonatePage() {
                       />
                     </div>
 
-                    {/* Amount */}
                     <div>
                       <Label className="mb-2 block text-white font-semibold">Select Amount (₹)</Label>
                       <div className="grid grid-cols-3 gap-2 mb-3">
@@ -235,7 +234,7 @@ export function DonatePage() {
                             setPresetSelected(presetAmounts.includes(val) ? val : null);
                             setValue("amount", val || 0, { shouldValidate: true });
                           }}
-                          className="pl-9 bg-emerald-950/40 border-white/10 text-white placeholder:text-emerald-200/20"
+                          className="pl-9 bg-emerald-950/40 border-white/10 text-white placeholder:text-emerald-100/40"
                         />
                       </div>
                       {errors.amount && (
@@ -275,21 +274,21 @@ export function DonatePage() {
                       <div className="grid sm:grid-cols-2 gap-4">
                         <div>
                           <Label className="text-sm mb-1.5 block text-emerald-100/70">Full Name *</Label>
-                          <Input {...register("name")} placeholder="Your full name" className="bg-emerald-950/40 border-white/10 text-white placeholder:text-emerald-200/20" />
+                          <Input {...register("name")} placeholder="Your full name" className="bg-emerald-950/40 border-white/10 text-white placeholder:text-emerald-100/40" />
                           {errors.name && (
                             <p className="text-xs text-red-500 mt-1">{errors.name.message}</p>
                           )}
                         </div>
                         <div>
                           <Label className="text-sm mb-1.5 block text-emerald-100/70">Email *</Label>
-                          <Input type="email" {...register("email")} placeholder="you@example.com" className="bg-emerald-950/40 border-white/10 text-white placeholder:text-emerald-200/20" />
+                          <Input type="email" {...register("email")} placeholder="you@example.com" className="bg-emerald-950/40 border-white/10 text-white placeholder:text-emerald-100/40" />
                           {errors.email && (
                             <p className="text-xs text-red-500 mt-1">{errors.email.message}</p>
                           )}
                         </div>
                         <div>
                           <Label className="text-sm mb-1.5 block text-emerald-100/70">Mobile *</Label>
-                          <Input {...register("mobile")} placeholder="+91 98765 43210" className="bg-emerald-950/40 border-white/10 text-white placeholder:text-emerald-200/20" />
+                          <Input {...register("mobile")} placeholder="+91 98765 43210" className="bg-emerald-950/40 border-white/10 text-white placeholder:text-emerald-100/40" />
                           {errors.mobile && (
                             <p className="text-xs text-red-500 mt-1">{errors.mobile.message}</p>
                           )}
@@ -300,7 +299,7 @@ export function DonatePage() {
                             {...register("pan")}
                             placeholder="ABCDE1234F"
                             style={{ textTransform: "uppercase" }}
-                            className="bg-emerald-950/40 border-white/10 text-white placeholder:text-emerald-200/20"
+                            className="bg-emerald-950/40 border-white/10 text-white placeholder:text-emerald-100/40"
                           />
                           {errors.pan && (
                             <p className="text-xs text-red-500 mt-1">{errors.pan.message}</p>
@@ -356,24 +355,24 @@ export function DonatePage() {
                       <p className="text-xs text-emerald-200/50 mb-2 font-bold uppercase tracking-wider">Payment Flow:</p>
                       <div className="flex items-center gap-2 text-[10px] text-emerald-100/70 flex-wrap">
                         <span className="bg-primary/10 text-primary px-2 py-0.5 rounded border border-primary/20" style={{ fontWeight: 600 }}>1. Submit Form</span>
-                        <ArrowRight className="h-3 w-3 shrink-0 text-emerald-200/30" />
+                        <ArrowRight className="h-3 w-3 shrink-0 text-emerald-100/60" />
                         <span className="bg-primary/10 text-primary px-2 py-0.5 rounded border border-primary/20" style={{ fontWeight: 600 }}>2. Create Order</span>
-                        <ArrowRight className="h-3 w-3 shrink-0 text-emerald-200/30" />
+                        <ArrowRight className="h-3 w-3 shrink-0 text-emerald-100/60" />
                         <span className="bg-primary/10 text-primary px-2 py-0.5 rounded border border-primary/20" style={{ fontWeight: 600 }}>3. Razorpay Payment</span>
-                        <ArrowRight className="h-3 w-3 shrink-0 text-emerald-200/30" />
+                        <ArrowRight className="h-3 w-3 shrink-0 text-emerald-100/60" />
                         <span className="bg-primary/10 text-primary px-2 py-0.5 rounded border border-primary/20" style={{ fontWeight: 600 }}>4. Verify & Redirect</span>
                       </div>
                     </div>
 
                     {/* Payment Methods */}
                     <div className="flex items-center justify-center gap-6 pt-2">
-                      <div className="flex items-center gap-1.5 text-xs text-emerald-200/30">
+                      <div className="flex items-center gap-1.5 text-xs text-emerald-100/60">
                         <CreditCard className="h-3.5 w-3.5" /> Cards
                       </div>
-                      <div className="flex items-center gap-1.5 text-xs text-emerald-200/30">
+                      <div className="flex items-center gap-1.5 text-xs text-emerald-100/60">
                         <Smartphone className="h-3.5 w-3.5" /> UPI
                       </div>
-                      <div className="flex items-center gap-1.5 text-xs text-emerald-200/30">
+                      <div className="flex items-center gap-1.5 text-xs text-emerald-100/60">
                         <Building2 className="h-3.5 w-3.5" /> Net Banking
                       </div>
                     </div>
@@ -389,20 +388,20 @@ export function DonatePage() {
                     <h4 className="mb-4 text-orange-400 font-bold uppercase tracking-wider text-xs" style={{ fontWeight: 600 }}>Order Summary</h4>
                     <div className="space-y-2 text-sm">
                       <div className="flex justify-between">
-                        <span className="text-emerald-100/50">Amount</span>
+                        <span className="text-emerald-100/70">Amount</span>
                         <span style={{ fontWeight: 600 }}>₹{(watchAmount || 0).toLocaleString("en-IN")}</span>
                       </div>
                       <div className="flex justify-between">
-                        <span className="text-emerald-100/50">Frequency</span>
+                        <span className="text-emerald-100/70">Frequency</span>
                         <span style={{ fontWeight: 500 }}>{watchFrequency === "monthly" ? "Monthly" : "One-time"}</span>
                       </div>
                       <div className="flex justify-between">
-                        <span className="text-emerald-100/50">Program</span>
+                        <span className="text-emerald-100/70">Program</span>
                         <span style={{ fontWeight: 500 }}>{programs.find(p => p.id === watchProgram)?.label}</span>
                       </div>
                       <div className="border-t border-orange-500/20 my-2" />
                       <div className="flex justify-between">
-                        <span className="text-emerald-100/50">Tax Deduction (80G)</span>
+                        <span className="text-emerald-100/70">Tax Deduction (80G)</span>
                         <span className="text-primary" style={{ fontWeight: 700 }}>₹{(watchAmount || 0).toLocaleString("en-IN")}</span>
                       </div>
                     </div>
@@ -419,33 +418,12 @@ export function DonatePage() {
                   </CardContent>
                 </Card>
 
-                <Card className="bg-emerald-950/20 border-white/10 text-white">
-                  <CardContent className="pt-6">
-                    <h4 className="mb-3 text-white font-bold" style={{ fontWeight: 600 }}>Your Impact</h4>
-                    <div className="space-y-3">
-                      {[
-                        { amount: "₹500", impact: "Nutritious meals for a child for 1 month" },
-                        { amount: "₹2,000", impact: "Complete school supplies for a year" },
-                        { amount: "₹5,000", impact: "Full prenatal care package for a mother" },
-                        { amount: "₹10,000", impact: "6 months of after-school tutoring" },
-                        { amount: "₹25,000", impact: "Annual scholarship for one student" },
-                      ].map((item) => (
-                        <div key={item.amount} className="flex items-start gap-2">
-                          <CheckCircle className="h-4 w-4 text-primary mt-0.5 shrink-0" />
-                          <p className="text-sm text-emerald-200/50">
-                            <span className="text-white" style={{ fontWeight: 600 }}>{item.amount}</span> — {item.impact}
-                          </p>
-                        </div>
-                      ))}
-                    </div>
-                  </CardContent>
-                </Card>
 
                 <Card className="border-white/5 bg-emerald-950/40 text-emerald-200/20">
                   <CardContent className="pt-6 text-center">
                     <p className="text-[10px] uppercase tracking-widest mb-1">Powered by</p>
-                    <p className="text-lg opacity-40 grayscale" style={{ fontWeight: 700 }}>Razorpay</p>
-                    <p className="text-[10px] mt-1 opacity-30">256-bit SSL encrypted payment gateway</p>
+                    <p className="text-lg opacity-60 grayscale" style={{ fontWeight: 700 }}>Razorpay</p>
+                    <p className="text-[10px] mt-1 opacity-50">256-bit SSL encrypted payment gateway</p>
                   </CardContent>
                 </Card>
               </div>

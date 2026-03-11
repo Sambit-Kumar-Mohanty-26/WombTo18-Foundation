@@ -1,36 +1,6 @@
 import { Heart, Target, Eye, Users, Award, Globe, MapPin, Calendar, TrendingUp } from "lucide-react";
 import { Card, CardContent } from "../components/ui/card";
 
-const team = [
-  {
-    name: "Dr. Ananya Bhatt",
-    role: "Founder & CEO",
-    initials: "AB",
-    bio: "Pediatrician turned social entrepreneur with 20+ years in child welfare.",
-    image: "https://images.unsplash.com/photo-1622460241924-a114e6abe1ff?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHxJbmRpYW4lMjB3b21hbiUyMGZvdW5kZXIlMjBOR08lMjBwb3J0cmFpdHxlbnwxfHx8fDE3NzMxNDYzNDd8MA&ixlib=rb-4.1.0&q=80&w=1080&utm_source=figma&utm_medium=referral",
-  },
-  {
-    name: "Rajiv Menon",
-    role: "Director of Programs",
-    initials: "RM",
-    bio: "Former UNICEF consultant specializing in child development programs.",
-    image: "https://images.unsplash.com/photo-1752858710722-768eee64b6dd?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHxJbmRpYW4lMjBtYW4lMjBub25wcm9maXQlMjBkaXJlY3RvciUyMHByb2Zlc3Npb25hbHxlbnwxfHx8fDE3NzMxNDYzNDd8MA&ixlib=rb-4.1.0&q=80&w=1080&utm_source=figma&utm_medium=referral",
-  },
-  {
-    name: "Sunita Krishnan",
-    role: "Head of Operations",
-    initials: "SK",
-    bio: "Operations expert who scaled field programs from 2 to 12 states.",
-    image: "https://images.unsplash.com/photo-1770627016447-cb9d29ed0398?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHxJbmRpYW4lMjB3b21hbiUyMG9wZXJhdGlvbnMlMjBtYW5hZ2VyJTIwY29ycG9yYXRlfGVufDF8fHx8MTc3MzE0NjM0N3ww&ixlib=rb-4.1.0&q=80&w=1080&utm_source=figma&utm_medium=referral",
-  },
-  {
-    name: "Vikash Patel",
-    role: "Chief Financial Officer",
-    initials: "VP",
-    bio: "CA with 15 years in nonprofit financial management and compliance.",
-    image: "https://images.unsplash.com/photo-1671450960874-0903baf942c5?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHxJbmRpYW4lMjBtYW4lMjBmaW5hbmNlJTIwcHJvZmVzc2lvbmFsJTIwcG9ydHJhaXR8ZW58MXx8fHwxNzczMTQ2MzQ4fDA&ixlib=rb-4.1.0&q=80&w=1080&utm_source=figma&utm_medium=referral",
-  },
-];
 
 const values = [
   { icon: Heart, title: "Compassion", description: "Every decision is guided by our deep care for mothers and children." },
@@ -284,34 +254,6 @@ export function AboutPage() {
         </div>
       </section>
 
-      {/* Team */}
-      <section className="py-20 bg-background border-t border-white/5">
-        <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-          <div className="text-center mb-14">
-            <p className="text-primary text-sm mb-2" style={{ fontWeight: 600, textTransform: "uppercase", letterSpacing: "0.05em" }}>The People Behind the Mission</p>
-            <h2 className="text-3xl sm:text-4xl text-white mb-4" style={{ fontWeight: 700 }}>Leadership Team</h2>
-            <p className="text-emerald-200/70 max-w-2xl mx-auto">Passionate leaders who bring decades of experience in healthcare, education, and nonprofit management.</p>
-          </div>
-          <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-8">
-            {team.map((member) => (
-              <Card key={member.name} className="bg-emerald-950/20 border-white/10 overflow-hidden group hover:shadow-lg transition-shadow">
-                <div className="relative h-56 overflow-hidden">
-                  <img
-                    src={member.image}
-                    alt={member.name}
-                    className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
-                  />
-                </div>
-                <CardContent className="pt-4 pb-5 text-center">
-                  <h4 className="text-lg text-white" style={{ fontWeight: 600 }}>{member.name}</h4>
-                  <p className="text-sm text-primary mb-2" style={{ fontWeight: 500 }}>{member.role}</p>
-                  <p className="text-xs text-emerald-200/60">{member.bio}</p>
-                </CardContent>
-              </Card>
-            ))}
-          </div>
-        </div>
-      </section>
     </>
   );
 }
