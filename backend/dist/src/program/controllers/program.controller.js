@@ -32,7 +32,7 @@ __decorate([
 ], ProgramController.prototype, "findAll", null);
 exports.ProgramController = ProgramController = __decorate([
     (0, swagger_1.ApiTags)('Programs'),
-    (0, common_1.Controller)('api/programs'),
+    (0, common_1.Controller)('programs'),
     __metadata("design:paramtypes", [program_service_1.ProgramService])
 ], ProgramController);
 //# sourceMappingURL=program.controller.js.map

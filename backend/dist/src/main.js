@@ -9,6 +9,11 @@ async function bootstrap() {
     const app = await core_1.NestFactory.create(app_module_1.AppModule);
     app.use(cookieParser());
     app.useGlobalPipes(new common_1.ValidationPipe({ whitelist: true, transform: true }));
+    app.enableCors({
+        origin: ['http://localhost:5173', 'http://localhost:5174'],
+        credentials: true,
+    });
+    app.setGlobalPrefix('api');
     const config = new swagger_1.DocumentBuilder()
         .setTitle('Team Orion API')
         .setDescription('Backend API for Team Orion NGO platform')

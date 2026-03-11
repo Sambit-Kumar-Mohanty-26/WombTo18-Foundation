@@ -49,7 +49,7 @@ __decorate([
 ], CertificateController.prototype, "downloadReceipt", null);
 exports.CertificateController = CertificateController = __decorate([
     (0, swagger_1.ApiTags)('Certificates & Receipts'),
-    (0, common_1.Controller)('api'),
+    (0, common_1.Controller)(''),
     __metadata("design:paramtypes", [certificate_service_1.CertificateService])
 ], CertificateController);
 //# sourceMappingURL=certificate.controller.js.map

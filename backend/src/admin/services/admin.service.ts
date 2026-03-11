@@ -24,4 +24,28 @@ export class AdminService {
       },
     });
   }
+
+  async getStats() {
+    const [totalDonations, donorCount, programCount, recentDonations] = await Promise.all([
+      this.prisma.donation.aggregate({
+        where: { status: 'SUCCESS' },
+        _sum: { amount: true },
+      }),
+      this.prisma.donor.count(),
+      this.prisma.program.count(),
+      this.prisma.donation.findMany({
+        where: { status: 'SUCCESS' },
+        take: 10,
+        orderBy: { createdAt: 'desc' },
+        include: { donor: true, program: true },
+      }),
+    ]);
+
+    return {
+      totalDonations: totalDonations._sum.amount || 0,
+      totalDonors: donorCount,
+      totalPrograms: programCount,
+      recentDonations: recentDonations,
+    };
+  }
 }

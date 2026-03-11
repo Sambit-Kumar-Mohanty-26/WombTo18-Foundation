@@ -10,6 +10,15 @@ async function bootstrap() {
   // Global Middleware
   app.use(cookieParser());
   app.useGlobalPipes(new ValidationPipe({ whitelist: true, transform: true }));
+  
+  // Enable CORS for local development
+  app.enableCors({
+    origin: ['http://localhost:5173', 'http://localhost:5174'],
+    credentials: true,
+  });
+
+  // Global API Prefix
+  app.setGlobalPrefix('api');
 
   // Swagger Configuration
   const config = new DocumentBuilder()

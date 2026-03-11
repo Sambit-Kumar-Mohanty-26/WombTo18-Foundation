@@ -3,7 +3,7 @@ import { AdminService } from '../services/admin.service';
 import { ApiTags, ApiOperation } from '@nestjs/swagger';
 
 @ApiTags('Admin Panel')
-@Controller('api/admin')
+@Controller('admin')
 export class AdminController {
   constructor(private readonly adminService: AdminService) {}
 
@@ -11,6 +11,12 @@ export class AdminController {
   @ApiOperation({ summary: 'List all donors' })
   async getDonors() {
     return this.adminService.findAllDonors();
+  }
+
+  @Get('stats')
+  @ApiOperation({ summary: 'Get administrative metrics' })
+  async getStats() {
+    return this.adminService.getStats();
   }
 
   @Get('programs')

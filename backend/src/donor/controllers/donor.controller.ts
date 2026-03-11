@@ -3,7 +3,7 @@ import { DonorService } from '../services/donor.service';
 import { ApiTags, ApiOperation, ApiBearerAuth } from '@nestjs/swagger';
 
 @ApiTags('Donor Dashboard')
-@Controller('api/donors')
+@Controller('donors')
 export class DonorController {
   constructor(private readonly donorService: DonorService) {}
 

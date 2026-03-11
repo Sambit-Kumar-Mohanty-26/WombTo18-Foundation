@@ -47,7 +47,7 @@ __decorate([
 ], DonorController.prototype, "getDonations", null);
 exports.DonorController = DonorController = __decorate([
     (0, swagger_1.ApiTags)('Donor Dashboard'),
-    (0, common_1.Controller)('api/donors'),
+    (0, common_1.Controller)('donors'),
     __metadata("design:paramtypes", [donor_service_1.DonorService])
 ], DonorController);
 //# sourceMappingURL=donor.controller.js.map

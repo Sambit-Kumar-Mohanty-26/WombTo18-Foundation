@@ -24,6 +24,9 @@ let AdminController = class AdminController {
     async getDonors() {
         return this.adminService.findAllDonors();
     }
+    async getStats() {
+        return this.adminService.getStats();
+    }
     async getPrograms() {
         return this.adminService.findAllPrograms();
     }
@@ -42,6 +45,13 @@ __decorate([
     __metadata("design:paramtypes", []),
     __metadata("design:returntype", Promise)
 ], AdminController.prototype, "getDonors", null);
+__decorate([
+    (0, common_1.Get)('stats'),
+    (0, swagger_1.ApiOperation)({ summary: 'Get administrative metrics' }),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", []),
+    __metadata("design:returntype", Promise)
+], AdminController.prototype, "getStats", null);
 __decorate([
     (0, common_1.Get)('programs'),
     (0, swagger_1.ApiOperation)({ summary: 'List all programs' }),
@@ -67,7 +77,7 @@ __decorate([
 ], AdminController.prototype, "postReport", null);
 exports.AdminController = AdminController = __decorate([
     (0, swagger_1.ApiTags)('Admin Panel'),
-    (0, common_1.Controller)('api/admin'),
+    (0, common_1.Controller)('admin'),
     __metadata("design:paramtypes", [admin_service_1.AdminService])
 ], AdminController);
 //# sourceMappingURL=admin.controller.js.map

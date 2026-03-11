@@ -3,7 +3,7 @@ import { PrismaService } from '../../prisma/services/prisma.service';
 import { ApiTags, ApiOperation } from '@nestjs/swagger';
 
 @ApiTags('Transparency & Reports')
-@Controller('api')
+@Controller('')
 export class TransparencyController {
   constructor(private readonly prisma: PrismaService) {}
 

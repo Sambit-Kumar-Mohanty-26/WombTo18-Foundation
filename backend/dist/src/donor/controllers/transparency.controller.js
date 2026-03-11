@@ -61,7 +61,7 @@ __decorate([
 ], TransparencyController.prototype, "getReports", null);
 exports.TransparencyController = TransparencyController = __decorate([
     (0, swagger_1.ApiTags)('Transparency & Reports'),
-    (0, common_1.Controller)('api'),
+    (0, common_1.Controller)(''),
     __metadata("design:paramtypes", [prisma_service_1.PrismaService])
 ], TransparencyController);
 //# sourceMappingURL=transparency.controller.js.map

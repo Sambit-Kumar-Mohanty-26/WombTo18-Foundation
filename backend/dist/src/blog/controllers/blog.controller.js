@@ -46,7 +46,7 @@ __decorate([
 ], BlogController.prototype, "findBySlug", null);
 exports.BlogController = BlogController = __decorate([
     (0, swagger_1.ApiTags)('Blogs'),
-    (0, common_1.Controller)('api/blog'),
+    (0, common_1.Controller)('blogs'),
     __metadata("design:paramtypes", [blog_service_1.BlogService])
 ], BlogController);
 //# sourceMappingURL=blog.controller.js.map

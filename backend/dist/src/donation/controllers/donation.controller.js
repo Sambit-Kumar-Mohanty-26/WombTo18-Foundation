@@ -47,7 +47,7 @@ __decorate([
 ], DonationController.prototype, "verify", null);
 exports.DonationController = DonationController = __decorate([
     (0, swagger_1.ApiTags)('Donations'),
-    (0, common_1.Controller)('api/donations'),
+    (0, common_1.Controller)('donations'),
     __metadata("design:paramtypes", [donation_service_1.DonationService])
 ], DonationController);
 //# sourceMappingURL=donation.controller.js.map
