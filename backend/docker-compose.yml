@@ -1,0 +1,17 @@
+version: '3.8'
+
+services:
+  db:
+    image: postgres:15
+    container_name: team_orion_db
+    restart: always
+    environment:
+      POSTGRES_PASSWORD: password
+      POSTGRES_DB: orion_db
+    ports:
+      - '5434:5432'
+    volumes:
+      - orion_pg_data:/var/lib/postgresql/data
+
+volumes:
+  orion_pg_data:

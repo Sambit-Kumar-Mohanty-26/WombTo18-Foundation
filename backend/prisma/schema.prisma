@@ -1,0 +1,85 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model Donor {
+  id             String     @id @default(cuid())
+  donorId        String     @unique // e.g., DNR1023
+  email          String     @unique
+  name           String?
+  mobile         String?
+  tier           DonorTier  @default(DONOR)
+  totalDonated   Float      @default(0)
+  otpHash        String?
+  otpExpiry      DateTime?
+  donations      Donation[]
+  isEligible     Boolean    @default(false) // Calculated: totalDonated >= 5000
+  createdAt      DateTime   @default(now())
+  updatedAt      DateTime   @updatedAt
+}
+
+enum DonorTier {
+  DONOR
+  PATRON
+  CHAMPION
+}
+
+model Donation {
+  id                String         @id @default(cuid())
+  amount            Float
+  currency          String         @default("INR")
+  status            DonationStatus @default(PENDING)
+  razorpayOrderId   String         @unique
+  razorpayPaymentId String?        @unique
+  razorpaySignature String?
+  donorId           String
+  donor             Donor          @relation(fields: [donorId], references: [id])
+  programId         String
+  program           Program        @relation(fields: [programId], references: [id])
+  displayName       Boolean        @default(true)
+  receiptNumber     String?        @unique
+  createdAt         DateTime       @default(now())
+  updatedAt         DateTime       @updatedAt
+}
+
+enum DonationStatus {
+  PENDING
+  SUCCESS
+  FAILED
+}
+
+model Program {
+  id           String     @id @default(cuid())
+  name         String     @unique
+  description  String
+  targetAmount Float
+  raisedAmount Float      @default(0)
+  donations    Donation[]
+  createdAt    DateTime   @default(now())
+  updatedAt    DateTime   @updatedAt
+}
+
+model Blog {
+  id        String   @id @default(cuid())
+  title     String
+  slug      String   @unique
+  content   String
+  author    String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model ImpactMetrics {
+  id                String @id @default("global")
+  totalRaised       Float  @default(0)
+  totalUtilized     Float  @default(0)
+  childrenImpacted  Int    @default(0)
+  schoolsReached    Int    @default(0)
+  healthCheckups    Int    @default(0)
+  programsSupported Int    @default(0)
+}
