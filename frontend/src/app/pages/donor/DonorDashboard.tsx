@@ -1,0 +1,264 @@
+import { Card, CardContent, CardHeader, CardTitle } from "../../components/ui/card";
+import { Badge } from "../../components/ui/badge";
+import { Button } from "../../components/ui/button";
+import { Progress } from "../../components/ui/progress";
+import { Heart, TrendingUp, Calendar, Award, Users, GraduationCap, HeartPulse, Star, MapPin, Clock, ArrowRight } from "lucide-react";
+import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from "recharts";
+import { Link } from "react-router";
+
+const monthlyDonations = [
+  { month: "Oct", amount: 15000 },
+  { month: "Nov", amount: 10000 },
+  { month: "Dec", amount: 25000 },
+  { month: "Jan", amount: 15000 },
+  { month: "Feb", amount: 20000 },
+  { month: "Mar", amount: 15000 },
+];
+
+const recentDonations = [
+  { id: "TXN001", date: "Mar 5, 2026", amount: 15000, program: "Education", status: "Completed" },
+  { id: "TXN002", date: "Feb 10, 2026", amount: 20000, program: "Prenatal Care", status: "Completed" },
+  { id: "TXN003", date: "Jan 15, 2026", amount: 15000, program: "Nutrition", status: "Completed" },
+  { id: "TXN004", date: "Dec 20, 2025", amount: 25000, program: "General", status: "Completed" },
+];
+
+const impactMetrics = [
+  { icon: Users, label: "Children Impacted", value: "42", color: "text-primary", bgColor: "bg-primary/10" },
+  { icon: GraduationCap, label: "Schools Reached", value: "8", color: "text-blue-600", bgColor: "bg-blue-50" },
+  { icon: HeartPulse, label: "Health Checkups", value: "156", color: "text-accent", bgColor: "bg-accent/10" },
+  { icon: Star, label: "Meals Provided", value: "2,400", color: "text-amber-600", bgColor: "bg-amber-50" },
+];
+
+const progressReports = [
+  { program: "Education Support", progress: 85, goal: "Educate 50 children", current: "42 children enrolled" },
+  { program: "Nutrition Program", progress: 72, goal: "5,000 meals/month", current: "3,600 meals/month" },
+  { program: "Prenatal Care", progress: 90, goal: "Support 10 mothers", current: "9 mothers supported" },
+];
+
+const upcomingEvents = [
+  { title: "Annual Donor Meet 2026", date: "Apr 15, 2026", time: "10:00 AM", location: "Mumbai Convention Center", type: "In-person" },
+  { title: "Virtual Impact Review Q1", date: "Apr 5, 2026", time: "3:00 PM", location: "Zoom", type: "Virtual" },
+  { title: "School Visit - Raigad", date: "Apr 22, 2026", time: "9:00 AM", location: "Raigad, Maharashtra", type: "Field Visit" },
+  { title: "Fundraising Gala Dinner", date: "May 10, 2026", time: "7:00 PM", location: "Taj Mahal Palace, Mumbai", type: "In-person" },
+];
+
+export function DonorDashboard() {
+  return (
+    <div className="space-y-6">
+      {/* Header with Tier Badge */}
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+        <div>
+          <h1 className="text-2xl text-foreground" style={{ fontWeight: 700 }}>Welcome back, Priya!</h1>
+          <p className="text-muted-foreground">Here's a summary of your contributions and impact.</p>
+        </div>
+        <div className="flex items-center gap-3">
+          <Badge className="bg-gradient-to-r from-amber-500 to-amber-600 text-white px-4 py-1.5 text-sm">
+            <Award className="h-3.5 w-3.5 mr-1.5" />
+            Platinum Donor
+          </Badge>
+        </div>
+      </div>
+
+      {/* Primary Stats */}
+      <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
+        {[
+          { icon: Heart, label: "Total Donated", value: "₹5,00,000", change: "+₹1,00,000 this year", color: "text-primary", bgColor: "bg-primary/10" },
+          { icon: TrendingUp, label: "This Year", value: "₹1,00,000", change: "+24% vs last year", color: "text-accent", bgColor: "bg-accent/10" },
+          { icon: Calendar, label: "Donations Made", value: "24", change: "8 this year", color: "text-blue-600", bgColor: "bg-blue-50" },
+          { icon: Award, label: "Donor Since", value: "2021", change: "5 years of giving", color: "text-amber-600", bgColor: "bg-amber-50" },
+        ].map((stat) => (
+          <Card key={stat.label} className="border-border/50">
+            <CardContent className="pt-5 pb-4">
+              <div className={`h-9 w-9 rounded-lg ${stat.bgColor} flex items-center justify-center mb-3`}>
+                <stat.icon className={`h-4.5 w-4.5 ${stat.color}`} />
+              </div>
+              <p className="text-sm text-muted-foreground">{stat.label}</p>
+              <p className="text-xl text-foreground mt-0.5" style={{ fontWeight: 700 }}>{stat.value}</p>
+              <p className="text-xs text-muted-foreground mt-1">{stat.change}</p>
+            </CardContent>
+          </Card>
+        ))}
+      </div>
+
+      {/* Impact Metrics */}
+      <Card className="border-border/50">
+        <CardHeader>
+          <div className="flex items-center justify-between">
+            <CardTitle>Your Personal Impact</CardTitle>
+            <Link to="/dashboard/reports">
+              <Button variant="ghost" size="sm" className="text-primary text-xs">
+                View Full Report <ArrowRight className="h-3 w-3 ml-1" />
+              </Button>
+            </Link>
+          </div>
+        </CardHeader>
+        <CardContent>
+          <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
+            {impactMetrics.map((m) => (
+              <div key={m.label} className="text-center p-4 rounded-xl bg-muted/30">
+                <div className={`h-10 w-10 rounded-lg ${m.bgColor} flex items-center justify-center mx-auto mb-2`}>
+                  <m.icon className={`h-5 w-5 ${m.color}`} />
+                </div>
+                <p className="text-2xl text-foreground" style={{ fontWeight: 800 }}>{m.value}</p>
+                <p className="text-xs text-muted-foreground mt-0.5">{m.label}</p>
+              </div>
+            ))}
+          </div>
+        </CardContent>
+      </Card>
+
+      {/* Chart & Progress side by side */}
+      <div className="grid lg:grid-cols-2 gap-6">
+        {/* Monthly Donations Chart */}
+        <Card className="border-border/50">
+          <CardHeader>
+            <CardTitle>Monthly Donations (₹)</CardTitle>
+          </CardHeader>
+          <CardContent>
+            <div className="h-[250px]">
+              <ResponsiveContainer width="100%" height="100%">
+                <BarChart data={monthlyDonations}>
+                  <CartesianGrid strokeDasharray="3 3" stroke="#eee" />
+                  <XAxis dataKey="month" tick={{ fontSize: 12 }} />
+                  <YAxis tick={{ fontSize: 12 }} />
+                  <Tooltip formatter={(value: number) => `₹${value.toLocaleString("en-IN")}`} />
+                  <Bar dataKey="amount" fill="#10b981" radius={[4, 4, 0, 0]} name="Amount" />
+                </BarChart>
+              </ResponsiveContainer>
+            </div>
+          </CardContent>
+        </Card>
+
+        {/* Progress Reports */}
+        <Card className="border-border/50">
+          <CardHeader>
+            <div className="flex items-center justify-between">
+              <CardTitle>Program Progress</CardTitle>
+              <Link to="/dashboard/reports">
+                <Button variant="ghost" size="sm" className="text-primary text-xs">View All</Button>
+              </Link>
+            </div>
+          </CardHeader>
+          <CardContent className="space-y-5">
+            {progressReports.map((r) => (
+              <div key={r.program}>
+                <div className="flex justify-between mb-1">
+                  <span className="text-sm" style={{ fontWeight: 600 }}>{r.program}</span>
+                  <span className="text-sm text-primary" style={{ fontWeight: 600 }}>{r.progress}%</span>
+                </div>
+                <Progress value={r.progress} className="h-2 mb-1" />
+                <div className="flex justify-between text-xs text-muted-foreground">
+                  <span>{r.current}</span>
+                  <span>Goal: {r.goal}</span>
+                </div>
+              </div>
+            ))}
+          </CardContent>
+        </Card>
+      </div>
+
+      {/* Recent Donations */}
+      <Card className="border-border/50">
+        <CardHeader>
+          <div className="flex items-center justify-between">
+            <CardTitle>Recent Donations</CardTitle>
+            <Link to="/dashboard/donations">
+              <Button variant="ghost" size="sm" className="text-primary text-xs">
+                View All <ArrowRight className="h-3 w-3 ml-1" />
+              </Button>
+            </Link>
+          </div>
+        </CardHeader>
+        <CardContent>
+          <div className="overflow-x-auto">
+            <table className="w-full text-sm">
+              <thead>
+                <tr className="border-b border-border">
+                  <th className="text-left py-3 px-2 text-muted-foreground" style={{ fontWeight: 500 }}>Transaction</th>
+                  <th className="text-left py-3 px-2 text-muted-foreground" style={{ fontWeight: 500 }}>Date</th>
+                  <th className="text-left py-3 px-2 text-muted-foreground" style={{ fontWeight: 500 }}>Amount</th>
+                  <th className="text-left py-3 px-2 text-muted-foreground" style={{ fontWeight: 500 }}>Program</th>
+                  <th className="text-left py-3 px-2 text-muted-foreground" style={{ fontWeight: 500 }}>Status</th>
+                </tr>
+              </thead>
+              <tbody>
+                {recentDonations.map((d) => (
+                  <tr key={d.id} className="border-b border-border/50">
+                    <td className="py-3 px-2" style={{ fontWeight: 500 }}>{d.id}</td>
+                    <td className="py-3 px-2 text-muted-foreground">{d.date}</td>
+                    <td className="py-3 px-2" style={{ fontWeight: 600 }}>₹{d.amount.toLocaleString("en-IN")}</td>
+                    <td className="py-3 px-2">{d.program}</td>
+                    <td className="py-3 px-2">
+                      <Badge variant="secondary" className="bg-green-50 text-green-700">{d.status}</Badge>
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+        </CardContent>
+      </Card>
+
+      {/* Upcoming Events */}
+      <Card className="border-border/50">
+        <CardHeader>
+          <CardTitle>Upcoming Events</CardTitle>
+        </CardHeader>
+        <CardContent>
+          <div className="grid sm:grid-cols-2 gap-4">
+            {upcomingEvents.map((event) => (
+              <div
+                key={event.title}
+                className="p-4 rounded-xl border border-border/50 hover:shadow-sm transition-shadow"
+              >
+                <div className="flex items-start justify-between mb-2">
+                  <h4 className="text-sm" style={{ fontWeight: 600 }}>{event.title}</h4>
+                  <Badge variant="outline" className="text-xs shrink-0 ml-2">{event.type}</Badge>
+                </div>
+                <div className="space-y-1.5 text-xs text-muted-foreground">
+                  <div className="flex items-center gap-1.5">
+                    <Calendar className="h-3 w-3" />
+                    {event.date}
+                  </div>
+                  <div className="flex items-center gap-1.5">
+                    <Clock className="h-3 w-3" />
+                    {event.time}
+                  </div>
+                  <div className="flex items-center gap-1.5">
+                    <MapPin className="h-3 w-3" />
+                    {event.location}
+                  </div>
+                </div>
+                <Button variant="outline" size="sm" className="mt-3 h-7 text-xs w-full">
+                  RSVP
+                </Button>
+              </div>
+            ))}
+          </div>
+        </CardContent>
+      </Card>
+
+      {/* Certificate Banner */}
+      <Card className="border-primary/20 bg-gradient-to-r from-primary/5 to-accent/5">
+        <CardContent className="py-6">
+          <div className="flex flex-col sm:flex-row items-center justify-between gap-4">
+            <div className="flex items-center gap-4">
+              <div className="h-12 w-12 rounded-xl bg-primary/10 flex items-center justify-center shrink-0">
+                <Award className="h-6 w-6 text-primary" />
+              </div>
+              <div>
+                <h4 style={{ fontWeight: 600 }}>Your 80G Certificate is Ready</h4>
+                <p className="text-sm text-muted-foreground">FY 2025-26 tax certificate for ₹1,00,000 is available for download.</p>
+              </div>
+            </div>
+            <Link to="/dashboard/certificates">
+              <Button size="sm" className="bg-primary hover:bg-primary/90 shrink-0">
+                Download Certificate
+              </Button>
+            </Link>
+          </div>
+        </CardContent>
+      </Card>
+    </div>
+  );
+}

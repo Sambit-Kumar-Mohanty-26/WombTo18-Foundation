@@ -1,0 +1,57 @@
+import { createBrowserRouter } from "react-router";
+import { PublicLayout } from "./components/layout/PublicLayout";
+import { DashboardLayout } from "./components/layout/DashboardLayout";
+import { AdminLayout } from "./components/layout/AdminLayout";
+import { HomePage } from "./pages/HomePage";
+import { AboutPage } from "./pages/AboutPage";
+import { ServicesPage } from "./pages/ServicesPage";
+import { BlogPage } from "./pages/BlogPage";
+import { PressPage } from "./pages/PressPage";
+import { ImpactPage } from "./pages/ImpactPage";
+import { DonatePage } from "./pages/DonatePage";
+import { DonorDashboard } from "./pages/donor/DonorDashboard";
+import { DonorDonations } from "./pages/donor/DonorDonations";
+import { DonorReports } from "./pages/donor/DonorReports";
+import { DonorCertificates } from "./pages/donor/DonorCertificates";
+import { DonorEvents } from "./pages/donor/DonorEvents";
+import { AdminDashboard } from "./pages/admin/AdminDashboard";
+import { AdminDonors } from "./pages/admin/AdminDonors";
+import { AdminPrograms } from "./pages/admin/AdminPrograms";
+import { AdminReports } from "./pages/admin/AdminReports";
+
+export const router = createBrowserRouter([
+  {
+    path: "/",
+    Component: PublicLayout,
+    children: [
+      { index: true, Component: HomePage },
+      { path: "about", Component: AboutPage },
+      { path: "services", Component: ServicesPage },
+      { path: "blog", Component: BlogPage },
+      { path: "press", Component: PressPage },
+      { path: "impact", Component: ImpactPage },
+      { path: "donate", Component: DonatePage },
+    ],
+  },
+  {
+    path: "/dashboard",
+    Component: DashboardLayout,
+    children: [
+      { index: true, Component: DonorDashboard },
+      { path: "donations", Component: DonorDonations },
+      { path: "reports", Component: DonorReports },
+      { path: "certificates", Component: DonorCertificates },
+      { path: "events", Component: DonorEvents },
+    ],
+  },
+  {
+    path: "/admin",
+    Component: AdminLayout,
+    children: [
+      { index: true, Component: AdminDashboard },
+      { path: "donors", Component: AdminDonors },
+      { path: "programs", Component: AdminPrograms },
+      { path: "reports", Component: AdminReports },
+    ],
+  },
+]);
