@@ -18,8 +18,8 @@ export class CertificateService {
     const doc = new PDFDocument({ size: 'A4', margin: 50 });
 
     // Design
-    doc.fillColor('#1a365d').fontSize(24).text('TEAM ORION NGO', { align: 'center' });
-    doc.fontSize(10).fillColor('#4a5568').text('Empowering children through health and education', { align: 'center' });
+    doc.fillColor('#1a365d').fontSize(24).text('WOMBTO18 FOUNDATION', { align: 'center' });
+    doc.fontSize(10).fillColor('#4a5568').text('Empowering lives', { align: 'center' });
     doc.moveDown(2);
 
     doc.rect(50, 110, 500, 2).fill('#3182ce');
@@ -76,7 +76,13 @@ export class CertificateService {
     doc.text(`Financial Year: 2025-26`);
     doc.moveDown();
 
-    doc.fontSize(12).fillColor('#4a5568').text(`This is to certify that ${donation.donor.name || 'the donor'} has donated a sum of INR ${donation.amount.toLocaleString()} to Team Orion NGO.`);
+    doc.fontSize(12).fillColor('#4a5568').text(`This is to certify that ${donation.donor.name || 'the donor'} has donated a sum of INR ${donation.amount.toLocaleString()} to Wombto18 Foundation.`);
+    
+    doc.moveDown(1);
+    if (donation.donor.pan) doc.text(`Donor PAN: ${donation.donor.pan}`);
+    if (donation.donor.address) doc.text(`Donor Address: ${donation.donor.address}`);
+    doc.moveDown(1);
+
     doc.text(`The donation is eligible for deduction under section 80G of the Income Tax Act.`);
     doc.moveDown(2);
 
@@ -85,7 +91,7 @@ export class CertificateService {
     
     doc.moveDown(5);
     doc.text('Authorized Signatory', { align: 'right' });
-    doc.text('Team Orion NGO', { align: 'right' });
+    doc.text('Wombto18 Foundation', { align: 'right' });
 
     res.setHeader('Content-Type', 'application/pdf');
     res.setHeader('Content-Disposition', `attachment; filename=80G_Certificate_${donationId}.pdf`);

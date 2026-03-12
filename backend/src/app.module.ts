@@ -10,6 +10,7 @@ import { CertificateModule } from './certificate/certificate.module';
 import { ProgramModule } from './program/program.module';
 import { BlogModule } from './blog/blog.module';
 import { AdminModule } from './admin/admin.module';
+import { DemoModule } from './demo/demo.module';
 
 @Module({
   imports: [
@@ -22,6 +23,7 @@ import { AdminModule } from './admin/admin.module';
     ProgramModule,
     BlogModule,
     AdminModule,
+    DemoModule,
   ],
   controllers: [AppController],
   providers: [AppService],
