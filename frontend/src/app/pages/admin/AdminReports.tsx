@@ -55,48 +55,48 @@ export function AdminReports() {
     <div className="space-y-6">
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <div>
-          <h1 className="text-2xl text-foreground" style={{ fontWeight: 700 }}>Reports & Analytics</h1>
+          <h1 className="text-2xl text-foreground font-bold">Reports & Analytics</h1>
           <p className="text-muted-foreground">Comprehensive analytics and downloadable reports.</p>
         </div>
-        <Button size="sm" className="bg-primary hover:bg-primary/90">
+        <Button size="sm" className="font-bold shadow-sm">
           <FileBarChart className="h-4 w-4 mr-2" /> Generate Report
         </Button>
       </div>
 
       {/* KPI Cards */}
-      <div className="grid sm:grid-cols-2 lg:grid-cols-5 gap-3">
+      <div className="grid sm:grid-cols-2 lg:grid-cols-5 gap-4">
         {kpis.map((kpi) => (
-          <Card key={kpi.label} className="border-border/50">
-            <CardContent className="pt-4 pb-4">
-              <div className="flex items-center justify-between mb-1">
+          <Card key={kpi.label} className="bg-card border-border shadow-sm hover:shadow-md transition-all duration-300 rounded-lg">
+            <CardContent className="pt-5 pb-5">
+              <div className="flex items-center justify-between mb-2">
                 {kpi.status === "exceeding" && <CheckCircle className="h-4 w-4 text-green-600" />}
                 {kpi.status === "on-track" && <TrendingUp className="h-4 w-4 text-blue-600" />}
                 {kpi.status === "needs-attention" && <AlertTriangle className="h-4 w-4 text-amber-600" />}
-                <span className="text-xs text-muted-foreground">{kpi.target}% target</span>
+                <span className="text-[10px] text-muted-foreground font-bold uppercase tracking-wider">{kpi.target}% target</span>
               </div>
-              <p className="text-2xl" style={{ fontWeight: 800 }}>{kpi.value}%</p>
-              <p className="text-xs text-muted-foreground mt-0.5">{kpi.label}</p>
-              <Progress value={kpi.value} className="h-1.5 mt-2" />
+              <p className="text-2xl text-foreground font-extrabold">{kpi.value}%</p>
+              <p className="text-xs text-muted-foreground mt-1 font-medium">{kpi.label}</p>
+              <Progress value={kpi.value} className="h-1.5 mt-3 bg-muted" />
             </CardContent>
           </Card>
         ))}
       </div>
 
-      <div className="grid lg:grid-cols-2 gap-6">
+      <div className="grid lg:grid-cols-2 gap-8">
         {/* Donor Retention */}
-        <Card className="border-border/50">
-          <CardHeader>
-            <CardTitle>Donor Retention Rate (%)</CardTitle>
+        <Card className="bg-card border-border shadow-sm rounded-lg">
+          <CardHeader className="pb-2 border-b border-border">
+            <CardTitle className="text-foreground text-lg">Donor Retention Rate (%)</CardTitle>
           </CardHeader>
           <CardContent>
-            <div className="h-[280px]">
+            <div className="h-[300px] mt-4">
               <ResponsiveContainer width="100%" height="100%">
                 <LineChart data={donorRetention}>
-                  <CartesianGrid strokeDasharray="3 3" stroke="#eee" />
-                  <XAxis dataKey="month" tick={{ fontSize: 12 }} />
-                  <YAxis domain={[60, 100]} tick={{ fontSize: 12 }} />
-                  <Tooltip />
-                  <Line type="monotone" dataKey="rate" stroke="#10b981" strokeWidth={2} dot={{ fill: "#10b981" }} />
+                  <CartesianGrid strokeDasharray="3 3" stroke="var(--border)" vertical={false} />
+                  <XAxis dataKey="month" tick={{ fontSize: 12, fill: 'var(--muted-foreground)' }} axisLine={false} tickLine={false} />
+                  <YAxis domain={[60, 100]} tick={{ fontSize: 12, fill: 'var(--muted-foreground)' }} axisLine={false} tickLine={false} />
+                  <Tooltip contentStyle={{ backgroundColor: 'var(--background)', borderRadius: '8px', border: '1px solid var(--border)' }} itemStyle={{ color: 'var(--foreground)' }} />
+                  <Line type="monotone" dataKey="rate" stroke="#10b981" strokeWidth={3} dot={{ fill: "#10b981", r: 4, strokeWidth: 2, stroke: 'var(--background)' }} activeDot={{ r: 6, strokeWidth: 0 }} />
                 </LineChart>
               </ResponsiveContainer>
             </div>
@@ -104,19 +104,19 @@ export function AdminReports() {
         </Card>
 
         {/* State-wise */}
-        <Card className="border-border/50">
-          <CardHeader>
-            <CardTitle>State-wise Beneficiaries</CardTitle>
+        <Card className="bg-card border-border shadow-sm rounded-lg">
+          <CardHeader className="pb-2 border-b border-border">
+            <CardTitle className="text-foreground text-lg">State-wise Beneficiaries</CardTitle>
           </CardHeader>
           <CardContent>
-            <div className="h-[280px]">
+            <div className="h-[300px] mt-4">
               <ResponsiveContainer width="100%" height="100%">
                 <BarChart data={stateWise} layout="vertical">
-                  <CartesianGrid strokeDasharray="3 3" stroke="#eee" />
-                  <XAxis type="number" tick={{ fontSize: 12 }} />
-                  <YAxis dataKey="state" type="category" tick={{ fontSize: 12 }} width={30} />
-                  <Tooltip />
-                  <Bar dataKey="children" fill="#3b82f6" radius={[0, 4, 4, 0]} />
+                  <CartesianGrid strokeDasharray="3 3" stroke="var(--border)" horizontal={false} />
+                  <XAxis type="number" tick={{ fontSize: 12, fill: 'var(--muted-foreground)' }} axisLine={false} tickLine={false} />
+                  <YAxis dataKey="state" type="category" tick={{ fontSize: 12, fill: 'var(--muted-foreground)' }} width={30} axisLine={false} tickLine={false} />
+                  <Tooltip contentStyle={{ backgroundColor: 'var(--background)', borderRadius: '8px', border: '1px solid var(--border)' }} itemStyle={{ color: 'var(--foreground)' }} />
+                  <Bar dataKey="children" fill="#3b82f6" radius={[0, 4, 4, 0]} barSize={20} />
                 </BarChart>
               </ResponsiveContainer>
             </div>
@@ -124,31 +124,33 @@ export function AdminReports() {
         </Card>
       </div>
 
-      {/* Generated Reports */}
-      <Card className="border-border/50">
-        <CardHeader>
-          <CardTitle>Generated Reports</CardTitle>
+      {/* Generated Reports Table Card */}
+      <Card className="bg-card border-border shadow-sm rounded-lg overflow-hidden">
+        <CardHeader className="border-b border-border pb-4">
+          <CardTitle className="text-foreground text-lg">Generated Reports</CardTitle>
         </CardHeader>
-        <CardContent>
-          <div className="space-y-3">
+        <CardContent className="p-0">
+          <div className="divide-y divide-border">
             {generatedReports.map((r) => (
               <div
                 key={r.title}
-                className="flex items-center justify-between p-3 rounded-lg border border-border/50 hover:bg-muted/20"
+                className="flex items-center justify-between p-4 hover:bg-muted transition-colors"
               >
-                <div className="flex items-center gap-3">
-                  <FileBarChart className="h-5 w-5 text-muted-foreground" />
+                <div className="flex items-center gap-4">
+                  <div className="h-10 w-10 rounded-full bg-muted flex items-center justify-center">
+                    <FileBarChart className="h-5 w-5 text-muted-foreground" />
+                  </div>
                   <div>
-                    <p className="text-sm" style={{ fontWeight: 500 }}>{r.title}</p>
-                    <div className="flex items-center gap-2 mt-0.5">
-                      <span className="text-xs text-muted-foreground">{r.date}</span>
-                      <Badge variant="outline" className="text-[10px]">{r.type}</Badge>
+                    <p className="text-sm text-foreground font-bold">{r.title}</p>
+                    <div className="flex items-center gap-3 mt-1">
+                      <span className="text-xs text-muted-foreground/60 font-medium">{r.date}</span>
+                      <Badge variant="outline" className="text-[10px] font-bold text-muted-foreground border-border px-1.5 py-0">{r.type}</Badge>
                     </div>
                   </div>
                 </div>
-                <div className="flex items-center gap-2">
-                  <Badge className={statusColors[r.status]}>{r.status}</Badge>
-                  <Button variant="ghost" size="sm">
+                <div className="flex items-center gap-4">
+                  <Badge variant="secondary" className={`${statusColors[r.status]} px-2 py-0.5 rounded-md font-bold text-[10px] uppercase tracking-tighter shadow-none border-none`}>{r.status}</Badge>
+                  <Button variant="ghost" size="sm" className="h-8 w-8 p-0 text-muted-foreground hover:text-foreground">
                     <Download className="h-4 w-4" />
                   </Button>
                 </div>

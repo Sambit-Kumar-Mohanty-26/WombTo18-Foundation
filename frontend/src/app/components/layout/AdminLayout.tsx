@@ -17,7 +17,9 @@ export function AdminLayout() {
   const location = useLocation();
 
   return (
-    <div className="min-h-screen flex bg-emerald-950/50">
+    <div className="min-h-screen flex bg-white">
+
+
       {/* Sidebar */}
       <aside
         className={`fixed inset-y-0 left-0 z-50 w-64 bg-emerald-950 text-white border-r border-white/5 transform transition-transform lg:translate-x-0 lg:static ${
@@ -92,13 +94,16 @@ export function AdminLayout() {
         <div className="fixed inset-0 bg-black/50 z-40 lg:hidden" onClick={() => setSidebarOpen(false)} />
       )}
 
-      <div className="flex-1 flex flex-col min-w-0 bg-emerald-950/50">
-        <header className="sticky top-0 z-30 bg-emerald-900/50 backdrop-blur-md border-b border-white/5 px-4 sm:px-6 py-3 flex items-center gap-3">
-          <button className="lg:hidden p-2 -ml-2 text-white hover:bg-white/5 rounded-md" onClick={() => setSidebarOpen(true)}>
+      <div className="flex-1 flex flex-col min-w-0 bg-white admin-theme">
+
+
+        <header className="sticky top-0 z-30 bg-white/80 backdrop-blur-md border-b border-slate-200 px-4 sm:px-6 py-3 flex items-center gap-3">
+          <button className="lg:hidden p-2 -ml-2 text-slate-600 hover:bg-slate-100 rounded-md" onClick={() => setSidebarOpen(true)}>
             <Menu className="h-5 w-5" />
           </button>
-          <h2 className="text-lg text-white font-semibold">Admin Panel</h2>
+          <h2 className="text-lg text-slate-900 font-semibold">Admin Panel</h2>
         </header>
+
         <main className="flex-1 p-4 sm:p-6 overflow-auto">
           <Outlet />
         </main>

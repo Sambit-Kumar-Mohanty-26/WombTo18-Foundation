@@ -17,7 +17,6 @@ const donors = [
   { id: 8, name: "Patel Foundation", email: "csr@patelfdn.org", phone: "+91 22 4567 8900", total: "10,00,000", lastDonation: "Mar 1, 2026", status: "Active", initials: "PF" },
 ];
 
-
 export function AdminDonors() {
   const [search, setSearch] = useState("");
   const filtered = donors.filter(
@@ -30,14 +29,14 @@ export function AdminDonors() {
     <div className="space-y-6">
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <div>
-          <h1 className="text-2xl text-foreground" style={{ fontWeight: 700 }}>Manage Donors</h1>
+          <h1 className="text-2xl text-foreground font-bold">Manage Donors</h1>
           <p className="text-muted-foreground">{donors.length} registered donors</p>
         </div>
         <div className="flex gap-2">
-          <Button variant="outline" size="sm">
+          <Button variant="outline" size="sm" className="shadow-none border-border">
             <Download className="h-4 w-4 mr-2" /> Export
           </Button>
-          <Button size="sm" className="bg-primary hover:bg-primary/90">
+          <Button size="sm" className="font-bold shadow-sm cursor-pointer">
             <Plus className="h-4 w-4 mr-2" /> Add Donor
           </Button>
         </div>
@@ -50,51 +49,55 @@ export function AdminDonors() {
           placeholder="Search donors..."
           value={search}
           onChange={(e) => setSearch(e.target.value)}
-          className="pl-9"
+          className="pl-9 bg-background border-border text-foreground placeholder:text-muted-foreground"
         />
       </div>
 
-      {/* Table */}
-      <Card className="border-border/50">
+      {/* Table Card */}
+      <Card className="bg-card border-border shadow-sm rounded-lg overflow-hidden">
         <CardContent className="p-0">
           <div className="overflow-x-auto">
             <table className="w-full text-sm">
               <thead>
-                <tr className="border-b border-border bg-muted/30">
-                  <th className="text-left py-3 px-4 text-muted-foreground" style={{ fontWeight: 500 }}>Donor</th>
-                  <th className="text-left py-3 px-4 text-muted-foreground" style={{ fontWeight: 500 }}>Contact</th>
-                  <th className="text-left py-3 px-4 text-muted-foreground" style={{ fontWeight: 500 }}>Total</th>
-                  <th className="text-left py-3 px-4 text-muted-foreground" style={{ fontWeight: 500 }}>Last Donation</th>
-                  <th className="text-left py-3 px-4 text-muted-foreground" style={{ fontWeight: 500 }}>Status</th>
-                  <th className="text-left py-3 px-4 text-muted-foreground" style={{ fontWeight: 500 }}>Actions</th>
+                <tr className="border-b border-border bg-muted/50">
+                  <th className="text-left py-4 px-6 text-muted-foreground font-bold uppercase tracking-wider text-[10px]">Donor</th>
+                  <th className="text-left py-4 px-6 text-muted-foreground font-bold uppercase tracking-wider text-[10px]">Contact</th>
+                  <th className="text-left py-4 px-6 text-muted-foreground font-bold uppercase tracking-wider text-[10px]">Total</th>
+                  <th className="text-left py-4 px-6 text-muted-foreground font-bold uppercase tracking-wider text-[10px]">Last Donation</th>
+                  <th className="text-left py-4 px-6 text-muted-foreground font-bold uppercase tracking-wider text-[10px]">Status</th>
+                  <th className="text-left py-4 px-6 text-muted-foreground font-bold uppercase tracking-wider text-[10px]">Actions</th>
                 </tr>
               </thead>
-              <tbody>
+              <tbody className="divide-y divide-border">
                 {filtered.map((d) => (
-                  <tr key={d.id} className="border-b border-border/50 hover:bg-muted/20">
-                    <td className="py-3 px-4">
+                  <tr key={d.id} className="hover:bg-muted/30 transition-colors">
+                    <td className="py-4 px-6">
                       <div className="flex items-center gap-3">
-                        <Avatar className="h-8 w-8">
-                          <AvatarFallback className="bg-primary/10 text-primary text-xs">{d.initials}</AvatarFallback>
+                        <Avatar className="h-9 w-9 ring-1 ring-border">
+                          <AvatarFallback className="bg-primary/10 text-primary font-bold text-xs">{d.initials}</AvatarFallback>
                         </Avatar>
-                        <span style={{ fontWeight: 500 }}>{d.name}</span>
+                        <span className="text-foreground font-bold">{d.name}</span>
                       </div>
                     </td>
-                    <td className="py-3 px-4">
+                    <td className="py-4 px-6">
                       <div className="space-y-0.5">
-                        <p className="text-xs text-muted-foreground flex items-center gap-1"><Mail className="h-3 w-3" />{d.email}</p>
-                        <p className="text-xs text-muted-foreground flex items-center gap-1"><Phone className="h-3 w-3" />{d.phone}</p>
+                        <p className="text-[13px] text-muted-foreground flex items-center gap-1.5 font-medium"><Mail className="h-3.5 w-3.5 text-muted-foreground" />{d.email}</p>
+                        <p className="text-[13px] text-muted-foreground flex items-center gap-1.5 font-medium"><Phone className="h-3.5 w-3.5 text-muted-foreground" />{d.phone}</p>
                       </div>
                     </td>
-                    <td className="py-3 px-4" style={{ fontWeight: 600 }}>₹{d.total}</td>
-                    <td className="py-3 px-4 text-muted-foreground">{d.lastDonation}</td>
-                    <td className="py-3 px-4">
-                      <Badge variant="secondary" className={d.status === "Active" ? "bg-green-50 text-green-700" : "bg-gray-50 text-gray-600"}>
+                    <td className="py-4 px-6">
+                      <span className="text-foreground font-extrabold">₹{d.total}</span>
+                    </td>
+                    <td className="py-4 px-6">
+                      <span className="text-muted-foreground font-medium">{d.lastDonation}</span>
+                    </td>
+                    <td className="py-4 px-6">
+                      <Badge variant="secondary" className={`px-2 py-0.5 rounded-md font-bold text-[10px] uppercase tracking-tighter ${d.status === "Active" ? "bg-green-50 text-green-700 hover:bg-green-100" : "bg-muted text-muted-foreground hover:bg-muted/80"}`}>
                         {d.status}
                       </Badge>
                     </td>
-                    <td className="py-3 px-4">
-                      <Button variant="ghost" size="sm" className="h-7 w-7 p-0">
+                    <td className="py-4 px-6">
+                      <Button variant="ghost" size="sm" className="h-8 w-8 p-0 text-muted-foreground hover:text-foreground">
                         <MoreHorizontal className="h-4 w-4" />
                       </Button>
                     </td>
@@ -108,3 +111,5 @@ export function AdminDonors() {
     </div>
   );
 }
+
+

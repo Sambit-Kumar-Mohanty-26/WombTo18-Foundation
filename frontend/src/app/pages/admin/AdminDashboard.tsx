@@ -37,84 +37,90 @@ const activityColors: Record<string, string> = {
 
 export function AdminDashboard() {
   return (
-    <div className="space-y-6">
-      <div>
-        <h1 className="text-2xl text-foreground" style={{ fontWeight: 700 }}>Admin Dashboard</h1>
+    <div className="bg-background space-y-6">
+      <div className="animate-in fade-in duration-500">
+        <h1 className="text-2xl text-foreground font-bold">Admin Dashboard</h1>
         <p className="text-muted-foreground">Overview of foundation operations and financials.</p>
       </div>
 
-      {/* KPIs */}
-      <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
+      {/* KPIs / Stat Cards */}
+      <div className="grid grid-cols-2 lg:grid-cols-4 gap-6">
         {[
           { icon: IndianRupee, label: "Total Revenue", value: "₹13.8 Cr", change: "+24%", up: true },
           { icon: Users, label: "Active Donors", value: "1,245", change: "+12%", up: true },
           { icon: Heart, label: "Children Served", value: "15,234", change: "+15%", up: true },
           { icon: TrendingUp, label: "Fund Utilization", value: "98%", change: "+2%", up: true },
         ].map((kpi) => (
-          <Card key={kpi.label} className="border-border/50">
+          <Card key={kpi.label} className="bg-card border-border shadow-sm hover:shadow-md transition-all duration-300 rounded-lg">
             <CardContent className="pt-6">
               <div className="flex items-center justify-between mb-2">
                 <kpi.icon className="h-5 w-5 text-muted-foreground" />
-                <span className={`text-xs flex items-center gap-0.5 ${kpi.up ? "text-green-600" : "text-red-600"}`}>
+                <span className={`text-xs font-semibold flex items-center gap-0.5 ${kpi.up ? "text-green-600" : "text-red-600"}`}>
                   {kpi.up ? <ArrowUp className="h-3 w-3" /> : <ArrowDown className="h-3 w-3" />}
                   {kpi.change}
                 </span>
               </div>
-              <p className="text-2xl text-foreground" style={{ fontWeight: 800 }}>{kpi.value}</p>
-              <p className="text-xs text-muted-foreground mt-1">{kpi.label}</p>
+              <p className="text-2xl text-foreground font-extrabold">{kpi.value}</p>
+              <p className="text-xs text-muted-foreground mt-1 uppercase tracking-wider font-medium">{kpi.label}</p>
             </CardContent>
           </Card>
         ))}
       </div>
 
-      <div className="grid lg:grid-cols-3 gap-6">
-        {/* Revenue Chart */}
-        <Card className="lg:col-span-2 border-border/50">
-          <CardHeader>
-            <CardTitle>Monthly Revenue & Donors</CardTitle>
+      <div className="grid lg:grid-cols-3 gap-8">
+        {/* Revenue Chart Card */}
+        <Card className="lg:col-span-2 bg-card border-border shadow-sm rounded-lg">
+          <CardHeader className="pb-2">
+            <CardTitle className="text-foreground text-lg">Monthly Revenue & Donors</CardTitle>
           </CardHeader>
           <CardContent>
-            <div className="h-[280px]">
+            <div className="h-[300px] mt-4">
               <ResponsiveContainer width="100%" height="100%">
                 <BarChart data={monthlyRevenue}>
-                  <CartesianGrid strokeDasharray="3 3" stroke="#eee" />
-                  <XAxis dataKey="month" tick={{ fontSize: 12 }} />
-                  <YAxis tick={{ fontSize: 12 }} />
-                  <Tooltip formatter={(value: number, name: string) =>
-                    name === "revenue" ? `₹${(value / 100000).toFixed(1)}L` : value
-                  } />
-                  <Bar dataKey="revenue" fill="#10b981" radius={[4, 4, 0, 0]} name="revenue" />
+                  <CartesianGrid strokeDasharray="3 3" stroke="var(--border)" vertical={false} />
+                  <XAxis dataKey="month" stroke="var(--muted-foreground)" tick={{ fontSize: 12, fill: 'var(--muted-foreground)' }} axisLine={false} tickLine={false} />
+                  <YAxis stroke="var(--muted-foreground)" tick={{ fontSize: 12, fill: 'var(--muted-foreground)' }} axisLine={false} tickLine={false} />
+                  <Tooltip 
+                    cursor={{ fill: 'var(--muted)' }}
+                    contentStyle={{ backgroundColor: 'var(--background)', borderRadius: '8px', border: '1px solid var(--border)', boxShadow: '0 4px 6px -1px rgb(0 0 0 / 0.1)' }}
+                    labelStyle={{ color: 'var(--foreground)', fontWeight: 'bold' }}
+                    itemStyle={{ color: 'var(--foreground)' }}
+                    formatter={(value: number, name: string) =>
+                      name === "revenue" ? `₹${(value / 100000).toFixed(1)}L` : value
+                    } 
+                  />
+                  <Bar dataKey="revenue" fill="#10b981" radius={[4, 4, 0, 0]} name="revenue" barSize={40} />
                 </BarChart>
               </ResponsiveContainer>
             </div>
           </CardContent>
         </Card>
 
-        {/* Program Distribution */}
-        <Card className="border-border/50">
-          <CardHeader>
-            <CardTitle>Fund Distribution</CardTitle>
+        {/* Program Distribution Card */}
+        <Card className="bg-card border-border shadow-sm rounded-lg">
+          <CardHeader className="pb-2">
+            <CardTitle className="text-foreground text-lg">Fund Distribution</CardTitle>
           </CardHeader>
           <CardContent>
-            <div className="h-[280px]">
+            <div className="h-[300px] mt-4">
               <ResponsiveContainer width="100%" height="100%">
                 <PieChart>
                   <Pie
                     data={programDistribution}
                     cx="50%"
                     cy="50%"
-                    innerRadius={40}
-                    outerRadius={75}
-                    paddingAngle={3}
+                    innerRadius={60}
+                    outerRadius={90}
+                    paddingAngle={5}
                     dataKey="value"
                     nameKey="name"
                   >
                     {programDistribution.map((entry, index) => (
-                      <Cell key={`dist-${index}`} fill={entry.color} />
+                      <Cell key={`dist-${index}`} fill={entry.color} stroke="none" />
                     ))}
                   </Pie>
-                  <Tooltip formatter={(value: number) => `${value}%`} />
-                  <Legend wrapperStyle={{ fontSize: 12 }} />
+                  <Tooltip contentStyle={{ backgroundColor: 'var(--background)', borderRadius: '8px', border: '1px solid var(--border)' }} itemStyle={{ color: 'var(--foreground)' }} formatter={(value: number) => `${value}%`} />
+                  <Legend iconType="circle" wrapperStyle={{ fontSize: 12, paddingTop: '20px', color: 'var(--foreground)' }} />
                 </PieChart>
               </ResponsiveContainer>
             </div>
@@ -122,23 +128,23 @@ export function AdminDashboard() {
         </Card>
       </div>
 
-      {/* Recent Activity */}
-      <Card className="border-border/50">
-        <CardHeader>
-          <CardTitle>Recent Activity</CardTitle>
+      {/* Recent Activity Card */}
+      <Card className="bg-card border-border shadow-sm rounded-lg overflow-hidden">
+        <CardHeader className="border-b border-border pb-4">
+          <CardTitle className="text-foreground text-lg">Recent Activity</CardTitle>
         </CardHeader>
-        <CardContent>
-          <div className="space-y-3">
+        <CardContent className="p-0">
+          <div className="divide-y divide-border">
             {recentActivity.map((a, i) => (
-              <div key={i} className="flex items-center justify-between p-3 rounded-lg border border-border/50 hover:bg-muted/20">
-                <div className="flex items-center gap-3">
-                  <Badge className={activityColors[a.type]}>{a.type}</Badge>
+              <div key={i} className="flex items-center justify-between p-4 hover:bg-muted transition-colors">
+                <div className="flex items-center gap-4">
+                  <Badge variant="secondary" className={`${activityColors[a.type]} px-2 py-0.5 rounded-md font-bold text-[10px] uppercase tracking-tighter shadow-none border-none`}>{a.type}</Badge>
                   <div>
-                    <p className="text-sm" style={{ fontWeight: 500 }}>{a.action}</p>
+                    <p className="text-sm text-foreground font-semibold">{a.action}</p>
                     <p className="text-xs text-muted-foreground">{a.detail}</p>
                   </div>
                 </div>
-                <span className="text-xs text-muted-foreground shrink-0">{a.time}</span>
+                <span className="text-xs text-muted-foreground/60 font-medium shrink-0">{a.time}</span>
               </div>
             ))}
           </div>
@@ -147,3 +153,4 @@ export function AdminDashboard() {
     </div>
   );
 }
+

@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react";
 import { Link, Outlet, useLocation, useNavigate } from "react-router";
-import { Heart, LayoutDashboard, Receipt, FileText, Award, LogOut, Menu, X, ChevronLeft, CalendarDays } from "lucide-react";
+import { Heart, LayoutDashboard, Receipt, FileText, Award, LogOut, Menu, X, ChevronLeft, CalendarDays, User } from "lucide-react";
+
 import { Button } from "../ui/button";
 import { Avatar, AvatarFallback } from "../ui/avatar";
 import { auth, DonorSession } from "../../lib/auth";
@@ -11,7 +12,9 @@ const allDonorLinks = [
   { href: "/dashboard/reports", label: "Impact Reports", icon: FileText, requiredEligibility: true },
   { href: "/dashboard/certificates", label: "Receipts & Certificates", icon: Award, requiredEligibility: false },
   { href: "/dashboard/events", label: "Events", icon: CalendarDays, requiredEligibility: true },
+  { href: "/dashboard/profile", label: "Profile", icon: User, requiredEligibility: false },
 ];
+
 
 export function DashboardLayout() {
   const [sidebarOpen, setSidebarOpen] = useState(false);

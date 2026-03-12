@@ -32,3 +32,5 @@ Thumbs.db
 
 # coverage
 /coverage
+
+/frontend/dist
