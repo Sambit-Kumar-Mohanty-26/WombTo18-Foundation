@@ -1,0 +1,465 @@
+import { useState } from "react";
+import { User, Shield, Bell, Heart, LayoutDashboard, Receipt, FileText, Award, CalendarDays, LogOut, ChevronRight, Edit2, Save, X, Loader2 } from "lucide-react";
+import { useForm } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
+import * as z from "zod";
+import { Card, CardContent, CardDescription, CardHeader, CardTitle, CardFooter } from "../../components/ui/card";
+import { Button } from "../../components/ui/button";
+import { Input } from "../../components/ui/input";
+import { Label } from "../../components/ui/label";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "../../components/ui/tabs";
+import { Switch } from "../../components/ui/switch";
+import { Avatar, AvatarFallback, AvatarImage } from "../../components/ui/avatar";
+import { Badge } from "../../components/ui/badge";
+import { Skeleton } from "../../components/ui/skeleton";
+import { Separator } from "../../components/ui/separator";
+import { Form, FormControl, FormDescription, FormField, FormItem, FormLabel, FormMessage } from "../../components/ui/form";
+import { toast } from "sonner";
+
+const profileSchema = z.object({
+  name: z.string().min(2, "Name must be at least 2 characters"),
+  displayName: z.string().min(2, "Display name must be at least 2 characters"),
+  mobile: z.string().min(10, "Please enter a valid mobile number"),
+});
+
+type ProfileFormValues = z.infer<typeof profileSchema>;
+
+export function DonorProfile() {
+  const [activeTab, setActiveTab] = useState("overview");
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
+
+  // Mock data
+  const [donorData, setDonorData] = useState({
+    name: "Pratham Shah",
+    displayName: "Pratham S.",
+    donorId: "W18-5042",
+    email: "pratham.shah@example.com",
+    mobile: "+91 98765 43210",
+    joinedDate: "January 15, 2024",
+    tier: "Champion",
+    stats: {
+      totalDonated: "₹1,25,000",
+      donationCount: 12,
+      programsSupported: 4,
+      lastDonationDate: "Feb 28, 2024"
+    },
+    impact: {
+      childrenSupported: 45,
+      healthCheckups: 120,
+      schoolsReached: 12
+    },
+    preferences: {
+      showOnWall: true,
+      progressUpdates: true,
+      eventInvites: false
+    }
+  });
+
+  const form = useForm<ProfileFormValues>({
+    resolver: zodResolver(profileSchema),
+    defaultValues: {
+      name: donorData.name,
+      displayName: donorData.displayName,
+      mobile: donorData.mobile,
+    },
+  });
+
+  function onSubmit(values: ProfileFormValues) {
+    setIsSubmitting(true);
+    // Simulate API call
+    setTimeout(() => {
+      setDonorData(prev => ({
+        ...prev,
+        ...values
+      }));
+      setIsSubmitting(false);
+      toast.success("Profile updated successfully", {
+        description: "Your changes have been saved to our records."
+      });
+      setActiveTab("overview");
+    }, 1500);
+  }
+
+  const handlePreferenceChange = (key: keyof typeof donorData.preferences, value: boolean) => {
+    setDonorData(prev => ({
+      ...prev,
+      preferences: {
+        ...prev.preferences,
+        [key]: value
+      }
+    }));
+    toast.info("Preference updated", {
+      description: `${key.replace(/([A-Z])/g, ' $1').toLowerCase()} setting has been saved.`
+    });
+  };
+
+  if (isLoading) {
+    return (
+      <div className="space-y-6 animate-in fade-in duration-500">
+        <div className="flex items-center gap-4 mb-8">
+          <Skeleton className="h-20 w-20 rounded-full" />
+          <div className="space-y-2">
+            <Skeleton className="h-8 w-48" />
+            <Skeleton className="h-4 w-32" />
+          </div>
+        </div>
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+          <Skeleton className="h-40 col-span-1" />
+          <Skeleton className="h-40 col-span-1" />
+          <Skeleton className="h-40 col-span-1" />
+        </div>
+        <Skeleton className="h-96 w-full" />
+      </div>
+    );
+  }
+
+  return (
+    <div className="max-w-6xl mx-auto space-y-8 animate-in fade-in slide-in-from-bottom-4 duration-700">
+      {/* Profile Header */}
+      <div className="flex flex-col md:flex-row md:items-center justify-between gap-6">
+        <div className="flex items-center gap-5">
+          <div className="relative group">
+            <div className="absolute -inset-1 bg-gradient-to-r from-primary to-orange-400 rounded-full blur opacity-75 group-hover:opacity-100 transition duration-1000 group-hover:duration-200"></div>
+            <Avatar className="h-24 w-24 border-2 border-emerald-950/50 relative">
+              <AvatarImage src="" alt={donorData.name} />
+              <AvatarFallback className="bg-emerald-900 text-primary text-2xl font-bold">
+                {donorData.name.split(" ").map(n => n[0]).join("")}
+              </AvatarFallback>
+            </Avatar>
+            <button className="absolute bottom-0 right-0 p-1.5 bg-primary text-primary-foreground rounded-full shadow-lg border-2 border-emerald-950 hover:scale-110 transition-transform">
+              <Edit2 className="h-3.5 w-3.5" />
+            </button>
+          </div>
+          <div>
+            <div className="flex items-center gap-3">
+              <h1 className="text-3xl font-bold text-white tracking-tight">{donorData.name}</h1>
+              <Badge className="bg-orange-500 hover:bg-orange-600 text-white font-bold px-3 py-1 border-none shadow-lg shadow-orange-500/20">
+                {donorData.tier}
+              </Badge>
+            </div>
+            <p className="text-emerald-400 font-medium flex items-center gap-2 mt-1">
+              Donor ID: <span className="text-white font-mono">{donorData.donorId}</span>
+              <Separator orientation="vertical" className="h-3 bg-white/20" />
+              Joined {donorData.joinedDate}
+            </p>
+          </div>
+        </div>
+        <div className="flex items-center gap-3">
+          <Button variant="outline" className="border-white/10 text-white hover:bg-white/5 font-semibold">
+            Download Tax Certificate
+          </Button>
+          <Button className="bg-primary hover:bg-primary/90 text-primary-foreground font-bold shadow-lg shadow-orange-500/20">
+            Make a Donation
+          </Button>
+        </div>
+      </div>
+
+      <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
+        <TabsList className="bg-emerald-950/50 border border-white/5 p-1 mb-8 w-full md:w-auto h-auto grid grid-cols-2 md:inline-flex">
+          <TabsTrigger value="overview" className="data-[state=active]:bg-primary data-[state=active]:text-primary-foreground py-2.5 px-6 font-semibold">
+            Overview
+          </TabsTrigger>
+          <TabsTrigger value="edit" className="data-[state=active]:bg-primary data-[state=active]:text-primary-foreground py-2.5 px-6 font-semibold">
+            Edit Profile
+          </TabsTrigger>
+          <TabsTrigger value="preferences" className="data-[state=active]:bg-primary data-[state=active]:text-primary-foreground py-2.5 px-6 font-semibold">
+            Preferences
+          </TabsTrigger>
+          <TabsTrigger value="security" className="data-[state=active]:bg-primary data-[state=active]:text-primary-foreground py-2.5 px-6 font-semibold">
+            Security
+          </TabsTrigger>
+        </TabsList>
+
+        <TabsContent value="overview" className="space-y-8 animate-in fade-in duration-500">
+          {/* Summary Cards */}
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+            <Card className="bg-emerald-900/40 border-white/5 backdrop-blur-sm overflow-hidden group hover:border-primary/30 transition-colors">
+              <CardHeader className="pb-2">
+                <CardDescription className="text-emerald-400 uppercase text-[10px] font-bold tracking-widest">Total Donated</CardDescription>
+                <CardTitle className="text-2xl text-white font-bold">{donorData.stats.totalDonated}</CardTitle>
+              </CardHeader>
+              <CardContent>
+                <div className="h-1 w-full bg-emerald-950 rounded-full mt-2">
+                  <div className="h-full bg-primary rounded-full w-[70%] shadow-[0_0_8px_rgba(249,115,22,0.5)]" />
+                </div>
+              </CardContent>
+            </Card>
+            
+            <Card className="bg-emerald-900/40 border-white/5 backdrop-blur-sm group hover:border-primary/30 transition-colors">
+              <CardHeader className="pb-2">
+                <CardDescription className="text-emerald-400 uppercase text-[10px] font-bold tracking-widest">Donations</CardDescription>
+                <CardTitle className="text-2xl text-white font-bold">{donorData.stats.donationCount}</CardTitle>
+              </CardHeader>
+              <CardContent className="text-xs text-white/40">
+                Last: {donorData.stats.lastDonationDate}
+              </CardContent>
+            </Card>
+
+            <Card className="bg-emerald-900/40 border-white/5 backdrop-blur-sm group hover:border-primary/30 transition-colors">
+              <CardHeader className="pb-2">
+                <CardDescription className="text-emerald-400 uppercase text-[10px] font-bold tracking-widest">Programs</CardDescription>
+                <CardTitle className="text-2xl text-white font-bold">{donorData.stats.programsSupported}</CardTitle>
+              </CardHeader>
+              <CardContent className="text-xs text-white/40">
+                Across 3 sectors
+              </CardContent>
+            </Card>
+
+            <Card className="bg-emerald-900/40 border-white/5 backdrop-blur-sm group hover:border-primary/30 transition-colors">
+              <CardHeader className="pb-2">
+                <CardDescription className="text-emerald-400 uppercase text-[10px] font-bold tracking-widest">Lives Touched</CardDescription>
+                <CardTitle className="text-2xl text-white font-bold">{donorData.impact.childrenSupported}</CardTitle>
+              </CardHeader>
+              <CardContent className="text-xs text-white/40">
+                Health & Education
+              </CardContent>
+            </Card>
+          </div>
+
+          <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+            {/* Impact Metrics */}
+            <Card className="lg:col-span-2 bg-emerald-900/40 border-white/5 backdrop-blur-sm border-l-4 border-l-primary">
+              <CardHeader>
+                <CardTitle className="text-xl text-white font-bold flex items-center gap-2">
+                  <Heart className="h-5 w-5 text-primary fill-primary" />
+                  Your Impact Journey
+                </CardTitle>
+                <CardDescription className="text-emerald-400/60 font-medium">Real-world change powered by your contributions</CardDescription>
+              </CardHeader>
+              <CardContent className="space-y-6">
+                <div className="grid grid-cols-1 sm:grid-cols-3 gap-6">
+                  <div className="space-y-3 p-4 rounded-xl bg-white/5 border border-white/5 hover:bg-white/10 transition-colors">
+                    <p className="text-3xl font-bold text-white">{donorData.impact.childrenSupported}</p>
+                    <p className="text-sm text-emerald-300 font-semibold leading-tight">Children supported through education</p>
+                  </div>
+                  <div className="space-y-3 p-4 rounded-xl bg-white/5 border border-white/5 hover:bg-white/10 transition-colors">
+                    <p className="text-3xl font-bold text-white">{donorData.impact.healthCheckups}</p>
+                    <p className="text-sm text-emerald-300 font-semibold leading-tight">Health checkups funded in rural clinics</p>
+                  </div>
+                  <div className="space-y-3 p-4 rounded-xl bg-white/5 border border-white/5 hover:bg-white/10 transition-colors">
+                    <p className="text-3xl font-bold text-white">{donorData.impact.schoolsReached}</p>
+                    <p className="text-sm text-emerald-300 font-semibold leading-tight">Schools reached with program materials</p>
+                  </div>
+                </div>
+              </CardContent>
+            </Card>
+
+            {/* Quick Details */}
+            <Card className="bg-emerald-900/40 border-white/5 backdrop-blur-sm">
+              <CardHeader>
+                <CardTitle className="text-xl text-white font-bold flex items-center gap-2">
+                  <User className="h-5 w-5 text-emerald-400" />
+                  Contact Details
+                </CardTitle>
+              </CardHeader>
+              <CardContent className="space-y-4">
+                <div className="space-y-1">
+                  <p className="text-[10px] text-emerald-500 font-bold uppercase tracking-widest">Email Address</p>
+                  <p className="text-white font-medium">{donorData.email}</p>
+                </div>
+                <div className="space-y-1">
+                  <p className="text-[10px] text-emerald-500 font-bold uppercase tracking-widest">Mobile Number</p>
+                  <p className="text-white font-medium">{donorData.mobile}</p>
+                </div>
+                <div className="space-y-1 pt-4 border-t border-white/5">
+                  <p className="text-[10px] text-emerald-500 font-bold uppercase tracking-widest">Display Preference</p>
+                  <p className="text-white font-medium">{donorData.displayName}</p>
+                </div>
+              </CardContent>
+            </Card>
+          </div>
+        </TabsContent>
+
+        <TabsContent value="edit" className="animate-in fade-in slide-in-from-left-4 duration-500">
+          <Card className="bg-emerald-900/40 border-white/5 backdrop-blur-sm max-w-2xl">
+            <CardHeader>
+              <CardTitle className="text-xl text-white font-bold">Update Profile Information</CardTitle>
+              <CardDescription className="text-emerald-400/60 font-medium">Keep your contact details up to date</CardDescription>
+            </CardHeader>
+            <Form {...form}>
+              <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
+                <CardContent className="space-y-6">
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <FormField
+                      control={form.control}
+                      name="name"
+                      render={({ field }) => (
+                        <FormItem>
+                          <FormLabel className="text-emerald-300 font-semibold">Full Name</FormLabel>
+                          <FormControl>
+                            <Input {...field} className="bg-emerald-950/50 border-white/10 text-white focus:border-primary/50 focus:ring-primary/20" />
+                          </FormControl>
+                          <FormMessage className="text-rose-400 text-xs" />
+                        </FormItem>
+                      )}
+                    />
+                    <FormField
+                      control={form.control}
+                      name="displayName"
+                      render={({ field }) => (
+                        <FormItem>
+                          <FormLabel className="text-emerald-300 font-semibold">Display Nickname</FormLabel>
+                          <FormControl>
+                            <Input {...field} className="bg-emerald-950/50 border-white/10 text-white focus:border-primary/50 focus:ring-primary/20" />
+                          </FormControl>
+                          <FormMessage className="text-rose-400 text-xs" />
+                        </FormItem>
+                      )}
+                    />
+                    <FormField
+                      control={form.control}
+                      name="mobile"
+                      render={({ field }) => (
+                        <FormItem>
+                          <FormLabel className="text-emerald-300 font-semibold">Mobile Number</FormLabel>
+                          <FormControl>
+                            <Input {...field} className="bg-emerald-950/50 border-white/10 text-white focus:border-primary/50 focus:ring-primary/20" />
+                          </FormControl>
+                          <FormMessage className="text-rose-400 text-xs" />
+                        </FormItem>
+                      )}
+                    />
+                    <div className="space-y-2">
+                      <Label className="text-emerald-300 font-semibold opacity-50 text-xs">Email Address (Read-only)</Label>
+                      <Input 
+                        value={donorData.email} 
+                        disabled 
+                        className="bg-emerald-950/20 border-white/5 text-white/40 cursor-not-allowed h-10" 
+                      />
+                    </div>
+                  </div>
+                </CardContent>
+                <CardFooter className="border-t border-white/5 pt-6 flex justify-end gap-3">
+                  <Button type="button" variant="ghost" onClick={() => setActiveTab("overview")} className="text-white hover:bg-white/5">Cancel</Button>
+                  <Button type="submit" disabled={isSubmitting} className="bg-primary hover:bg-primary/90 text-primary-foreground font-bold shadow-lg shadow-orange-500/20 min-w-[120px]">
+                    {isSubmitting ? (
+                      <>
+                        <Loader2 className="h-4 w-4 mr-2 animate-spin" />
+                        Saving...
+                      </>
+                    ) : (
+                      <>
+                        <Save className="h-4 w-4 mr-2" />
+                        Save Changes
+                      </>
+                    )}
+                  </Button>
+                </CardFooter>
+              </form>
+            </Form>
+          </Card>
+        </TabsContent>
+
+        <TabsContent value="preferences" className="animate-in fade-in slide-in-from-right-4 duration-500">
+          <Card className="bg-emerald-900/40 border-white/5 backdrop-blur-sm max-w-2xl">
+            <CardHeader>
+              <CardTitle className="text-xl text-white font-bold">Communication & Visibility</CardTitle>
+              <CardDescription className="text-emerald-400/60 font-medium">Manage how you interact with the foundation platform</CardDescription>
+            </CardHeader>
+            <CardContent className="space-y-8">
+              <div className="flex items-center justify-between p-4 rounded-xl bg-white/5 border border-white/5">
+                <div className="space-y-0.5">
+                  <div className="flex items-center gap-2">
+                    <Label className="text-white font-bold">Public Recognition</Label>
+                    <Badge variant="outline" className="text-[9px] uppercase tracking-tighter border-emerald-500/30 text-emerald-400">Donor Wall</Badge>
+                  </div>
+                  <p className="text-sm text-emerald-300/50 font-medium">Show my name on the donor recognition wall</p>
+                </div>
+                <Switch 
+                  checked={donorData.preferences.showOnWall} 
+                  onCheckedChange={(checked) => handlePreferenceChange("showOnWall", checked)}
+                  className="data-[state=checked]:bg-primary" 
+                />
+              </div>
+
+              <div className="flex items-center justify-between p-4 rounded-xl bg-white/5 border border-white/5">
+                <div className="space-y-0.5">
+                  <Label className="text-white font-bold">Impact Updates</Label>
+                  <p className="text-sm text-emerald-300/50 font-medium">Receive monthly progress reports for your supported programs</p>
+                </div>
+                <Switch 
+                  checked={donorData.preferences.progressUpdates} 
+                  onCheckedChange={(checked) => handlePreferenceChange("progressUpdates", checked)}
+                  className="data-[state=checked]:bg-primary" 
+                />
+              </div>
+
+              <div className="flex items-center justify-between p-4 rounded-xl bg-white/5 border border-white/5">
+                <div className="space-y-0.5">
+                  <Label className="text-white font-bold">Event Invitations</Label>
+                  <p className="text-sm text-emerald-300/50 font-medium">Get notified about exclusive donor meetups and field visits</p>
+                </div>
+                <Switch 
+                  checked={donorData.preferences.eventInvites} 
+                  onCheckedChange={(checked) => handlePreferenceChange("eventInvites", checked)}
+                  className="data-[state=checked]:bg-primary" 
+                />
+              </div>
+            </CardContent>
+          </Card>
+        </TabsContent>
+
+        <TabsContent value="security" className="animate-in fade-in slide-in-from-bottom-4 duration-500">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+            <Card className="bg-emerald-900/40 border-white/5 backdrop-blur-sm">
+              <CardHeader>
+                <CardTitle className="text-xl text-white font-bold flex items-center gap-2">
+                  <Shield className="h-5 w-5 text-emerald-400" />
+                  Password Settings
+                </CardTitle>
+                <CardDescription className="text-emerald-400/60 font-medium">Keep your account secure with a strong password</CardDescription>
+              </CardHeader>
+              <CardContent className="space-y-4">
+                <div className="space-y-2">
+                  <Label className="text-emerald-300 font-semibold">Current Password</Label>
+                  <Input type="password" placeholder="••••••••" className="bg-emerald-950/50 border-white/10 text-white" />
+                </div>
+                <div className="space-y-2">
+                  <Label className="text-emerald-300 font-semibold">New Password</Label>
+                  <Input type="password" placeholder="••••••••" className="bg-emerald-950/50 border-white/10 text-white" />
+                </div>
+                <div className="space-y-2">
+                  <Label className="text-emerald-300 font-semibold">Confirm New Password</Label>
+                  <Input type="password" placeholder="••••••••" className="bg-emerald-950/50 border-white/10 text-white" />
+                </div>
+              </CardContent>
+              <CardFooter className="border-t border-white/5 pt-6">
+                <Button className="w-full bg-white/10 hover:bg-white/20 text-white font-bold">Update Password</Button>
+              </CardFooter>
+            </Card>
+
+            <Card className="bg-emerald-900/40 border-white/5 backdrop-blur-sm border-t-4 border-t-rose-500/50">
+              <CardHeader>
+                <CardTitle className="text-xl text-rose-400 font-bold flex items-center gap-2">
+                  Danger Zone
+                </CardTitle>
+                <CardDescription className="text-rose-400/40 font-medium">Session management and account actions</CardDescription>
+              </CardHeader>
+              <CardContent className="space-y-6">
+                <div className="p-4 rounded-xl bg-rose-500/5 border border-rose-500/10 space-y-4">
+                  <div className="flex items-center justify-between">
+                    <div>
+                      <p className="text-white font-bold">Current Session</p>
+                      <p className="text-xs text-rose-400/60 font-medium">You are currently logged in on this Windows device</p>
+                    </div>
+                    <Button variant="outline" size="sm" className="border-rose-500/20 text-rose-400 hover:bg-rose-500/10 h-8 font-bold">
+                      <LogOut className="h-3 w-3 mr-2" />
+                      Logout
+                    </Button>
+                  </div>
+                </div>
+
+                <div className="space-y-4 pt-4">
+                  <p className="text-xs text-emerald-400/40 font-medium italic">
+                    To delete your account or download your data, please contact donor.support@wombto18.org
+                  </p>
+                </div>
+              </CardContent>
+            </Card>
+          </div>
+        </TabsContent>
+      </Tabs>
+    </div>
+  );
+}
