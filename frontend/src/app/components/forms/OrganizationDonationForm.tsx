@@ -91,9 +91,9 @@ export function OrganizationDonationForm({ onSubmit, isProcessing }: Organizatio
               <IndianRupee className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-gray-400" />
               <Input
                 type="number"
-                placeholder="Or enter custom amount"
+                placeholder="e.g. 50000"
                 {...register("amount", { valueAsNumber: true })}
-                className="pl-9 bg-white border-gray-200 text-gray-900"
+                className="pl-9 bg-white border-gray-200 text-gray-900 placeholder:text-gray-400"
               />
             </div>
             {errors.amount && <p className="text-xs text-red-500 mt-1">{errors.amount.message}</p>}
@@ -133,40 +133,40 @@ export function OrganizationDonationForm({ onSubmit, isProcessing }: Organizatio
             <div className="grid sm:grid-cols-2 gap-4">
               <div className="space-y-1.5 sm:col-span-2">
                 <Label className="text-gray-700 font-medium">Organization Name *</Label>
-                <Input {...register("orgName")} placeholder="Acme Corp" className="bg-white border-gray-200 text-gray-900" />
+                <Input {...register("orgName")} placeholder="Enter legal organization name" className="bg-white border-gray-200 text-gray-900 placeholder:text-gray-400" />
                 {errors.orgName && <p className="text-xs text-red-500">{errors.orgName.message}</p>}
               </div>
               <div className="space-y-1.5">
                 <Label className="text-gray-700 font-medium">Contact Person *</Label>
-                <Input {...register("contactPerson")} placeholder="Jane Smith" className="bg-white border-gray-200 text-gray-900" />
+                <Input {...register("contactPerson")} placeholder="Enter contact person's name" className="bg-white border-gray-200 text-gray-900 placeholder:text-gray-400" />
                 {errors.contactPerson && <p className="text-xs text-red-500">{errors.contactPerson.message}</p>}
               </div>
               <div className="space-y-1.5">
                 <Label className="text-gray-700 font-medium">Official Email *</Label>
-                <Input type="email" {...register("email")} placeholder="csr@acme.com" className="bg-white border-gray-200 text-gray-900" />
+                <Input type="email" {...register("email")} placeholder="Enter official registered email" className="bg-white border-gray-200 text-gray-900 placeholder:text-gray-400" />
                 {errors.email && <p className="text-xs text-red-500">{errors.email.message}</p>}
               </div>
               <div className="space-y-1.5">
                 <Label className="text-gray-700 font-medium">Mobile Number *</Label>
-                <Input {...register("mobile")} placeholder="9876543210" className="bg-white border-gray-200 text-gray-900" />
+                <Input {...register("mobile")} placeholder="Enter primary contact number" className="bg-white border-gray-200 text-gray-900 placeholder:text-gray-400" />
                 {errors.mobile && <p className="text-xs text-red-500">{errors.mobile.message}</p>}
               </div>
               <div className="space-y-1.5">
                 <Label className="text-gray-700 font-medium">GST Number (Optional)</Label>
-                <Input {...register("gst")} placeholder="22AAAAA0000A1Z5" className="bg-white border-gray-200 text-gray-900 uppercase" />
+                <Input {...register("gst")} placeholder="Enter 15-digit GSTIN (e.g., 22AAAAA0000A1Z5)" className="bg-white border-gray-200 text-gray-900 uppercase placeholder:text-gray-400" />
                 {errors.gst && <p className="text-xs text-red-500">{errors.gst.message}</p>}
               </div>
               <div className="space-y-1.5">
                 <Label className="text-gray-700 font-medium">PAN Number (Optional)</Label>
-                <Input {...register("pan")} placeholder="ABCDE1234F" className="bg-white border-gray-200 text-gray-900 uppercase" />
+                <Input {...register("pan")} placeholder="Enter 10-character organization PAN" className="bg-white border-gray-200 text-gray-900 uppercase placeholder:text-gray-400" />
                 {errors.pan && <p className="text-xs text-red-500">{errors.pan.message}</p>}
               </div>
               <div className="space-y-1.5 sm:col-span-2">
                 <Label className="text-gray-700 font-medium">Organization Address *</Label>
                 <textarea
                   {...register("address")}
-                  placeholder="123 Business Park, City, State, PIN"
-                  className="w-full rounded-md border border-gray-200 bg-white px-3 py-2 text-sm text-gray-900 focus:outline-none focus:ring-1 focus:ring-emerald-500 min-h-[80px]"
+                  placeholder="Enter full registered office address"
+                  className="w-full rounded-md border border-gray-200 bg-white px-3 py-2 text-sm text-gray-900 focus:outline-none focus:ring-1 focus:ring-emerald-500 min-h-[80px] placeholder:text-gray-400"
                 />
                 {errors.address && <p className="text-xs text-red-500">{errors.address.message}</p>}
               </div>

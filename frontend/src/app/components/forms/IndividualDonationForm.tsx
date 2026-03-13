@@ -121,9 +121,9 @@ export function IndividualDonationForm({ onSubmit, isProcessing }: IndividualDon
               <IndianRupee className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-gray-400" />
               <Input
                 type="number"
-                placeholder="Or enter custom amount"
+                placeholder="e.g. 1500"
                 {...register("amount", { valueAsNumber: true })}
-                className="pl-9 bg-white border-gray-200 text-gray-900"
+                className="pl-9 bg-white border-gray-200 text-gray-900 placeholder:text-gray-400"
               />
             </div>
             {errors.amount && <p className="text-xs text-red-500 mt-1">{errors.amount.message}</p>}
@@ -163,22 +163,22 @@ export function IndividualDonationForm({ onSubmit, isProcessing }: IndividualDon
             <div className="grid sm:grid-cols-2 gap-4">
               <div className="space-y-1.5">
                 <Label className="text-gray-700 font-medium">Full Name *</Label>
-                <Input {...register("name")} placeholder="John Doe" className="bg-white border-gray-200 text-gray-900" />
+                <Input {...register("name")} placeholder="Enter your full name" className="bg-white border-gray-200 text-gray-900 placeholder:text-gray-400" />
                 {errors.name && <p className="text-xs text-red-500">{errors.name.message}</p>}
               </div>
               <div className="space-y-1.5">
                 <Label className="text-gray-700 font-medium">Email *</Label>
-                <Input type="email" {...register("email")} placeholder="john@example.com" className="bg-white border-gray-200 text-gray-900" />
+                <Input type="email" {...register("email")} placeholder="Enter your email address" className="bg-white border-gray-200 text-gray-900 placeholder:text-gray-400" />
                 {errors.email && <p className="text-xs text-red-500">{errors.email.message}</p>}
               </div>
               <div className="space-y-1.5">
                 <Label className="text-gray-700 font-medium">Mobile Number *</Label>
-                <Input {...register("mobile")} placeholder="9876543210" className="bg-white border-gray-200 text-gray-900" />
+                <Input {...register("mobile")} placeholder="Enter 10-digit mobile number" className="bg-white border-gray-200 text-gray-900 placeholder:text-gray-400" />
                 {errors.mobile && <p className="text-xs text-red-500">{errors.mobile.message}</p>}
               </div>
               <div className="space-y-1.5">
                 <Label className="text-gray-700 font-medium">PAN Number (Optional)</Label>
-                <Input {...register("pan")} placeholder="ABCDE1234F" className="bg-white border-gray-200 text-gray-900 uppercase" />
+                <Input {...register("pan")} placeholder="Enter 10-character PAN (e.g., ABCDE1234F)" className="bg-white border-gray-200 text-gray-900 uppercase placeholder:text-gray-400" />
                 {errors.pan && <p className="text-xs text-red-500">{errors.pan.message}</p>}
               </div>
             </div>
