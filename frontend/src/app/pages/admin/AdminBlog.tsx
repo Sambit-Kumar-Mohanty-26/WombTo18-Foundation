@@ -85,8 +85,8 @@ export function AdminBlog() {
     <div className="space-y-6">
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-2xl text-foreground font-bold">Blog Posts</h1>
-          <p className="text-muted-foreground text-sm">Manage articles shown on the public Blog page.</p>
+          <h1 className="text-2xl text-gray-900 font-bold">Blog Posts</h1>
+          <p className="text-gray-600 text-sm">Manage articles shown on the public Blog page.</p>
         </div>
         <Button onClick={openAdd} className="font-bold shadow-sm">
           <Plus className="h-4 w-4 mr-2" />
@@ -96,20 +96,20 @@ export function AdminBlog() {
 
       {/* Search */}
       <div className="relative max-w-sm">
-        <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+        <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-gray-400" />
         <Input
           placeholder="Search by title or category..."
           value={search}
           onChange={(e) => setSearch(e.target.value)}
-          className="pl-9 bg-background border-border text-foreground"
+          className="pl-9 bg-white border-gray-200 text-gray-900"
         />
       </div>
 
       {/* Table Card */}
-      <Card className="bg-card border-border shadow-sm rounded-lg overflow-hidden">
-        <CardHeader className="border-b border-border bg-card">
-          <CardTitle className="flex items-center gap-2 text-foreground text-lg">
-            <Newspaper className="h-5 w-5 text-muted-foreground" />
+      <Card className="bg-white border-gray-200 shadow-sm rounded-lg overflow-hidden">
+        <CardHeader className="border-b border-gray-100 bg-white">
+          <CardTitle className="flex items-center gap-2 text-gray-900 text-lg">
+            <Newspaper className="h-5 w-5 text-gray-400" />
             All Posts ({filtered.length})
           </CardTitle>
         </CardHeader>
@@ -117,41 +117,41 @@ export function AdminBlog() {
           <div className="overflow-x-auto">
             <table className="w-full text-sm">
               <thead>
-                <tr className="border-b border-border bg-muted/50">
-                  <th className="text-left py-4 px-6 text-muted-foreground font-bold uppercase tracking-wider text-[10px]">Title</th>
-                  <th className="text-left py-4 px-6 text-muted-foreground font-bold uppercase tracking-wider text-[10px]">Category</th>
-                  <th className="text-left py-4 px-6 text-muted-foreground font-bold uppercase tracking-wider text-[10px]">Date</th>
-                  <th className="text-left py-4 px-6 text-muted-foreground font-bold uppercase tracking-wider text-[10px]">Status</th>
-                  <th className="text-left py-4 px-6 text-muted-foreground font-bold uppercase tracking-wider text-[10px]">Actions</th>
+                <tr className="border-b border-gray-100 bg-gray-50/50">
+                  <th className="text-left py-4 px-6 text-gray-500 font-bold uppercase tracking-wider text-[10px]">Title</th>
+                  <th className="text-left py-4 px-6 text-gray-500 font-bold uppercase tracking-wider text-[10px]">Category</th>
+                  <th className="text-left py-4 px-6 text-gray-500 font-bold uppercase tracking-wider text-[10px]">Date</th>
+                  <th className="text-left py-4 px-6 text-gray-500 font-bold uppercase tracking-wider text-[10px]">Status</th>
+                  <th className="text-left py-4 px-6 text-gray-500 font-bold uppercase tracking-wider text-[10px]">Actions</th>
                 </tr>
               </thead>
-              <tbody className="divide-y divide-border">
+              <tbody className="divide-y divide-gray-100">
                 {filtered.map((post) => (
-                  <tr key={post.id} className="hover:bg-muted/30 transition-colors">
+                  <tr key={post.id} className="hover:bg-gray-50/80 transition-colors">
                     <td className="py-4 px-6">
                       <div className="flex items-center gap-4">
                         <img 
                           src={post.image} 
                           alt={post.title} 
-                          className="h-10 w-14 object-cover rounded bg-muted border border-border shrink-0" 
+                          className="h-10 w-14 object-cover rounded bg-gray-50 border border-gray-100 shrink-0" 
                           onError={(e) => { (e.target as HTMLImageElement).src = "https://placehold.co/56x40?text=Blog"; }} 
                         />
-                        <p className="font-bold text-foreground line-clamp-2 max-w-xs">{post.title}</p>
+                        <p className="font-bold text-gray-900 line-clamp-2 max-w-xs">{post.title}</p>
                       </div>
                     </td>
                     <td className="py-4 px-6">
                       <Badge variant="secondary" className={`${categoryColors[post.category] ?? "bg-slate-50 text-slate-700"} px-2 py-0.5 rounded-md font-bold text-[10px] uppercase tracking-tighter shadow-none border-none`}>{post.category}</Badge>
                     </td>
-                    <td className="py-4 px-6 text-muted-foreground font-medium">{post.date}</td>
+                    <td className="py-4 px-6 text-gray-500 font-medium">{post.date}</td>
                     <td className="py-4 px-6">
                       <Badge variant="secondary" className={`${statusColors[post.status]} px-2 py-0.5 rounded-md font-bold text-[10px] uppercase tracking-tighter border-none shadow-none`}>{post.status}</Badge>
                     </td>
                     <td className="py-4 px-6">
                       <div className="flex items-center gap-1">
-                        <Button variant="ghost" size="sm" className="h-8 w-8 p-0 text-muted-foreground hover:text-foreground" onClick={() => openEdit(post)}>
+                        <Button variant="ghost" size="sm" className="h-8 w-8 p-0 text-gray-400 hover:text-gray-900 hover:bg-gray-100" onClick={() => openEdit(post)}>
                           <Pencil className="h-3.5 w-3.5" />
                         </Button>
-                        <Button variant="ghost" size="sm" className="h-8 w-8 p-0 text-muted-foreground hover:text-rose-600 hover:bg-rose-50" onClick={() => handleDelete(post)}>
+                        <Button variant="ghost" size="sm" className="h-8 w-8 p-0 text-gray-400 hover:text-rose-500 hover:bg-rose-50" onClick={() => handleDelete(post)}>
                           <Trash2 className="h-3.5 w-3.5" />
                         </Button>
                       </div>
@@ -160,7 +160,7 @@ export function AdminBlog() {
                 ))}
                 {filtered.length === 0 && (
                   <tr>
-                    <td colSpan={5} className="text-center py-12 text-muted-foreground font-medium">No posts found.</td>
+                    <td colSpan={5} className="text-center py-12 text-gray-400 font-medium">No posts found.</td>
                   </tr>
                 )}
               </tbody>
@@ -172,62 +172,62 @@ export function AdminBlog() {
       {/* Modal / Overlay */}
       {showModal && (
         <div className="fixed inset-0 z-50 bg-black/40 backdrop-blur-sm flex items-center justify-center p-4 animate-in fade-in duration-200">
-          <div className="bg-background border border-border rounded-xl w-full max-w-lg shadow-2xl overflow-hidden animate-in zoom-in-95 duration-200">
-            <div className="flex items-center justify-between p-6 border-b border-border">
-              <h3 className="font-bold text-lg text-foreground">{editTarget ? "Edit Post" : "New Blog Post"}</h3>
-              <button onClick={() => setShowModal(false)} className="text-muted-foreground hover:text-foreground p-1 rounded-full hover:bg-muted transition-colors">
+          <div className="bg-white border border-gray-200 rounded-xl w-full max-w-lg shadow-2xl overflow-hidden animate-in zoom-in-95 duration-200">
+            <div className="flex items-center justify-between p-6 border-b border-gray-100">
+              <h3 className="font-bold text-lg text-gray-900">{editTarget ? "Edit Post" : "New Blog Post"}</h3>
+              <button onClick={() => setShowModal(false)} className="text-gray-400 hover:text-gray-900 p-1 rounded-full hover:bg-gray-100 transition-colors">
                 <X className="h-5 w-5" />
               </button>
             </div>
             <div className="p-6 space-y-5 max-h-[70vh] overflow-y-auto custom-scrollbar">
               <div className="space-y-1.5">
-                <Label className="text-foreground font-bold text-xs uppercase tracking-wider">Title *</Label>
-                <Input value={form.title} onChange={(e) => setForm({ ...form, title: e.target.value })} placeholder="Enter post title" className="bg-muted/30 border-border focus:bg-background transition-all" />
+                <Label className="text-gray-700 font-bold text-xs uppercase tracking-wider">Title *</Label>
+                <Input value={form.title} onChange={(e) => setForm({ ...form, title: e.target.value })} placeholder="Enter post title" className="bg-gray-50/50 border-gray-200 focus:bg-white transition-all" />
               </div>
               <div className="space-y-1.5">
-                <Label className="text-foreground font-bold text-xs uppercase tracking-wider">Excerpt *</Label>
+                <Label className="text-gray-700 font-bold text-xs uppercase tracking-wider">Excerpt *</Label>
                 <textarea
                   rows={3}
                   value={form.excerpt}
                   onChange={(e) => setForm({ ...form, excerpt: e.target.value })}
                   placeholder="Brief description of this post..."
-                  className="w-full rounded-md border border-border bg-muted/30 px-3 py-2 text-sm text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-1 focus:ring-slate-300 focus:bg-background transition-all resize-none"
+                  className="w-full rounded-md border border-gray-200 bg-gray-50/50 px-3 py-2 text-sm text-gray-900 placeholder:text-gray-400 focus:outline-none focus:ring-1 focus:ring-emerald-500 focus:bg-white transition-all resize-none"
                 />
               </div>
               <div className="grid grid-cols-2 gap-4">
                 <div className="space-y-1.5">
-                  <Label className="text-foreground font-bold text-xs uppercase tracking-wider">Category</Label>
-                  <select value={form.category} onChange={(e) => setForm({ ...form, category: e.target.value })} className="w-full rounded-md border border-border bg-muted/30 px-3 py-2 text-sm text-foreground focus:outline-none focus:ring-1 focus:ring-slate-300 focus:bg-background transition-all">
+                  <Label className="text-gray-700 font-bold text-xs uppercase tracking-wider">Category</Label>
+                  <select value={form.category} onChange={(e) => setForm({ ...form, category: e.target.value })} className="w-full rounded-md border border-gray-200 bg-gray-50/50 px-3 py-2 text-sm text-gray-900 focus:outline-none focus:ring-1 focus:ring-emerald-500 focus:bg-white transition-all">
                     {CATEGORIES.map((c) => <option key={c} value={c}>{c}</option>)}
                   </select>
                 </div>
                 <div className="space-y-1.5">
-                  <Label className="text-foreground font-bold text-xs uppercase tracking-wider">Read Time</Label>
-                  <select value={form.readTime} onChange={(e) => setForm({ ...form, readTime: e.target.value })} className="w-full rounded-md border border-border bg-muted/30 px-3 py-2 text-sm text-foreground focus:outline-none focus:ring-1 focus:ring-slate-300 focus:bg-background transition-all">
+                  <Label className="text-gray-700 font-bold text-xs uppercase tracking-wider">Read Time</Label>
+                  <select value={form.readTime} onChange={(e) => setForm({ ...form, readTime: e.target.value })} className="w-full rounded-md border border-gray-200 bg-gray-50/50 px-3 py-2 text-sm text-gray-900 focus:outline-none focus:ring-1 focus:ring-emerald-500 focus:bg-white transition-all">
                     {READ_TIMES.map((t) => <option key={t} value={t}>{t}</option>)}
                   </select>
                 </div>
               </div>
               <div className="space-y-1.5">
-                <Label className="text-foreground font-bold text-xs uppercase tracking-wider">Image URL</Label>
-                <Input value={form.image} onChange={(e) => setForm({ ...form, image: e.target.value })} placeholder="https://..." className="bg-muted/30 border-border focus:bg-background transition-all" />
+                <Label className="text-gray-700 font-bold text-xs uppercase tracking-wider">Image URL</Label>
+                <Input value={form.image} onChange={(e) => setForm({ ...form, image: e.target.value })} placeholder="https://..." className="bg-gray-50/50 border-gray-200 focus:bg-white transition-all" />
               </div>
               <div className="grid grid-cols-2 gap-4">
                 <div className="space-y-1.5">
-                  <Label className="text-foreground font-bold text-xs uppercase tracking-wider">Date</Label>
-                  <Input value={form.date} onChange={(e) => setForm({ ...form, date: e.target.value })} className="bg-muted/30 border-border focus:bg-background transition-all" />
+                  <Label className="text-gray-700 font-bold text-xs uppercase tracking-wider">Date</Label>
+                  <Input value={form.date} onChange={(e) => setForm({ ...form, date: e.target.value })} className="bg-gray-50/50 border-gray-200 focus:bg-white transition-all" />
                 </div>
                 <div className="space-y-1.5">
-                  <Label className="text-foreground font-bold text-xs uppercase tracking-wider">Status</Label>
-                  <select value={form.status} onChange={(e) => setForm({ ...form, status: e.target.value as "published" | "draft" })} className="w-full rounded-md border border-border bg-muted/30 px-3 py-2 text-sm text-foreground focus:outline-none focus:ring-1 focus:ring-slate-300 focus:bg-background transition-all">
+                  <Label className="text-gray-700 font-bold text-xs uppercase tracking-wider">Status</Label>
+                  <select value={form.status} onChange={(e) => setForm({ ...form, status: e.target.value as "published" | "draft" })} className="w-full rounded-md border border-gray-200 bg-gray-50/50 px-3 py-2 text-sm text-gray-900 focus:outline-none focus:ring-1 focus:ring-emerald-500 focus:bg-white transition-all">
                     <option value="published">Published</option>
                     <option value="draft">Draft</option>
                   </select>
                 </div>
               </div>
             </div>
-            <div className="flex items-center justify-end gap-3 p-6 border-t border-border bg-muted/20">
-              <Button variant="ghost" onClick={() => setShowModal(false)} className="text-muted-foreground hover:text-foreground">Cancel</Button>
+            <div className="flex items-center justify-end gap-3 p-6 border-t border-gray-100 bg-gray-50/30">
+              <Button variant="ghost" onClick={() => setShowModal(false)} className="text-gray-500 hover:text-gray-900">Cancel</Button>
               <Button onClick={handleSave} className="font-bold px-6 shadow-sm">
                 <Check className="h-4 w-4 mr-2" />
                 {editTarget ? "Save Changes" : "Publish Post"}

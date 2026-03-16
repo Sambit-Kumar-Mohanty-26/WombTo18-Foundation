@@ -5,6 +5,7 @@ import { Progress } from "../../components/ui/progress";
 import { Heart, TrendingUp, Calendar, Award, Users, GraduationCap, HeartPulse, Star, MapPin, Clock, ArrowRight } from "lucide-react";
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from "recharts";
 import { Link } from "react-router";
+import { toast } from "sonner";
 
 const monthlyDonations = [
   { month: "Oct", amount: 15000 },
@@ -46,17 +47,9 @@ export function DonorDashboard() {
   return (
     <div className="space-y-6">
       {/* Header with Tier Badge */}
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
-        <div>
-          <h1 className="text-2xl text-foreground" style={{ fontWeight: 700 }}>Welcome back, Priya!</h1>
-          <p className="text-muted-foreground">Here's a summary of your contributions and impact.</p>
-        </div>
-        <div className="flex items-center gap-3">
-          <Badge className="bg-gradient-to-r from-amber-500 to-amber-600 text-white px-4 py-1.5 text-sm">
-            <Award className="h-3.5 w-3.5 mr-1.5" />
-            Platinum Donor
-          </Badge>
-        </div>
+      <div>
+        <h1 className="text-2xl text-gray-900" style={{ fontWeight: 700 }}>Welcome back, Priya!</h1>
+        <p className="text-gray-600">Here's a summary of your contributions and impact.</p>
       </div>
 
       {/* Primary Stats */}
@@ -67,26 +60,26 @@ export function DonorDashboard() {
           { icon: Calendar, label: "Donations Made", value: "24", change: "8 this year", color: "text-blue-600", bgColor: "bg-blue-50" },
           { icon: Award, label: "Donor Since", value: "2021", change: "5 years of giving", color: "text-amber-600", bgColor: "bg-amber-50" },
         ].map((stat) => (
-          <Card key={stat.label} className="border-border/50">
+          <Card key={stat.label} className="bg-white border-gray-200 shadow-sm">
             <CardContent className="pt-5 pb-4">
               <div className={`h-9 w-9 rounded-lg ${stat.bgColor} flex items-center justify-center mb-3`}>
                 <stat.icon className={`h-4.5 w-4.5 ${stat.color}`} />
               </div>
-              <p className="text-sm text-muted-foreground">{stat.label}</p>
-              <p className="text-xl text-foreground mt-0.5" style={{ fontWeight: 700 }}>{stat.value}</p>
-              <p className="text-xs text-muted-foreground mt-1">{stat.change}</p>
+              <p className="text-sm text-gray-600">{stat.label}</p>
+              <p className="text-xl text-gray-900 mt-0.5" style={{ fontWeight: 700 }}>{stat.value}</p>
+              <p className="text-xs text-gray-500 mt-1">{stat.change}</p>
             </CardContent>
           </Card>
         ))}
       </div>
 
       {/* Impact Metrics */}
-      <Card className="border-border/50">
+      <Card className="bg-white border-gray-200 shadow-sm">
         <CardHeader>
           <div className="flex items-center justify-between">
-            <CardTitle>Your Personal Impact</CardTitle>
+            <CardTitle className="text-gray-900">Your Personal Impact</CardTitle>
             <Link to="/dashboard/reports">
-              <Button variant="ghost" size="sm" className="text-primary text-xs">
+              <Button variant="ghost" size="sm" className="text-primary text-xs hover:bg-primary/5">
                 View Full Report <ArrowRight className="h-3 w-3 ml-1" />
               </Button>
             </Link>
@@ -99,8 +92,8 @@ export function DonorDashboard() {
                 <div className={`h-10 w-10 rounded-lg ${m.bgColor} flex items-center justify-center mx-auto mb-2`}>
                   <m.icon className={`h-5 w-5 ${m.color}`} />
                 </div>
-                <p className="text-2xl text-foreground" style={{ fontWeight: 800 }}>{m.value}</p>
-                <p className="text-xs text-muted-foreground mt-0.5">{m.label}</p>
+                <p className="text-2xl text-gray-900" style={{ fontWeight: 800 }}>{m.value}</p>
+                <p className="text-xs text-gray-600 mt-0.5">{m.label}</p>
               </div>
             ))}
           </div>
@@ -110,9 +103,9 @@ export function DonorDashboard() {
       {/* Chart & Progress side by side */}
       <div className="grid lg:grid-cols-2 gap-6">
         {/* Monthly Donations Chart */}
-        <Card className="border-border/50">
+        <Card className="bg-white border-gray-200 shadow-sm">
           <CardHeader>
-            <CardTitle>Monthly Donations (₹)</CardTitle>
+            <CardTitle className="text-gray-900">Monthly Donations (₹)</CardTitle>
           </CardHeader>
           <CardContent>
             <div className="h-[250px]">
@@ -130,12 +123,12 @@ export function DonorDashboard() {
         </Card>
 
         {/* Progress Reports */}
-        <Card className="border-border/50">
+        <Card className="bg-white border-gray-200 shadow-sm">
           <CardHeader>
             <div className="flex items-center justify-between">
-              <CardTitle>Program Progress</CardTitle>
+              <CardTitle className="text-gray-900">Program Progress</CardTitle>
               <Link to="/dashboard/reports">
-                <Button variant="ghost" size="sm" className="text-primary text-xs">View All</Button>
+                <Button variant="ghost" size="sm" className="text-primary text-xs hover:bg-primary/5">View All</Button>
               </Link>
             </div>
           </CardHeader>
@@ -147,7 +140,7 @@ export function DonorDashboard() {
                   <span className="text-sm text-primary" style={{ fontWeight: 600 }}>{r.progress}%</span>
                 </div>
                 <Progress value={r.progress} className="h-2 mb-1" />
-                <div className="flex justify-between text-xs text-muted-foreground">
+                <div className="flex justify-between text-xs text-gray-500">
                   <span>{r.current}</span>
                   <span>Goal: {r.goal}</span>
                 </div>
@@ -158,12 +151,12 @@ export function DonorDashboard() {
       </div>
 
       {/* Recent Donations */}
-      <Card className="border-border/50">
+      <Card className="bg-white border-gray-200 shadow-sm">
         <CardHeader>
           <div className="flex items-center justify-between">
-            <CardTitle>Recent Donations</CardTitle>
+            <CardTitle className="text-gray-900">Recent Donations</CardTitle>
             <Link to="/dashboard/donations">
-              <Button variant="ghost" size="sm" className="text-primary text-xs">
+              <Button variant="ghost" size="sm" className="text-primary text-xs hover:bg-primary/5">
                 View All <ArrowRight className="h-3 w-3 ml-1" />
               </Button>
             </Link>
@@ -173,23 +166,23 @@ export function DonorDashboard() {
           <div className="overflow-x-auto">
             <table className="w-full text-sm">
               <thead>
-                <tr className="border-b border-border">
-                  <th className="text-left py-3 px-2 text-muted-foreground" style={{ fontWeight: 500 }}>Transaction</th>
-                  <th className="text-left py-3 px-2 text-muted-foreground" style={{ fontWeight: 500 }}>Date</th>
-                  <th className="text-left py-3 px-2 text-muted-foreground" style={{ fontWeight: 500 }}>Amount</th>
-                  <th className="text-left py-3 px-2 text-muted-foreground" style={{ fontWeight: 500 }}>Program</th>
-                  <th className="text-left py-3 px-2 text-muted-foreground" style={{ fontWeight: 500 }}>Status</th>
+                <tr className="border-b border-gray-200 bg-gray-100 text-gray-700">
+                  <th className="text-left py-3 px-2 font-medium">Transaction</th>
+                  <th className="text-left py-3 px-2 font-medium">Date</th>
+                  <th className="text-left py-3 px-2 font-medium">Amount</th>
+                  <th className="text-left py-3 px-2 font-medium">Program</th>
+                  <th className="text-left py-3 px-2 font-medium">Status</th>
                 </tr>
               </thead>
               <tbody>
                 {recentDonations.map((d) => (
-                  <tr key={d.id} className="border-b border-border/50">
-                    <td className="py-3 px-2" style={{ fontWeight: 500 }}>{d.id}</td>
-                    <td className="py-3 px-2 text-muted-foreground">{d.date}</td>
-                    <td className="py-3 px-2" style={{ fontWeight: 600 }}>₹{d.amount.toLocaleString("en-IN")}</td>
-                    <td className="py-3 px-2">{d.program}</td>
+                  <tr key={d.id} className="border-b border-gray-100 hover:bg-gray-50 transition-colors text-gray-900">
+                    <td className="py-3 px-2 text-gray-900" style={{ fontWeight: 500 }}>{d.id}</td>
+                    <td className="py-3 px-2 text-gray-500">{d.date}</td>
+                    <td className="py-3 px-2 text-gray-900" style={{ fontWeight: 600 }}>₹{d.amount.toLocaleString("en-IN")}</td>
+                    <td className="py-3 px-2 text-gray-700">{d.program}</td>
                     <td className="py-3 px-2">
-                      <Badge variant="secondary" className="bg-green-50 text-green-700">{d.status}</Badge>
+                       <Badge variant="secondary" className="bg-emerald-50 text-emerald-700">{d.status}</Badge>
                     </td>
                   </tr>
                 ))}
@@ -200,22 +193,22 @@ export function DonorDashboard() {
       </Card>
 
       {/* Upcoming Events */}
-      <Card className="border-border/50">
+      <Card className="bg-white border-gray-200 shadow-sm">
         <CardHeader>
-          <CardTitle>Upcoming Events</CardTitle>
+          <CardTitle className="text-gray-900">Upcoming Events</CardTitle>
         </CardHeader>
         <CardContent>
           <div className="grid sm:grid-cols-2 gap-4">
             {upcomingEvents.map((event) => (
               <div
                 key={event.title}
-                className="p-4 rounded-xl border border-border/50 hover:shadow-sm transition-shadow"
+                className="p-4 rounded-xl border border-gray-100 bg-gray-50 hover:bg-white hover:border-gray-200 hover:shadow-sm transition-all"
               >
                 <div className="flex items-start justify-between mb-2">
-                  <h4 className="text-sm" style={{ fontWeight: 600 }}>{event.title}</h4>
-                  <Badge variant="outline" className="text-xs shrink-0 ml-2">{event.type}</Badge>
+                  <h4 className="text-sm text-gray-900" style={{ fontWeight: 600 }}>{event.title}</h4>
+                  <Badge variant="outline" className="text-xs shrink-0 ml-2 bg-white text-gray-600 border-gray-200">{event.type}</Badge>
                 </div>
-                <div className="space-y-1.5 text-xs text-muted-foreground">
+                <div className="space-y-1.5 text-xs text-gray-500">
                   <div className="flex items-center gap-1.5">
                     <Calendar className="h-3 w-3" />
                     {event.date}
@@ -229,7 +222,7 @@ export function DonorDashboard() {
                     {event.location}
                   </div>
                 </div>
-                <Button variant="outline" size="sm" className="mt-3 h-7 text-xs w-full">
+                <Button variant="outline" size="sm" className="mt-3 h-7 text-xs w-full" onClick={() => toast.success("RSVP Successful", { description: `RSVP registered for ${event.title}` })}>
                   RSVP
                 </Button>
               </div>
@@ -247,8 +240,8 @@ export function DonorDashboard() {
                 <Award className="h-6 w-6 text-primary" />
               </div>
               <div>
-                <h4 style={{ fontWeight: 600 }}>Your 80G Certificate is Ready</h4>
-                <p className="text-sm text-muted-foreground">FY 2025-26 tax certificate for ₹1,00,000 is available for download.</p>
+                <h4 className="text-gray-900" style={{ fontWeight: 600 }}>Your 80G Certificate is Ready</h4>
+                <p className="text-sm text-gray-600">FY 2025-26 tax certificate for ₹1,00,000 is available for download.</p>
               </div>
             </div>
             <Link to="/dashboard/certificates">

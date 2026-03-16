@@ -97,14 +97,14 @@ export function ServicesPage() {
   return (
     <>
       {/* Hero */}
-      <section className="py-20 bg-gradient-to-br from-background via-emerald-950/50 to-background text-white">
+      <section className="py-20 bg-emerald-50">
         <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
           <div className="max-w-3xl">
-            <p className="text-primary text-sm mb-2" style={{ fontWeight: 600, textTransform: "uppercase", letterSpacing: "0.05em" }}>Our Programs</p>
-            <h1 className="text-4xl sm:text-5xl text-foreground mb-6" style={{ fontWeight: 800, lineHeight: 1.1 }}>
+            <p className="text-emerald-700 text-sm mb-2 font-semibold uppercase tracking-wider">Our Programs</p>
+            <h1 className="text-4xl sm:text-5xl text-gray-900 mb-6 font-extrabold leading-tight">
               Comprehensive Care at Every Stage of Childhood
             </h1>
-            <p className="text-lg text-muted-foreground">
+            <p className="text-lg text-gray-600">
               From prenatal care to preparing young adults for life, our programs ensure no child is left behind. Choose a program to support and track your impact in real time.
             </p>
           </div>
@@ -112,15 +112,15 @@ export function ServicesPage() {
       </section>
 
       {/* Category Filters */}
-      <section className="py-6 bg-emerald-900/20 border-b border-white/10">
+      <section className="py-6 bg-white border-b border-gray-200">
         <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
           <div className="flex items-center gap-4 flex-wrap">
-            <span className="text-sm text-emerald-200/70" style={{ fontWeight: 500 }}>Categories:</span>
+            <span className="text-sm text-gray-600 font-medium">Categories:</span>
             {["All Programs", "Health", "Education", "Nutrition", "Community"].map((cat) => (
               <Badge
                 key={cat}
                 variant={cat === "All Programs" ? "default" : "outline"}
-                className={`cursor-pointer px-3 py-1.5 ${cat === "All Programs" ? "bg-primary text-primary-foreground" : "border-white/10 text-white hover:bg-white/5"}`}
+                className={`cursor-pointer px-3 py-1.5 ${cat === "All Programs" ? "bg-primary text-primary-foreground" : "border-gray-200 text-gray-600 hover:bg-gray-50"}`}
               >
                 {cat}
               </Badge>
@@ -130,13 +130,13 @@ export function ServicesPage() {
       </section>
 
       {/* Programs Grid */}
-      <section className="py-16 bg-background">
+      <section className="py-16 bg-gray-50">
         <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
           <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
             {programs.map((program) => {
               const percentRaised = Math.round((program.raised / program.target) * 100);
               return (
-                <Card key={program.title} className="border-border/50 overflow-hidden group hover:shadow-lg transition-shadow flex flex-col">
+                <Card key={program.title} className="bg-white border-gray-200 shadow-sm overflow-hidden group hover:shadow-lg transition-shadow flex flex-col">
                   {/* Image */}
                   <div className="relative h-48 overflow-hidden">
                     <img
@@ -145,11 +145,11 @@ export function ServicesPage() {
                       className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
                     />
                     <div className="absolute top-3 left-3 flex gap-2">
-                      <Badge className="bg-white/90 text-emerald-950 backdrop-blur-sm text-xs font-bold">{program.category}</Badge>
-                      <Badge className="bg-accent/90 text-white text-xs">{program.status}</Badge>
+                      <Badge className="bg-white/90 text-emerald-950 backdrop-blur-sm text-xs font-bold shadow-sm">{program.category}</Badge>
+                      <Badge className="bg-emerald-600 text-white text-xs shadow-sm">{program.status}</Badge>
                     </div>
                     <div className="absolute top-3 right-3">
-                      <span className="bg-white/90 backdrop-blur-sm text-[10px] px-2 py-0.5 rounded-full text-emerald-800 font-bold" style={{ fontWeight: 700 }}>
+                      <span className="bg-white/90 backdrop-blur-sm text-[10px] px-2 py-0.5 rounded-full text-emerald-800 font-bold shadow-sm">
                         {program.age}
                       </span>
                     </div>
@@ -162,18 +162,18 @@ export function ServicesPage() {
                         <program.icon className="h-4.5 w-4.5 text-primary" />
                       </div>
                       <div>
-                        <h3 className="text-lg text-foreground" style={{ fontWeight: 700 }}>{program.title}</h3>
-                        <p className="text-xs text-primary" style={{ fontWeight: 600 }}>{program.stats}</p>
+                        <h3 className="text-lg text-gray-900 font-bold">{program.title}</h3>
+                        <p className="text-xs text-emerald-700 font-semibold">{program.stats}</p>
                       </div>
                     </div>
 
                     {/* Description */}
-                    <p className="text-sm text-muted-foreground mb-4 flex-1">{program.description}</p>
+                    <p className="text-sm text-gray-600 mb-4 flex-1">{program.description}</p>
 
                     {/* Features */}
                     <div className="grid grid-cols-2 gap-1.5 mb-5">
                       {program.features.map((f) => (
-                        <div key={f} className="flex items-center gap-1.5 text-xs text-muted-foreground">
+                        <div key={f} className="flex items-center gap-1.5 text-xs text-gray-600">
                           <div className="h-1 w-1 rounded-full bg-primary shrink-0" />
                           {f}
                         </div>
@@ -181,18 +181,18 @@ export function ServicesPage() {
                     </div>
 
                     {/* Funding Progress */}
-                    <div className="border-t border-border pt-4">
+                    <div className="border-t border-gray-100 pt-4">
                       <div className="flex justify-between text-sm mb-2">
-                        <span className="text-foreground" style={{ fontWeight: 600 }}>
+                        <span className="text-gray-900 font-semibold">
                           {formatINR(program.raised)} raised
                         </span>
-                        <span className="text-muted-foreground">
+                        <span className="text-gray-500">
                           of {formatINR(program.target)}
                         </span>
                       </div>
-                      <Progress value={percentRaised} className="h-2 mb-2" />
+                      <Progress value={percentRaised} className="h-2 mb-2 bg-gray-100" />
                       <div className="flex justify-between items-center">
-                        <span className="text-xs text-muted-foreground">{percentRaised}% funded</span>
+                        <span className="text-xs text-gray-500 font-medium">{percentRaised}% funded</span>
                         <Link to="/donate">
                           <Button size="sm" className="bg-primary hover:bg-primary/90 h-8 text-xs text-primary-foreground font-bold">
                             <Heart className="h-3 w-3 mr-1 fill-current" /> Donate Now
@@ -209,11 +209,11 @@ export function ServicesPage() {
       </section>
 
       {/* Program Highlights */}
-      <section className="py-16 bg-background">
+      <section className="py-16 bg-white border-t border-gray-200">
         <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-12">
-            <h2 className="text-3xl text-white mb-4" style={{ fontWeight: 700 }}>Program Highlights</h2>
-            <p className="text-emerald-200/70 max-w-2xl mx-auto">Our flagship initiatives that have created the most impact this year.</p>
+            <h2 className="text-3xl text-gray-900 mb-4 font-bold">Program Highlights</h2>
+            <p className="text-gray-600 max-w-2xl mx-auto">Our flagship initiatives that have created the most impact this year.</p>
           </div>
           <div className="grid sm:grid-cols-3 gap-6">
             {[
@@ -221,11 +221,11 @@ export function ServicesPage() {
               { label: "Total Target (FY 2025-26)", value: "₹1.39 Cr", sub: "Annual fundraising goal" },
               { label: "Overall Funded", value: "78%", sub: "₹1.09 Cr raised so far" },
             ].map((stat) => (
-              <Card key={stat.label} className="bg-emerald-950/30 border-white/10 text-center">
+              <Card key={stat.label} className="bg-emerald-50 border-emerald-100 text-center shadow-sm">
                 <CardContent className="pt-6">
-                  <p className="text-3xl text-primary" style={{ fontWeight: 800 }}>{stat.value}</p>
-                  <p className="text-sm mt-1 text-white" style={{ fontWeight: 600 }}>{stat.label}</p>
-                  <p className="text-xs text-emerald-200/50 mt-1">{stat.sub}</p>
+                  <p className="text-3xl text-emerald-700 font-extrabold">{stat.value}</p>
+                  <p className="text-sm mt-1 text-gray-900 font-semibold">{stat.label}</p>
+                  <p className="text-xs text-gray-600 mt-1">{stat.sub}</p>
                 </CardContent>
               </Card>
             ))}
@@ -234,10 +234,10 @@ export function ServicesPage() {
       </section>
 
       {/* CTA */}
-      <section className="py-16 bg-primary/5">
+      <section className="py-16 bg-gray-50 border-t border-gray-200">
         <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 text-center">
-          <h2 className="text-3xl text-foreground mb-4" style={{ fontWeight: 700 }}>Want to Support a Program?</h2>
-          <p className="text-muted-foreground mb-6 max-w-xl mx-auto">
+          <h2 className="text-3xl text-gray-900 mb-4 font-bold">Want to Support a Program?</h2>
+          <p className="text-gray-600 mb-6 max-w-xl mx-auto">
             Choose a program close to your heart and make a targeted donation that creates lasting impact. Every contribution is 100% tax deductible under 80G.
           </p>
           <Link to="/donate">

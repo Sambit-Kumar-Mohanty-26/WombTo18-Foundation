@@ -13,14 +13,14 @@ const metrics = [
 
 export function ImpactSection() {
   return (
-    <section className="py-20 bg-background text-white border-t border-white/5">
+    <section className="py-20 bg-white border-t border-gray-200">
       <ScrollReveal className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-        <div className="text-center mb-14 text-white">
+        <div className="text-center mb-14">
           <p className="text-primary text-sm mb-2" style={{ fontWeight: 600, textTransform: "uppercase", letterSpacing: "0.05em" }}>Our Impact</p>
-          <h2 className="text-3xl sm:text-4xl text-white mb-4" style={{ fontWeight: 700 }}>
+          <h2 className="text-3xl sm:text-4xl text-gray-900 mb-4" style={{ fontWeight: 700 }}>
             Numbers That Tell Our Story
           </h2>
-          <p className="text-emerald-200/70 max-w-2xl mx-auto">
+          <p className="text-gray-600 max-w-2xl mx-auto">
             Every number represents a life changed, a family empowered, and a community strengthened.
           </p>
         </div>
@@ -33,13 +33,13 @@ export function ImpactSection() {
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
               transition={{ delay: i * 0.1 }}
-              className="text-center p-6 rounded-2xl bg-white/5 backdrop-blur-sm border border-white/10"
+              className="text-center p-6 rounded-2xl bg-white shadow-sm hover:shadow-md transition border border-gray-200"
             >
-              <div className="mx-auto h-12 w-12 rounded-xl bg-white/10 flex items-center justify-center mb-4">
+              <div className="mx-auto h-12 w-12 rounded-xl bg-primary/10 flex items-center justify-center mb-4">
                 <metric.icon className={`h-6 w-6 ${metric.color}`} />
               </div>
-              <p className="text-3xl sm:text-4xl text-white mb-1" style={{ fontWeight: 800 }}>{metric.value}</p>
-              <p className="text-sm text-emerald-200/50">{metric.label}</p>
+              <p className="text-3xl sm:text-4xl text-gray-900 mb-1" style={{ fontWeight: 800 }}>{metric.value}</p>
+              <p className="text-sm text-gray-600">{metric.label}</p>
             </motion.div>
           ))}
         </div>

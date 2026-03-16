@@ -5,7 +5,7 @@ import { motion } from "motion/react";
 
 export function HeroSection() {
   return (
-    <section className="relative overflow-hidden bg-gradient-to-br from-background via-emerald-950/50 to-background text-white">
+    <section className="relative overflow-hidden bg-emerald-50 text-gray-900">
       <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 py-16 lg:py-24">
         <div className="grid lg:grid-cols-2 gap-12 items-center">
           <motion.div
@@ -17,12 +17,12 @@ export function HeroSection() {
               <Heart className="h-3.5 w-3.5 fill-primary" />
               <span>Every child deserves a chance</span>
             </div>
-            <h1 className="text-4xl sm:text-5xl lg:text-6xl text-foreground mb-6" style={{ fontWeight: 800, lineHeight: 1.1 }}>
+            <h1 className="text-4xl sm:text-5xl lg:text-6xl text-gray-900 mb-6" style={{ fontWeight: 800, lineHeight: 1.1 }}>
               Nurturing Lives from{" "}
               <span className="text-primary">Womb</span> to{" "}
               <span className="text-accent">18</span>
             </h1>
-            <p className="text-lg text-muted-foreground mb-8 max-w-lg">
+            <p className="text-lg text-gray-600 mb-8 max-w-lg">
               We support mothers and children with healthcare, nutrition, education, and empowerment — from prenatal care through age 18.
             </p>
             <div className="flex flex-wrap gap-3">
@@ -32,7 +32,7 @@ export function HeroSection() {
                 </Button>
               </Link>
               <Link to="/about">
-                <Button size="lg" variant="outline" className="border-white/20 hover:bg-white/10 text-white">
+                <Button size="lg" variant="outline" className="border-gray-300 bg-white hover:bg-gray-100 text-gray-700">
                   Learn More <ArrowRight className="h-4 w-4 ml-2" />
                 </Button>
               </Link>
@@ -44,8 +44,8 @@ export function HeroSection() {
                 { value: "98%", label: "Funds Utilized" },
               ].map((stat) => (
                 <div key={stat.label}>
-                  <p className="text-2xl text-foreground" style={{ fontWeight: 700 }}>{stat.value}</p>
-                  <p className="text-xs text-muted-foreground">{stat.label}</p>
+                  <p className="text-2xl text-gray-900" style={{ fontWeight: 700 }}>{stat.value}</p>
+                  <p className="text-xs text-gray-600">{stat.label}</p>
                 </div>
               ))}
             </div>
@@ -66,14 +66,14 @@ export function HeroSection() {
               <div className="absolute inset-0 bg-gradient-to-t from-black/30 to-transparent" />
             </div>
             {/* Floating card */}
-            <div className="absolute -bottom-4 -left-4 bg-emerald-900/90 backdrop-blur-md rounded-xl shadow-xl p-4 border border-white/10">
+            <div className="absolute -bottom-4 -left-4 bg-white backdrop-blur-md rounded-xl shadow-sm p-4 border border-gray-200">
               <div className="flex items-center gap-3">
                 <div className="h-10 w-10 rounded-full bg-primary/20 flex items-center justify-center">
                   <Heart className="h-5 w-5 text-primary fill-current" />
                 </div>
                 <div>
-                  <p className="text-sm text-white font-bold">12,450 Lives</p>
-                  <p className="text-xs text-emerald-400 font-medium">Impacted this year</p>
+                  <p className="text-sm text-gray-900 font-bold">12,450 Lives</p>
+                  <p className="text-xs text-gray-600 font-medium">Impacted this year</p>
                 </div>
               </div>
             </div>

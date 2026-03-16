@@ -25,28 +25,28 @@ const testimonials = [
 
 export function TestimonialsSection() {
   return (
-    <section className="py-20 bg-background">
+    <section className="py-20 bg-gray-50">
       <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-        <div className="text-center mb-14 text-white">
+        <div className="text-center mb-14">
           <p className="text-primary text-sm mb-2" style={{ fontWeight: 600, textTransform: "uppercase", letterSpacing: "0.05em" }}>Testimonials</p>
-          <h2 className="text-3xl sm:text-4xl text-white mb-4" style={{ fontWeight: 700 }}>
+          <h2 className="text-3xl sm:text-4xl text-gray-900 mb-4" style={{ fontWeight: 700 }}>
             Voices of Impact
           </h2>
         </div>
 
         <div className="grid md:grid-cols-3 gap-6">
           {testimonials.map((t) => (
-            <Card key={t.name} className="bg-emerald-950/20 border-white/10 text-white">
+            <Card key={t.name} className="bg-white border-gray-200 text-gray-900 shadow-sm hover:shadow-md transition">
               <CardContent className="pt-6">
                 <Quote className="h-8 w-8 text-primary/10 mb-4" />
-                <p className="text-emerald-50/90 text-sm mb-6 italic">"{t.quote}"</p>
-                <div className="flex items-center gap-3 pt-4 border-t border-white/10">
+                <p className="text-gray-600 text-sm mb-6 italic">"{t.quote}"</p>
+                <div className="flex items-center gap-3 pt-4 border-t border-gray-100">
                   <Avatar className="h-10 w-10">
                     <AvatarFallback className="bg-primary/10 text-primary text-sm">{t.initials}</AvatarFallback>
                   </Avatar>
                   <div>
-                    <p className="text-sm text-white" style={{ fontWeight: 600 }}>{t.name}</p>
-                    <p className="text-xs text-emerald-100/70">{t.role}</p>
+                    <p className="text-sm text-gray-900" style={{ fontWeight: 600 }}>{t.name}</p>
+                    <p className="text-xs text-gray-500">{t.role}</p>
                   </div>
                 </div>
               </CardContent>

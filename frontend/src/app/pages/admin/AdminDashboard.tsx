@@ -37,10 +37,10 @@ const activityColors: Record<string, string> = {
 
 export function AdminDashboard() {
   return (
-    <div className="bg-background space-y-6">
+    <div className="bg-gray-50 space-y-6">
       <div className="animate-in fade-in duration-500">
-        <h1 className="text-2xl text-foreground font-bold">Admin Dashboard</h1>
-        <p className="text-muted-foreground">Overview of foundation operations and financials.</p>
+        <h1 className="text-2xl text-gray-900 font-bold">Admin Dashboard</h1>
+        <p className="text-gray-600">Overview of foundation operations and financials.</p>
       </div>
 
       {/* KPIs / Stat Cards */}
@@ -51,17 +51,17 @@ export function AdminDashboard() {
           { icon: Heart, label: "Children Served", value: "15,234", change: "+15%", up: true },
           { icon: TrendingUp, label: "Fund Utilization", value: "98%", change: "+2%", up: true },
         ].map((kpi) => (
-          <Card key={kpi.label} className="bg-card border-border shadow-sm hover:shadow-md transition-all duration-300 rounded-lg">
+          <Card key={kpi.label} className="bg-white border-gray-200 shadow-sm hover:shadow-md transition-all duration-300 rounded-lg">
             <CardContent className="pt-6">
               <div className="flex items-center justify-between mb-2">
-                <kpi.icon className="h-5 w-5 text-muted-foreground" />
+                <kpi.icon className="h-5 w-5 text-gray-500" />
                 <span className={`text-xs font-semibold flex items-center gap-0.5 ${kpi.up ? "text-green-600" : "text-red-600"}`}>
                   {kpi.up ? <ArrowUp className="h-3 w-3" /> : <ArrowDown className="h-3 w-3" />}
                   {kpi.change}
                 </span>
               </div>
-              <p className="text-2xl text-foreground font-extrabold">{kpi.value}</p>
-              <p className="text-xs text-muted-foreground mt-1 uppercase tracking-wider font-medium">{kpi.label}</p>
+              <p className="text-2xl text-gray-900 font-extrabold">{kpi.value}</p>
+              <p className="text-xs text-gray-600 mt-1 uppercase tracking-wider font-medium">{kpi.label}</p>
             </CardContent>
           </Card>
         ))}
@@ -69,9 +69,9 @@ export function AdminDashboard() {
 
       <div className="grid lg:grid-cols-3 gap-8">
         {/* Revenue Chart Card */}
-        <Card className="lg:col-span-2 bg-card border-border shadow-sm rounded-lg">
+        <Card className="lg:col-span-2 bg-white border border-gray-200 shadow-sm rounded-lg">
           <CardHeader className="pb-2">
-            <CardTitle className="text-foreground text-lg">Monthly Revenue & Donors</CardTitle>
+            <CardTitle className="text-gray-900 text-lg">Monthly Revenue & Donors</CardTitle>
           </CardHeader>
           <CardContent>
             <div className="h-[300px] mt-4">
@@ -97,9 +97,9 @@ export function AdminDashboard() {
         </Card>
 
         {/* Program Distribution Card */}
-        <Card className="bg-card border-border shadow-sm rounded-lg">
+        <Card className="bg-white border-gray-200 shadow-sm rounded-lg">
           <CardHeader className="pb-2">
-            <CardTitle className="text-foreground text-lg">Fund Distribution</CardTitle>
+            <CardTitle className="text-gray-900 text-lg">Fund Distribution</CardTitle>
           </CardHeader>
           <CardContent>
             <div className="h-[300px] mt-4">
@@ -129,22 +129,22 @@ export function AdminDashboard() {
       </div>
 
       {/* Recent Activity Card */}
-      <Card className="bg-card border-border shadow-sm rounded-lg overflow-hidden">
-        <CardHeader className="border-b border-border pb-4">
-          <CardTitle className="text-foreground text-lg">Recent Activity</CardTitle>
+      <Card className="bg-white border-gray-200 shadow-sm rounded-lg overflow-hidden">
+        <CardHeader className="border-b border-gray-200 pb-4">
+          <CardTitle className="text-gray-900 text-lg">Recent Activity</CardTitle>
         </CardHeader>
         <CardContent className="p-0">
-          <div className="divide-y divide-border">
+          <div className="divide-y divide-gray-200">
             {recentActivity.map((a, i) => (
-              <div key={i} className="flex items-center justify-between p-4 hover:bg-muted transition-colors">
+              <div key={i} className="flex items-center justify-between p-4 hover:bg-gray-50 transition-colors">
                 <div className="flex items-center gap-4">
                   <Badge variant="secondary" className={`${activityColors[a.type]} px-2 py-0.5 rounded-md font-bold text-[10px] uppercase tracking-tighter shadow-none border-none`}>{a.type}</Badge>
                   <div>
-                    <p className="text-sm text-foreground font-semibold">{a.action}</p>
-                    <p className="text-xs text-muted-foreground">{a.detail}</p>
+                    <p className="text-sm text-gray-900 font-semibold">{a.action}</p>
+                    <p className="text-xs text-gray-600">{a.detail}</p>
                   </div>
                 </div>
-                <span className="text-xs text-muted-foreground/60 font-medium shrink-0">{a.time}</span>
+                <span className="text-xs text-gray-500 font-medium shrink-0">{a.time}</span>
               </div>
             ))}
           </div>

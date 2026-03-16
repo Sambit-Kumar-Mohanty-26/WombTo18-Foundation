@@ -10,94 +10,89 @@ import { OrganizationDonationForm } from "../components/forms/OrganizationDonati
 
 export function DonatePage() {
   const [isProcessing, setIsProcessing] = useState(false);
-  const [showSuccess, setShowSuccess] = useState(false);
   const [donationType, setDonationType] = useState<"individual" | "organization">("individual");
-  const [finalAmount, setFinalAmount] = useState(0);
   const navigate = useNavigate();
 
-  const simulateRazorpay = async (data: any) => {
-    setIsProcessing(true);
-    setFinalAmount(data.amount);
-
-    // Step 1: Simulate order creation via API
-    toast.info("Creating payment order...");
-    await new Promise((r) => setTimeout(r, 800));
-
-    const orderId = `order_${Date.now()}_${Math.random().toString(36).slice(2, 8)}`;
-    toast.success(`Order ${orderId} created`);
-
-    // Step 2: Simulate Razorpay checkout opening
-    await new Promise((r) => setTimeout(r, 600));
-    toast.info("Opening Razorpay payment gateway...");
-
-    // Step 3: Simulate payment processing
-    await new Promise((r) => setTimeout(r, 1500));
-    const paymentId = `pay_${Date.now()}_${Math.random().toString(36).slice(2, 8)}`;
-
-    // Step 4: Simulate verification
-    toast.info("Verifying payment...");
-    await new Promise((r) => setTimeout(r, 800));
-
-    toast.success(`Payment ${paymentId} verified successfully!`);
-    setIsProcessing(false);
-    setShowSuccess(true);
+  const loadRazorpayScript = () => {
+    return new Promise((resolve) => {
+      if ((window as any).Razorpay) {
+        resolve(true);
+        return;
+      }
+      const script = document.createElement("script");
+      script.src = "https://checkout.razorpay.com/v1/checkout.js";
+      script.onload = () => resolve(true);
+      script.onerror = () => resolve(false);
+      document.body.appendChild(script);
+    });
   };
 
-  if (showSuccess) {
-    return (
-      <section className="py-20 bg-gradient-to-br from-background via-emerald-950/50 to-background min-h-[80vh] flex items-center text-white">
-        <div className="mx-auto max-w-lg px-4 text-center">
-          <div className="h-20 w-20 rounded-full bg-accent/10 flex items-center justify-center mx-auto mb-6">
-            <CheckCircle className="h-10 w-10 text-accent" />
-          </div>
-          <h1 className="text-3xl sm:text-4xl text-white mb-4" style={{ fontWeight: 800 }}>
-            Thank You for Your Generosity!
-          </h1>
-          <p className="text-lg text-emerald-200/70 mb-3">
-            Your donation of <span className="text-white" style={{ fontWeight: 700 }}>₹{finalAmount?.toLocaleString("en-IN")}</span> has been successfully processed.
-          </p>
-          <p className="text-sm text-emerald-200/50 mb-8">
-            A confirmation email with your 80G tax receipt has been sent. You can also download it from your donor dashboard.
-          </p>
-          <div className="flex flex-col sm:flex-row gap-3 justify-center">
-            <Button
-              onClick={() => navigate("/dashboard")}
-              className="bg-primary hover:bg-primary/90 text-primary-foreground font-bold shadow-lg shadow-orange-500/20"
-            >
-              Go to Dashboard
-            </Button>
-            <Button
-              variant="outline"
-              className="border-white/10 text-white hover:bg-white/5"
-              onClick={() => {
-                setShowSuccess(false);
-              }}
-            >
-              Donate Again
-            </Button>
-          </div>
-        </div>
-      </section>
-    );
-  }
+  const handlePayment = async (amount: number, donorDetails: any) => {
+    setIsProcessing(true);
+
+    const res = await loadRazorpayScript();
+    if (!res) {
+      toast.error("Razorpay SDK failed to load. Are you online?");
+      setIsProcessing(false);
+      return;
+    }
+
+    toast.info("Initializing Razorpay checkout...");
+
+    const options = {
+      // @ts-ignore
+      key: process.env.NEXT_PUBLIC_RAZORPAY_KEY_ID,
+      amount: amount * 100,
+      currency: "INR",
+      name: "WombTo18 Foundation",
+      description: "Donation Payment",
+      handler: function (response: any) {
+        console.log("Payment successful:", response);
+        console.log("Payment ID:", response.razorpay_payment_id);
+        console.log("Order ID:", response.razorpay_order_id);
+        console.log("Signature:", response.razorpay_signature);
+
+        setIsProcessing(false);
+        navigate(`/donation-success?amount=${amount}&paymentId=${response.razorpay_payment_id}`);
+      },
+      prefill: {
+        name: donorDetails.name || donorDetails.organizationName || "",
+        email: donorDetails.email || "",
+        contact: donorDetails.mobile || donorDetails.contactNumber || ""
+      },
+      theme: {
+        color: "#10b981"
+      }
+    };
+
+    const rzp = new (window as any).Razorpay(options);
+
+    rzp.on("payment.failed", function (response: any) {
+      toast.error(`Payment failed: ${response.error.description}`);
+      setIsProcessing(false);
+    });
+
+    rzp.open();
+  };
+
 
   return (
     <>
-      <section className="py-16 bg-gradient-to-br from-background via-emerald-950/50 to-background text-white">
+      <section className="py-16 bg-emerald-50 text-gray-900">
         <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
           <div className="text-center max-w-2xl mx-auto">
             <Heart className="h-10 w-10 text-primary mx-auto mb-4 fill-current" />
-            <h1 className="text-4xl sm:text-5xl text-white mb-4" style={{ fontWeight: 800, lineHeight: 1.1 }}>
+            <h1 className="text-4xl sm:text-5xl text-gray-900 mb-4" style={{ fontWeight: 800, lineHeight: 1.1 }}>
               Make a Difference Today
             </h1>
-            <p className="text-lg text-emerald-200/70">
+            <p className="text-lg text-gray-600">
               Your donation directly funds prenatal care, nutrition, education, and empowerment programs. 100% tax deductible under 80G.
             </p>
           </div>
         </div>
       </section>
 
-      <section className="py-12 bg-background">
+      <section className="py-12 bg-gray-50">
         <div className="mx-auto max-w-4xl px-4 sm:px-6 lg:px-8">
           <div className="grid lg:grid-cols-5 gap-8">
             {/* Donation Form Section */}
@@ -110,10 +105,10 @@ export function DonatePage() {
               <DonationTabs 
                 onTypeChange={setDonationType}
                 individualForm={
-                  <IndividualDonationForm onSubmit={simulateRazorpay} isProcessing={isProcessing} />
+                  <IndividualDonationForm onSubmit={(data) => handlePayment(data.amount, data)} isProcessing={isProcessing} />
                 }
                 organizationForm={
-                  <OrganizationDonationForm onSubmit={simulateRazorpay} isProcessing={isProcessing} />
+                  <OrganizationDonationForm onSubmit={(data) => handlePayment(data.amount, data)} isProcessing={isProcessing} />
                 }
               />
 

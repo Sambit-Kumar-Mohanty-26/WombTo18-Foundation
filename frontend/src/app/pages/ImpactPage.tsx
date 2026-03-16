@@ -4,6 +4,7 @@ import { Badge } from "../components/ui/badge";
 import { PieChart, Pie, Cell, BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, LineChart, Line, Legend } from "recharts";
 import { TrendingUp, IndianRupee, Users, ShieldCheck, Download, FileText } from "lucide-react";
 import { Button } from "../components/ui/button";
+import { toast } from "sonner";
 
 const fundUtilization = [
   { name: "Programs", value: 72, color: "#10b981" },
@@ -75,21 +76,21 @@ export function ImpactPage() {
   return (
     <>
       {/* Hero */}
-      <section className="py-20 bg-gradient-to-br from-background via-emerald-950/50 to-background text-white">
+      <section className="py-20 bg-emerald-50">
         <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
           <div className="max-w-3xl">
-            <p className="text-primary text-sm mb-2" style={{ fontWeight: 600, textTransform: "uppercase", letterSpacing: "0.05em" }}>Impact & Transparency</p>
-            <h1 className="text-4xl sm:text-5xl text-foreground mb-6" style={{ fontWeight: 800, lineHeight: 1.1 }}>
+            <p className="text-emerald-700 text-sm mb-2 font-semibold uppercase tracking-wider">Impact & Transparency</p>
+            <h1 className="text-4xl sm:text-5xl text-gray-900 mb-6 font-extrabold leading-tight">
               Every Rupee Accounted For
             </h1>
-            <p className="text-lg text-muted-foreground mb-6">
+            <p className="text-lg text-gray-600 mb-6">
               Real-time data on how your donations create impact. Full financial transparency — always.
             </p>
             <div className="flex gap-3">
-              <Button variant="outline" size="sm">
+              <Button variant="outline" size="sm" className="bg-white text-gray-700 border-gray-300 hover:bg-gray-50" onClick={() => toast.success("Download started", { description: "Downloading Annual Report 2025" })}>
                 <Download className="h-4 w-4 mr-2" /> Annual Report 2025
               </Button>
-              <Button variant="outline" size="sm">
+              <Button variant="outline" size="sm" className="bg-white text-gray-700 border-gray-300 hover:bg-gray-50" onClick={() => toast.success("Download started", { description: "Downloading Audit Certificate" })}>
                 <FileText className="h-4 w-4 mr-2" /> Audit Certificate
               </Button>
             </div>
@@ -98,20 +99,20 @@ export function ImpactPage() {
       </section>
 
       {/* Key Financial Metrics */}
-      <section className="py-12 bg-emerald-950 text-white border-y border-white/5">
+      <section className="py-12 bg-white border-y border-gray-200">
         <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
           <div className="grid grid-cols-2 lg:grid-cols-4 gap-6">
             {[
-              { icon: IndianRupee, label: "Total Funds Raised", value: "₹13.8 Cr", change: "+24% YoY", color: "text-primary" },
-              { icon: TrendingUp, label: "Total Funds Utilized", value: formatINR(totalUtilized), change: `${utilizationPercent}% utilization`, color: "text-emerald-400" },
-              { icon: Users, label: "Children Impacted", value: "15,234", change: "+15% YoY", color: "text-emerald-300" },
-              { icon: ShieldCheck, label: "Cost per Child", value: "₹9,060", change: "-8% efficiency", color: "text-orange-400" },
+              { icon: IndianRupee, label: "Total Funds Raised", value: "₹13.8 Cr", change: "+24% YoY", color: "text-emerald-600" },
+              { icon: TrendingUp, label: "Total Funds Utilized", value: formatINR(totalUtilized), change: `${utilizationPercent}% utilization`, color: "text-blue-600" },
+              { icon: Users, label: "Children Impacted", value: "15,234", change: "+15% YoY", color: "text-emerald-500" },
+              { icon: ShieldCheck, label: "Cost per Child", value: "₹9,060", change: "-8% efficiency", color: "text-amber-500" },
             ].map((m) => (
               <div key={m.label} className="text-center">
                 <m.icon className={`h-6 w-6 mx-auto mb-2 ${m.color}`} />
-                <p className="text-2xl sm:text-3xl" style={{ fontWeight: 800 }}>{m.value}</p>
-                <p className="text-sm text-emerald-200/50 mt-1">{m.label}</p>
-                <p className="text-xs text-emerald-400 mt-0.5" style={{ fontWeight: 600 }}>{m.change}</p>
+                <p className="text-2xl sm:text-3xl text-gray-900 font-extrabold">{m.value}</p>
+                <p className="text-sm text-gray-600 mt-1">{m.label}</p>
+                <p className="text-xs text-gray-500 mt-0.5 font-semibold">{m.change}</p>
               </div>
             ))}
           </div>
@@ -119,15 +120,15 @@ export function ImpactPage() {
       </section>
 
       {/* Fund Utilization & Expense Breakdown Charts */}
-      <section className="py-12 bg-background">
+      <section className="py-12 bg-gray-50">
         <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
           <div className="grid lg:grid-cols-2 gap-6">
             {/* Fund Utilization Pie */}
-            <Card className="bg-emerald-950/20 border-white/10 text-white">
+            <Card className="bg-white border-gray-200 shadow-sm">
               <CardHeader>
                 <div className="flex items-center justify-between">
-                  <CardTitle className="text-white">Fund Utilization Breakdown</CardTitle>
-                  <Badge variant="secondary" className="bg-emerald-900/40 text-emerald-400 border-none">{utilizationPercent}% utilized</Badge>
+                  <CardTitle className="text-gray-900">Fund Utilization Breakdown</CardTitle>
+                  <Badge variant="secondary" className="bg-emerald-50 text-emerald-700 border-none">{utilizationPercent}% utilized</Badge>
                 </div>
               </CardHeader>
               <CardContent>
@@ -157,9 +158,9 @@ export function ImpactPage() {
             </Card>
 
             {/* Expense Breakdown Pie */}
-            <Card className="bg-emerald-950/20 border-white/10 text-white">
+            <Card className="bg-white border-gray-200 shadow-sm">
               <CardHeader>
-                <CardTitle className="text-white">Expense Breakdown</CardTitle>
+                <CardTitle className="text-gray-900">Expense Breakdown</CardTitle>
               </CardHeader>
               <CardContent>
                 <div className="h-[300px]">
@@ -191,11 +192,11 @@ export function ImpactPage() {
       </section>
 
       {/* Program Comparison Bar Chart */}
-      <section className="py-12 bg-background border-t border-white/5">
+      <section className="py-12 bg-white border-t border-gray-200">
         <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-          <Card className="bg-emerald-950/20 border-white/10 text-white">
+          <Card className="bg-white border-gray-200 shadow-sm">
             <CardHeader>
-              <CardTitle className="text-white">Program-wise Spending vs Target (₹ Cr)</CardTitle>
+              <CardTitle className="text-gray-900">Program-wise Spending vs Target (₹ Cr)</CardTitle>
             </CardHeader>
             <CardContent>
               <div className="h-[350px]">
@@ -217,26 +218,26 @@ export function ImpactPage() {
       </section>
 
       {/* Program Progress Section */}
-      <section className="py-12 bg-background border-t border-white/5">
+      <section className="py-12 bg-gray-50 border-t border-gray-200">
         <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
           <div className="mb-8">
-            <h2 className="text-2xl text-white" style={{ fontWeight: 700 }}>Program Utilization</h2>
-            <p className="text-emerald-200/70">Real-time tracking of fund allocation vs utilization per program.</p>
+            <h2 className="text-2xl text-gray-900 font-bold">Program Utilization</h2>
+            <p className="text-gray-600">Real-time tracking of fund allocation vs utilization per program.</p>
           </div>
           <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-4">
             {programProgress.map((p) => {
               const percent = Math.round((p.utilized / p.allocated) * 100);
               return (
-                <Card key={p.program} className="bg-emerald-950/20 border-white/10 text-white">
+                <Card key={p.program} className="bg-white border-gray-200 shadow-sm">
                   <CardContent className="pt-5">
-                    <h4 className="text-sm mb-1 text-white" style={{ fontWeight: 600 }}>{p.program}</h4>
-                    <p className="text-xs text-emerald-200/50 mb-3">{p.beneficiaries}</p>
+                    <h4 className="text-sm mb-1 text-gray-900 font-semibold">{p.program}</h4>
+                    <p className="text-xs text-gray-500 mb-3">{p.beneficiaries}</p>
                     <div className="flex justify-between text-xs mb-1.5">
-                      <span className="text-foreground" style={{ fontWeight: 600 }}>{formatINR(p.utilized)}</span>
-                      <span className="text-muted-foreground">of {formatINR(p.allocated)}</span>
+                      <span className="text-gray-900 font-semibold">{formatINR(p.utilized)}</span>
+                      <span className="text-gray-500">of {formatINR(p.allocated)}</span>
                     </div>
-                    <Progress value={percent} className="h-2 mb-1" />
-                    <p className="text-xs text-right text-muted-foreground">{percent}% utilized</p>
+                    <Progress value={percent} className="h-2 mb-1 bg-gray-100" />
+                    <p className="text-xs text-right text-gray-500">{percent}% utilized</p>
                   </CardContent>
                 </Card>
               );
@@ -246,11 +247,11 @@ export function ImpactPage() {
       </section>
 
       {/* Growth Chart */}
-      <section className="py-12 bg-background border-t border-white/5">
+      <section className="py-12 bg-white border-t border-gray-200">
         <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-          <Card className="bg-emerald-950/20 border-white/10 text-white">
+          <Card className="bg-white border-gray-200 shadow-sm">
             <CardHeader>
-              <CardTitle className="text-white">Year-over-Year Impact Growth</CardTitle>
+              <CardTitle className="text-gray-900">Year-over-Year Impact Growth</CardTitle>
             </CardHeader>
             <CardContent>
               <div className="h-[350px]">
@@ -273,26 +274,26 @@ export function ImpactPage() {
       </section>
 
       {/* Outcome Metrics */}
-      <section className="py-12 bg-background border-t border-white/5">
+      <section className="py-12 bg-gray-50 border-t border-gray-200">
         <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
           <div className="mb-8">
-            <h2 className="text-2xl text-white" style={{ fontWeight: 700 }}>Program Outcomes</h2>
-            <p className="text-emerald-200/70">Measurable results against our annual targets.</p>
+            <h2 className="text-2xl text-gray-900 font-bold">Program Outcomes</h2>
+            <p className="text-gray-600">Measurable results against our annual targets.</p>
           </div>
           <div className="space-y-5">
             {outcomes.map((o) => (
-              <Card key={o.metric} className="border-border/50">
+              <Card key={o.metric} className="bg-white border-gray-200 shadow-sm">
                 <CardContent className="py-4">
                   <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 mb-2">
                     <div>
-                      <span className="text-sm" style={{ fontWeight: 600 }}>{o.metric}</span>
-                      <p className="text-xs text-muted-foreground">{o.detail}</p>
+                      <span className="text-sm text-gray-900 font-semibold">{o.metric}</span>
+                      <p className="text-xs text-gray-500">{o.detail}</p>
                     </div>
-                    <span className="text-sm text-primary shrink-0" style={{ fontWeight: 700 }}>
+                    <span className="text-sm text-emerald-600 shrink-0 font-bold">
                       {o.value}% / {o.target}%
                     </span>
                   </div>
-                  <Progress value={o.value} className="h-2.5" />
+                  <Progress value={o.value} className="h-2.5 bg-gray-100" />
                 </CardContent>
               </Card>
             ))}
@@ -301,16 +302,16 @@ export function ImpactPage() {
       </section>
 
       {/* Trust Section */}
-      <section className="py-12 bg-emerald-950 text-white border-t border-white/5">
+      <section className="py-12 bg-emerald-50 border-t border-emerald-100">
         <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 text-center">
-          <h2 className="text-2xl text-white mb-2" style={{ fontWeight: 700 }}>Verified & Audited</h2>
-          <p className="text-emerald-200/70 mb-6 max-w-2xl mx-auto">
+          <h2 className="text-2xl text-gray-900 mb-2 font-bold">Verified & Audited</h2>
+          <p className="text-gray-600 mb-6 max-w-2xl mx-auto">
             Our financials are independently audited annually. We maintain the highest standards of nonprofit accountability.
           </p>
           <div className="flex flex-wrap justify-center gap-4">
             {["FCRA Compliant", "80G Certified", "12A Registered", "GuideStar Platinum", "NITI Aayog Listed"].map((badge) => (
-              <Badge key={badge} variant="outline" className="px-4 py-2 text-sm border-white/10 text-emerald-100/70">
-                <ShieldCheck className="h-3.5 w-3.5 mr-1.5 text-primary" />
+              <Badge key={badge} variant="outline" className="px-4 py-2 text-sm border-emerald-200 text-emerald-800 bg-white shadow-sm">
+                <ShieldCheck className="h-3.5 w-3.5 mr-1.5 text-emerald-600" />
                 {badge}
               </Badge>
             ))}

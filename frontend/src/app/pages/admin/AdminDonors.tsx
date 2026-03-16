@@ -29,8 +29,8 @@ export function AdminDonors() {
     <div className="space-y-6">
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <div>
-          <h1 className="text-2xl text-foreground font-bold">Manage Donors</h1>
-          <p className="text-muted-foreground">{donors.length} registered donors</p>
+          <h1 className="text-2xl text-gray-900 font-bold">Manage Donors</h1>
+          <p className="text-gray-600">{donors.length} registered donors</p>
         </div>
         <div className="flex gap-2">
           <Button variant="outline" size="sm" className="shadow-none border-border">
@@ -49,34 +49,34 @@ export function AdminDonors() {
           placeholder="Search donors..."
           value={search}
           onChange={(e) => setSearch(e.target.value)}
-          className="pl-9 bg-background border-border text-foreground placeholder:text-muted-foreground"
+          className="pl-9 bg-white border border-gray-300 text-gray-900 placeholder:text-gray-400 focus:ring-2 focus:ring-emerald-500 rounded-md"
         />
       </div>
 
       {/* Table Card */}
-      <Card className="bg-card border-border shadow-sm rounded-lg overflow-hidden">
+      <Card className="bg-white border border-gray-200 shadow-sm rounded-lg overflow-hidden">
         <CardContent className="p-0">
           <div className="overflow-x-auto">
             <table className="w-full text-sm">
               <thead>
-                <tr className="border-b border-border bg-muted/50">
-                  <th className="text-left py-4 px-6 text-muted-foreground font-bold uppercase tracking-wider text-[10px]">Donor</th>
-                  <th className="text-left py-4 px-6 text-muted-foreground font-bold uppercase tracking-wider text-[10px]">Contact</th>
-                  <th className="text-left py-4 px-6 text-muted-foreground font-bold uppercase tracking-wider text-[10px]">Total</th>
-                  <th className="text-left py-4 px-6 text-muted-foreground font-bold uppercase tracking-wider text-[10px]">Last Donation</th>
-                  <th className="text-left py-4 px-6 text-muted-foreground font-bold uppercase tracking-wider text-[10px]">Status</th>
-                  <th className="text-left py-4 px-6 text-muted-foreground font-bold uppercase tracking-wider text-[10px]">Actions</th>
+                <tr className="border-b border-gray-200 bg-gray-100 text-gray-700">
+                  <th className="text-left py-4 px-6 font-bold uppercase tracking-wider text-[10px]">Donor</th>
+                  <th className="text-left py-4 px-6 font-bold uppercase tracking-wider text-[10px]">Contact</th>
+                  <th className="text-left py-4 px-6 font-bold uppercase tracking-wider text-[10px]">Total</th>
+                  <th className="text-left py-4 px-6 font-bold uppercase tracking-wider text-[10px]">Last Donation</th>
+                  <th className="text-left py-4 px-6 font-bold uppercase tracking-wider text-[10px]">Status</th>
+                  <th className="text-left py-4 px-6 font-bold uppercase tracking-wider text-[10px]">Actions</th>
                 </tr>
               </thead>
-              <tbody className="divide-y divide-border">
+              <tbody className="divide-y divide-gray-200">
                 {filtered.map((d) => (
-                  <tr key={d.id} className="hover:bg-muted/30 transition-colors">
+                  <tr key={d.id} className="hover:bg-gray-50 transition-colors">
                     <td className="py-4 px-6">
                       <div className="flex items-center gap-3">
-                        <Avatar className="h-9 w-9 ring-1 ring-border">
+                        <Avatar className="h-9 w-9 ring-1 ring-gray-200">
                           <AvatarFallback className="bg-primary/10 text-primary font-bold text-xs">{d.initials}</AvatarFallback>
                         </Avatar>
-                        <span className="text-foreground font-bold">{d.name}</span>
+                        <span className="text-gray-900 font-bold">{d.name}</span>
                       </div>
                     </td>
                     <td className="py-4 px-6">
@@ -86,18 +86,18 @@ export function AdminDonors() {
                       </div>
                     </td>
                     <td className="py-4 px-6">
-                      <span className="text-foreground font-extrabold">₹{d.total}</span>
+                      <span className="text-gray-900 font-extrabold">₹{d.total}</span>
                     </td>
                     <td className="py-4 px-6">
-                      <span className="text-muted-foreground font-medium">{d.lastDonation}</span>
+                      <span className="text-gray-600 font-medium">{d.lastDonation}</span>
                     </td>
                     <td className="py-4 px-6">
-                      <Badge variant="secondary" className={`px-2 py-0.5 rounded-md font-bold text-[10px] uppercase tracking-tighter ${d.status === "Active" ? "bg-green-50 text-green-700 hover:bg-green-100" : "bg-muted text-muted-foreground hover:bg-muted/80"}`}>
+                      <Badge variant="secondary" className={`px-2 py-0.5 rounded-md font-bold text-[10px] uppercase tracking-tighter ${d.status === "Active" ? "bg-green-50 text-green-700 hover:bg-green-100" : "bg-gray-100 text-gray-600 hover:bg-gray-200"}`}>
                         {d.status}
                       </Badge>
                     </td>
                     <td className="py-4 px-6">
-                      <Button variant="ghost" size="sm" className="h-8 w-8 p-0 text-muted-foreground hover:text-foreground">
+                      <Button variant="ghost" size="sm" className="h-8 w-8 p-0 text-gray-500 hover:text-gray-900">
                         <MoreHorizontal className="h-4 w-4" />
                       </Button>
                     </td>

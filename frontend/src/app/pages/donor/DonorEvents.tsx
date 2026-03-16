@@ -2,6 +2,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "../../components/ui/ca
 import { Badge } from "../../components/ui/badge";
 import { Button } from "../../components/ui/button";
 import { Calendar, Clock, MapPin, Users, Video, ExternalLink } from "lucide-react";
+import { toast } from "sonner";
 
 const upcomingEvents = [
   {
@@ -100,17 +101,17 @@ export function DonorEvents() {
   return (
     <div className="space-y-6">
       <div>
-        <h1 className="text-2xl text-foreground" style={{ fontWeight: 700 }}>Events</h1>
-        <p className="text-muted-foreground">Join donor meets, field visits, and virtual impact reviews.</p>
+        <h1 className="text-2xl text-gray-900" style={{ fontWeight: 700 }}>Events</h1>
+        <p className="text-gray-600">Join donor meets, field visits, and virtual impact reviews.</p>
       </div>
 
       {/* Upcoming Events */}
       <div className="space-y-4">
-        <h3 className="text-lg" style={{ fontWeight: 600 }}>Upcoming Events</h3>
+        <h3 className="text-lg text-gray-900" style={{ fontWeight: 600 }}>Upcoming Events</h3>
         {upcomingEvents.map((event) => {
           const TypeIcon = getTypeIcon(event.type);
           return (
-            <Card key={event.id} className="border-border/50 hover:shadow-sm transition-shadow">
+            <Card key={event.id} className="bg-white border-gray-200 hover:shadow-sm shadow-sm transition-shadow">
               <CardContent className="pt-5">
                 <div className="flex flex-col sm:flex-row gap-4">
                   {/* Date Badge */}
@@ -128,14 +129,14 @@ export function DonorEvents() {
                   {/* Content */}
                   <div className="flex-1">
                     <div className="flex items-start justify-between gap-3 mb-2">
-                      <h4 className="text-lg" style={{ fontWeight: 600 }}>{event.title}</h4>
+                      <h4 className="text-lg text-gray-900" style={{ fontWeight: 600 }}>{event.title}</h4>
                       <Badge className={`${getTypeColor(event.type)} shrink-0`}>
                         <TypeIcon className="h-3 w-3 mr-1" />
                         {event.type}
                       </Badge>
                     </div>
-                    <p className="text-sm text-muted-foreground mb-3">{event.description}</p>
-                    <div className="flex flex-wrap gap-4 text-xs text-muted-foreground mb-4">
+                    <p className="text-sm text-gray-600 mb-3">{event.description}</p>
+                    <div className="flex flex-wrap gap-4 text-xs text-gray-500 mb-4">
                       <span className="flex items-center gap-1">
                         <Clock className="h-3 w-3" /> {event.time}
                       </span>
@@ -147,7 +148,7 @@ export function DonorEvents() {
                       </span>
                     </div>
                     <div className="flex items-center gap-2">
-                      <Button size="sm" className="bg-primary hover:bg-primary/90 h-8 text-xs">
+                      <Button size="sm" className="bg-primary hover:bg-primary/90 h-8 text-xs" onClick={() => toast.success("RSVP Successful", { description: "We have sent the event details to your email." })}>
                         RSVP Now
                       </Button>
                       {event.status === "Limited Spots" && (
@@ -163,31 +164,31 @@ export function DonorEvents() {
       </div>
 
       {/* Past Events */}
-      <Card className="border-border/50">
+      <Card className="bg-white border-gray-200 shadow-sm">
         <CardHeader>
-          <CardTitle>Past Events</CardTitle>
+          <CardTitle className="text-gray-900">Past Events</CardTitle>
         </CardHeader>
         <CardContent>
           <div className="space-y-3">
             {pastEvents.map((event) => (
               <div
                 key={event.id}
-                className="flex items-center justify-between p-3 rounded-lg border border-border/50"
+                className="flex items-center justify-between p-3 rounded-lg border border-gray-100 bg-gray-50"
               >
                 <div className="flex items-center gap-3">
-                  <Calendar className="h-4 w-4 text-muted-foreground" />
+                  <Calendar className="h-4 w-4 text-gray-500" />
                   <div>
-                    <p className="text-sm" style={{ fontWeight: 500 }}>{event.title}</p>
-                    <p className="text-xs text-muted-foreground">{event.date} &middot; {event.type}</p>
+                    <p className="text-sm text-gray-900" style={{ fontWeight: 500 }}>{event.title}</p>
+                    <p className="text-xs text-gray-500">{event.date} &middot; {event.type}</p>
                   </div>
                 </div>
                 <div className="flex items-center gap-2">
                   {event.attended ? (
-                    <Badge variant="secondary" className="bg-green-50 text-green-700 text-xs">Attended</Badge>
+                    <Badge variant="secondary" className="bg-emerald-50 text-emerald-700 text-xs">Attended</Badge>
                   ) : (
-                    <Badge variant="secondary" className="bg-gray-50 text-gray-500 text-xs">Missed</Badge>
+                    <Badge variant="secondary" className="bg-gray-100 text-xs text-gray-600">Missed</Badge>
                   )}
-                  <Button variant="ghost" size="sm" className="h-7">
+                  <Button variant="ghost" size="sm" className="h-7 text-gray-500 hover:text-gray-900 hover:bg-white" onClick={() => toast.info("Redirecting to external event page...")}>
                     <ExternalLink className="h-3 w-3" />
                   </Button>
                 </div>

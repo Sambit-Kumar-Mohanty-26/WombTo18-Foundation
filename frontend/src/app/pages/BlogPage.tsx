@@ -10,7 +10,7 @@ const posts = [
     category: "Health",
     date: "Mar 5, 2026",
     readTime: "5 min read",
-    image: "https://images.unsplash.com/photo-1770261430761-192b0b72e4a7?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHxtb3RoZXIlMjBjaGlsZCUyMGNhcmUlMjBwcmVnbmFuY3l8ZW58MXx8fHwxNzczMTM0MDIyfDA&ixlib=rb-4.1.0&q=80&w=1080&utm_source=figma&utm_medium=referral",
+    image: "https://images.pexels.com/photos/7351733/pexels-photo-7351733.jpeg",
     featured: true,
   },
   {
@@ -71,22 +71,22 @@ export function BlogPage() {
 
   return (
     <>
-      <section className="py-20 bg-gradient-to-br from-background via-emerald-950/50 to-background text-white">
+      <section className="py-20 bg-emerald-50 text-gray-900">
         <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
           <p className="text-primary text-sm mb-2" style={{ fontWeight: 600, textTransform: "uppercase", letterSpacing: "0.05em" }}>Blog & Stories</p>
-          <h1 className="text-4xl sm:text-5xl text-foreground mb-6" style={{ fontWeight: 800, lineHeight: 1.1 }}>
+          <h1 className="text-4xl sm:text-5xl text-gray-900 mb-6" style={{ fontWeight: 800, lineHeight: 1.1 }}>
             Stories of Hope & Impact
           </h1>
-          <p className="text-lg text-muted-foreground max-w-2xl">
+          <p className="text-lg text-gray-600 max-w-2xl">
             Read about the lives we're changing, the research behind our programs, and the communities we serve.
           </p>
         </div>
       </section>
 
       {/* Featured Post */}
-      <section className="py-12 bg-background border-b border-white/5">
+      <section className="py-12 bg-white border-b border-gray-200">
         <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-          <div className="grid lg:grid-cols-2 gap-8 items-center text-white">
+          <div className="grid lg:grid-cols-2 gap-8 items-center text-gray-900">
             <img
               src={featured.image}
               alt={featured.title}
@@ -94,9 +94,9 @@ export function BlogPage() {
             />
             <div>
               <Badge className={`${categoryColors[featured.category]} mb-3`}>{featured.category}</Badge>
-              <h2 className="text-2xl sm:text-3xl text-white mb-3" style={{ fontWeight: 700 }}>{featured.title}</h2>
-              <p className="text-emerald-200/70 mb-4">{featured.excerpt}</p>
-              <div className="flex items-center gap-4 text-sm text-emerald-100/70 mb-6">
+              <h2 className="text-2xl sm:text-3xl text-gray-900 mb-3" style={{ fontWeight: 700 }}>{featured.title}</h2>
+              <p className="text-gray-600 mb-4">{featured.excerpt}</p>
+              <div className="flex items-center gap-4 text-sm text-gray-500 mb-6">
                 <span className="flex items-center gap-1"><Calendar className="h-3.5 w-3.5" />{featured.date}</span>
                 <span className="flex items-center gap-1"><Clock className="h-3.5 w-3.5" />{featured.readTime}</span>
               </div>
@@ -109,11 +109,11 @@ export function BlogPage() {
       </section>
 
       {/* All Posts */}
-      <section className="py-12 bg-background">
+      <section className="py-12 bg-gray-50">
         <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
           <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-6">
             {rest.map((post) => (
-              <Card key={post.title} className="overflow-hidden group cursor-pointer hover:shadow-lg transition-shadow border-border/50">
+              <Card key={post.title} className="bg-white overflow-hidden group cursor-pointer hover:shadow-lg transition-shadow border-gray-200 shadow-sm">
                 <div className="overflow-hidden">
                   <img
                     src={post.image}
@@ -123,9 +123,9 @@ export function BlogPage() {
                 </div>
                 <CardContent className="pt-4">
                   <Badge className={`${categoryColors[post.category]} mb-2`}>{post.category}</Badge>
-                  <h3 className="text-lg text-foreground mb-2 line-clamp-2" style={{ fontWeight: 600 }}>{post.title}</h3>
-                  <p className="text-sm text-muted-foreground mb-3 line-clamp-2">{post.excerpt}</p>
-                  <div className="flex items-center gap-3 text-xs text-muted-foreground">
+                  <h3 className="text-lg text-gray-900 mb-2 line-clamp-2" style={{ fontWeight: 600 }}>{post.title}</h3>
+                  <p className="text-sm text-gray-600 mb-3 line-clamp-2">{post.excerpt}</p>
+                  <div className="flex items-center gap-3 text-xs text-gray-500">
                     <span className="flex items-center gap-1"><Calendar className="h-3 w-3" />{post.date}</span>
                     <span className="flex items-center gap-1"><Clock className="h-3 w-3" />{post.readTime}</span>
                   </div>

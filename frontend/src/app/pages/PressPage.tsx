@@ -2,6 +2,7 @@ import { Badge } from "../components/ui/badge";
 import { Card, CardContent } from "../components/ui/card";
 import { ExternalLink, Calendar, Download, Newspaper, Tv, Radio } from "lucide-react";
 import { Button } from "../components/ui/button";
+import { toast } from "sonner";
 
 const pressItems = [
   {
@@ -63,14 +64,14 @@ const typeColors: Record<string, string> = {
 export function PressPage() {
   return (
     <>
-      <section className="py-20 bg-gradient-to-br from-background via-emerald-950/50 to-background text-white">
+      <section className="py-20 bg-emerald-50">
         <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
           <div className="max-w-3xl">
-            <p className="text-primary text-sm mb-2" style={{ fontWeight: 600, textTransform: "uppercase", letterSpacing: "0.05em" }}>Press & Media</p>
-            <h1 className="text-4xl sm:text-5xl text-foreground mb-6" style={{ fontWeight: 800, lineHeight: 1.1 }}>
+            <p className="text-emerald-700 text-sm mb-2 font-semibold uppercase tracking-wider">Press & Media</p>
+            <h1 className="text-4xl sm:text-5xl text-gray-900 mb-6 font-extrabold leading-tight">
               In the News
             </h1>
-            <p className="text-lg text-muted-foreground">
+            <p className="text-lg text-gray-600">
               Media coverage, press releases, and resources for journalists covering our work.
             </p>
           </div>
@@ -78,41 +79,41 @@ export function PressPage() {
       </section>
 
       {/* Press Kit Download */}
-      <section className="bg-emerald-900/20 border-b border-white/5 text-white">
+      <section className="bg-gray-50 border-b border-gray-200 text-gray-900">
         <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 py-6 flex flex-col sm:flex-row items-center justify-between gap-4">
           <div>
-            <h3 style={{ fontWeight: 600 }}>Press Kit</h3>
-            <p className="text-sm text-emerald-200/70">Download logos, brand guidelines, fact sheets, and high-res images.</p>
+            <h3 className="text-gray-900 font-bold">Press Kit</h3>
+            <p className="text-sm text-gray-600">Download logos, brand guidelines, fact sheets, and high-res images.</p>
           </div>
-          <Button variant="outline" className="shrink-0 border-white/10 hover:bg-white/5 text-white">
+          <Button variant="outline" className="shrink-0 border-gray-300 bg-white text-gray-700 hover:bg-gray-100 shadow-sm" onClick={() => toast.success("Download started", { description: "Downloading Press Kit..." })}>
             <Download className="h-4 w-4 mr-2" /> Download Press Kit
           </Button>
         </div>
       </section>
 
       {/* Press Coverage */}
-      <section className="py-16 bg-background border-b border-white/5">
+      <section className="py-16 bg-white border-b border-gray-200">
         <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-          <h2 className="text-2xl text-white mb-8" style={{ fontWeight: 700 }}>Recent Coverage</h2>
-          <div className="space-y-4 text-white">
+          <h2 className="text-2xl text-gray-900 mb-8 font-bold">Recent Coverage</h2>
+          <div className="space-y-4">
             {pressItems.map((item) => (
-              <Card key={item.title} className="bg-emerald-950/20 hover:shadow-md transition-shadow border-white/10">
+              <Card key={item.title} className="bg-white hover:shadow-md border-gray-200 shadow-sm transition-shadow">
                 <CardContent className="p-6 flex flex-col sm:flex-row gap-4">
                   <div className="flex items-start gap-3 sm:w-48 shrink-0">
-                    <item.icon className="h-5 w-5 text-emerald-200/70 mt-0.5 shrink-0" />
+                    <item.icon className="h-5 w-5 text-gray-400 mt-0.5 shrink-0" />
                     <div>
-                      <p className="text-sm text-white" style={{ fontWeight: 600 }}>{item.outlet}</p>
-                      <Badge className={`${typeColors[item.type]} mt-1`}>{item.type}</Badge>
+                      <p className="text-sm text-gray-900 font-bold">{item.outlet}</p>
+                      <Badge className={`${typeColors[item.type]} flex items-center justify-center mt-1 shadow-none border-none`}>{item.type}</Badge>
                     </div>
                   </div>
                   <div className="flex-1">
-                    <h4 className="text-lg text-white mb-1" style={{ fontWeight: 600 }}>{item.title}</h4>
-                    <p className="text-sm text-emerald-200/50 mb-2">{item.excerpt}</p>
+                    <h4 className="text-lg text-gray-900 mb-1 font-bold">{item.title}</h4>
+                    <p className="text-sm text-gray-600 mb-2">{item.excerpt}</p>
                     <div className="flex items-center gap-4">
-                      <span className="text-xs text-emerald-200/50 flex items-center gap-1">
+                      <span className="text-xs text-gray-500 flex items-center gap-1 font-medium">
                         <Calendar className="h-3 w-3" /> {item.date}
                       </span>
-                      <button className="text-xs text-primary flex items-center gap-1 font-bold" style={{ fontWeight: 600 }}>
+                      <button className="text-xs text-emerald-600 flex items-center gap-1 font-bold hover:text-emerald-700">
                         Read Article <ExternalLink className="h-3 w-3" />
                       </button>
                     </div>
@@ -125,12 +126,12 @@ export function PressPage() {
       </section>
 
       {/* Media Contact */}
-      <section className="py-16 bg-emerald-950 text-white">
+      <section className="py-16 bg-emerald-50 text-gray-900">
         <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 text-center">
-          <h2 className="text-2xl text-white mb-4" style={{ fontWeight: 700 }}>Media Inquiries</h2>
-          <p className="text-emerald-200/70 mb-2">For press inquiries, interviews, or story pitches:</p>
-          <p className="text-primary font-bold" style={{ fontWeight: 800 }}>press@wombto18.org</p>
-          <p className="text-sm text-emerald-200/50 mt-1">+91 98765 43211</p>
+          <h2 className="text-2xl text-gray-900 mb-4 font-bold">Media Inquiries</h2>
+          <p className="text-gray-600 mb-2">For press inquiries, interviews, or story pitches:</p>
+          <p className="text-emerald-700 font-extrabold text-lg">press@wombto18.org</p>
+          <p className="text-sm text-gray-500 mt-1 font-medium">+91 98765 43211</p>
         </div>
       </section>
     </>

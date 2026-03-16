@@ -16,14 +16,14 @@ const donors = [
 
 export function DonorWall() {
   return (
-    <section className="py-20 bg-background border-t border-white/5">
+    <section className="py-20 bg-gray-50 border-t border-gray-200">
       <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
         <div className="text-center mb-14">
           <p className="text-primary text-sm mb-2" style={{ fontWeight: 600, textTransform: "uppercase", letterSpacing: "0.05em" }}>Donor Wall of Fame</p>
-          <h2 className="text-3xl sm:text-4xl text-white mb-4" style={{ fontWeight: 700 }}>
+          <h2 className="text-3xl sm:text-4xl text-gray-900 mb-4" style={{ fontWeight: 700 }}>
             Our Generous Supporters
           </h2>
-          <p className="text-emerald-200/70 max-w-2xl mx-auto">
+          <p className="text-gray-600 max-w-2xl mx-auto">
             Recognizing the incredible individuals and organizations whose generosity makes our mission possible.
           </p>
         </div>
@@ -32,7 +32,7 @@ export function DonorWall() {
           {donors.map((donor) => (
             <div
               key={donor.name}
-              className="flex items-center gap-3 p-4 rounded-xl border border-white/10 hover:shadow-md transition-shadow bg-emerald-950/20 text-white"
+              className="flex items-center gap-3 p-4 rounded-xl border border-gray-200 shadow-sm hover:shadow-md transition-shadow bg-white text-gray-900"
             >
               <Avatar className="h-10 w-10">
                 <AvatarFallback className="bg-primary/10 text-primary text-sm">
@@ -40,9 +40,9 @@ export function DonorWall() {
                 </AvatarFallback>
               </Avatar>
               <div className="flex-1 min-w-0">
-                <p className="text-sm truncate text-white" style={{ fontWeight: 600 }}>{donor.name}</p>
+                <p className="text-sm truncate text-gray-900" style={{ fontWeight: 600 }}>{donor.name}</p>
                 <div className="flex items-center gap-2">
-                  <span className="text-xs text-emerald-200/50">&#8377;{donor.amount}</span>
+                  <span className="text-xs text-gray-500">&#8377;{donor.amount}</span>
                 </div>
               </div>
             </div>

@@ -63,18 +63,18 @@ export function AboutPage() {
   return (
     <>
       {/* Hero */}
-      <section className="relative py-20 bg-gradient-to-br from-background via-emerald-950/50 to-background overflow-hidden text-white">
+      <section className="relative py-20 bg-emerald-50 overflow-hidden text-gray-900">
         <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
           <div className="grid lg:grid-cols-2 gap-12 items-center">
             <div>
               <p className="text-primary text-sm mb-2" style={{ fontWeight: 600, textTransform: "uppercase", letterSpacing: "0.05em" }}>About Us</p>
-              <h1 className="text-4xl sm:text-5xl text-foreground mb-6" style={{ fontWeight: 800, lineHeight: 1.1 }}>
+              <h1 className="text-4xl sm:text-5xl text-gray-900 mb-6" style={{ fontWeight: 800, lineHeight: 1.1 }}>
                 18 Years of Nurturing Lives
               </h1>
-              <p className="text-lg text-muted-foreground mb-6">
+              <p className="text-lg text-gray-600 mb-6">
                 Founded in 2008, WombTo18 Foundation has been on a relentless mission to ensure every child in India has access to healthcare, nutrition, and quality education from the womb through age 18.
               </p>
-              <p className="text-muted-foreground">
+              <p className="text-gray-600">
                 What started as a small prenatal care center in Mumbai has grown into a multi-state movement, touching the lives of over 15,000 children and 3,500 mothers across 200+ communities in India.
               </p>
             </div>
@@ -84,14 +84,14 @@ export function AboutPage() {
                 alt="Children playing at school"
                 className="w-full h-[350px] lg:h-[420px] object-cover rounded-2xl shadow-lg"
               />
-              <div className="absolute -bottom-4 -left-4 bg-emerald-900/90 backdrop-blur-md rounded-xl shadow-xl p-4 hidden sm:block border border-white/10">
+              <div className="absolute -bottom-4 -left-4 bg-white backdrop-blur-md rounded-xl shadow-sm p-4 hidden sm:block border border-gray-200">
                 <div className="flex items-center gap-3">
                    <div className="h-10 w-10 rounded-full bg-primary/20 flex items-center justify-center">
                     <TrendingUp className="h-5 w-5 text-primary" />
                   </div>
                   <div>
                     <p className="text-xl text-primary font-extrabold leading-none">15,234</p>
-                    <p className="text-xs text-emerald-400 font-medium mt-1">Lives Changed</p>
+                    <p className="text-xs text-gray-600 font-medium mt-1">Lives Changed</p>
                   </div>
                 </div>
               </div>
@@ -101,14 +101,14 @@ export function AboutPage() {
       </section>
 
       {/* Impact Numbers */}
-      <section className="py-14 bg-emerald-950 text-white border-y border-white/5">
+      <section className="py-14 bg-white text-gray-900 border-y border-gray-200">
         <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
           <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-6 text-center">
             {impactNumbers.map((item) => (
               <div key={item.label}>
                 <item.icon className="h-6 w-6 mx-auto mb-2 text-primary" />
                 <p className="text-2xl sm:text-3xl" style={{ fontWeight: 800 }}>{item.value}</p>
-                <p className="text-sm text-emerald-200/50 mt-1">{item.label}</p>
+                <p className="text-sm text-gray-600 mt-1">{item.label}</p>
               </div>
             ))}
           </div>
@@ -116,24 +116,24 @@ export function AboutPage() {
       </section>
 
       {/* Mission & Vision */}
-      <section className="py-20 bg-background text-white">
+      <section className="py-20 bg-gray-50 text-gray-900">
         <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-14">
-            <h2 className="text-3xl sm:text-4xl text-white mb-4" style={{ fontWeight: 700 }}>What Drives Us</h2>
-            <p className="text-emerald-200/70 max-w-2xl mx-auto">Our mission and vision are the compass that guides every program, every rupee spent, and every life we touch.</p>
+            <h2 className="text-3xl sm:text-4xl text-gray-900 mb-4" style={{ fontWeight: 700 }}>What Drives Us</h2>
+            <p className="text-gray-600 max-w-2xl mx-auto">Our mission and vision are the compass that guides every program, every rupee spent, and every life we touch.</p>
           </div>
           <div className="grid md:grid-cols-2 gap-12">
-            <div className="p-8 rounded-2xl bg-emerald-900/20 border border-white/10">
+            <div className="p-8 rounded-2xl bg-white border border-gray-200 shadow-sm hover:shadow-md transition">
               <Target className="h-10 w-10 text-primary mb-4" />
-              <h3 className="text-2xl mb-4 text-white" style={{ fontWeight: 700 }}>Our Mission</h3>
-              <p className="text-emerald-200/70">
+              <h3 className="text-2xl mb-4 text-gray-900" style={{ fontWeight: 700 }}>Our Mission</h3>
+              <p className="text-gray-600">
                 To promote child and family well-being through prevention, awarness, preparedness, and community engagement ensuring care reaches children before challenges become crises.
               </p>
             </div>
-            <div className="p-8 rounded-2xl bg-orange-950/10 border border-orange-500/20">
+            <div className="p-8 rounded-2xl bg-white border border-gray-200 shadow-sm hover:shadow-md transition">
               <Eye className="h-10 w-10 text-primary mb-4" />
-              <h3 className="text-2xl mb-4 text-white" style={{ fontWeight: 700 }}>Our Vision</h3>
-              <p className="text-emerald-200/70">
+              <h3 className="text-2xl mb-4 text-gray-900" style={{ fontWeight: 700 }}>Our Vision</h3>
+              <p className="text-gray-600">
                 A world where every child, regardless of circumstance, has the foundation they need to thrive — starting from the very first heartbeat and continuing through every milestone until adulthood.
               </p>
             </div>
@@ -142,15 +142,15 @@ export function AboutPage() {
       </section>
 
       {/* Story Section */}
-      <section className="py-20 bg-background">
+      <section className="py-20 bg-white border-t border-gray-200">
         <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
           <div className="grid lg:grid-cols-2 gap-12 items-center">
             <div>
               <p className="text-primary text-sm mb-2" style={{ fontWeight: 600, textTransform: "uppercase", letterSpacing: "0.05em" }}>Our Story</p>
-              <h2 className="text-3xl sm:text-4xl text-foreground mb-6" style={{ fontWeight: 700 }}>
+              <h2 className="text-3xl sm:text-4xl text-gray-900 mb-6" style={{ fontWeight: 700 }}>
                 Born From a Doctor's Promise
               </h2>
-              <div className="space-y-4 text-muted-foreground">
+              <div className="space-y-4 text-gray-600">
                 <p>
                   In 2008, Dr. Ananya Bhatt, a pediatrician in Mumbai, watched helplessly as children in urban slums
                   suffered from preventable diseases and malnutrition. She made a promise — to build a system
@@ -185,7 +185,7 @@ export function AboutPage() {
                 className="w-full h-[200px] object-cover rounded-xl -mt-8"
               />
               <img
-                src="https://images.unsplash.com/photo-1770261430761-192b0b72e4a7?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHxtb3RoZXIlMjBjaGlsZCUyMGNhcmUlMjBwcmVnbmFuY3l8ZW58MXx8fHwxNzczMTM0MDIyfDA&ixlib=rb-4.1.0&q=80&w=1080&utm_source=figma&utm_medium=referral"
+                src="https://images.pexels.com/photos/7351733/pexels-photo-7351733.jpeg"
                 alt="Mother and child care"
                 className="w-full h-[200px] object-cover rounded-xl"
               />
@@ -195,21 +195,21 @@ export function AboutPage() {
       </section>
 
       {/* Values */}
-      <section className="py-20 bg-background border-t border-white/5">
+      <section className="py-20 bg-gray-50 border-t border-gray-200">
         <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-14">
-            <h2 className="text-3xl sm:text-4xl text-white mb-4" style={{ fontWeight: 700 }}>Our Core Values</h2>
-            <p className="text-emerald-200/70 max-w-2xl mx-auto">These six pillars guide everything we do — from boardroom decisions to field-level execution.</p>
+            <h2 className="text-3xl sm:text-4xl text-gray-900 mb-4" style={{ fontWeight: 700 }}>Our Core Values</h2>
+            <p className="text-gray-600 max-w-2xl mx-auto">These six pillars guide everything we do — from boardroom decisions to field-level execution.</p>
           </div>
           <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-6">
             {values.map((v) => (
-              <Card key={v.title} className="bg-emerald-950/20 border-white/10 hover:shadow-md transition-shadow">
+              <Card key={v.title} className="bg-white border border-gray-200 shadow-sm hover:shadow-md transition">
                 <CardContent className="pt-6">
                   <div className="h-12 w-12 rounded-xl bg-primary/10 flex items-center justify-center mb-4">
                     <v.icon className="h-6 w-6 text-primary" />
                   </div>
-                  <h4 className="text-lg mb-2 text-white" style={{ fontWeight: 600 }}>{v.title}</h4>
-                  <p className="text-sm text-emerald-200/60">{v.description}</p>
+                  <h4 className="text-lg mb-2 text-gray-900" style={{ fontWeight: 600 }}>{v.title}</h4>
+                  <p className="text-sm text-gray-600">{v.description}</p>
                 </CardContent>
               </Card>
             ))}
@@ -218,11 +218,11 @@ export function AboutPage() {
       </section>
 
       {/* Timeline */}
-      <section className="py-20 bg-background">
+      <section className="py-20 bg-white border-t border-gray-200">
         <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-14">
             <p className="text-primary text-sm mb-2" style={{ fontWeight: 600, textTransform: "uppercase", letterSpacing: "0.05em" }}>Our Journey</p>
-            <h2 className="text-3xl sm:text-4xl text-foreground mb-4" style={{ fontWeight: 700 }}>Milestones That Matter</h2>
+            <h2 className="text-3xl sm:text-4xl text-gray-900 mb-4" style={{ fontWeight: 700 }}>Milestones That Matter</h2>
           </div>
           <div className="max-w-3xl mx-auto">
             {timeline.map((item, i) => (
@@ -239,10 +239,10 @@ export function AboutPage() {
                 {/* Content */}
                 <div className="pb-10">
                   <div className="flex items-center gap-3 mb-1">
-                    <h4 className="text-lg text-foreground" style={{ fontWeight: 700 }}>{item.title}</h4>
+                    <h4 className="text-lg text-gray-900" style={{ fontWeight: 700 }}>{item.title}</h4>
                     <span className="text-xs bg-primary/10 text-primary px-2 py-0.5 rounded-full" style={{ fontWeight: 600 }}>{item.year}</span>
                   </div>
-                  <p className="text-muted-foreground mb-2">{item.event}</p>
+                  <p className="text-gray-600 mb-2">{item.event}</p>
                   <span className="inline-flex items-center gap-1.5 text-xs bg-accent/10 text-accent px-2.5 py-1 rounded-full" style={{ fontWeight: 600 }}>
                     <TrendingUp className="h-3 w-3" />
                     {item.highlight}

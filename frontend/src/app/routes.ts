@@ -17,6 +17,8 @@ import { DonorEvents } from "./pages/donor/DonorEvents";
 import { DonorLogin } from "./pages/donor/DonorLogin";
 import { DonorVerifyOtp } from "./pages/donor/DonorVerifyOtp";
 import { DonorProfile } from "./pages/donor/DonorProfile";
+import { DonationSuccessPage } from "./pages/DonationSuccessPage";
+import { DashboardPreviewPage } from "./pages/DashboardPreviewPage";
 
 import { AdminDashboard } from "./pages/admin/AdminDashboard";
 import { AdminDonors } from "./pages/admin/AdminDonors";
@@ -37,6 +39,8 @@ export const router = createBrowserRouter([
       { path: "press", Component: PressPage },
       { path: "impact", Component: ImpactPage },
       { path: "donate", Component: DonatePage },
+      { path: "donation-success", Component: DonationSuccessPage },
+      { path: "dashboard-preview", Component: DashboardPreviewPage },
       { path: "donor/login", Component: DonorLogin },
       { path: "donor/verify-otp", Component: DonorVerifyOtp },
     ],

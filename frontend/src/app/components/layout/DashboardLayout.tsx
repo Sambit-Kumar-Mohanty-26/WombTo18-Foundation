@@ -34,7 +34,7 @@ export function DashboardLayout() {
   }, [navigate]);
 
   if (isLoading || !session) {
-    return <div className="min-h-screen bg-emerald-950/50 flex items-center justify-center text-emerald-200/50">Loading dashboard...</div>;
+    return <div className="min-h-screen bg-gray-50 flex items-center justify-center text-gray-500">Loading dashboard...</div>;
   }
 
   // Filter links based on donor eligibility
@@ -48,7 +48,7 @@ export function DashboardLayout() {
   };
 
   return (
-    <div className="min-h-screen flex bg-emerald-950/50">
+    <div className="min-h-screen flex bg-gray-50">
       {/* Sidebar */}
       <aside
         className={`fixed inset-y-0 left-0 z-50 w-64 bg-emerald-950 text-white border-r border-white/5 transform transition-transform lg:translate-x-0 lg:static ${
@@ -131,21 +131,21 @@ export function DashboardLayout() {
       )}
 
       {/* Main Content */}
-      <div className="flex-1 flex flex-col min-w-0 bg-emerald-950/50">
-        <header className="sticky top-0 z-30 bg-emerald-900/50 backdrop-blur-md border-b border-white/5 px-4 sm:px-6 py-3 flex items-center justify-between">
+      <div className="flex-1 flex flex-col min-w-0 bg-gray-50">
+        <header className="sticky top-0 z-30 bg-white/80 backdrop-blur-md border-b border-gray-200 px-4 sm:px-6 py-3 flex items-center justify-between">
           <div className="flex items-center gap-3">
-            <button className="lg:hidden p-2 -ml-2 text-white hover:bg-white/5 rounded-md" onClick={() => setSidebarOpen(true)}>
+            <button className="lg:hidden p-2 -ml-2 text-gray-900 hover:bg-gray-100 rounded-md" onClick={() => setSidebarOpen(true)}>
               <Menu className="h-5 w-5" />
             </button>
-            <h2 className="text-lg text-white font-semibold">Donor Dashboard</h2>
+            <h2 className="text-lg text-gray-900 font-semibold">Donor Dashboard</h2>
           </div>
           
           <div className="flex items-center gap-4">
             <div className="hidden sm:flex flex-col items-end leading-tight">
-              <span className="text-xs text-emerald-400 font-bold uppercase tracking-wider">Impact Score</span>
-              <span className="text-sm text-white font-bold">1,240 pts</span>
+              <span className="text-xs text-emerald-600 font-bold uppercase tracking-wider">Impact Score</span>
+              <span className="text-sm text-gray-900 font-bold">1,240 pts</span>
             </div>
-            <div className="h-8 w-px bg-white/10 hidden sm:block" />
+            <div className="h-8 w-px bg-gray-200 hidden sm:block" />
             <Button size="sm" className="bg-primary hover:bg-primary/90 text-primary-foreground font-bold shadow-lg shadow-orange-500/20">
               <Heart className="h-4 w-4 mr-2 fill-current" />
               Quick Donate

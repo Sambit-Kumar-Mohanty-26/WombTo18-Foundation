@@ -5,14 +5,14 @@ import { ScrollReveal } from "../ui/ScrollReveal";
 
 export function CallToDonate() {
   return (
-    <section className="py-20 bg-background border-t border-white/5 text-white">
+    <section className="py-20 bg-white border-t border-gray-200">
       <ScrollReveal className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 text-center">
         <div className="max-w-3xl mx-auto">
-          <Heart className="h-12 w-12 mx-auto mb-6 fill-white/20" />
-          <h2 className="text-3xl sm:text-4xl lg:text-5xl mb-6" style={{ fontWeight: 800 }}>
+          <Heart className="h-12 w-12 mx-auto mb-6 text-emerald-100 fill-emerald-50" />
+          <h2 className="text-3xl sm:text-4xl lg:text-5xl mb-6 text-gray-900" style={{ fontWeight: 800 }}>
             Every Rupee Creates a Ripple of Change
           </h2>
-          <p className="text-lg text-white/80 mb-8 max-w-xl mx-auto">
+          <p className="text-lg text-gray-600 mb-8 max-w-xl mx-auto">
             Your donation provides prenatal care, nutritious meals, school supplies, and hope to thousands of children. 100% of your contribution goes directly to our programs.
           </p>
           <div className="flex flex-wrap justify-center gap-4">
@@ -22,7 +22,7 @@ export function CallToDonate() {
               </Button>
             </Link>
             <Link to="/impact">
-              <Button size="lg" variant="outline" className="border-white/30 text-white hover:bg-white/5">
+              <Button size="lg" variant="outline" className="border-gray-300 text-gray-700 bg-white hover:bg-gray-100">
                 See Our Impact <ArrowRight className="h-4 w-4 ml-2" />
               </Button>
             </Link>

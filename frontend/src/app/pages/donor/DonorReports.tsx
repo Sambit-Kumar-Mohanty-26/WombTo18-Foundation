@@ -3,6 +3,7 @@ import { Progress } from "../../components/ui/progress";
 import { PieChart, Pie, Cell, ResponsiveContainer, Tooltip, Legend } from "recharts";
 import { Download, FileText } from "lucide-react";
 import { Button } from "../../components/ui/button";
+import { toast } from "sonner";
 
 const allocationData = [
   { name: "Education", value: 35, color: "#3b82f6" },
@@ -31,15 +32,15 @@ export function DonorReports() {
   return (
     <div className="space-y-6">
       <div>
-        <h1 className="text-2xl text-foreground" style={{ fontWeight: 700 }}>Impact Reports</h1>
-        <p className="text-muted-foreground">See how your donations are creating real-world impact.</p>
+        <h1 className="text-2xl text-gray-900" style={{ fontWeight: 700 }}>Impact Reports</h1>
+        <p className="text-gray-600">See how your donations are creating real-world impact.</p>
       </div>
 
       <div className="grid lg:grid-cols-2 gap-6">
         {/* Allocation Chart */}
-        <Card className="border-border/50">
+        <Card className="bg-white border-gray-200 shadow-sm">
           <CardHeader>
-            <CardTitle>Your Donation Allocation</CardTitle>
+            <CardTitle className="text-gray-900">Your Donation Allocation</CardTitle>
           </CardHeader>
           <CardContent>
             <div className="h-[280px]">
@@ -68,20 +69,20 @@ export function DonorReports() {
         </Card>
 
         {/* Impact Metrics */}
-        <Card className="border-border/50">
+        <Card className="bg-white border-gray-200 shadow-sm">
           <CardHeader>
-            <CardTitle>Your Personal Impact</CardTitle>
+            <CardTitle className="text-gray-900">Your Personal Impact</CardTitle>
           </CardHeader>
           <CardContent className="space-y-5">
             {impactMetrics.map((m) => (
               <div key={m.label}>
                 <div className="flex justify-between mb-1.5">
-                  <span className="text-sm">{m.label}</span>
-                  <span className="text-sm text-muted-foreground">
+                  <span className="text-sm text-gray-900 font-medium">{m.label}</span>
+                  <span className="text-sm text-gray-500">
                     {m.value.toLocaleString()} / {m.target.toLocaleString()} {m.unit}
                   </span>
                 </div>
-                <Progress value={(m.value / m.target) * 100} className="h-2" />
+                <Progress value={(m.value / m.target) * 100} className="h-2 bg-gray-100" />
               </div>
             ))}
           </CardContent>
@@ -89,25 +90,25 @@ export function DonorReports() {
       </div>
 
       {/* Downloadable Reports */}
-      <Card className="border-border/50">
+      <Card className="bg-white border-gray-200 shadow-sm">
         <CardHeader>
-          <CardTitle>Downloadable Reports</CardTitle>
+          <CardTitle className="text-gray-900">Downloadable Reports</CardTitle>
         </CardHeader>
         <CardContent>
           <div className="space-y-3">
             {reports.map((r) => (
               <div
                 key={r.title}
-                className="flex items-center justify-between p-3 rounded-lg border border-border/50 hover:bg-muted/30 transition-colors"
+                className="flex items-center justify-between p-3 rounded-lg border border-gray-100 bg-gray-50 hover:bg-white transition-colors"
               >
                 <div className="flex items-center gap-3">
-                  <FileText className="h-5 w-5 text-primary" />
+                  <FileText className="h-5 w-5 text-emerald-600" />
                   <div>
-                    <p className="text-sm" style={{ fontWeight: 500 }}>{r.title}</p>
-                    <p className="text-xs text-muted-foreground">{r.date} &middot; {r.type}</p>
+                    <p className="text-sm text-gray-900" style={{ fontWeight: 500 }}>{r.title}</p>
+                    <p className="text-xs text-gray-500">{r.date} &middot; {r.type}</p>
                   </div>
                 </div>
-                <Button variant="ghost" size="sm">
+                <Button variant="ghost" size="sm" className="text-gray-500 hover:text-gray-900" onClick={() => toast.success("Download started", { description: `Downloading ${r.title}` })}>
                   <Download className="h-4 w-4" />
                 </Button>
               </div>

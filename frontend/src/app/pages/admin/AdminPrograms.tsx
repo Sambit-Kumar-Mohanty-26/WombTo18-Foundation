@@ -85,8 +85,8 @@ export function AdminPrograms() {
     <div className="space-y-6">
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <div>
-          <h1 className="text-2xl text-foreground font-bold">Manage Programs</h1>
-          <p className="text-muted-foreground">{programs.length} active programs across India</p>
+          <h1 className="text-2xl text-gray-900 font-bold">Manage Programs</h1>
+          <p className="text-gray-600">{programs.length} active programs across India</p>
         </div>
         <Button size="sm" className="font-bold shadow-sm">
           <Plus className="h-4 w-4 mr-2" /> New Program
@@ -95,42 +95,42 @@ export function AdminPrograms() {
 
       <div className="grid gap-6">
         {programs.map((program) => (
-          <Card key={program.id} className="bg-card border-border shadow-sm hover:shadow-md transition-all duration-300 rounded-lg group">
+          <Card key={program.id} className="bg-white border-gray-200 shadow-sm hover:shadow-md transition-all duration-300 rounded-lg group">
             <CardContent className="p-6">
               <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-6">
                 <div className="flex-1">
                   <div className="flex items-center gap-3 mb-3">
-                    <h3 className="text-lg text-foreground font-bold group-hover:text-primary transition-colors">{program.name}</h3>
+                    <h3 className="text-lg text-gray-900 font-bold group-hover:text-primary transition-colors">{program.name}</h3>
                     <Badge
                       variant="secondary"
-                      className={`px-2 py-0.5 rounded-md font-bold text-[10px] uppercase tracking-tighter ${program.status === "Active" ? "bg-green-50 text-green-700 hover:bg-green-100" : "bg-muted text-muted-foreground"}`}
+                      className={`px-2 py-0.5 rounded-md font-bold text-[10px] uppercase tracking-tighter ${program.status === "Active" ? "bg-green-50 text-green-700 hover:bg-green-100" : "bg-gray-100 text-gray-600"}`}
                     >
                       {program.status}
                     </Badge>
                   </div>
 
-                  <div className="flex flex-wrap gap-x-6 gap-y-2 text-[13px] text-muted-foreground mb-5 font-medium">
-                    <span className="flex items-center gap-1.5"><Users className="h-4 w-4 text-muted-foreground" />{program.beneficiaries.toLocaleString()} beneficiaries</span>
-                    <span className="flex items-center gap-1.5"><MapPin className="h-4 w-4 text-muted-foreground" />{program.states} states</span>
-                    <span className="flex items-center gap-1.5"><Calendar className="h-4 w-4 text-muted-foreground" />Since {program.startDate}</span>
-                    <span className="flex items-center gap-1.5 text-foreground">Lead: <span className="font-bold text-foreground">{program.lead}</span></span>
+                  <div className="flex flex-wrap gap-x-6 gap-y-2 text-[13px] text-gray-600 mb-5 font-medium">
+                    <span className="flex items-center gap-1.5"><Users className="h-4 w-4 text-gray-500" />{program.beneficiaries.toLocaleString()} beneficiaries</span>
+                    <span className="flex items-center gap-1.5"><MapPin className="h-4 w-4 text-gray-500" />{program.states} states</span>
+                    <span className="flex items-center gap-1.5"><Calendar className="h-4 w-4 text-gray-500" />Since {program.startDate}</span>
+                    <span className="flex items-center gap-1.5 text-gray-900">Lead: <span className="font-bold text-gray-900">{program.lead}</span></span>
                   </div>
 
                   {/* Budget Progress */}
                   <div className="max-w-2xl">
                     <div className="flex justify-between mb-2 text-xs">
-                      <span className="text-muted-foreground font-medium">Progress</span>
-                      <span className="text-foreground font-extrabold">Spent: {program.spent} / {program.budget} ({program.progress}%)</span>
+                      <span className="text-gray-600 font-medium">Progress</span>
+                      <span className="text-gray-900 font-extrabold">Spent: {program.spent} / {program.budget} ({program.progress}%)</span>
                     </div>
-                    <Progress value={program.progress} className="h-2 bg-muted shadow-inner" />
+                    <Progress value={program.progress} className="h-2 bg-gray-200 shadow-inner" />
                   </div>
                 </div>
 
                 <div className="flex gap-2 shrink-0 self-start lg:self-center">
-                  <Button variant="outline" size="sm" className="border-border shadow-none">
+                  <Button variant="outline" size="sm" className="border-gray-200 shadow-none hover:bg-gray-50 bg-white">
                     <Edit className="h-3.5 w-3.5 mr-1" /> Edit
                   </Button>
-                  <Button variant="ghost" size="sm" className="text-muted-foreground hover:text-foreground">View Details</Button>
+                  <Button variant="ghost" size="sm" className="text-gray-600 hover:text-gray-900">View Details</Button>
                 </div>
               </div>
             </CardContent>
