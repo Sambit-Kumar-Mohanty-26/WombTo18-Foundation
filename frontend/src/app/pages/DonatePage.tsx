@@ -78,28 +78,28 @@ export function DonatePage() {
 
   return (
     <>
-      <section className="py-16 bg-emerald-50 text-gray-900">
+      <section className="py-16 bg-slate-50/50 border-b border-slate-200 text-slate-900">
         <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
           <div className="text-center max-w-2xl mx-auto">
             <Heart className="h-10 w-10 text-primary mx-auto mb-4 fill-current" />
-            <h1 className="text-4xl sm:text-5xl text-gray-900 mb-4" style={{ fontWeight: 800, lineHeight: 1.1 }}>
+            <h1 className="text-4xl sm:text-5xl text-slate-900 mb-4" style={{ fontWeight: 800, lineHeight: 1.1 }}>
               Make a Difference Today
             </h1>
-            <p className="text-lg text-gray-600">
+            <p className="text-lg text-slate-600 font-medium">
               Your donation directly funds prenatal care, nutrition, education, and empowerment programs. 100% tax deductible under 80G.
             </p>
           </div>
         </div>
       </section>
 
-      <section className="py-12 bg-gray-50">
+      <section className="py-12 bg-background">
         <div className="mx-auto max-w-4xl px-4 sm:px-6 lg:px-8">
           <div className="grid lg:grid-cols-5 gap-8">
             {/* Donation Form Section */}
             <div className="lg:col-span-3">
               <div className="mb-6">
                 <h2 className="text-2xl font-bold text-primary mb-2">Support Our Mission</h2>
-                <p className="text-">Choose the donation type that suits you best.</p>
+                <p className="text-muted-foreground">Choose the donation type that suits you best.</p>
               </div>
 
               <DonationTabs 
@@ -114,28 +114,28 @@ export function DonatePage() {
 
               <div className="mt-8 space-y-4">
                 {/* Payment Flow */}
-                <div className="bg-gray-50 rounded-lg p-4 border border-gray-100">
+                <div className="bg-card rounded-lg p-4 border border-border">
                   <p className="text-xs text-primary mb-3 font-bold uppercase tracking-wider">Secure Payment Flow:</p>
-                  <div className="flex items-center gap-2 text-[10px] text-gray-600 flex-wrap">
-                    <span className="bg-emerald-50 text-emerald-700 px-2 py-0.5 rounded border border-emerald-100 font-semibold">1. Select Type</span>
-                    <ArrowRight className="h-3 w-3 shrink-0 text-gray-300" />
-                    <span className="bg-emerald-50 text-emerald-700 px-2 py-0.5 rounded border border-emerald-100 font-semibold">2. Fill Details</span>
-                    <ArrowRight className="h-3 w-3 shrink-0 text-gray-300" />
-                    <span className="bg-emerald-50 text-emerald-700 px-2 py-0.5 rounded border border-emerald-100 font-semibold">3. Razorpay Secure Payment</span>
-                    <ArrowRight className="h-3 w-3 shrink-0 text-gray-300" />
-                    <span className="bg-emerald-50 text-emerald-700 px-2 py-0.5 rounded border border-emerald-100 font-semibold">4. Receipt Generation</span>
+                  <div className="flex items-center gap-2 text-[10px] text-muted-foreground flex-wrap">
+                    <span className="bg-primary/10 text-primary px-2 py-0.5 rounded border border-primary/20 font-semibold">1. Select Type</span>
+                    <ArrowRight className="h-3 w-3 shrink-0 text-muted-foreground/30" />
+                    <span className="bg-primary/10 text-primary px-2 py-0.5 rounded border border-primary/20 font-semibold">2. Fill Details</span>
+                    <ArrowRight className="h-3 w-3 shrink-0 text-muted-foreground/30" />
+                    <span className="bg-primary/10 text-primary px-2 py-0.5 rounded border border-primary/20 font-semibold">3. Razorpay Secure Payment</span>
+                    <ArrowRight className="h-3 w-3 shrink-0 text-muted-foreground/30" />
+                    <span className="bg-primary/10 text-primary px-2 py-0.5 rounded border border-primary/20 font-semibold">4. Receipt Generation</span>
                   </div>
                 </div>
 
                 {/* Payment Methods */}
-                <div className="flex items-center justify-center gap-6 py-2 border-t border-gray-100">
-                  <div className="flex items-center gap-1.5 text-xs text-gray-400">
+                <div className="flex items-center justify-center gap-6 py-2 border-t border-border">
+                  <div className="flex items-center gap-1.5 text-xs text-muted-foreground">
                     <CreditCard className="h-3.5 w-3.5" /> Cards
                   </div>
-                  <div className="flex items-center gap-1.5 text-xs text-gray-400">
+                  <div className="flex items-center gap-1.5 text-xs text-muted-foreground">
                     <Smartphone className="h-3.5 w-3.5" /> UPI
                   </div>
-                  <div className="flex items-center gap-1.5 text-xs text-gray-400">
+                  <div className="flex items-center gap-1.5 text-xs text-muted-foreground">
                     <Building2 className="h-3.5 w-3.5" /> Net Banking
                   </div>
                 </div>
@@ -144,19 +144,19 @@ export function DonatePage() {
 
             {/* Sidebar */}
             <div className="lg:col-span-2 space-y-4 pt-16">
-              <Card className="border-primary/20 bg-white">
+              <Card className="border-primary/20 bg-card">
                 <CardContent className="pt-6">
                   <Shield className="h-8 w-8 text-primary mb-3" />
-                  <h4 className="mb-2 font-bold text-gray-900">100% Tax Deductible</h4>
-                  <p className="text-sm text-gray-600">
+                  <h4 className="mb-2 font-bold text-foreground">100% Tax Deductible</h4>
+                  <p className="text-sm text-muted-foreground">
                     All donations are eligible for tax exemption under Section 80G. Your certificate will be issued instantly.
                   </p>
                 </CardContent>
               </Card>
 
-              <Card className="border-gray-100 bg-white">
+              <Card className="border-border bg-card">
                 <CardContent className="pt-6">
-                  <h4 className="mb-4 text-gray-900 font-bold text-sm">Why Donate?</h4>
+                  <h4 className="mb-4 text-foreground font-bold text-sm">Why Donate?</h4>
                   <ul className="space-y-3">
                     {[
                       "Funds life-saving prenatal care",
@@ -164,8 +164,8 @@ export function DonatePage() {
                       "Provides high-quality nutrition",
                       "Empowers local communities"
                     ].map((item, i) => (
-                      <li key={i} className="flex items-start gap-2 text-sm text-gray-600">
-                        <CheckCircle className="h-4 w-4 text-emerald-500 shrink-0 mt-0.5" />
+                      <li key={i} className="flex items-start gap-2 text-sm text-muted-foreground">
+                        <CheckCircle className="h-4 w-4 text-primary shrink-0 mt-0.5" />
                         {item}
                       </li>
                     ))}
@@ -173,11 +173,10 @@ export function DonatePage() {
                 </CardContent>
               </Card>
 
-              <Card className="border-dashed border-gray-200 bg-transparent">
+              <Card className="border-dashed border-border bg-transparent">
                 <CardContent className="pt-6 text-center">
-                  <p className="text-[10px] uppercase tracking-widest text-gray-400">Securely Powered by</p>
-                  
-                  <img src="/razorpay.svg" alt="razorpay" className="w-24 h-24 mx-auto -mt-4" />
+                  <p className="text-[10px] uppercase tracking-widest text-muted-foreground/50 font-bold">Securely Powered by</p>
+                  <img src="/razorpay.svg" alt="razorpay" className="w-24 h-24 mx-auto -mt-4 opacity-70 hover:opacity-100 transition-opacity" />
                 </CardContent>
               </Card>
             </div>

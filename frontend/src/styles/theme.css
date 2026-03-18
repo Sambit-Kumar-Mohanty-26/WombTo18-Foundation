@@ -2,26 +2,26 @@
 
 :root {
   --font-size: 16px;
-  /* Reduced darkness for better visual appearance */
-  --background: #0a4f3c; /* Very Dark Emerald */
-  --foreground: #ffffff;
-  --card: #064e3b; /* Dark Emerald */
-  --card-foreground: #ffffff;
-  --popover: #064e3b;
-  --popover-foreground: #ffffff;
+  /* Premium Light Theme */
+  --background: #f8fafc; /* Slate 50 */
+  --foreground: #0f172a; /* Slate 900 */
+  --card: #ffffff;
+  --card-foreground: #0f172a;
+  --popover: #ffffff;
+  --popover-foreground: #0f172a;
   --primary: #f59e0b; /* Amber/Orange */
-  --primary-foreground: #022c22;
-  --secondary: #07684e; /* Emerald 700ish */
-  --secondary-foreground: #ffffff;
-  --muted: #06543e;
-  --muted-foreground: #a7f3d0; /* Light Emerald */
-  --accent: #fbbf24; /* Amber 400 */
-  --accent-foreground: #022c22;
+  --primary-foreground: #ffffff;
+  --secondary: #f1f5f9; /* Slate 100 */
+  --secondary-foreground: #0f172a;
+  --muted: #f1f5f9;
+  --muted-foreground: #64748b; /* Slate 500 */
+  --accent: #fbbf24;
+  --accent-foreground: #0f172a;
   --destructive: #ef4444;
   --destructive-foreground: #ffffff;
-  --border: rgba(255, 255, 255, 0.1);
-  --input: transparent;
-  --input-background: #06543e;
+  --border: #e2e8f0; /* Slate 200 */
+  --input: #ffffff;
+  --input-background: #ffffff;
   --ring: #f59e0b;
   --radius: 0.75rem;
 }

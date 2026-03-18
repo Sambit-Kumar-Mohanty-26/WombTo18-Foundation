@@ -60,7 +60,7 @@ export function DonorDashboard() {
           { icon: Calendar, label: "Donations Made", value: "24", change: "8 this year", color: "text-blue-600", bgColor: "bg-blue-50" },
           { icon: Award, label: "Donor Since", value: "2021", change: "5 years of giving", color: "text-amber-600", bgColor: "bg-amber-50" },
         ].map((stat) => (
-          <Card key={stat.label} className="bg-white border-gray-200 shadow-sm">
+          <Card key={stat.label} className="bg-white border-gray-100 shadow-sm hover:shadow-md transition-all">
             <CardContent className="pt-5 pb-4">
               <div className={`h-9 w-9 rounded-lg ${stat.bgColor} flex items-center justify-center mb-3`}>
                 <stat.icon className={`h-4.5 w-4.5 ${stat.color}`} />
@@ -74,10 +74,10 @@ export function DonorDashboard() {
       </div>
 
       {/* Impact Metrics */}
-      <Card className="bg-white border-gray-200 shadow-sm">
+      <Card className="bg-white border-gray-100 shadow-sm">
         <CardHeader>
           <div className="flex items-center justify-between">
-            <CardTitle className="text-gray-900">Your Personal Impact</CardTitle>
+            <CardTitle className="text-gray-900 font-bold">Your Personal Impact</CardTitle>
             <Link to="/dashboard/reports">
               <Button variant="ghost" size="sm" className="text-primary text-xs hover:bg-primary/5">
                 View Full Report <ArrowRight className="h-3 w-3 ml-1" />
@@ -88,12 +88,12 @@ export function DonorDashboard() {
         <CardContent>
           <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
             {impactMetrics.map((m) => (
-              <div key={m.label} className="text-center p-4 rounded-xl bg-muted/30">
+              <div key={m.label} className="text-center p-4 rounded-xl bg-gray-50/50 border border-gray-100">
                 <div className={`h-10 w-10 rounded-lg ${m.bgColor} flex items-center justify-center mx-auto mb-2`}>
                   <m.icon className={`h-5 w-5 ${m.color}`} />
                 </div>
                 <p className="text-2xl text-gray-900" style={{ fontWeight: 800 }}>{m.value}</p>
-                <p className="text-xs text-gray-600 mt-0.5">{m.label}</p>
+                <p className="text-xs text-gray-500 mt-0.5">{m.label}</p>
               </div>
             ))}
           </div>
@@ -103,9 +103,9 @@ export function DonorDashboard() {
       {/* Chart & Progress side by side */}
       <div className="grid lg:grid-cols-2 gap-6">
         {/* Monthly Donations Chart */}
-        <Card className="bg-white border-gray-200 shadow-sm">
+        <Card className="bg-white border-gray-100 shadow-sm">
           <CardHeader>
-            <CardTitle className="text-gray-900">Monthly Donations (₹)</CardTitle>
+            <CardTitle className="text-gray-900 font-bold">Monthly Donations (₹)</CardTitle>
           </CardHeader>
           <CardContent>
             <div className="h-[250px]">
@@ -123,10 +123,10 @@ export function DonorDashboard() {
         </Card>
 
         {/* Progress Reports */}
-        <Card className="bg-white border-gray-200 shadow-sm">
+        <Card className="bg-white border-gray-100 shadow-sm">
           <CardHeader>
             <div className="flex items-center justify-between">
-              <CardTitle className="text-gray-900">Program Progress</CardTitle>
+              <CardTitle className="text-gray-900 font-bold">Program Progress</CardTitle>
               <Link to="/dashboard/reports">
                 <Button variant="ghost" size="sm" className="text-primary text-xs hover:bg-primary/5">View All</Button>
               </Link>
@@ -151,10 +151,10 @@ export function DonorDashboard() {
       </div>
 
       {/* Recent Donations */}
-      <Card className="bg-white border-gray-200 shadow-sm">
+      <Card className="bg-white border-gray-100 shadow-sm">
         <CardHeader>
           <div className="flex items-center justify-between">
-            <CardTitle className="text-gray-900">Recent Donations</CardTitle>
+            <CardTitle className="text-gray-900 font-bold">Recent Donations</CardTitle>
             <Link to="/dashboard/donations">
               <Button variant="ghost" size="sm" className="text-primary text-xs hover:bg-primary/5">
                 View All <ArrowRight className="h-3 w-3 ml-1" />
@@ -166,7 +166,7 @@ export function DonorDashboard() {
           <div className="overflow-x-auto">
             <table className="w-full text-sm">
               <thead>
-                <tr className="border-b border-gray-200 bg-gray-100 text-gray-700">
+                <tr className="border-b border-gray-100 bg-gray-50 text-gray-700">
                   <th className="text-left py-3 px-2 font-medium">Transaction</th>
                   <th className="text-left py-3 px-2 font-medium">Date</th>
                   <th className="text-left py-3 px-2 font-medium">Amount</th>
@@ -176,7 +176,7 @@ export function DonorDashboard() {
               </thead>
               <tbody>
                 {recentDonations.map((d) => (
-                  <tr key={d.id} className="border-b border-gray-100 hover:bg-gray-50 transition-colors text-gray-900">
+                  <tr key={d.id} className="border-b border-gray-50 hover:bg-gray-50/50 transition-colors text-gray-900">
                     <td className="py-3 px-2 text-gray-900" style={{ fontWeight: 500 }}>{d.id}</td>
                     <td className="py-3 px-2 text-gray-500">{d.date}</td>
                     <td className="py-3 px-2 text-gray-900" style={{ fontWeight: 600 }}>₹{d.amount.toLocaleString("en-IN")}</td>
@@ -193,16 +193,16 @@ export function DonorDashboard() {
       </Card>
 
       {/* Upcoming Events */}
-      <Card className="bg-white border-gray-200 shadow-sm">
+      <Card className="bg-white border-gray-100 shadow-sm">
         <CardHeader>
-          <CardTitle className="text-gray-900">Upcoming Events</CardTitle>
+          <CardTitle className="text-gray-900 font-bold">Upcoming Events</CardTitle>
         </CardHeader>
         <CardContent>
           <div className="grid sm:grid-cols-2 gap-4">
             {upcomingEvents.map((event) => (
               <div
                 key={event.title}
-                className="p-4 rounded-xl border border-gray-100 bg-gray-50 hover:bg-white hover:border-gray-200 hover:shadow-sm transition-all"
+                className="p-4 rounded-xl border border-gray-100 bg-gray-50/50 hover:bg-white hover:border-gray-200 hover:shadow-sm transition-all"
               >
                 <div className="flex items-start justify-between mb-2">
                   <h4 className="text-sm text-gray-900" style={{ fontWeight: 600 }}>{event.title}</h4>
@@ -232,20 +232,20 @@ export function DonorDashboard() {
       </Card>
 
       {/* Certificate Banner */}
-      <Card className="border-primary/20 bg-gradient-to-r from-primary/5 to-accent/5">
+      <Card className="border-primary/20 bg-gradient-to-r from-primary/10 to-amber-50 shadow-sm">
         <CardContent className="py-6">
           <div className="flex flex-col sm:flex-row items-center justify-between gap-4">
             <div className="flex items-center gap-4">
-              <div className="h-12 w-12 rounded-xl bg-primary/10 flex items-center justify-center shrink-0">
+              <div className="h-12 w-12 rounded-xl bg-primary/20 flex items-center justify-center shrink-0">
                 <Award className="h-6 w-6 text-primary" />
               </div>
               <div>
-                <h4 className="text-gray-900" style={{ fontWeight: 600 }}>Your 80G Certificate is Ready</h4>
-                <p className="text-sm text-gray-600">FY 2025-26 tax certificate for ₹1,00,000 is available for download.</p>
+                <h4 className="text-gray-900" style={{ fontWeight: 700 }}>Your 80G Certificate is Ready</h4>
+                <p className="text-sm text-gray-600 font-medium">FY 2025-26 tax certificate for ₹1,00,000 is available for download.</p>
               </div>
             </div>
             <Link to="/dashboard/certificates">
-              <Button size="sm" className="bg-primary hover:bg-primary/90 shrink-0">
+              <Button size="sm" className="bg-primary hover:bg-primary/90 text-white font-bold shrink-0 shadow-md">
                 Download Certificate
               </Button>
             </Link>

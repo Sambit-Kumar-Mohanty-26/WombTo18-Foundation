@@ -51,36 +51,36 @@ export function DashboardLayout() {
     <div className="min-h-screen flex bg-gray-50">
       {/* Sidebar */}
       <aside
-        className={`fixed inset-y-0 left-0 z-50 w-64 bg-emerald-950 text-white border-r border-white/5 transform transition-transform lg:translate-x-0 lg:static ${
+        className={`fixed inset-y-0 left-0 z-50 w-64 bg-background text-foreground border-r border-border transform transition-transform lg:translate-x-0 lg:static ${
           sidebarOpen ? "translate-x-0" : "-translate-x-full"
         }`}
       >
         <div className="flex flex-col h-full">
-          <div className="p-4 border-b border-white/10 flex items-center justify-between">
+          <div className="p-4 border-b border-border flex items-center justify-between">
             <Link to="/" className="flex items-center gap-2">
               <img 
                 src="/Foundation logo .png" 
                 alt="WombTo18 Foundation" 
                 className="h-8 w-auto object-contain"
               />
-              <span className="text-sm font-bold">WombTo18</span>
+              <span className="text-sm font-bold text-foreground">WombTo18</span>
             </Link>
-            <button className="lg:hidden" onClick={() => setSidebarOpen(false)}>
+            <button className="lg:hidden text-foreground" onClick={() => setSidebarOpen(false)}>
               <X className="h-5 w-5" />
             </button>
           </div>
 
           {/* User Info */}
-          <div className="p-4 border-b border-white/10">
+          <div className="p-4 border-b border-border">
             <div className="flex items-center gap-3">
               <Avatar className="h-9 w-9">
-                <AvatarFallback className="bg-primary/20 text-primary text-sm">PS</AvatarFallback>
+                <AvatarFallback className="bg-primary/20 text-primary text-sm font-bold">PS</AvatarFallback>
               </Avatar>
               <div>
-                <p className="text-sm font-semibold truncate max-w-[140px]" title={session.identifier}>
+                <p className="text-sm font-bold text-foreground truncate max-w-[140px]" title={session.identifier}>
                   {session.identifier.split("@")[0]}
                 </p>
-                <p className="text-xs text-emerald-400 font-medium">
+                <p className="text-xs text-emerald-600 font-bold">
                   {session.eligible ? "Premium Donor" : "Donor"}
                 </p>
               </div>
@@ -96,8 +96,8 @@ export function DashboardLayout() {
                 onClick={() => setSidebarOpen(false)}
                 className={`flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium transition-all ${
                   location.pathname === link.href
-                    ? "bg-primary text-primary-foreground shadow-lg shadow-orange-500/20"
-                    : "text-emerald-100/60 hover:text-white hover:bg-white/5"
+                    ? "bg-primary text-white shadow-md shadow-orange-500/20"
+                    : "text-muted-foreground hover:text-foreground hover:bg-slate-100/80"
                 }`}
               >
                 <link.icon className={`h-4 w-4 ${location.pathname === link.href ? "fill-current" : ""}`} />
@@ -106,17 +106,17 @@ export function DashboardLayout() {
             ))}
           </nav>
 
-          <div className="p-3 border-t border-white/10">
+          <div className="p-3 border-t border-border">
             <Link
               to="/"
-              className="flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm text-emerald-100/60 hover:text-white hover:bg-white/5 transition-colors"
+              className="flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm text-muted-foreground hover:text-foreground hover:bg-slate-100/80 transition-colors"
             >
               <ChevronLeft className="h-4 w-4" />
               Back to Website
             </Link>
             <button 
               onClick={handleLogout}
-              className="flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm text-emerald-100/60 hover:text-rose-400 hover:bg-rose-400/5 transition-colors w-full"
+              className="flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm text-muted-foreground hover:text-rose-600 hover:bg-rose-50/80 transition-colors w-full"
             >
               <LogOut className="h-4 w-4" />
               Sign Out
