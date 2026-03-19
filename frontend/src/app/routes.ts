@@ -8,13 +8,14 @@ import { ServicesPage } from "./pages/ServicesPage";
 import { BlogPage } from "./pages/BlogPage";
 import { PressPage } from "./pages/PressPage";
 import { ImpactPage } from "./pages/ImpactPage";
-import { DonatePage } from "./pages/DonatePage";
+import { ComingSoonPage } from "./pages/ComingSoonPage";
+// import { DonatePage } from "./pages/DonatePage";
 import { DonorDashboard } from "./pages/donor/DonorDashboard";
 import { DonorDonations } from "./pages/donor/DonorDonations";
 import { DonorReports } from "./pages/donor/DonorReports";
 import { DonorCertificates } from "./pages/donor/DonorCertificates";
 import { DonorEvents } from "./pages/donor/DonorEvents";
-import { DonorLogin } from "./pages/donor/DonorLogin";
+// import { DonorLogin } from "./pages/donor/DonorLogin";
 import { DonorVerifyOtp } from "./pages/donor/DonorVerifyOtp";
 import { DonorProfile } from "./pages/donor/DonorProfile";
 import { DonationSuccessPage } from "./pages/DonationSuccessPage";
@@ -38,10 +39,13 @@ export const router = createBrowserRouter([
       { path: "blog", Component: BlogPage },
       { path: "press", Component: PressPage },
       { path: "impact", Component: ImpactPage },
-      { path: "donate", Component: DonatePage },
+      { path: "coming-soon", Component: ComingSoonPage },
+      { path: "donate", Component: ComingSoonPage },
+      // { path: "donate", Component: DonatePage },
       { path: "donation-success", Component: DonationSuccessPage },
       { path: "dashboard-preview", Component: DashboardPreviewPage },
-      { path: "donor/login", Component: DonorLogin },
+      { path: "donor/login", Component: ComingSoonPage },
+      // { path: "donor/login", Component: DonorLogin },
       { path: "donor/verify-otp", Component: DonorVerifyOtp },
     ],
   },
