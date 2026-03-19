@@ -35,7 +35,11 @@ export function AdminLayout() {
                 className="h-8 w-auto object-contain"
               />
               <div>
-                <span className="text-sm font-bold text-foreground">WombTo18</span>
+                <span className="text-sm font-bold">
+                  <span style={{ color: '#b48fe0' }}>Womb</span>
+                  <span style={{ color: '#3d6670' }}>To</span>
+                  <span style={{ color: '#4bbde8' }}>18</span>
+                </span>
                 <p className="text-[10px] text-emerald-600 font-bold uppercase tracking-wider" style={{ lineHeight: 1 }}>Admin Panel</p>
               </div>
             </Link>

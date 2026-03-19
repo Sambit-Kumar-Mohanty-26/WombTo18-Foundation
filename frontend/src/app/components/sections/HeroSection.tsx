@@ -19,8 +19,9 @@ export function HeroSection() {
             </div>
             <h1 className="text-4xl sm:text-5xl lg:text-6xl text-gray-900 mb-6" style={{ fontWeight: 800, lineHeight: 1.1 }}>
               Nurturing Lives from{" "}
-              <span className="text-primary">Womb</span> to{" "}
-              <span className="text-accent">18</span>
+              <span style={{ color: '#b48fe0' }}>Womb</span>{" "}
+              <span style={{ color: '#3d6670' }}>To</span>{" "}
+              <span style={{ color: '#4bbde8' }}>18</span>
             </h1>
             <p className="text-lg text-gray-600 mb-8 max-w-lg">
               We support mothers and children with healthcare, nutrition, education, and empowerment — from prenatal care through age 18.
