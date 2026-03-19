@@ -63,7 +63,11 @@ export function DashboardLayout() {
                 alt="WombTo18 Foundation" 
                 className="h-8 w-auto object-contain"
               />
-              <span className="text-sm font-bold text-foreground">WombTo18</span>
+              <span className="text-sm font-bold">
+                <span style={{ color: '#b48fe0' }}>Womb</span>
+                <span style={{ color: '#3d6670' }}>To</span>
+                <span style={{ color: '#4bbde8' }}>18</span>
+              </span>
             </Link>
             <button className="lg:hidden text-foreground" onClick={() => setSidebarOpen(false)}>
               <X className="h-5 w-5" />
