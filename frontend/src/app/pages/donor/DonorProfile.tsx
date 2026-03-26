@@ -121,14 +121,14 @@ export function DonorProfile() {
       <div className="flex flex-col md:flex-row md:items-center justify-between gap-6">
         <div className="flex items-center gap-5">
           <div className="relative group">
-            <div className="absolute -inset-1 bg-gradient-to-r from-emerald-100 to-emerald-50 rounded-full blur opacity-75 group-hover:opacity-100 transition duration-1000 group-hover:duration-200"></div>
+            <div className="absolute -inset-1 bg-gradient-to-r from-[#d1f5e0] to-[#f0faf4] rounded-full blur opacity-75 group-hover:opacity-100 transition duration-1000 group-hover:duration-200"></div>
             <Avatar className="h-24 w-24 border-2 border-white relative shadow-sm">
               <AvatarImage src="" alt={donorData.name} />
-              <AvatarFallback className="bg-emerald-50 text-emerald-700 text-2xl font-bold">
+              <AvatarFallback className="bg-[#f0faf4] text-[#1D6E3F] text-2xl font-bold">
                 {donorData.name.split(" ").map(n => n[0]).join("")}
               </AvatarFallback>
             </Avatar>
-            <button className="absolute bottom-0 right-0 p-1.5 bg-white text-emerald-700 rounded-full shadow-md border border-gray-200 hover:scale-110 transition-transform">
+            <button className="absolute bottom-0 right-0 p-1.5 bg-white text-[#1D6E3F] rounded-full shadow-md border border-gray-200 hover:scale-110 transition-transform">
               <Edit2 className="h-3.5 w-3.5" />
             </button>
           </div>
@@ -139,7 +139,7 @@ export function DonorProfile() {
                 {donorData.tier}
               </Badge>
             </div>
-            <p className="text-emerald-700 font-medium flex items-center gap-2 mt-1">
+            <p className="text-[#1D6E3F] font-medium flex items-center gap-2 mt-1">
               Donor ID: <span className="text-gray-900 font-mono">{donorData.donorId}</span>
               <Separator orientation="vertical" className="h-3 bg-gray-300" />
               Joined {donorData.joinedDate}
@@ -177,21 +177,21 @@ export function DonorProfile() {
         <TabsContent value="overview" className="space-y-8 animate-in fade-in duration-500">
           {/* Summary Cards */}
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-            <Card className="bg-white border-gray-200 shadow-sm overflow-hidden group hover:border-emerald-200 transition-colors">
+            <Card className="bg-white border-gray-200 shadow-sm overflow-hidden group hover:border-[#a7e8c3] transition-colors">
               <CardHeader className="pb-2">
-                <CardDescription className="text-emerald-700 uppercase text-[10px] font-bold tracking-widest">Total Donated</CardDescription>
+                <CardDescription className="text-[#1D6E3F] uppercase text-[10px] font-bold tracking-widest">Total Donated</CardDescription>
                 <CardTitle className="text-2xl text-gray-900 font-bold">{donorData.stats.totalDonated}</CardTitle>
               </CardHeader>
               <CardContent>
-                <div className="h-1 w-full bg-emerald-100 rounded-full mt-2">
+                <div className="h-1 w-full bg-[#d1f5e0] rounded-full mt-2">
                   <div className="h-full bg-primary rounded-full w-[70%]" />
                 </div>
               </CardContent>
             </Card>
             
-            <Card className="bg-white border-gray-200 shadow-sm group hover:border-emerald-200 transition-colors">
+            <Card className="bg-white border-gray-200 shadow-sm group hover:border-[#a7e8c3] transition-colors">
               <CardHeader className="pb-2">
-                <CardDescription className="text-emerald-700 uppercase text-[10px] font-bold tracking-widest">Donations</CardDescription>
+                <CardDescription className="text-[#1D6E3F] uppercase text-[10px] font-bold tracking-widest">Donations</CardDescription>
                 <CardTitle className="text-2xl text-gray-900 font-bold">{donorData.stats.donationCount}</CardTitle>
               </CardHeader>
               <CardContent className="text-xs text-gray-500">
@@ -199,9 +199,9 @@ export function DonorProfile() {
               </CardContent>
             </Card>
 
-            <Card className="bg-white border-gray-200 shadow-sm group hover:border-emerald-200 transition-colors">
+            <Card className="bg-white border-gray-200 shadow-sm group hover:border-[#a7e8c3] transition-colors">
               <CardHeader className="pb-2">
-                <CardDescription className="text-emerald-700 uppercase text-[10px] font-bold tracking-widest">Programs</CardDescription>
+                <CardDescription className="text-[#1D6E3F] uppercase text-[10px] font-bold tracking-widest">Programs</CardDescription>
                 <CardTitle className="text-2xl text-gray-900 font-bold">{donorData.stats.programsSupported}</CardTitle>
               </CardHeader>
               <CardContent className="text-xs text-gray-500">
@@ -209,9 +209,9 @@ export function DonorProfile() {
               </CardContent>
             </Card>
 
-            <Card className="bg-white border-gray-200 shadow-sm group hover:border-emerald-200 transition-colors">
+            <Card className="bg-white border-gray-200 shadow-sm group hover:border-[#a7e8c3] transition-colors">
               <CardHeader className="pb-2">
-                <CardDescription className="text-emerald-700 uppercase text-[10px] font-bold tracking-widest">Lives Touched</CardDescription>
+                <CardDescription className="text-[#1D6E3F] uppercase text-[10px] font-bold tracking-widest">Lives Touched</CardDescription>
                 <CardTitle className="text-2xl text-gray-900 font-bold">{donorData.impact.childrenSupported}</CardTitle>
               </CardHeader>
               <CardContent className="text-xs text-gray-500">
@@ -234,15 +234,15 @@ export function DonorProfile() {
                 <div className="grid grid-cols-1 sm:grid-cols-3 gap-6">
                   <div className="space-y-3 p-4 rounded-xl bg-gray-50 border border-gray-100 hover:bg-gray-100 transition-colors">
                     <p className="text-3xl font-bold text-gray-900">{donorData.impact.childrenSupported}</p>
-                    <p className="text-sm text-emerald-700 font-semibold leading-tight">Children supported through education</p>
+                    <p className="text-sm text-[#1D6E3F] font-semibold leading-tight">Children supported through education</p>
                   </div>
                   <div className="space-y-3 p-4 rounded-xl bg-gray-50 border border-gray-100 hover:bg-gray-100 transition-colors">
                     <p className="text-3xl font-bold text-gray-900">{donorData.impact.healthCheckups}</p>
-                    <p className="text-sm text-emerald-700 font-semibold leading-tight">Health checkups funded in rural clinics</p>
+                    <p className="text-sm text-[#1D6E3F] font-semibold leading-tight">Health checkups funded in rural clinics</p>
                   </div>
                   <div className="space-y-3 p-4 rounded-xl bg-gray-50 border border-gray-100 hover:bg-gray-100 transition-colors">
                     <p className="text-3xl font-bold text-gray-900">{donorData.impact.schoolsReached}</p>
-                    <p className="text-sm text-emerald-700 font-semibold leading-tight">Schools reached with program materials</p>
+                    <p className="text-sm text-[#1D6E3F] font-semibold leading-tight">Schools reached with program materials</p>
                   </div>
                 </div>
               </CardContent>
@@ -252,7 +252,7 @@ export function DonorProfile() {
             <Card className="bg-white border-gray-200 shadow-sm">
               <CardHeader>
                 <CardTitle className="text-xl text-gray-900 font-bold flex items-center gap-2">
-                  <User className="h-5 w-5 text-emerald-600" />
+                  <User className="h-5 w-5 text-[#1D6E3F]" />
                   Contact Details
                 </CardTitle>
               </CardHeader>
@@ -365,7 +365,7 @@ export function DonorProfile() {
                 <div className="space-y-0.5">
                   <div className="flex items-center gap-2">
                     <Label className="text-gray-900 font-bold">Public Recognition</Label>
-                    <Badge variant="outline" className="text-[9px] uppercase tracking-tighter border-emerald-500/30 text-emerald-700 bg-emerald-50">Donor Wall</Badge>
+                    <Badge variant="outline" className="text-[9px] uppercase tracking-tighter border-[#1D6E3F]/30 text-[#1D6E3F] bg-[#f0faf4]">Donor Wall</Badge>
                   </div>
                   <p className="text-sm text-gray-500 font-medium">Show my name on the donor recognition wall</p>
                 </div>
@@ -408,7 +408,7 @@ export function DonorProfile() {
             <Card className="bg-white border-gray-200 shadow-sm">
               <CardHeader>
                 <CardTitle className="text-xl text-gray-900 font-bold flex items-center gap-2">
-                  <Shield className="h-5 w-5 text-emerald-600" />
+                  <Shield className="h-5 w-5 text-[#1D6E3F]" />
                   Password Settings
                 </CardTitle>
                 <CardDescription className="text-gray-600 font-medium">Keep your account secure with a strong password</CardDescription>

@@ -17,7 +17,7 @@ const featureContent = {
     title: "Your new donor portal is arriving soon.",
     description:
       "We are crafting a smoother donor login experience with a cleaner dashboard, faster access, and a more premium feel.",
-    accent: "from-sky-300 via-cyan-300 to-emerald-300",
+    accent: "from-sky-300 via-cyan-300 to-[#6dd5a0]",
     glow: "bg-cyan-200/50",
   },
 } as const;
@@ -40,7 +40,7 @@ export function ComingSoonPage() {
           transition={{ duration: 7, repeat: Infinity, ease: "easeInOut" }}
         />
         <motion.div
-          className="absolute right-[12%] top-20 h-56 w-56 rounded-full bg-emerald-200/40 blur-3xl"
+          className="absolute right-[12%] top-20 h-56 w-56 rounded-full bg-[#a7e8c3]/40 blur-3xl"
           animate={{ y: [0, 18, 0], x: [0, -14, 0], scale: [1.04, 0.94, 1.04] }}
           transition={{ duration: 8, repeat: Infinity, ease: "easeInOut" }}
         />
@@ -59,7 +59,7 @@ export function ComingSoonPage() {
             transition={{ duration: 0.7 }}
             className="max-w-2xl"
           >
-            <div className="mb-6 inline-flex items-center gap-2 rounded-full border border-white/80 bg-white/80 px-4 py-2 text-sm font-semibold text-emerald-700 shadow-lg shadow-emerald-100/60 backdrop-blur-md">
+            <div className="mb-6 inline-flex items-center gap-2 rounded-full border border-white/80 bg-white/80 px-4 py-2 text-sm font-semibold text-[#1D6E3F] shadow-lg shadow-[#d1f5e0]/60 backdrop-blur-md">
               <Sparkles className="h-4 w-4" />
               {feature.eyebrow}
             </div>
@@ -98,14 +98,14 @@ export function ComingSoonPage() {
             className="relative"
           >
             <div className="absolute -inset-4 rounded-[2rem] bg-white/60 blur-2xl" />
-            <div className="relative overflow-hidden rounded-[2rem] border border-white/80 bg-white/75 p-6 shadow-2xl shadow-emerald-100/70 backdrop-blur-xl sm:p-8">
+            <div className="relative overflow-hidden rounded-[2rem] border border-white/80 bg-white/75 p-6 shadow-2xl shadow-[#d1f5e0]/70 backdrop-blur-xl sm:p-8">
               <motion.div
                 className={`mb-6 inline-flex rounded-full bg-gradient-to-r ${feature.accent} p-[1px]`}
                 animate={{ rotate: [0, 6, -6, 0] }}
                 transition={{ duration: 8, repeat: Infinity, ease: "easeInOut" }}
               >
                 <div className="flex items-center gap-2 rounded-full bg-white px-4 py-2 text-sm font-semibold text-slate-700">
-                  <Clock3 className="h-4 w-4 text-emerald-600" />
+                  <Clock3 className="h-4 w-4 text-[#1D6E3F]" />
                   Coming Soon
                 </div>
               </motion.div>
@@ -123,7 +123,7 @@ export function ComingSoonPage() {
                     transition={{ duration: 0.45, delay: 0.25 + index * 0.12 }}
                     className="flex items-center gap-3 rounded-2xl border border-slate-100 bg-white/80 p-4 shadow-sm"
                   >
-                    <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-2xl bg-emerald-50 text-emerald-600">
+                    <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-2xl bg-[#f0faf4] text-[#1D6E3F]">
                       <Heart className="h-4 w-4 fill-current" />
                     </div>
                     <p className="text-sm font-medium text-slate-700">{item}</p>

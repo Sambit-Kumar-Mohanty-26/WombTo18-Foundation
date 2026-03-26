@@ -1,12 +1,22 @@
 import { useState } from "react";
 import { Card, CardContent } from "../components/ui/card";
 import { Button } from "../components/ui/button";
-import { Heart, Shield, CheckCircle, CreditCard, Smartphone, Building2, ArrowRight, Loader2 } from "lucide-react";
+import { Heart, Shield, CheckCircle, CreditCard, Smartphone, Building2, ArrowRight, Activity, BookOpen, Utensils, Award, Leaf } from "lucide-react";
 import { toast } from "sonner";
 import { useNavigate } from "react-router";
 import { DonationTabs } from "../components/forms/DonationTabs";
 import { IndividualDonationForm } from "../components/forms/IndividualDonationForm";
 import { OrganizationDonationForm } from "../components/forms/OrganizationDonationForm";
+import { motion } from "motion/react";
+
+const impactTiers = [
+  { id: 't1', icon: Utensils, title: "Nutrition Pack", amount: 1500, desc: "Monthly nutritional supplements for 1 expecting mother.", color: "border-orange-200 bg-orange-50 text-orange-600" },
+  { id: 't2', icon: Activity, title: "Vaccine Lifeline", amount: 3000, desc: "Complete immunization schedule tracking for 5 infants.", color: "border-[var(--journey-saffron)]/30 bg-[var(--journey-saffron)]/10 text-[var(--journey-saffron)]" },
+  { id: 't3', icon: BookOpen, title: "School Health", amount: 5000, desc: "Full year of health screenings for 10 school children.", color: "border-[var(--future-sky)]/30 bg-[var(--future-sky)]/10 text-[var(--future-sky)]" },
+  { id: 't4', icon: Heart, title: "Maternal Care", amount: 10000, desc: "End-to-end prenatal care and hospital transport for 2 drops.", color: "border-[var(--womb-forest)]/30 bg-[var(--womb-forest)]/10 text-[var(--womb-forest)]" },
+  { id: 't5', icon: Award, title: "Youth Empowerment", amount: 25000, desc: "Vocational skills and mental wellness counseling for 10 adolescents.", color: "border-indigo-200 bg-indigo-50 text-indigo-600" },
+  { id: 't6', icon: Leaf, title: "Green Cohort", amount: 50000, desc: "Sponsor a carbon-neutral village cluster (tree planting + care).", color: "border-[#a7e8c3] bg-[#f0faf4] text-[#1D6E3F]" }
+];
 
 export function DonatePage() {
   const [isProcessing, setIsProcessing] = useState(false);
@@ -47,11 +57,6 @@ export function DonatePage() {
       name: "WombTo18 Foundation",
       description: "Donation Payment",
       handler: function (response: any) {
-        console.log("Payment successful:", response);
-        console.log("Payment ID:", response.razorpay_payment_id);
-        console.log("Order ID:", response.razorpay_order_id);
-        console.log("Signature:", response.razorpay_signature);
-
         setIsProcessing(false);
         navigate(`/donation-success?amount=${amount}&paymentId=${response.razorpay_payment_id}`);
       },
@@ -60,9 +65,7 @@ export function DonatePage() {
         email: donorDetails.email || "",
         contact: donorDetails.mobile || donorDetails.contactNumber || ""
       },
-      theme: {
-        color: "#10b981"
-      }
+      theme: { color: "#FF9900" }
     };
 
     const rzp = new (window as any).Razorpay(options);
@@ -75,115 +78,123 @@ export function DonatePage() {
     rzp.open();
   };
 
-
   return (
-    <>
-      <section className="py-16 bg-slate-50/50 border-b border-slate-200 text-slate-900">
-        <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-          <div className="text-center max-w-2xl mx-auto">
-            <Heart className="h-10 w-10 text-primary mx-auto mb-4 fill-current" />
-            <h1 className="text-4xl sm:text-5xl text-slate-900 mb-4" style={{ fontWeight: 800, lineHeight: 1.1 }}>
-              Make a Difference Today
-            </h1>
-            <p className="text-lg text-slate-600 font-medium">
-              Your donation directly funds prenatal care, nutrition, education, and empowerment programs. 100% tax deductible under 80G.
-            </p>
-          </div>
+    <div className="bg-gray-50 min-h-screen pb-24">
+      {/* Hero */}
+      <section className="pt-24 pb-16 bg-[var(--journey-saffron)] text-white text-center px-4 relative overflow-hidden">
+        <div className="absolute inset-0 bg-[url('https://www.transparenttextures.com/patterns/cubes.png')] opacity-10 mix-blend-overlay"></div>
+        <div className="relative z-10 max-w-3xl mx-auto">
+          <Heart className="h-12 w-12 mx-auto mb-6 opacity-80" />
+          <h1 className="text-4xl sm:text-5xl font-extrabold mb-4">Invest in a Generation</h1>
+          <p className="text-lg text-teal-100 font-medium">
+            Your donation powers India's most comprehensive 0-18 child health platform. <br className="hidden sm:block"/> 100% transparent. Donations are eligible for tax benefits under Section 80G.
+          </p>
         </div>
       </section>
 
-      <section className="py-12 bg-background">
-        <div className="mx-auto max-w-4xl px-4 sm:px-6 lg:px-8">
-          <div className="grid lg:grid-cols-5 gap-8">
-            {/* Donation Form Section */}
-            <div className="lg:col-span-3">
-              <div className="mb-6">
-                <h2 className="text-2xl font-bold text-primary mb-2">Support Our Mission</h2>
-                <p className="text-muted-foreground">Choose the donation type that suits you best.</p>
+      {/* Tiers */}
+      <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 -mt-8 relative z-20 mb-20">
+        <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
+          {impactTiers.map(tier => (
+            <motion.div whileHover={{ y: -4 }} key={tier.id} className="bg-white rounded-2xl shadow-xl shadow-gray-200/50 p-6 border border-gray-100 flex flex-col relative overflow-hidden">
+              <div className="absolute top-4 right-4 bg-[#d1f5e0] text-[#155e33] text-[10px] font-bold px-2 py-1 rounded-full uppercase tracking-widest border border-[#a7e8c3]">
+                Tax Saving
               </div>
+              <div className={`w-12 h-12 rounded-xl border flex items-center justify-center mb-4 ${tier.color}`}>
+                <tier.icon className="w-6 h-6" />
+              </div>
+              <h3 className="text-xl font-bold text-gray-900 mb-1">{tier.title}</h3>
+              <p className="text-2xl font-black text-[var(--womb-forest)] mb-3">₹{tier.amount.toLocaleString('en-IN')}</p>
+              <p className="text-sm text-gray-500 flex-1 leading-relaxed">{tier.desc}</p>
+            </motion.div>
+          ))}
+        </div>
+      </section>
 
-              <DonationTabs 
-                onTypeChange={setDonationType}
-                individualForm={
-                  <IndividualDonationForm onSubmit={(data) => handlePayment(data.amount, data)} isProcessing={isProcessing} />
-                }
-                organizationForm={
-                  <OrganizationDonationForm onSubmit={(data) => handlePayment(data.amount, data)} isProcessing={isProcessing} />
-                }
-              />
+      {/* Forms & Sidebar */}
+      <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div className="grid lg:grid-cols-12 gap-12">
+          
+          <div className="lg:col-span-7 bg-white p-8 sm:p-10 rounded-3xl shadow-lg border border-gray-100">
+            <div className="mb-8">
+              <h2 className="text-3xl font-extrabold text-gray-900 mb-2">Make Your Contribution</h2>
+              <p className="text-gray-500">Select whether you are donating as an individual or an organization.</p>
+            </div>
 
-              <div className="mt-8 space-y-4">
-                {/* Payment Flow */}
-                <div className="bg-card rounded-lg p-4 border border-border">
-                  <p className="text-xs text-primary mb-3 font-bold uppercase tracking-wider">Secure Payment Flow:</p>
-                  <div className="flex items-center gap-2 text-[10px] text-muted-foreground flex-wrap">
-                    <span className="bg-primary/10 text-primary px-2 py-0.5 rounded border border-primary/20 font-semibold">1. Select Type</span>
-                    <ArrowRight className="h-3 w-3 shrink-0 text-muted-foreground/30" />
-                    <span className="bg-primary/10 text-primary px-2 py-0.5 rounded border border-primary/20 font-semibold">2. Fill Details</span>
-                    <ArrowRight className="h-3 w-3 shrink-0 text-muted-foreground/30" />
-                    <span className="bg-primary/10 text-primary px-2 py-0.5 rounded border border-primary/20 font-semibold">3. Razorpay Secure Payment</span>
-                    <ArrowRight className="h-3 w-3 shrink-0 text-muted-foreground/30" />
-                    <span className="bg-primary/10 text-primary px-2 py-0.5 rounded border border-primary/20 font-semibold">4. Receipt Generation</span>
+            <DonationTabs 
+              onTypeChange={setDonationType}
+              individualForm={
+                <IndividualDonationForm onSubmit={(data) => handlePayment(data.amount, data)} isProcessing={isProcessing} />
+              }
+              organizationForm={
+                <OrganizationDonationForm onSubmit={(data) => handlePayment(data.amount, data)} isProcessing={isProcessing} />
+              }
+            />
+
+            <div className="mt-8 pt-8 border-t border-gray-100">
+              <div className="flex justify-center items-center gap-6 opacity-60">
+                <div className="flex items-center gap-2 text-sm font-semibold text-gray-600"><CreditCard className="w-5 h-5" /> Cards</div>
+                <div className="flex items-center gap-2 text-sm font-semibold text-gray-600"><Smartphone className="w-5 h-5" /> UPI</div>
+                <div className="flex items-center gap-2 text-sm font-semibold text-gray-600"><Building2 className="w-5 h-5" /> Net Banking</div>
+              </div>
+            </div>
+          </div>
+
+          <div className="lg:col-span-5 space-y-8">
+            {/* 80G Illustrated Flow */}
+            <div className="bg-white p-8 rounded-3xl shadow-lg border border-gray-100">
+              <h3 className="text-xl font-bold text-gray-900 mb-6 flex items-center gap-3">
+                <Shield className="w-6 h-6 text-[var(--journey-saffron)]" />
+                Instant 80G Certificate Flow
+              </h3>
+              
+              <div className="relative pl-6 space-y-8 before:absolute before:inset-0 before:ml-[31px] before:-translate-x-px md:before:mx-auto md:before:translate-x-0 before:h-full before:w-0.5 before:bg-gradient-to-b before:from-[var(--journey-saffron)] before:via-[var(--womb-forest)] before:to-gray-200">
+                <div className="relative flex items-center gap-6">
+                  <div className="!absolute left-0 w-8 h-8 -ml-[16px] flex items-center justify-center bg-white border-4 border-[var(--journey-saffron)] rounded-full z-10">
+                    <span className="text-xs font-bold text-[var(--journey-saffron)]">1</span>
+                  </div>
+                  <div className="ml-6 flex-1">
+                    <p className="font-bold text-gray-900">Secure Payment</p>
+                    <p className="text-sm text-gray-500">Complete transaction securely via Razorpay.</p>
                   </div>
                 </div>
 
-                {/* Payment Methods */}
-                <div className="flex items-center justify-center gap-6 py-2 border-t border-border">
-                  <div className="flex items-center gap-1.5 text-xs text-muted-foreground">
-                    <CreditCard className="h-3.5 w-3.5" /> Cards
+                <div className="relative flex items-center gap-6">
+                  <div className="!absolute left-0 w-8 h-8 -ml-[16px] flex items-center justify-center bg-white border-4 border-[var(--womb-forest)] rounded-full z-10">
+                    <span className="text-xs font-bold text-[var(--womb-forest)]">2</span>
                   </div>
-                  <div className="flex items-center gap-1.5 text-xs text-muted-foreground">
-                    <Smartphone className="h-3.5 w-3.5" /> UPI
+                  <div className="ml-6 flex-1">
+                    <p className="font-bold text-gray-900">Auto-Generation</p>
+                    <p className="text-sm text-gray-500">System processes your PAN & details instantly.</p>
                   </div>
-                  <div className="flex items-center gap-1.5 text-xs text-muted-foreground">
-                    <Building2 className="h-3.5 w-3.5" /> Net Banking
+                </div>
+
+                <div className="relative flex items-center gap-6">
+                  <div className="!absolute left-0 w-8 h-8 -ml-[16px] flex items-center justify-center bg-white border-4 border-gray-300 rounded-full z-10">
+                    <CheckCircle className="w-4 h-4 text-gray-400" />
+                  </div>
+                  <div className="ml-6 flex-1">
+                    <p className="font-bold text-gray-900">Delivered to Inbox</p>
+                    <p className="text-sm text-gray-500">80G PDF and tax receipt emailed within 2 mins.</p>
                   </div>
                 </div>
               </div>
             </div>
 
-            {/* Sidebar */}
-            <div className="lg:col-span-2 space-y-4 pt-16">
-              <Card className="border-primary/20 bg-card">
-                <CardContent className="pt-6">
-                  <Shield className="h-8 w-8 text-primary mb-3" />
-                  <h4 className="mb-2 font-bold text-foreground">100% Tax Deductible</h4>
-                  <p className="text-sm text-muted-foreground">
-                    All donations are eligible for tax exemption under Section 80G. Your certificate will be issued instantly.
-                  </p>
-                </CardContent>
-              </Card>
-
-              <Card className="border-border bg-card">
-                <CardContent className="pt-6">
-                  <h4 className="mb-4 text-foreground font-bold text-sm">Why Donate?</h4>
-                  <ul className="space-y-3">
-                    {[
-                      "Funds life-saving prenatal care",
-                      "Supports education for rural children",
-                      "Provides high-quality nutrition",
-                      "Empowers local communities"
-                    ].map((item, i) => (
-                      <li key={i} className="flex items-start gap-2 text-sm text-muted-foreground">
-                        <CheckCircle className="h-4 w-4 text-primary shrink-0 mt-0.5" />
-                        {item}
-                      </li>
-                    ))}
-                  </ul>
-                </CardContent>
-              </Card>
-
-              <Card className="border-dashed border-border bg-transparent">
-                <CardContent className="pt-6 text-center">
-                  <p className="text-[10px] uppercase tracking-widest text-muted-foreground/50 font-bold">Securely Powered by</p>
-                  <img src="/razorpay.svg" alt="razorpay" className="w-24 h-24 mx-auto -mt-4 opacity-70 hover:opacity-100 transition-opacity" />
-                </CardContent>
-              </Card>
+            <div className="bg-[var(--womb-forest)]/5 p-8 rounded-3xl border border-[var(--womb-forest)]/20 text-center">
+              <p className="text-[10px] uppercase tracking-widest text-[var(--womb-forest)] font-bold mb-4">Securely Processed By</p>
+              <img src="/razorpay.svg" alt="Razorpay" className="h-10 mx-auto opacity-80" />
+              <p className="text-xs text-gray-500 mt-4 leading-relaxed">
+                We use industry-standard 256-bit encryption. Your payment details are never stored on our servers.
+              </p>
             </div>
+
           </div>
+
         </div>
       </section>
-    </>
+
+    </div>
   );
 }
 

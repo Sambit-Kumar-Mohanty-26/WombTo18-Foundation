@@ -15,7 +15,7 @@ export function DonorLogin() {
   };
 
   return (
-    <section className="py-20 min-h-[80vh] flex flex-col items-center justify-center bg-gradient-to-br from-background via-emerald-950/50 to-background">
+    <section className="py-20 min-h-[80vh] flex flex-col items-center justify-center bg-gradient-to-br from-background via-[#0a3a1e]/50 to-background">
       <div className="w-full px-4 sm:px-6 lg:px-8 relative z-10">
         <DonorLoginForm onSuccess={handleLoginSuccess} />
       </div>

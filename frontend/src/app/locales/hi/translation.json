@@ -1,0 +1,45 @@
+{
+  "nav": {
+    "home": "",
+    "about": "",
+    "programs": "",
+    "impact": "",
+    "blog": "",
+    "press": "",
+    "donorLogin": "",
+    "dashboard": "",
+    "donate": "",
+    "transparency": "पारदर्शिता"
+  },
+  "impact": {
+    "badge": "प्रभाव और पारदर्शिता",
+    "title": "हर रुपये का हिसाब",
+    "subtitle": "आपके दान से कैसे प्रभाव पड़ता है, इस पर वास्तविक समय का डेटा। पूर्ण वित्तीय पारदर्शिता - हमेशा।",
+    "annualReport": "वार्षिक रिपोर्ट 2025",
+    "auditCertificate": "ऑडिट प्रमाणपत्र"
+  },
+  "home": {
+    "heroTitle": "",
+    "heroSubtitle": ""
+  },
+  "about": {
+    "title": "",
+    "subtitle": ""
+  },
+  "services": {
+    "title": "",
+    "subtitle": ""
+  },
+  "blog": {
+    "title": "",
+    "subtitle": ""
+  },
+  "press": {
+    "title": "",
+    "subtitle": ""
+  },
+  "donate": {
+    "title": "",
+    "subtitle": ""
+  }
+}

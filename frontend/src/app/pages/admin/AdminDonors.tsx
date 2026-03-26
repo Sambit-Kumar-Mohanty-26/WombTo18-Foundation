@@ -49,7 +49,7 @@ export function AdminDonors() {
           placeholder="Search donors..."
           value={search}
           onChange={(e) => setSearch(e.target.value)}
-          className="pl-9 bg-white border border-gray-300 text-gray-900 placeholder:text-gray-400 focus:ring-2 focus:ring-emerald-500 rounded-md"
+          className="pl-9 bg-white border border-gray-300 text-gray-900 placeholder:text-gray-400 focus:ring-2 focus:ring-[#1D6E3F] rounded-md"
         />
       </div>
 

@@ -1,52 +1,218 @@
-import { CheckCircle } from "lucide-react";
-import { ScrollReveal } from "../ui/ScrollReveal";
+import { motion, useScroll, useTransform } from "motion/react";
+import { Quote, MapPin, Mail } from "lucide-react";
+import React, { useRef } from "react";
 
-const highlights = [
-  "Registered 80G & 12A certified NGO",
-  "Operating across 12 states in India",
-  "100% transparent fund utilization",
-  "Partnerships with 50+ hospitals",
+const letterParagraphs = [
+  {
+    type: "greeting",
+    text: "Dear Friend,",
+  },
+  {
+    type: "dropcap",
+    text: `When I started this journey, I was not simply building a company. I was answering a question that had troubled me for years: why, in a country of 1.4 billion people — with brilliant doctors, dedicated teachers, and parents who would do anything for their children — do we still lose so many to the preventable, the treatable, the entirely avoidable?`,
+  },
+  {
+    type: "body",
+    text: `The answer, I found, was not a shortage of care. It was a shortage of connection. Between the mother and the clinic. Between the school and the home. Between the child's health record and the doctor who needed to see it.`,
+  },
+  {
+    type: "highlight",
+    text: `WOMBTO18 was built to be that connection.`,
+  },
+  {
+    type: "body",
+    text: `The Foundation exists because the most vulnerable children — in underserved communities, in government schools, in families without the time or means to navigate a complex healthcare system — deserve exactly the same standard of integrated care that a well-resourced family in a major city can access. That is not charity. That is justice.`,
+  },
+  {
+    type: "body",
+    text: `We built this with discipline. Every rupee we receive is tracked to its purpose. Every programme we run is measured for its outcome. Every donor who trusts us with their contribution can see, in real time, exactly what their gift has done.`,
+  },
+  {
+    type: "emphasis",
+    text: `Because trust is not something you ask for. It is something you earn — one transparent act at a time.`,
+  },
+  {
+    type: "body",
+    text: `We hold 12A and 80G certification. We are recognised by DPIIT. We are validated by TechSoup India. And we are just beginning.`,
+  },
+  {
+    type: "body",
+    text: `I invite you — whether you are a donor, a partner, a volunteer, or simply someone who believes that every child deserves a healthy start — to join us. Not as a supporter. As a co-builder of something that will outlast all of us.`,
+  },
 ];
 
 export function AboutSection() {
-  return (
-    <section className="py-20 bg-white text-gray-900">
-      <ScrollReveal className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-        <div className="grid lg:grid-cols-2 gap-16 items-center">
-          <div className="relative">
-            <img
-              src="https://images.pexels.com/photos/7351733/pexels-photo-7351733.jpeg"
-              alt="Mother and child care"
-              className="rounded-2xl w-full h-[400px] object-cover"
-            />
-            <div className="absolute -bottom-6 -right-6 bg-primary text-white rounded-xl p-5 shadow-lg">
-              <p className="text-3xl" style={{ fontWeight: 800 }}>18</p>
-              <p className="text-sm">Years of Journey</p>
-            </div>
-          </div>
+  const scrollContainerRef = useRef<HTMLDivElement>(null);
+  const sectionRef = useRef<HTMLDivElement>(null);
 
-          <div>
-            <p className="text-primary text-sm mb-2" style={{ fontWeight: 600, textTransform: "uppercase", letterSpacing: "0.05em" }}>About Us</p>
-            <h2 className="text-3xl sm:text-4xl text-gray-900 mb-6" style={{ fontWeight: 700 }}>
-              From the First Heartbeat to Their 18th Birthday
-            </h2>
-            <p className="text-gray-600 mb-4">
-              WombTo18 Foundation is dedicated to ensuring that every child receives the care, nutrition, education, and support they need from the moment of conception through their 18th birthday.
-            </p>
-            <p className="text-gray-600 mb-8">
-              We believe that the foundation for a successful life is laid long before a child enters a classroom. Our holistic approach addresses prenatal care, early childhood development, educational support, and youth empowerment.
-            </p>
-            <div className="space-y-3">
-              {highlights.map((item) => (
-                <div key={item} className="flex items-center gap-3">
-                  <CheckCircle className="h-5 w-5 text-accent shrink-0" />
-                  <span className="text-sm text-gray-900">{item}</span>
-                </div>
-              ))}
+  const { scrollYProgress } = useScroll({
+    target: sectionRef,
+    offset: ["start end", "end start"]
+  });
+
+  const bgY = useTransform(scrollYProgress, [0, 1], [0, -40]);
+
+  return (
+    <section 
+      ref={sectionRef}
+      className="relative bg-[#FAF9F6] overflow-hidden text-gray-900 border-t border-gray-100"
+      style={{ minHeight: "100vh" }}
+    >
+      {/* Background Decor */}
+      <motion.div style={{ y: bgY }} className="absolute inset-0 pointer-events-none">
+        <div className="absolute top-0 right-0 -mr-20 -mt-20 w-[600px] h-[600px] bg-[radial-gradient(ellipse_at_center,_var(--womb-forest)_0%,_transparent_70%)] opacity-[0.03] blur-[80px] rounded-full" />
+        <div className="absolute bottom-0 left-0 -ml-20 -mb-20 w-[600px] h-[600px] bg-[radial-gradient(ellipse_at_center,_var(--journey-saffron)_0%,_transparent_70%)] opacity-[0.03] blur-[80px] rounded-full" />
+      </motion.div>
+
+      <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 relative z-10 py-16 sm:py-20 flex flex-col" style={{ minHeight: "100vh" }}>
+        
+        {/* Compact Title */}
+        <motion.div 
+          initial={{ opacity: 0, y: 20 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true }}
+          transition={{ duration: 0.7 }}
+          className="flex flex-col items-center text-center mb-10 sm:mb-14"
+        >
+          <p className="inline-flex items-center gap-2 text-[var(--womb-forest)] text-xs font-black tracking-[0.2em] uppercase mb-4">
+            Founder's Note <span className="w-8 h-[2px] bg-gradient-to-r from-[var(--womb-forest)] to-transparent rounded-full ml-2" />
+          </p>
+          <h2 className="text-3xl sm:text-4xl md:text-5xl text-gray-900 tracking-tight" style={{ fontWeight: 900, lineHeight: 1.1 }}>
+            Built From Conviction.{" "}
+            <span className="text-transparent bg-clip-text bg-gradient-to-r from-[var(--journey-saffron)] to-orange-400">Guided by Evidence.</span>
+          </h2>
+        </motion.div>
+
+        {/* Two-column layout — fits remaining viewport */}
+        <div className="flex-1 grid lg:grid-cols-12 gap-8 lg:gap-12 min-h-0">
+          
+          {/* Left Column: Compact Image Card */}
+          <motion.div 
+            initial={{ opacity: 0, x: -40 }}
+            whileInView={{ opacity: 1, x: 0 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.8, ease: [0.22, 1, 0.36, 1] }}
+            className="lg:col-span-4 flex flex-col gap-5"
+          >
+            {/* Founder Image */}
+            <div className="relative rounded-[1.5rem] overflow-hidden shadow-[0_20px_40px_-15px_rgba(29,110,63,0.25)] group flex-shrink-0">
+              <img
+                src="/Sowjanya.png"
+                alt="Sowjanya Reddy - Founder"
+                className="w-full aspect-[4/3] object-cover object-top transition-transform duration-[1.5s] ease-out group-hover:scale-105"
+              />
+              <div className="absolute inset-0 bg-gradient-to-t from-[var(--womb-forest)]/90 via-[var(--womb-forest)]/10 to-transparent" />
+              
+              <div className="absolute bottom-0 left-0 right-0 p-5">
+                <Quote className="h-5 w-5 mb-2 text-[var(--journey-saffron)] opacity-90" />
+                <p className="text-sm font-serif font-medium leading-snug italic text-white/90 tracking-tight" style={{ textShadow: "0 2px 10px rgba(0,0,0,0.5)" }}>
+                  "That is not charity.{" "}
+                  <span className="text-[var(--journey-saffron)] not-italic font-sans font-black">That is justice.</span>"
+                </p>
+              </div>
             </div>
-          </div>
+
+            {/* Compact Founder Card */}
+            <motion.div 
+              initial={{ opacity: 0, y: 20 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              transition={{ delay: 0.3, duration: 0.6 }}
+              className="bg-white p-5 rounded-2xl shadow-[0_8px_24px_-12px_rgba(0,0,0,0.06)] border border-gray-100"
+            >
+              <p className="font-extrabold text-gray-900 text-base tracking-tight mb-0.5">Sowjanya Reddy</p>
+              <p className="text-xs font-bold text-[var(--womb-forest)] mb-2">Founder & Director — WOMBTO18 Foundation</p>
+              <div className="flex flex-col gap-1.5 text-xs text-gray-500">
+                <span className="flex items-center gap-1.5"><MapPin className="w-3 h-3 text-[var(--journey-saffron)]" /> Bangalore, India</span>
+              </div>
+            </motion.div>
+          </motion.div>
+
+          {/* Right Column: Scrollable Letter */}
+          <motion.div 
+            initial={{ opacity: 0, x: 40 }}
+            whileInView={{ opacity: 1, x: 0 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.8, delay: 0.15, ease: [0.22, 1, 0.36, 1] }}
+            className="lg:col-span-8 relative min-h-0 flex flex-col"
+          >
+            {/* Decorative vertical line */}
+            <div className="absolute -left-6 top-0 bottom-0 w-px bg-gradient-to-b from-gray-200 via-gray-200 to-transparent hidden lg:block" />
+            
+            {/* Letter Paper Container */}
+            <div className="relative flex-1 min-h-0 rounded-[1.5rem] bg-white shadow-[0_15px_50px_-15px_rgba(0,0,0,0.06)] border border-gray-100/80 overflow-hidden">
+              {/* Paper texture header */}
+              <div className="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-[var(--womb-forest)] via-[var(--journey-saffron)] to-[var(--womb-forest)]" />
+
+              {/* Scrollable content inside */}
+              <div 
+                ref={scrollContainerRef}
+                className="h-full overflow-y-auto px-6 sm:px-10 py-8 sm:py-10 scroll-smooth"
+                style={{ 
+                  maxHeight: "calc(100vh - 18rem)",
+                  scrollbarWidth: "thin",
+                  scrollbarColor: "rgba(29,110,63,0.2) transparent",
+                }}
+              >
+                <div className="prose prose-lg max-w-none text-gray-700 font-serif leading-[1.8] tracking-tight">
+                  {letterParagraphs.map((para, i) => (
+                    <motion.div
+                      key={i}
+                      initial={{ opacity: 0, y: 15 }}
+                      whileInView={{ opacity: 1, y: 0 }}
+                      viewport={{ once: true, root: scrollContainerRef, margin: "-20px" }}
+                      transition={{ duration: 0.5, delay: i * 0.05, ease: "easeOut" }}
+                    >
+                      {para.type === "greeting" && (
+                        <p className="text-lg sm:text-xl font-black text-gray-900 mb-5 font-sans">{para.text}</p>
+                      )}
+                      {para.type === "dropcap" && (
+                        <p className="text-gray-800 mb-5 relative z-10">
+                          <span className="float-left text-5xl sm:text-6xl leading-[0.8] font-black text-[var(--womb-forest)] mr-3 mb-1 mt-1" style={{ fontFamily: "Georgia, serif" }}>W</span>
+                          {para.text.substring(1)}
+                        </p>
+                      )}
+                      {para.type === "body" && (
+                        <p className="mb-5">{para.text}</p>
+                      )}
+                      {para.type === "highlight" && (
+                        <p className="text-xl font-black text-[var(--womb-forest)] italic font-sans py-3 border-l-4 border-[var(--journey-saffron)] pl-5 bg-[var(--womb-forest)]/[0.03] rounded-r-xl my-6">
+                          {para.text}
+                        </p>
+                      )}
+                      {para.type === "emphasis" && (
+                        <p className="font-sans font-bold text-gray-900 text-lg py-2 mb-5">{para.text}</p>
+                      )}
+                    </motion.div>
+                  ))}
+
+                  {/* Sign-off */}
+                  <motion.div 
+                    initial={{ opacity: 0 }} 
+                    whileInView={{ opacity: 1 }} 
+                    viewport={{ once: true, root: scrollContainerRef }}
+                    transition={{ duration: 0.8 }}
+                    className="mt-8 pt-6 border-t border-gray-100 font-sans"
+                  >
+                    <p className="text-base font-bold text-gray-800 italic">With deep gratitude and conviction,</p>
+                    <span className="text-3xl sm:text-4xl text-[var(--womb-forest)]/70 block mt-4 mb-2" style={{ fontFamily: "'Cedarville Cursive', 'Brush Script MT', cursive", transform: "rotate(-3deg)", display: "inline-block" }}>
+                      Sowjanya Reddy
+                    </span>
+                  </motion.div>
+                </div>
+              </div>
+
+              {/* Bottom fade mask — scroll indicator */}
+              <div 
+                className="absolute bottom-0 left-0 right-0 h-16 pointer-events-none z-10"
+                style={{ 
+                  background: "linear-gradient(to top, white 0%, transparent 100%)" 
+                }}
+              />
+            </div>
+          </motion.div>
         </div>
-      </ScrollReveal>
+      </div>
     </section>
   );
 }

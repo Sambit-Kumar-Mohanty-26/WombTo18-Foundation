@@ -3,6 +3,7 @@ import { Card, CardContent } from "../components/ui/card";
 import { ExternalLink, Calendar, Download, Newspaper, Tv, Radio } from "lucide-react";
 import { Button } from "../components/ui/button";
 import { toast } from "sonner";
+import { motion } from "motion/react";
 
 const pressItems = [
   {
@@ -92,34 +93,59 @@ export function PressPage() {
       </section>
 
       {/* Press Coverage */}
-      <section className="py-16 bg-gray-50/30">
+      <section className="py-24 bg-gray-50/30 overflow-hidden">
         <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-          <h2 className="text-2xl text-gray-900 mb-8 font-extrabold">Recent Coverage</h2>
-          <div className="space-y-4">
-            {pressItems.map((item) => (
-              <Card key={item.title} className="bg-white hover:shadow-lg border-gray-100 shadow-sm transition-all duration-300 transform hover:-translate-y-1">
-                <CardContent className="p-6 flex flex-col sm:flex-row gap-4">
-                  <div className="flex items-start gap-3 sm:w-48 shrink-0">
-                    <item.icon className="h-5 w-5 text-gray-400 mt-0.5 shrink-0" />
-                    <div>
-                      <p className="text-sm text-gray-900 font-extrabold">{item.outlet}</p>
-                      <Badge className={`${typeColors[item.type]} flex items-center justify-center mt-1 shadow-none border-none font-bold`}>{item.type}</Badge>
+          <motion.h2 
+            initial={{ opacity: 0, x: -30 }} 
+            whileInView={{ opacity: 1, x: 0 }} 
+            viewport={{ once: true }}
+            transition={{ duration: 0.8 }}
+            className="text-[2.5rem] tracking-tight text-gray-900 mb-12 font-black"
+          >
+            Recent Coverage
+          </motion.h2>
+          <div className="space-y-6">
+            {pressItems.map((item, i) => (
+              <motion.div
+                key={item.title}
+                initial={{ opacity: 0, rotateX: -15, y: 50, transformPerspective: 1000 }}
+                whileInView={{ opacity: 1, rotateX: 0, y: 0 }}
+                viewport={{ once: true, margin: "-50px" }}
+                transition={{ duration: 0.8, delay: i * 0.1, ease: [0.22, 1, 0.36, 1] }}
+                whileHover={{ scale: 1.015, y: -5 }}
+              >
+                <Card className="bg-white hover:shadow-[0_20px_40px_-15px_rgba(0,0,0,0.1)] border-transparent shadow-[0_4px_10px_rgba(0,0,0,0.02)] transition-all duration-500 rounded-3xl overflow-hidden group">
+                  <CardContent className="p-8 flex flex-col sm:flex-row gap-6 relative">
+                    <motion.div 
+                      className="absolute inset-0 bg-gradient-to-r from-transparent via-[#1D6E3F]/5 to-transparent -translate-x-full group-hover:translate-x-full transition-transform duration-1000 ease-in-out pointer-events-none"
+                    />
+                    <div className="flex items-start gap-4 sm:w-56 shrink-0 relative z-10">
+                      <div className={`p-3 rounded-2xl ${typeColors[item.type]} bg-opacity-20 shadow-sm`}>
+                        <item.icon className={`h-6 w-6 ${typeColors[item.type].split(' ')[1]}`} />
+                      </div>
+                      <div>
+                        <p className="text-sm text-gray-900 font-extrabold mb-1.5">{item.outlet}</p>
+                        <Badge className={`${typeColors[item.type]} flex items-center justify-center shadow-none border-none font-black uppercase tracking-wider text-[0.65rem] px-2.5 py-0.5 rounded-lg`}>{item.type}</Badge>
+                      </div>
                     </div>
-                  </div>
-                  <div className="flex-1">
-                    <h4 className="text-lg text-gray-900 mb-1 font-extrabold leading-snug">{item.title}</h4>
-                    <p className="text-sm text-gray-600 mb-3 leading-relaxed">{item.excerpt}</p>
-                    <div className="flex items-center gap-4">
-                      <span className="text-xs text-gray-400 flex items-center gap-1 font-bold">
-                        <Calendar className="h-3 w-3" /> {item.date}
-                      </span>
-                      <button className="text-xs text-[#3d6670] flex items-center gap-1 font-extrabold hover:text-primary transition-colors">
-                        Read Article <ExternalLink className="h-3 w-3" />
-                      </button>
+                    <div className="flex-1 relative z-10">
+                      <h4 className="text-xl text-gray-900 mb-2 font-black leading-snug group-hover:text-[#1D6E3F] transition-colors duration-300">{item.title}</h4>
+                      <p className="text-gray-600 mb-6 leading-relaxed font-medium">{item.excerpt}</p>
+                      <div className="flex items-center gap-6">
+                        <span className="text-sm text-gray-400 flex items-center gap-2 font-bold">
+                          <Calendar className="h-4 w-4" /> {item.date}
+                        </span>
+                        <motion.button 
+                          whileHover={{ x: 5 }}
+                          className="text-sm text-[#FF9900] flex items-center gap-1.5 font-black hover:text-[#d48100] transition-colors"
+                        >
+                          Read Article <ExternalLink className="h-4 w-4" />
+                        </motion.button>
+                      </div>
                     </div>
-                  </div>
-                </CardContent>
-              </Card>
+                  </CardContent>
+                </Card>
+              </motion.div>
             ))}
           </div>
         </div>

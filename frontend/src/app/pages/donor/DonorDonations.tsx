@@ -32,7 +32,7 @@ export function DonorDonations() {
     <div className="space-y-6">
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <div>
-          <Link to="/dashboard" className="inline-flex items-center gap-1 text-sm text-gray-500 hover:text-emerald-700 mb-1 transition-colors">
+          <Link to="/dashboard" className="inline-flex items-center gap-1 text-sm text-gray-500 hover:text-[#1D6E3F] mb-1 transition-colors">
             <ChevronLeft className="h-3.5 w-3.5" /> Back to Dashboard
           </Link>
           <h1 className="text-2xl text-gray-900" style={{ fontWeight: 700 }}>My Donations</h1>

@@ -64,9 +64,9 @@ export function DashboardLayout() {
                 className="h-8 w-auto object-contain"
               />
               <span className="text-sm font-bold">
-                <span style={{ color: '#b48fe0' }}>Womb</span>
-                <span style={{ color: '#3d6670' }}>To</span>
-                <span style={{ color: '#4bbde8' }}>18</span>
+                <span style={{ color: '#1D6E3F' }}>Womb</span>
+                <span style={{ color: '#FF9900' }}>To</span>
+                <span style={{ color: '#00AEEF' }}>18</span>
               </span>
             </Link>
             <button className="lg:hidden text-foreground" onClick={() => setSidebarOpen(false)}>
@@ -84,7 +84,7 @@ export function DashboardLayout() {
                 <p className="text-sm font-bold text-foreground truncate max-w-[140px]" title={session.identifier}>
                   {session.identifier.split("@")[0]}
                 </p>
-                <p className="text-xs text-emerald-600 font-bold">
+                <p className="text-xs text-[#1D6E3F] font-bold">
                   {session.eligible ? "Premium Donor" : "Donor"}
                 </p>
               </div>
@@ -146,7 +146,7 @@ export function DashboardLayout() {
           
           <div className="flex items-center gap-4">
             <div className="hidden sm:flex flex-col items-end leading-tight">
-              <span className="text-xs text-emerald-600 font-bold uppercase tracking-wider">Impact Score</span>
+              <span className="text-xs text-[#1D6E3F] font-bold uppercase tracking-wider">Impact Score</span>
               <span className="text-sm text-gray-900 font-bold">1,240 pts</span>
             </div>
             <div className="h-8 w-px bg-gray-200 hidden sm:block" />

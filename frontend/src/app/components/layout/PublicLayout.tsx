@@ -2,10 +2,13 @@ import { Outlet } from "react-router";
 import { Navbar } from "./Navbar";
 import { Footer } from "./Footer";
 import { ScrollToTop } from "./ScrollToTop";
+import { useContentProtection } from "../../hooks/useContentProtection";
 
 export function PublicLayout() {
+  useContentProtection();
+
   return (
-    <div className="min-h-screen flex flex-col">
+    <div className="min-h-screen flex flex-col content-protected">
       <ScrollToTop />
       <Navbar />
       <main className="flex-1">

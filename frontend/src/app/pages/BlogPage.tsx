@@ -2,6 +2,7 @@ import { Card, CardContent } from "../components/ui/card";
 import { Badge } from "../components/ui/badge";
 import { Calendar, Clock, ArrowRight } from "lucide-react";
 import { useContent } from "../context/ContentContext";
+import { motion } from "motion/react";
 
 const posts = [
   {
@@ -71,7 +72,7 @@ export function BlogPage() {
 
   return (
     <>
-      <section className="py-20 bg-emerald-50 text-gray-900">
+      <section className="py-20 bg-[#f0faf4] text-gray-900">
         <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
           <p className="text-primary text-sm mb-2" style={{ fontWeight: 600, textTransform: "uppercase", letterSpacing: "0.05em" }}>Blog & Stories</p>
           <h1 className="text-4xl sm:text-5xl text-gray-900 mb-6" style={{ fontWeight: 800, lineHeight: 1.1 }}>
@@ -84,53 +85,76 @@ export function BlogPage() {
       </section>
 
       {/* Featured Post */}
-      <section className="py-12 bg-white border-b border-gray-200">
+      <section className="py-16 bg-white border-b border-gray-100 overflow-hidden">
         <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-          <div className="grid lg:grid-cols-2 gap-8 items-center text-gray-900">
-            <img
-              src={featured.image}
-              alt={featured.title}
-              className="w-full h-[300px] lg:h-[400px] object-cover rounded-2xl shadow-xl"
-            />
-            <div>
-              <Badge className={`${categoryColors[featured.category]} mb-3`}>{featured.category}</Badge>
-              <h2 className="text-2xl sm:text-3xl text-gray-900 mb-3" style={{ fontWeight: 700 }}>{featured.title}</h2>
-              <p className="text-gray-600 mb-4">{featured.excerpt}</p>
-              <div className="flex items-center gap-4 text-sm text-gray-500 mb-6">
-                <span className="flex items-center gap-1"><Calendar className="h-3.5 w-3.5" />{featured.date}</span>
-                <span className="flex items-center gap-1"><Clock className="h-3.5 w-3.5" />{featured.readTime}</span>
-              </div>
-              <button className="flex items-center gap-2 text-primary text-sm font-bold" style={{ fontWeight: 600 }}>
-                Read Full Article <ArrowRight className="h-4 w-4" />
-              </button>
+          <motion.div 
+            initial={{ opacity: 0, clipPath: 'inset(100% 0 0 0)', y: 60 }}
+            whileInView={{ opacity: 1, clipPath: 'inset(0% 0 0 0)', y: 0 }}
+            viewport={{ once: true, margin: "-100px" }}
+            transition={{ duration: 1.2, ease: [0.16, 1, 0.3, 1] }}
+            className="grid lg:grid-cols-2 gap-12 items-center text-gray-900 group"
+          >
+            <div className="overflow-hidden rounded-3xl shadow-[0_20px_40px_-20px_rgba(0,0,0,0.15)] h-[350px] lg:h-[450px]">
+              <motion.img
+                whileHover={{ scale: 1.05 }}
+                transition={{ duration: 0.8, ease: "easeOut" }}
+                src={featured.image}
+                alt={featured.title}
+                className="w-full h-full object-cover origin-center"
+              />
             </div>
-          </div>
+            <div className="flex flex-col justify-center">
+              <Badge className={`${categoryColors[featured.category]} mb-6 self-start px-4 py-1.5 rounded-full text-xs font-black tracking-widest uppercase shadow-sm`}>{featured.category}</Badge>
+              <h2 className="text-3xl sm:text-[2.75rem] text-gray-900 mb-6 leading-[1.15] tracking-tight" style={{ fontWeight: 800 }}>{featured.title}</h2>
+              <p className="text-lg text-gray-600 mb-8 leading-relaxed font-medium">{featured.excerpt}</p>
+              <div className="flex items-center gap-6 text-sm text-gray-500 mb-10 font-bold">
+                <span className="flex items-center gap-2"><Calendar className="h-4 w-4 text-gray-400" />{featured.date}</span>
+                <span className="flex items-center gap-2"><Clock className="h-4 w-4 text-gray-400" />{featured.readTime}</span>
+              </div>
+              <motion.button 
+                whileHover={{ x: 10 }}
+                transition={{ type: "spring", stiffness: 400, damping: 25 }}
+                className="flex items-center gap-3 text-primary text-base font-black uppercase tracking-wide group-hover:text-[#134957] transition-colors self-start"
+              >
+                Read Full Article <ArrowRight className="h-5 w-5" />
+              </motion.button>
+            </div>
+          </motion.div>
         </div>
       </section>
 
       {/* All Posts */}
-      <section className="py-12 bg-gray-50">
+      <section className="py-24 bg-gray-50">
         <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-          <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-6">
-            {rest.map((post) => (
-              <Card key={post.title} className="bg-white overflow-hidden group cursor-pointer hover:shadow-lg transition-shadow border-gray-200 shadow-sm">
-                <div className="overflow-hidden">
-                  <img
-                    src={post.image}
-                    alt={post.title}
-                    className="w-full h-48 object-cover group-hover:scale-105 transition-transform duration-300"
-                  />
-                </div>
-                <CardContent className="pt-4">
-                  <Badge className={`${categoryColors[post.category]} mb-2`}>{post.category}</Badge>
-                  <h3 className="text-lg text-gray-900 mb-2 line-clamp-2" style={{ fontWeight: 600 }}>{post.title}</h3>
-                  <p className="text-sm text-gray-600 mb-3 line-clamp-2">{post.excerpt}</p>
-                  <div className="flex items-center gap-3 text-xs text-gray-500">
-                    <span className="flex items-center gap-1"><Calendar className="h-3 w-3" />{post.date}</span>
-                    <span className="flex items-center gap-1"><Clock className="h-3 w-3" />{post.readTime}</span>
+          <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-8">
+            {rest.map((post, i) => (
+              <motion.div
+                key={post.title}
+                initial={{ opacity: 0, clipPath: 'inset(10% 0 10% 0)', scale: 0.95, y: 50 }}
+                whileInView={{ opacity: 1, clipPath: 'inset(0% 0 0% 0)', scale: 1, y: 0 }}
+                viewport={{ once: true, margin: "-50px" }}
+                transition={{ duration: 0.9, delay: i * 0.15, ease: [0.16, 1, 0.3, 1] }}
+              >
+                <Card className="bg-white overflow-hidden group cursor-pointer hover:shadow-[0_25px_50px_-12px_rgba(0,0,0,0.12)] transition-all duration-500 border-none rounded-[2rem] h-full flex flex-col shadow-sm">
+                  <div className="overflow-hidden h-56 relative">
+                    <div className="absolute inset-0 bg-gray-900/10 z-10 opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
+                    <img
+                      src={post.image}
+                      alt={post.title}
+                      className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700 ease-[0.16,1,0.3,1]"
+                    />
                   </div>
-                </CardContent>
-              </Card>
+                  <CardContent className="pt-8 pb-8 px-8 flex-1 flex flex-col">
+                    <Badge className={`${categoryColors[post.category]} mb-5 self-start rounded-lg font-bold px-3 py-1 shadow-sm text-xs`}>{post.category}</Badge>
+                    <h3 className="text-[1.35rem] leading-snug text-gray-900 mb-3 line-clamp-2 tracking-tight" style={{ fontWeight: 800 }}>{post.title}</h3>
+                    <p className="text-gray-600 mb-6 line-clamp-3 font-medium text-sm leading-relaxed flex-1">{post.excerpt}</p>
+                    <div className="flex items-center gap-5 text-xs font-bold text-gray-400">
+                      <span className="flex items-center gap-1.5"><Calendar className="h-3.5 w-3.5" />{post.date}</span>
+                      <span className="flex items-center gap-1.5"><Clock className="h-3.5 w-3.5" />{post.readTime}</span>
+                    </div>
+                  </CardContent>
+                </Card>
+              </motion.div>
             ))}
           </div>
         </div>

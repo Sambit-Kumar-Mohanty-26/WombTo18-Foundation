@@ -21,7 +21,7 @@ const categoryColors: Record<string, string> = {
 };
 
 const statusColors: Record<string, string> = {
-  published: "bg-emerald-50 text-emerald-700",
+  published: "bg-[#f0faf4] text-[#1D6E3F]",
   draft: "bg-gray-50 text-gray-600",
 };
 
@@ -191,19 +191,19 @@ export function AdminBlog() {
                   value={form.excerpt}
                   onChange={(e) => setForm({ ...form, excerpt: e.target.value })}
                   placeholder="Brief description of this post..."
-                  className="w-full rounded-md border border-gray-200 bg-gray-50/50 px-3 py-2 text-sm text-gray-900 placeholder:text-gray-400 focus:outline-none focus:ring-1 focus:ring-emerald-500 focus:bg-white transition-all resize-none"
+                  className="w-full rounded-md border border-gray-200 bg-gray-50/50 px-3 py-2 text-sm text-gray-900 placeholder:text-gray-400 focus:outline-none focus:ring-1 focus:ring-[#1D6E3F] focus:bg-white transition-all resize-none"
                 />
               </div>
               <div className="grid grid-cols-2 gap-4">
                 <div className="space-y-1.5">
                   <Label className="text-gray-700 font-bold text-xs uppercase tracking-wider">Category</Label>
-                  <select value={form.category} onChange={(e) => setForm({ ...form, category: e.target.value })} className="w-full rounded-md border border-gray-200 bg-gray-50/50 px-3 py-2 text-sm text-gray-900 focus:outline-none focus:ring-1 focus:ring-emerald-500 focus:bg-white transition-all">
+                  <select value={form.category} onChange={(e) => setForm({ ...form, category: e.target.value })} className="w-full rounded-md border border-gray-200 bg-gray-50/50 px-3 py-2 text-sm text-gray-900 focus:outline-none focus:ring-1 focus:ring-[#1D6E3F] focus:bg-white transition-all">
                     {CATEGORIES.map((c) => <option key={c} value={c}>{c}</option>)}
                   </select>
                 </div>
                 <div className="space-y-1.5">
                   <Label className="text-gray-700 font-bold text-xs uppercase tracking-wider">Read Time</Label>
-                  <select value={form.readTime} onChange={(e) => setForm({ ...form, readTime: e.target.value })} className="w-full rounded-md border border-gray-200 bg-gray-50/50 px-3 py-2 text-sm text-gray-900 focus:outline-none focus:ring-1 focus:ring-emerald-500 focus:bg-white transition-all">
+                  <select value={form.readTime} onChange={(e) => setForm({ ...form, readTime: e.target.value })} className="w-full rounded-md border border-gray-200 bg-gray-50/50 px-3 py-2 text-sm text-gray-900 focus:outline-none focus:ring-1 focus:ring-[#1D6E3F] focus:bg-white transition-all">
                     {READ_TIMES.map((t) => <option key={t} value={t}>{t}</option>)}
                   </select>
                 </div>
@@ -219,7 +219,7 @@ export function AdminBlog() {
                 </div>
                 <div className="space-y-1.5">
                   <Label className="text-gray-700 font-bold text-xs uppercase tracking-wider">Status</Label>
-                  <select value={form.status} onChange={(e) => setForm({ ...form, status: e.target.value as "published" | "draft" })} className="w-full rounded-md border border-gray-200 bg-gray-50/50 px-3 py-2 text-sm text-gray-900 focus:outline-none focus:ring-1 focus:ring-emerald-500 focus:bg-white transition-all">
+                  <select value={form.status} onChange={(e) => setForm({ ...form, status: e.target.value as "published" | "draft" })} className="w-full rounded-md border border-gray-200 bg-gray-50/50 px-3 py-2 text-sm text-gray-900 focus:outline-none focus:ring-1 focus:ring-[#1D6E3F] focus:bg-white transition-all">
                     <option value="published">Published</option>
                     <option value="draft">Draft</option>
                   </select>

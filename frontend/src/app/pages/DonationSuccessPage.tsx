@@ -17,12 +17,12 @@ export function DonationSuccessPage() {
   }
 
   return (
-    <section className="min-h-[80vh] py-20 bg-emerald-50 flex items-center text-gray-900">
+    <section className="min-h-[80vh] py-20 bg-[#f0faf4] flex items-center text-gray-900">
       <div className="mx-auto max-w-2xl px-4 w-full">
         {/* Success Icon */}
         <div className="text-center mb-8">
-          <div className="h-24 w-24 rounded-full bg-emerald-100 flex items-center justify-center mx-auto mb-6 shadow-md">
-            <CheckCircle className="h-12 w-12 text-emerald-600" />
+          <div className="h-24 w-24 rounded-full bg-[#d1f5e0] flex items-center justify-center mx-auto mb-6 shadow-md">
+            <CheckCircle className="h-12 w-12 text-[#1D6E3F]" />
           </div>
           <h1 className="text-3xl sm:text-4xl text-gray-900 mb-3" style={{ fontWeight: 800 }}>
             Donation Successful!
@@ -38,8 +38,8 @@ export function DonationSuccessPage() {
         <Card className="mb-4 border-gray-200 bg-white shadow-sm">
           <CardContent className="pt-5 pb-5">
             <div className="flex items-center gap-3">
-              <div className="h-10 w-10 rounded-lg bg-emerald-50 flex items-center justify-center shrink-0">
-                <Heart className="h-5 w-5 text-emerald-600" />
+              <div className="h-10 w-10 rounded-lg bg-[#f0faf4] flex items-center justify-center shrink-0">
+                <Heart className="h-5 w-5 text-[#1D6E3F]" />
               </div>
               <div>
                 <p className="text-xs text-gray-500 uppercase tracking-wide">Transaction ID</p>
@@ -103,7 +103,7 @@ export function DonationSuccessPage() {
             <Button
               onClick={() => navigate("/dashboard-preview")}
               variant="outline"
-              className="flex-1 border-emerald-300 text-emerald-700 bg-white hover:bg-emerald-50"
+              className="flex-1 border-[#6dd5a0] text-[#1D6E3F] bg-white hover:bg-[#f0faf4]"
             >
               <LayoutDashboard className="h-4 w-4 mr-2" /> View Dashboard Preview
             </Button>

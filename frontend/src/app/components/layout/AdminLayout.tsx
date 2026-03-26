@@ -36,11 +36,11 @@ export function AdminLayout() {
               />
               <div>
                 <span className="text-sm font-bold">
-                  <span style={{ color: '#b48fe0' }}>Womb</span>
-                  <span style={{ color: '#3d6670' }}>To</span>
-                  <span style={{ color: '#4bbde8' }}>18</span>
+                  <span style={{ color: '#1D6E3F' }}>Womb</span>
+                  <span style={{ color: '#FF9900' }}>To</span>
+                  <span style={{ color: '#00AEEF' }}>18</span>
                 </span>
-                <p className="text-[10px] text-emerald-600 font-bold uppercase tracking-wider" style={{ lineHeight: 1 }}>Admin Panel</p>
+                <p className="text-[10px] text-[#1D6E3F] font-bold uppercase tracking-wider" style={{ lineHeight: 1 }}>Admin Panel</p>
               </div>
             </Link>
             <button className="lg:hidden text-foreground" onClick={() => setSidebarOpen(false)}>
@@ -55,7 +55,7 @@ export function AdminLayout() {
               </Avatar>
               <div>
                 <p className="text-sm font-bold text-foreground">Dr. Ananya Bhatt</p>
-                <p className="text-xs text-emerald-600 font-bold">Super Admin</p>
+                <p className="text-xs text-[#1D6E3F] font-bold">Super Admin</p>
               </div>
             </div>
           </div>

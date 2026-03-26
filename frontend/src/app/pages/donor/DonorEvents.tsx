@@ -184,7 +184,7 @@ export function DonorEvents() {
                 </div>
                 <div className="flex items-center gap-2">
                   {event.attended ? (
-                    <Badge variant="secondary" className="bg-emerald-50 text-emerald-700 text-xs">Attended</Badge>
+                    <Badge variant="secondary" className="bg-[#f0faf4] text-[#1D6E3F] text-xs">Attended</Badge>
                   ) : (
                     <Badge variant="secondary" className="bg-gray-100 text-xs text-gray-600">Missed</Badge>
                   )}

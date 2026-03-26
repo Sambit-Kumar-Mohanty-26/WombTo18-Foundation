@@ -1,0 +1,45 @@
+{
+  "nav": {
+    "home": "Home",
+    "about": "About",
+    "programs": "Programs",
+    "impact": "Impact",
+    "blog": "Blog",
+    "press": "Press",
+    "donorLogin": "Donor Login",
+    "dashboard": "My Dashboard",
+    "donate": "Donate Now",
+    "transparency": "Transparency"
+  },
+  "impact": {
+    "badge": "Impact & Reports",
+    "title": "Impact You Can See. Progress You Can Trust.",
+    "subtitle": "Live dashboard, quarterly reports, annual accounts, beneficiary stories.",
+    "annualReport": "Annual Report 2025",
+    "auditCertificate": "Audit Certificate"
+  },
+  "home": {
+    "heroTitle": "Ensuring Every Child Reaches 18",
+    "heroSubtitle": "We are on a mission to provide healthcare, education, and equal opportunities to underprivileged children across India."
+  },
+  "about": {
+    "title": "Our Story",
+    "subtitle": "Discover the journey of WombTo18"
+  },
+  "services": {
+    "title": "Our Programs",
+    "subtitle": "Comprehensive lifelong support"
+  },
+  "blog": {
+    "title": "Stories of Hope & Impact",
+    "subtitle": "Read about the lives we're changing"
+  },
+  "press": {
+    "title": "In the News",
+    "subtitle": "Media coverage and press releases"
+  },
+  "donate": {
+    "title": "Make a Difference",
+    "subtitle": "Your contribution changes lives"
+  }
+}

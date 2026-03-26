@@ -9,6 +9,11 @@ import { BlogPage } from "./pages/BlogPage";
 import { PressPage } from "./pages/PressPage";
 import { ImpactPage } from "./pages/ImpactPage";
 import { ComingSoonPage } from "./pages/ComingSoonPage";
+import { TransparencyPage } from "./pages/TransparencyPage";
+import { GetInvolvedPage } from "./pages/GetInvolvedPage";
+import { CompliancePage } from "./pages/CompliancePage";
+import { PrivacyPolicyPage } from "./pages/PrivacyPolicyPage";
+import { TermsOfUsePage } from "./pages/TermsOfUsePage";
 // import { DonatePage } from "./pages/DonatePage";
 import { DonorDashboard } from "./pages/donor/DonorDashboard";
 import { DonorDonations } from "./pages/donor/DonorDonations";
@@ -39,6 +44,11 @@ export const router = createBrowserRouter([
       { path: "blog", Component: BlogPage },
       { path: "press", Component: PressPage },
       { path: "impact", Component: ImpactPage },
+      { path: "transparency", Component: TransparencyPage },
+      { path: "get-involved", Component: GetInvolvedPage },
+      { path: "compliance", Component: CompliancePage },
+      { path: "privacy-policy", Component: PrivacyPolicyPage },
+      { path: "terms-of-use", Component: TermsOfUsePage },
       { path: "coming-soon", Component: ComingSoonPage },
       { path: "donate", Component: ComingSoonPage },
       // { path: "donate", Component: DonatePage },

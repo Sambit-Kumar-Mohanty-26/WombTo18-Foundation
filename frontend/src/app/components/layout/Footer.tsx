@@ -16,11 +16,11 @@ export function Footer() {
               />
               <div className="flex flex-col leading-tight">
                 <span className="text-lg font-extrabold tracking-tight" style={{ lineHeight: 1.2 }}>
-                  <span style={{ color: '#b48fe0' }}>Womb</span>
-                  <span style={{ color: '#3d6670' }}>To</span>
-                  <span style={{ color: '#4bbde8' }}>18</span>
+                  <span style={{ color: '#1D6E3F' }}>Womb</span>
+                  <span style={{ color: '#FF9900' }}>To</span>
+                  <span style={{ color: '#00AEEF' }}>18</span>
                 </span>
-                <p className="text-[10px] text-emerald-600 font-bold uppercase tracking-wider" style={{ lineHeight: 1 }}>Foundation</p>
+                <p className="text-[10px] text-[#1D6E3F] font-bold uppercase tracking-wider" style={{ lineHeight: 1 }}>Foundation</p>
               </div>
             </div>
             <p className="text-sm text-slate-600 mb-6 leading-relaxed">
@@ -75,15 +75,15 @@ export function Footer() {
             <div className="space-y-3">
               <div className="flex items-start gap-3">
                 <MapPin className="h-4 w-4 mt-0.5 text-primary shrink-0" />
-                <p className="text-sm text-slate-600 font-medium">123 Foundation Street, Mumbai, Maharashtra 400001, India</p>
+                <p className="text-sm text-slate-600 font-medium">#235, Binnamangala, 13th Cross Road, 2nd Stage, Indira Nagar, Karnataka Bengaluru - 560038</p>
               </div>
               <div className="flex items-center gap-3">
                 <Phone className="h-4 w-4 text-primary shrink-0" />
-                <p className="text-sm text-slate-600 font-medium">+91 98765 43210</p>
+                <p className="text-sm text-slate-600 font-medium">+91 81218 81880</p>
               </div>
               <div className="flex items-center gap-3">
                 <Mail className="h-4 w-4 text-primary shrink-0" />
-                <p className="text-sm text-slate-600 font-medium">hello@wombto18.org</p>
+                <p className="text-sm text-slate-600 font-medium">info@wombto18.org</p>
               </div>
             </div>
           </div>
@@ -92,9 +92,9 @@ export function Footer() {
         <div className="border-t border-slate-200 mt-12 pt-8 flex flex-col sm:flex-row justify-between items-center gap-4">
           <p className="text-sm text-slate-500 font-medium">&copy; 2026 WombTo18 Foundation. All rights reserved.</p>
           <div className="flex gap-6">
-            <a href="#" className="text-sm text-slate-500 hover:text-primary transition-colors font-medium">Privacy Policy</a>
-            <a href="#" className="text-sm text-slate-500 hover:text-primary transition-colors font-medium">Terms of Use</a>
-            <a href="#" className="text-sm text-slate-500 hover:text-primary transition-colors font-medium">80G Certificate</a>
+            <Link to="/privacy-policy" className="text-sm text-slate-500 hover:text-primary transition-colors font-medium">Privacy Policy</Link>
+            <Link to="/terms-of-use" className="text-sm text-slate-500 hover:text-primary transition-colors font-medium">Terms of Use</Link>
+            <Link to="/get-involved" className="text-sm text-slate-500 hover:text-primary transition-colors font-medium">Get Involved</Link>
           </div>
         </div>
       </div>

@@ -182,7 +182,7 @@ export function DonorDashboard() {
                     <td className="py-3 px-2 text-gray-900" style={{ fontWeight: 600 }}>₹{d.amount.toLocaleString("en-IN")}</td>
                     <td className="py-3 px-2 text-gray-700">{d.program}</td>
                     <td className="py-3 px-2">
-                       <Badge variant="secondary" className="bg-emerald-50 text-emerald-700">{d.status}</Badge>
+                       <Badge variant="secondary" className="bg-[#f0faf4] text-[#1D6E3F]">{d.status}</Badge>
                     </td>
                   </tr>
                 ))}

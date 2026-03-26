@@ -15,7 +15,7 @@ const monthlyRevenue = [
 const programDistribution = [
   { name: "Education", value: 35, color: "#3b82f6" },
   { name: "Prenatal", value: 25, color: "#10b981" },
-  { name: "Nutrition", value: 20, color: "#f59e0b" },
+  { name: "Nutrition", value: 20, color: "#1D6E3F" },
   { name: "Youth", value: 12, color: "#8b5cf6" },
   { name: "Protection", value: 8, color: "#ec4899" },
 ];

@@ -55,10 +55,10 @@ export function OTPVerification({ identifier, onSuccess, onBack }: OTPVerificati
   };
 
   return (
-    <Card className="w-full max-w-md mx-auto bg-emerald-950/40 border-white/10 text-white backdrop-blur-sm shadow-2xl">
+    <Card className="w-full max-w-md mx-auto bg-[#0a3a1e]/40 border-white/10 text-white backdrop-blur-sm shadow-2xl">
       <CardHeader className="space-y-4 text-center">
         <div className="flex justify-between items-start">
-            <Button variant="ghost" size="sm" onClick={onBack} className="text-emerald-200/50 hover:text-white hover:bg-white/5 -ml-2">
+            <Button variant="ghost" size="sm" onClick={onBack} className="text-[#a7e8c3]/50 hover:text-white hover:bg-white/5 -ml-2">
                 <ArrowLeft className="h-4 w-4 mr-1" />
                 Back
             </Button>
@@ -69,15 +69,15 @@ export function OTPVerification({ identifier, onSuccess, onBack }: OTPVerificati
         </div>
         <div>
             <CardTitle className="text-2xl font-bold tracking-tight text-white mb-2">Verify OTP</CardTitle>
-            <CardDescription className="text-emerald-100/70">
-            We've sent a 6-digit one-time password to <span className="font-semibold text-emerald-100">{identifier}</span>.
+            <CardDescription className="text-[#d1f5e0]/70">
+            We've sent a 6-digit one-time password to <span className="font-semibold text-[#d1f5e0]">{identifier}</span>.
             </CardDescription>
         </div>
       </CardHeader>
       <CardContent>
         <form onSubmit={handleSubmit(onSubmit)} className="space-y-4 pt-2">
           <div className="space-y-2">
-            <Label htmlFor="otp" className="text-sm font-medium text-emerald-100/90 text-center block">
+            <Label htmlFor="otp" className="text-sm font-medium text-[#d1f5e0]/90 text-center block">
               Enter 6-Digit Code
             </Label>
             <Input
@@ -86,7 +86,7 @@ export function OTPVerification({ identifier, onSuccess, onBack }: OTPVerificati
               maxLength={6}
               placeholder="000000"
               {...register("otp")}
-              className="text-center text-3xl tracking-[0.5em] font-mono bg-emerald-950/60 border-white/10 text-white placeholder:text-emerald-100/30 focus-visible:ring-primary h-14"
+              className="text-center text-3xl tracking-[0.5em] font-mono bg-[#0a3a1e]/60 border-white/10 text-white placeholder:text-[#d1f5e0]/30 focus-visible:ring-primary h-14"
             />
             {errors.otp && (
               <p className="text-xs text-red-500 text-center">{errors.otp.message}</p>
@@ -108,7 +108,7 @@ export function OTPVerification({ identifier, onSuccess, onBack }: OTPVerificati
           </Button>
           
           <div className="mt-4 text-center text-sm">
-             <span className="text-emerald-100/60">Didn't receive a code? </span>
+             <span className="text-[#d1f5e0]/60">Didn't receive a code? </span>
              <button type="button" className="text-primary hover:underline font-medium">Resend OTP</button>
              <p className="text-xs text-muted-foreground mt-2">(Use 123456 as a mock OTP for this demo)</p>
           </div>

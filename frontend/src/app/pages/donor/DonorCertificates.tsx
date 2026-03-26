@@ -57,7 +57,7 @@ export function DonorCertificates() {
   return (
     <div className="space-y-6">
       <div>
-        <Link to="/dashboard" className="inline-flex items-center gap-1 text-sm text-gray-500 hover:text-emerald-700 mb-1 transition-colors">
+        <Link to="/dashboard" className="inline-flex items-center gap-1 text-sm text-gray-500 hover:text-[#1D6E3F] mb-1 transition-colors">
           <ChevronLeft className="h-3.5 w-3.5" /> Back to Dashboard
         </Link>
         <h1 className="text-2xl text-gray-900" style={{ fontWeight: 700 }}>Certificates &amp; Receipts</h1>
@@ -67,13 +67,13 @@ export function DonorCertificates() {
       {/* Appreciation */}
       <div className="grid sm:grid-cols-2 gap-4">
         {appreciation.map((a) => (
-          <Card key={a.title} className="border-emerald-100 bg-emerald-50 mb-6">
+          <Card key={a.title} className="border-[#d1f5e0] bg-[#f0faf4] mb-6">
             <CardContent className="pt-6">
               <Award className="h-8 w-8 text-primary mb-3" />
               <h4 className="text-lg text-gray-900" style={{ fontWeight: 600 }}>{a.title}</h4>
               <p className="text-sm text-gray-600 mt-1">{a.description}</p>
               <div className="flex items-center justify-between mt-4">
-                <Badge variant="secondary" className="bg-emerald-100 text-emerald-700">{a.year}</Badge>
+                <Badge variant="secondary" className="bg-[#d1f5e0] text-[#1D6E3F]">{a.year}</Badge>
                 <Button variant="outline" size="sm" className="bg-white hover:bg-gray-50 text-gray-700" onClick={() => toast.success("Download started", { description: `Downloading ${a.title}` })}>
                   <Download className="h-3.5 w-3.5 mr-1" /> Download
                 </Button>

@@ -8,7 +8,7 @@ import { toast } from "sonner";
 const allocationData = [
   { name: "Education", value: 35, color: "#3b82f6" },
   { name: "Prenatal Care", value: 25, color: "#10b981" },
-  { name: "Nutrition", value: 20, color: "#f59e0b" },
+  { name: "Nutrition", value: 20, color: "#1D6E3F" },
   { name: "General Fund", value: 15, color: "#8b5cf6" },
   { name: "Youth", value: 5, color: "#ec4899" },
 ];
@@ -102,7 +102,7 @@ export function DonorReports() {
                 className="flex items-center justify-between p-3 rounded-lg border border-gray-100 bg-gray-50 hover:bg-white transition-colors"
               >
                 <div className="flex items-center gap-3">
-                  <FileText className="h-5 w-5 text-emerald-600" />
+                  <FileText className="h-5 w-5 text-[#1D6E3F]" />
                   <div>
                     <p className="text-sm text-gray-900" style={{ fontWeight: 500 }}>{r.title}</p>
                     <p className="text-xs text-gray-500">{r.date} &middot; {r.type}</p>

@@ -11,7 +11,7 @@ import { toast } from "sonner";
 const REGIONS = ["Rajasthan", "Bihar", "Odisha", "Maharashtra", "Tamil Nadu", "Uttar Pradesh", "West Bengal", "Madhya Pradesh", "Pan-India"];
 
 const statusColors: Record<string, string> = {
-  published: "bg-emerald-50 text-emerald-700",
+  published: "bg-[#f0faf4] text-[#1D6E3F]",
   draft: "bg-gray-50 text-gray-600",
 };
 
