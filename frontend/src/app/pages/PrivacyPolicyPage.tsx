@@ -82,12 +82,14 @@ export function PrivacyPolicyPage() {
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.6, delay: 0.4 }}
-              className="flex flex-wrap justify-center gap-3"
+              className="grid grid-cols-2 gap-3 sm:flex sm:flex-wrap sm:justify-center"
             >
-              {complianceBadges.map((badge) => (
+              {complianceBadges.map((badge, index) => (
                 <div
                   key={badge.label}
-                  className="group relative px-4 py-2.5 rounded-xl border bg-white shadow-sm hover:shadow-md transition-all duration-300 cursor-default"
+                  className={`group relative px-4 py-2.5 rounded-xl border bg-white shadow-sm hover:shadow-md transition-all duration-300 cursor-default ${
+                    index === complianceBadges.length - 1 ? "col-span-2 mx-auto w-full max-w-[180px] sm:col-span-1 sm:mx-0 sm:w-auto sm:max-w-none" : ""
+                  }`}
                   style={{ borderColor: `${badge.color}30` }}
                 >
                   <p className="text-xs font-black tracking-widest uppercase" style={{ color: badge.color }}>

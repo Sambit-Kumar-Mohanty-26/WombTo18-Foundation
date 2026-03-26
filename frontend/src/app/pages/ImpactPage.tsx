@@ -61,6 +61,19 @@ const expenseBreakdown = [
   { name: "Contingency Fund", value: 3, color: "#8C2D19" },
 ];
 
+function MobileLegend({ items }: { items: { name: string; color: string }[] }) {
+  return (
+    <div className="mt-4 flex flex-wrap justify-center gap-x-3 gap-y-2">
+      {items.map((item) => (
+        <div key={item.name} className="flex items-center gap-1.5 rounded-full bg-gray-50 px-2.5 py-1 text-[11px] font-semibold leading-none text-gray-600">
+          <span className="h-2.5 w-2.5 shrink-0 rounded-full" style={{ backgroundColor: item.color }} />
+          <span>{item.name}</span>
+        </div>
+      ))}
+    </div>
+  );
+}
+
 const CustomTooltip = ({ active, payload }: any) => {
   if (active && payload && payload.length) {
     return (
@@ -212,10 +225,10 @@ export function ImpactPage() {
         <div className="mx-auto max-w-7xl px-4 relative z-10 text-center">
           <motion.div initial={{ opacity: 0, y: 30 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.8, type: "spring" }} className="max-w-4xl mx-auto">
             <Badge variant="secondary" className="bg-[#0284c7]/10 text-[#0369a1] border-none font-bold px-4 py-1.5 mb-6 uppercase tracking-widest text-xs shadow-sm">Projecting the Future</Badge>
-            <h1 className="text-5xl sm:text-[3.5rem] mb-6 font-black tracking-tight text-[#0f172a] leading-[1.1]">
+            <h1 className="text-[2.3rem] sm:text-[3.5rem] mb-6 font-black tracking-tight text-[#0f172a] leading-[1.1]">
               A Roadmap to <span className="text-transparent bg-clip-text bg-gradient-to-r from-[#0284c7] to-[#1e40af]">Transformative Scale</span>
             </h1>
-            <p className="text-xl text-gray-600 mb-10 font-medium leading-relaxed mx-auto">
+            <p className="text-base sm:text-xl text-gray-600 mb-10 font-medium leading-relaxed mx-auto">
               Our vision is massive, and we are laying down the exact financial and structural framework needed to achieve it. Here is our rigorous blueprint for long-term growth and accountability.
             </p>
             <div className="flex justify-center gap-5 flex-wrap">
@@ -243,7 +256,7 @@ export function ImpactPage() {
             transition={{ duration: 0.8 }}
             className="text-center mb-12 lg:mb-14"
           >
-            <h2 className="text-4xl font-black text-gray-900 mb-5 tracking-tight">Aligned with Global Goals</h2>
+            <h2 className="text-[2rem] sm:text-4xl font-black text-gray-900 mb-5 tracking-tight">Aligned with Global Goals</h2>
             <p className="text-lg text-gray-600 max-w-2xl mx-auto leading-relaxed">
               Our grassroots execution directly contributes to three core United Nations Sustainable Development Goals, driving systemic change.
             </p>
@@ -373,7 +386,7 @@ export function ImpactPage() {
                 <line x1="3" y1="10" x2="21" y2="10" />
               </svg>
             </motion.div>
-            <h2 className="text-4xl md:text-5xl font-black text-gray-900 tracking-tight mb-4">Reporting Calendar</h2>
+            <h2 className="text-[2rem] md:text-5xl font-black text-gray-900 tracking-tight mb-4">Reporting Calendar</h2>
             <p className="text-lg text-gray-500 max-w-2xl mx-auto leading-relaxed font-medium">
               Transparent, verifiable impact — published on schedule, every quarter.
             </p>
@@ -515,7 +528,7 @@ export function ImpactPage() {
       <section className="py-10 relative overflow-hidden bg-[#f8fcf9] border-y border-[#1D6E3F]/10">
         <div className="absolute inset-0 bg-[radial-gradient(circle_at_top,_var(--tw-gradient-stops))] from-white/80 via-transparent to-transparent opacity-80" />
         <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 relative z-10">
-          <div className="grid grid-cols-2 lg:grid-cols-4 gap-8">
+          <div className="grid grid-cols-2 lg:grid-cols-4 gap-6 sm:gap-8">
             {[
               { icon: IndianRupee, label: "Funding Target (2030)", to: 500, prefix: "₹", suffix: " Cr", decimals: 0, change: "Infrastructure Goal", color: "text-[#1D6E3F]" },
               { icon: TrendingUp, label: "Projected Cost-Ratio", to: 82, prefix: "", suffix: "%", decimals: 0, change: "Direct to programs", color: "text-blue-600" },
@@ -536,7 +549,7 @@ export function ImpactPage() {
                 >
                   <m.icon className={`h-7 w-7 ${m.color}`} />
                 </motion.div>
-                <p className="text-3xl sm:text-[2.5rem] tracking-tight text-gray-900 font-black mb-2 drop-shadow-sm group-hover:text-[var(--womb-forest)] transition-colors duration-300">
+                <p className="text-[2rem] sm:text-[2.5rem] tracking-tight text-gray-900 font-black mb-2 drop-shadow-sm group-hover:text-[var(--womb-forest)] transition-colors duration-300">
                    <Counter from={0} to={m.to} prefix={m.prefix} suffix={m.suffix} decimals={m.decimals} duration={2.5} />
                 </p>
                 <p className="text-[1.05rem] text-gray-700 font-bold mb-2">{m.label}</p>
@@ -557,21 +570,21 @@ export function ImpactPage() {
             {/* Fund Utilization Pie */}
             <motion.div initial={{ opacity: 0, x: -30 }} whileInView={{ opacity: 1, x: 0 }} viewport={{ once: true, amount: 0.4 }} transition={{ duration: 0.8, type: "spring" }}>
               <Card className="bg-white border-gray-100 shadow-[0_15px_40px_-15px_rgba(0,0,0,0.08)] hover:shadow-[0_25px_50px_-15px_rgba(0,0,0,0.12)] transition-shadow duration-500 rounded-3xl h-full">
-                <CardHeader className="pb-4 pt-8 px-8 flex flex-row items-center justify-between">
-                  <CardTitle className="text-xl font-extrabold text-gray-900 tracking-tight">Capped Implementation Costs</CardTitle>
-                  <Badge variant="secondary" className="bg-[#1D6E3F]/10 text-[#1D6E3F] border-none font-bold px-3 py-1 shadow-sm mt-0">Committed limits</Badge>
+                <CardHeader className="pb-4 pt-6 sm:pt-8 px-5 sm:px-8 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
+                  <CardTitle className="text-lg sm:text-xl font-extrabold text-gray-900 tracking-tight">Capped Implementation Costs</CardTitle>
+                  <Badge variant="secondary" className="w-fit bg-[#1D6E3F]/10 text-[#1D6E3F] border-none font-bold px-3 py-1 shadow-sm mt-0">Committed limits</Badge>
                 </CardHeader>
-                <CardContent className="px-4 pb-8">
-                  <div className="h-[320px]">
+                <CardContent className="px-3 sm:px-4 pb-6 sm:pb-8">
+                  <div className="h-[250px] sm:h-[320px]">
                     <AnimatedChart>
                     <ResponsiveContainer width="100%" height="100%">
                       <PieChart>
                         <Pie
                           data={fundUtilization}
                           cx="50%"
-                          cy="50%"
-                          innerRadius={75}
-                          outerRadius={115}
+                          cy="42%"
+                          innerRadius="48%"
+                          outerRadius="78%"
                           paddingAngle={4}
                           dataKey="value"
                           nameKey="name"
@@ -587,11 +600,11 @@ export function ImpactPage() {
                           ))}
                         </Pie>
                         <Tooltip content={<CustomTooltip />} cursor={{fill: 'transparent'}} />
-                        <Legend iconType="circle" wrapperStyle={{ fontSize: '13px', fontWeight: '600', paddingTop: '20px' }} />
                       </PieChart>
                     </ResponsiveContainer>
                     </AnimatedChart>
                   </div>
+                  <MobileLegend items={fundUtilization} />
                 </CardContent>
               </Card>
             </motion.div>
@@ -599,20 +612,20 @@ export function ImpactPage() {
             {/* Expense Breakdown Pie */}
             <motion.div initial={{ opacity: 0, x: 30 }} whileInView={{ opacity: 1, x: 0 }} viewport={{ once: true, amount: 0.4 }} transition={{ duration: 0.8, type: "spring", delay: 0.2 }}>
               <Card className="bg-white border-gray-100 shadow-[0_15px_40px_-15px_rgba(0,0,0,0.08)] hover:shadow-[0_25px_50px_-15px_rgba(0,0,0,0.12)] transition-shadow duration-500 rounded-3xl h-full">
-                <CardHeader className="pb-4 pt-8 px-8">
-                  <CardTitle className="text-xl font-extrabold text-gray-900 tracking-tight">Strict Budgetary Boundaries</CardTitle>
+                <CardHeader className="pb-4 pt-6 sm:pt-8 px-5 sm:px-8">
+                  <CardTitle className="text-lg sm:text-xl font-extrabold text-gray-900 tracking-tight">Strict Budgetary Boundaries</CardTitle>
                 </CardHeader>
-                <CardContent className="px-4 pb-8">
-                  <div className="h-[320px]">
+                <CardContent className="px-3 sm:px-4 pb-6 sm:pb-8">
+                  <div className="h-[250px] sm:h-[320px]">
                     <AnimatedChart>
                     <ResponsiveContainer width="100%" height="100%">
                       <PieChart>
                         <Pie
                           data={expenseBreakdown}
                           cx="50%"
-                          cy="50%"
-                          innerRadius={75}
-                          outerRadius={115}
+                          cy="42%"
+                          innerRadius="48%"
+                          outerRadius="78%"
                           paddingAngle={4}
                           dataKey="value"
                           nameKey="name"
@@ -628,11 +641,11 @@ export function ImpactPage() {
                           ))}
                         </Pie>
                         <Tooltip content={<CustomTooltip />} cursor={{fill: 'transparent'}} />
-                        <Legend iconType="circle" wrapperStyle={{ fontSize: '13px', fontWeight: '600', paddingTop: '20px' }} />
                       </PieChart>
                     </ResponsiveContainer>
                     </AnimatedChart>
                   </div>
+                  <MobileLegend items={expenseBreakdown} />
                 </CardContent>
               </Card>
             </motion.div>
@@ -645,11 +658,11 @@ export function ImpactPage() {
         <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
           <motion.div initial={{ opacity: 0, y: 40 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true, amount: 0.4 }} transition={{ duration: 0.8, type: "spring" }}>
             <Card className="bg-white border-gray-100 shadow-[0_15px_40px_-15px_rgba(0,0,0,0.06)] hover:shadow-[0_25px_50px_-15px_rgba(0,0,0,0.1)] transition-shadow duration-500 rounded-3xl">
-              <CardHeader className="pt-6 px-8 border-b border-gray-50 pb-4 mb-4">
-                <CardTitle className="text-2xl font-extrabold text-gray-900 tracking-tight">Phased Scaling Allocation (₹ Cr)</CardTitle>
+              <CardHeader className="pt-6 px-5 sm:px-8 border-b border-gray-50 pb-4 mb-4">
+                <CardTitle className="text-xl sm:text-2xl font-extrabold text-gray-900 tracking-tight">Phased Scaling Allocation (₹ Cr)</CardTitle>
               </CardHeader>
-              <CardContent className="px-4 pb-6">
-                <div className="h-[320px]">
+              <CardContent className="px-3 sm:px-4 pb-6">
+                <div className="h-[280px] sm:h-[320px]">
                   <AnimatedChart>
                   <ResponsiveContainer width="100%" height="100%">
                     <BarChart data={programSpend} margin={{ top: 10, right: 30, left: 0, bottom: 0 }}>
@@ -728,11 +741,11 @@ export function ImpactPage() {
         <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
           <motion.div initial={{ opacity: 0, y: 40 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true, amount: 0.4 }} transition={{ duration: 0.8, type: "spring" }}>
             <Card className="bg-white border-gray-100 shadow-[0_15px_40px_-15px_rgba(0,0,0,0.06)] hover:shadow-[0_25px_50px_-15px_rgba(0,0,0,0.1)] transition-shadow duration-500 rounded-3xl">
-              <CardHeader className="pt-8 px-8 border-b border-gray-50 pb-6 mb-6">
-                <CardTitle className="text-2xl font-extrabold text-gray-900 tracking-tight">5-Year Exponential Output Scaling</CardTitle>
+              <CardHeader className="pt-6 sm:pt-8 px-5 sm:px-8 border-b border-gray-50 pb-6 mb-6">
+                <CardTitle className="text-xl sm:text-2xl font-extrabold text-gray-900 tracking-tight">5-Year Exponential Output Scaling</CardTitle>
               </CardHeader>
-              <CardContent className="px-4 pb-8">
-                <div className="h-[400px]">
+              <CardContent className="px-3 sm:px-4 pb-6 sm:pb-8">
+                <div className="h-[300px] sm:h-[400px]">
                   <AnimatedChart>
                     <ResponsiveContainer width="100%" height="100%">
                       <AreaChart data={yearlyImpact} margin={{ top: 20, right: 30, left: 24, bottom: 0 }}>

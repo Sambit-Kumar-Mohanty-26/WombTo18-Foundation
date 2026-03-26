@@ -5,10 +5,10 @@ import { Star, Quote, ChevronLeft, ChevronRight } from "lucide-react";
 const testimonials = [
   {
     name: "Priya S.",
-    role: "Parent — Pune",
+    role: "Parent - Pune",
     rating: 5,
-    image: "https://images.unsplash.com/photo-1544485304-7bc7dbca582e?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHw1fHxtb3RoZXIlMjBpbmRpYXxlbnwwfHx8fDE3NzMxNDAyNzl8MA&ixlib=rb-4.1.0&q=80&w=150",
-    quote: "My daughter almost missed her 9-month vaccination — we had shifted to a new locality and I simply forgot. WOMBTO18 sent three reminders. That one message changed everything.",
+    image: "https://images.pexels.com/photos/774909/pexels-photo-774909.jpeg?auto=compress&cs=tinysrgb&w=300&h=300&fit=crop",
+    quote: "My daughter almost missed her 9-month vaccination - we had shifted to a new locality and I simply forgot. WOMBTO18 sent three reminders. That one message changed everything.",
   },
   {
     name: "Dr. Ananya Joshi",
@@ -22,7 +22,7 @@ const testimonials = [
     role: "CSR Head, Pune",
     rating: 5,
     image: "https://images.unsplash.com/photo-1556157382-97eda2d62296?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwyfHxwcm9mZXNzaW9uYWwlMjBpbmRpYW58ZW58MHx8fHwxNzczMTQwMzMyfDA&ixlib=rb-4.1.0&q=80&w=150",
-    quote: "Our CSR team needed a partner with verifiable, measurable outcomes. WOMBTO18’s donor dashboard and quarterly reports give us exactly that — without chasing anyone for data.",
+    quote: "Our CSR team needed a partner with verifiable, measurable outcomes. WOMBTO18's donor dashboard and quarterly reports give us exactly that - without chasing anyone for data.",
   },
 ];
 
@@ -31,12 +31,11 @@ export function TestimonialsSection() {
 
   useEffect(() => {
     if (!emblaApi) return;
-    
-    // Auto-play interval
+
     const interval = setInterval(() => {
       emblaApi.scrollNext();
     }, 6000);
-    
+
     return () => clearInterval(interval);
   }, [emblaApi]);
 
@@ -54,64 +53,59 @@ export function TestimonialsSection() {
         </h2>
       </div>
 
-      <div className="relative max-w-5xl mx-auto px-12 sm:px-16 w-full">
-        {/* Carousel viewport */}
+      <div className="relative max-w-5xl mx-auto px-8 sm:px-16 w-full">
         <div className="overflow-hidden" ref={emblaRef}>
           <div className="flex touch-pan-y">
             {testimonials.map((t, idx) => (
-              <div key={idx} className="flex-[0_0_100%] min-w-0 pl-4 py-4">
-                <div className="bg-white rounded-3xl p-8 sm:p-12 shadow-xl border border-gray-100 flex flex-col md:flex-row gap-8 items-center md:items-start transition-all">
-                  
+              <div key={idx} className="flex-[0_0_100%] min-w-0 pl-3 sm:pl-4 py-4">
+                <div className="bg-white rounded-3xl p-5 sm:p-12 shadow-xl border border-gray-100 flex flex-row gap-4 sm:gap-8 items-start transition-all h-[400px] sm:h-auto sm:min-h-[340px]">
                   <div className="shrink-0 relative">
-                    <img 
-                      src={t.image} 
+                    <img
+                      src={t.image}
                       alt={t.name}
-                      className="w-24 h-24 sm:w-32 sm:h-32 rounded-full object-cover border-4 border-[var(--womb-forest)]/20 shadow-md"
+                      className="w-16 h-16 sm:w-32 sm:h-32 rounded-full object-cover border-4 border-[var(--womb-forest)]/20 shadow-md"
                     />
-                    <div className="absolute -bottom-3 -right-3 bg-white p-2 rounded-full shadow-lg text-[var(--womb-forest)]">
-                      <Quote className="w-5 h-5 fill-current" />
+                    <div className="absolute -bottom-2 -right-2 sm:-bottom-3 sm:-right-3 bg-white p-1.5 sm:p-2 rounded-full shadow-lg text-[var(--womb-forest)]">
+                      <Quote className="w-4 h-4 sm:w-5 sm:h-5 fill-current" />
                     </div>
                   </div>
 
-                  <div className="flex-1 text-center md:text-left">
-                    <div className="flex justify-center md:justify-start gap-1 mb-4">
+                  <div className="flex-1 min-w-0 text-left flex flex-col self-stretch">
+                    <div className="flex justify-start gap-1 mb-3 sm:mb-4">
                       {[...Array(t.rating)].map((_, i) => (
-                        <Star key={i} className="w-5 h-5 fill-amber-400 text-amber-400" />
+                        <Star key={i} className="w-4 h-4 sm:w-5 sm:h-5 fill-amber-400 text-amber-400" />
                       ))}
                     </div>
-                    
-                    <p className="text-xl sm:text-2xl text-gray-700 leading-relaxed font-serif italic mb-6">
+
+                    <p className="text-base sm:text-2xl text-gray-700 leading-relaxed font-serif italic mb-4 sm:mb-6 flex-1 overflow-hidden">
                       "{t.quote}"
                     </p>
-                    
-                    <div>
-                      <p className="text-lg font-bold text-gray-900">{t.name}</p>
-                      <p className="text-sm font-semibold text-[var(--womb-forest)] uppercase tracking-wider">{t.role}</p>
+
+                    <div className="mt-auto">
+                      <p className="text-base sm:text-lg font-bold text-gray-900">{t.name}</p>
+                      <p className="text-[11px] sm:text-sm font-semibold text-[var(--womb-forest)] uppercase tracking-wider">{t.role}</p>
                     </div>
                   </div>
-
                 </div>
               </div>
             ))}
           </div>
         </div>
 
-        {/* Carousel Controls */}
-        <button 
+        <button
           onClick={scrollPrev}
           className="absolute left-0 top-1/2 -translate-y-1/2 w-10 h-10 sm:w-12 sm:h-12 bg-white rounded-full shadow-lg border border-gray-100 flex items-center justify-center text-gray-600 hover:text-[var(--womb-forest)] hover:scale-110 transition-all z-10"
           aria-label="Previous testimonial"
         >
           <ChevronLeft className="w-6 h-6" />
         </button>
-        <button 
+        <button
           onClick={scrollNext}
           className="absolute right-0 top-1/2 -translate-y-1/2 w-10 h-10 sm:w-12 sm:h-12 bg-white rounded-full shadow-lg border border-gray-100 flex items-center justify-center text-gray-600 hover:text-[var(--womb-forest)] hover:scale-110 transition-all z-10"
           aria-label="Next testimonial"
         >
           <ChevronRight className="w-6 h-6" />
         </button>
-        
       </div>
     </section>
   );

@@ -88,7 +88,41 @@ export function TransparencyPage() {
             </h2>
           </motion.div>
 
-          <div className="flex flex-col border-t-2 border-gray-200 pt-2">
+          <div className="grid gap-4 md:hidden">
+            {disclosureItems.map((item, i) => (
+              <motion.div
+                key={item.doc}
+                initial={{ opacity: 0, y: 16 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true, margin: "-40px" }}
+                transition={{ duration: 0.4, delay: i * 0.04 }}
+                className="rounded-[1.75rem] border border-gray-100 bg-white p-5 shadow-[0_10px_30px_-18px_rgba(0,0,0,0.08)]"
+              >
+                <div className="mb-4 flex items-start justify-between gap-4">
+                  <div>
+                    <p className="text-[10px] font-black uppercase tracking-[0.22em] text-gray-300">0{i + 1}</p>
+                    <h3 className="mt-2 text-[1.35rem] font-black leading-tight tracking-tight text-gray-900">{item.doc}</h3>
+                  </div>
+                  <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-emerald-50 text-[#1D6E3F]">
+                    <ArrowUpRight className="h-4 w-4" />
+                  </div>
+                </div>
+
+                <div className="grid gap-3 rounded-2xl bg-[#fafaf8] p-4">
+                  <div>
+                    <p className="mb-1 text-[10px] font-black uppercase tracking-[0.18em] text-gray-400">Frequency</p>
+                    <p className="text-sm font-bold leading-6 text-gray-700">{item.freq}</p>
+                  </div>
+                  <div>
+                    <p className="mb-1 text-[10px] font-black uppercase tracking-[0.18em] text-gray-400">Access</p>
+                    <p className="text-sm font-bold leading-6 text-gray-700">{item.access}</p>
+                  </div>
+                </div>
+              </motion.div>
+            ))}
+          </div>
+
+          <div className="hidden md:flex md:flex-col border-t-2 border-gray-200 pt-2">
             {disclosureItems.map((item, i) => (
               <motion.div
                 key={i}

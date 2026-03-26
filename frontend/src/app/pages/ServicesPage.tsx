@@ -5,7 +5,6 @@ import { Button } from "../components/ui/button";
 import { Progress } from "../components/ui/progress";
 import { Badge } from "../components/ui/badge";
 import { Link } from "react-router";
-import { GoGreenCertificate } from "../components/ui/GoGreenCertificate";
 import { motion, AnimatePresence, useInView, animate } from "motion/react";
 
 function Counter({ from = 0, to, duration = 2, prefix = "", suffix = "", decimals = 0 }: { from?: number, to: number, duration?: number, prefix?: string, suffix?: string, decimals?: number }) {
@@ -251,7 +250,7 @@ export function ServicesPage() {
       </section>
 
       {/* Cinematic Lifelong Health Journey */}
-      <section className="py-32 bg-white relative overflow-hidden border-t border-gray-100">
+      <section className="py-20 sm:py-32 bg-white relative overflow-hidden border-t border-gray-100">
         {/* Animated Background Gradients */}
         <div className="absolute top-0 right-0 w-[800px] h-[800px] bg-[radial-gradient(ellipse_at_center,_var(--womb-forest)_0%,_transparent_50%)] opacity-[0.03] rounded-full blur-[100px] pointer-events-none" />
         <div className="absolute bottom-0 left-0 w-[600px] h-[600px] bg-[radial-gradient(ellipse_at_center,_var(--journey-saffron)_0%,_transparent_50%)] opacity-[0.03] rounded-full blur-[100px] pointer-events-none" />
@@ -262,18 +261,80 @@ export function ServicesPage() {
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
             transition={{ duration: 0.8 }}
-            className="text-center mb-24"
+            className="text-center mb-12 sm:mb-24"
           >
             <p className="inline-flex items-center gap-2 bg-indigo-500/10 text-indigo-600 px-5 py-2.5 rounded-full text-[10px] sm:text-xs font-bold tracking-widest uppercase border border-indigo-500/20 mb-4 sm:mb-6 shadow-sm">
               Care Continuum
             </p>
-            <h2 className="text-4xl md:text-5xl font-extrabold text-gray-900 mb-6 drop-shadow-sm tracking-tight">The Lifelong Health Journey</h2>
-            <p className="text-lg md:text-xl text-gray-600 max-w-3xl mx-auto leading-relaxed">
+            <h2 className="text-[2.2rem] sm:text-4xl md:text-5xl font-extrabold text-gray-900 mb-4 sm:mb-6 drop-shadow-sm tracking-tight leading-[0.95]">The Lifelong Health Journey</h2>
+            <p className="text-base sm:text-lg md:text-xl text-gray-600 max-w-3xl mx-auto leading-relaxed">
               From the very first day to young adulthood, we ensure no critical health milestone is missed through our <strong className="text-gray-900 font-bold bg-indigo-50 px-1 rounded">integrated multi-stage approach</strong>.
             </p>
           </motion.div>
 
-          <div className="relative max-w-5xl mx-auto px-4 md:px-0">
+          <div className="md:hidden max-w-md mx-auto">
+            <div className="space-y-5">
+              <div className="rounded-[1.75rem] border border-[#dbeadf] bg-gradient-to-br from-white to-[#f7fbf8] p-5 shadow-[0_12px_35px_-20px_rgba(29,110,63,0.25)]">
+                <div className="mb-4 flex items-center gap-3">
+                  <div className="flex h-11 w-11 items-center justify-center rounded-2xl bg-[var(--womb-forest)]/10 text-[var(--womb-forest)]">
+                    <Baby className="h-5 w-5" />
+                  </div>
+                  <Badge className="bg-[var(--womb-forest)] text-white hover:bg-[var(--womb-forest)]/90 border-none shadow-sm font-bold px-3 py-1">0 - 18 Months</Badge>
+                </div>
+                <h3 className="text-[1.75rem] font-extrabold text-gray-900 tracking-tight leading-none">Foundation of Life</h3>
+                <p className="mt-3 text-[0.98rem] text-gray-600 leading-7 font-medium">Critical early protection with BCG, Polio, DPT, Hepatitis B, and Measles vaccines. A robust start for a healthy life.</p>
+              </div>
+
+              <div className="rounded-[1.75rem] border border-blue-100 bg-gradient-to-br from-white to-blue-50/40 p-5 shadow-[0_12px_35px_-20px_rgba(59,130,246,0.25)]">
+                <div className="mb-4 flex items-center gap-3">
+                  <div className="flex h-11 w-11 items-center justify-center rounded-2xl bg-blue-50 text-blue-600">
+                    <Shield className="h-5 w-5" />
+                  </div>
+                  <Badge className="bg-blue-600 text-white hover:bg-blue-700 border-none shadow-sm font-bold px-3 py-1">5 - 16 Years</Badge>
+                </div>
+                <h3 className="text-[1.75rem] font-extrabold text-gray-900 tracking-tight leading-none">School-Age Immunity</h3>
+                <p className="mt-3 text-[0.98rem] text-gray-600 leading-7 font-medium">DPT Boosters, Typhoid, HPV, and Tdap. Protecting children as they enter school and preparing adolescents for adulthood safely.</p>
+              </div>
+
+              <div className="rounded-[1.75rem] border border-indigo-100 bg-gradient-to-br from-white to-indigo-50/40 p-5 shadow-[0_12px_35px_-20px_rgba(99,102,241,0.25)]">
+                <div className="mb-4 flex items-center gap-3">
+                  <div className="flex h-11 w-11 items-center justify-center rounded-2xl bg-indigo-50 text-indigo-600">
+                    <Heart className="h-5 w-5" />
+                  </div>
+                  <Badge className="bg-indigo-600 text-white hover:bg-indigo-700 border-none shadow-sm font-bold px-3 py-1">0 - 18 Years</Badge>
+                </div>
+                <h3 className="text-[1.7rem] font-extrabold text-gray-900 tracking-tight leading-none">Mental Wellness</h3>
+
+                <div className="mt-5 space-y-3.5">
+                  <div className="rounded-[1.25rem] border border-indigo-100 bg-indigo-50/70 p-4">
+                    <div className="mb-3 inline-flex rounded-full bg-white px-3 py-1 text-[11px] font-bold text-indigo-600 shadow-sm">Prenatal</div>
+                    <p className="text-[0.95rem] font-bold leading-snug text-gray-900">Maternal mental health, bonding, stress reduction</p>
+                    <p className="mt-2 text-xs leading-6 text-gray-600">Parent handbooks, antenatal class integration, WhatsApp module</p>
+                  </div>
+
+                  <div className="rounded-[1.25rem] border border-[#dbeadf] bg-[#f0faf4]/80 p-4">
+                    <div className="mb-3 inline-flex rounded-full bg-white px-3 py-1 text-[11px] font-bold text-[var(--womb-forest)] shadow-sm">0 - 5 yrs</div>
+                    <p className="text-[0.95rem] font-bold leading-snug text-gray-900">Early attachment, emotional security, sensory play</p>
+                    <p className="mt-2 text-xs leading-6 text-gray-600">Parent workshops, anganwadi tie-ups, illustrated booklets</p>
+                  </div>
+
+                  <div className="rounded-[1.25rem] border border-blue-100 bg-blue-50/70 p-4">
+                    <div className="mb-3 inline-flex rounded-full bg-white px-3 py-1 text-[11px] font-bold text-blue-600 shadow-sm">6 - 12 yrs</div>
+                    <p className="text-[0.95rem] font-bold leading-snug text-gray-900">SEL, classroom emotional regulation, peer relationships</p>
+                    <p className="mt-2 text-xs leading-6 text-gray-600">School-based modules, teacher training, interactive group sessions</p>
+                  </div>
+
+                  <div className="rounded-[1.25rem] border border-amber-100 bg-amber-50/70 p-4">
+                    <div className="mb-3 inline-flex rounded-full bg-white px-3 py-1 text-[11px] font-bold text-amber-600 shadow-sm">13 - 18 yrs</div>
+                    <p className="text-[0.95rem] font-bold leading-snug text-gray-900">Identity formation, digital wellness, career anxiety</p>
+                    <p className="mt-2 text-xs leading-6 text-gray-600">School counsellor training, peer mentor programme, parent sessions</p>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div className="relative max-w-5xl mx-auto px-4 md:px-0 hidden md:block">
             {/* Central Animated Timeline Line */}
             <motion.div
               initial={{ scaleY: 0 }}
@@ -813,7 +874,7 @@ export function ServicesPage() {
       </section>
 
       {/* Go Green & Climate Action */}
-      <section className="py-12 lg:py-16 bg-[#0a1410] border-t border-[var(--womb-forest)]/20 relative overflow-hidden min-h-[min(90vh,800px)] flex items-center justify-center">
+      <section className="py-12 lg:py-16 bg-[#0a1410] border-t border-[var(--womb-forest)]/20 relative overflow-hidden min-h-[auto] lg:min-h-[min(90vh,800px)] flex items-center justify-center">
         {/* Animated Background Textures */}
         <div className="absolute inset-0 opacity-20 bg-[url('https://www.transparenttextures.com/patterns/stardust.png')] mix-blend-overlay"></div>
         <div className="absolute top-0 right-0 w-[800px] h-[800px] bg-[radial-gradient(ellipse_at_center,_var(--womb-forest)_0%,_transparent_60%)] opacity-[0.08] rounded-full blur-[100px] pointer-events-none" />
@@ -839,7 +900,7 @@ export function ServicesPage() {
 
               <motion.h2
                 variants={{ hidden: { opacity: 0, y: 30 }, visible: { opacity: 1, y: 0 } }}
-                className="text-4xl lg:text-5xl text-white mb-5 font-extrabold leading-[1.1] tracking-tight drop-shadow-md"
+                className="text-[2rem] sm:text-4xl lg:text-5xl text-white mb-5 font-extrabold leading-[1.1] tracking-tight drop-shadow-md"
               >
                 Green Cohort & <span className="text-transparent bg-clip-text bg-gradient-to-r from-[#36c276] to-[var(--womb-forest)]">Emergency Safe-Zones</span>
               </motion.h2>
@@ -884,18 +945,41 @@ export function ServicesPage() {
               {/* Premium Glow Behind Certificate */}
               <div className="absolute inset-0 bg-gradient-to-r from-[#36c276]/30 to-[var(--womb-forest)]/40 blur-[80px] rounded-full scale-90" />
 
-              <div className="relative bg-white/5 backdrop-blur-xl border border-white/10 rounded-[2rem] p-4 shadow-[0_30px_70px_rgba(0,0,0,0.6)] group transform-gpu transition-all duration-700 hover:-translate-y-2 hover:shadow-[0_40px_80px_rgba(54,194,118,0.2)] max-w-[400px] mx-auto lg:ml-auto">
+              <div className="relative w-full max-w-[400px] bg-white/5 backdrop-blur-xl border border-white/10 rounded-[2rem] p-3 sm:p-4 shadow-[0_30px_70px_rgba(0,0,0,0.6)] group transform-gpu transition-all duration-700 hover:-translate-y-2 hover:shadow-[0_40px_80px_rgba(54,194,118,0.2)] mx-auto lg:ml-auto">
                 <div className="absolute -inset-[1px] bg-gradient-to-br from-white/30 via-transparent to-[#36c276]/30 rounded-[2rem] pointer-events-none opacity-50" />
 
-                <div className="overflow-hidden rounded-[1.2rem] relative bg-[#f8f9fa] w-full border border-gray-200 shadow-inner group-hover:border-[#36c276]/50 transition-colors duration-500 min-h-[480px]">
+                <div className="overflow-hidden rounded-[1.2rem] relative bg-[#f8f9fa] w-full border border-gray-200 shadow-inner group-hover:border-[#36c276]/50 transition-colors duration-500 min-h-[320px] sm:min-h-[420px] lg:min-h-[480px]">
                   <iframe
                     src="/Go%20Green%20Certificate.pdf#view=FitH&toolbar=0&navpanes=0&scrollbar=0"
-                    className="w-full h-[500px] border-none pointer-events-auto mix-blend-multiply scale-[1.05]"
+                    className="hidden sm:block w-full h-[420px] lg:h-[500px] border-none pointer-events-auto mix-blend-multiply scale-100 lg:scale-[1.05]"
                     title="Go Green Official Certificate"
                   />
+                  <a
+                    href="/Go%20Green%20Certificate.pdf"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="sm:hidden absolute inset-0 block bg-[#f8f9fa]"
+                  >
+                    <div className="absolute inset-x-0 top-0 h-[220px] overflow-hidden">
+                      <iframe
+                        src="/Go%20Green%20Certificate.pdf#view=FitH&toolbar=0&navpanes=0&scrollbar=0"
+                        title="Go Green Official Certificate mobile preview"
+                        className="h-[420px] w-[178%] max-w-none origin-top-left scale-[0.56] border-none pointer-events-none mix-blend-multiply"
+                      />
+                    </div>
+                    <div className="absolute inset-x-0 bottom-0 flex items-center justify-between gap-3 border-t border-gray-200 bg-[#184f34] px-4 py-3">
+                      <div>
+                        <p className="text-white font-bold text-[1.02rem] leading-tight">Official Go Green Certificate</p>
+                        <p className="text-[#7ce0a6] text-xs font-medium">Awarded to major donors & partners</p>
+                      </div>
+                      <span className="flex h-10 w-10 items-center justify-center rounded-xl bg-white/10 border border-white/10 text-white shadow-sm">
+                        <ArrowRight className="h-4 w-4 -rotate-45" />
+                      </span>
+                    </div>
+                  </a>
 
                   {/* Glass Overlay on Hover to prompt interaction */}
-                  <a href="/Go%20Green%20Certificate.pdf" target="_blank" rel="noopener noreferrer" className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 backdrop-blur-[2px] transition-all duration-500 flex flex-col items-center justify-center cursor-pointer z-10">
+                  <a href="/Go%20Green%20Certificate.pdf" target="_blank" rel="noopener noreferrer" className="absolute inset-0 hidden sm:flex bg-black/40 opacity-0 group-hover:opacity-100 backdrop-blur-[2px] transition-all duration-500 flex-col items-center justify-center cursor-pointer z-10">
                     <div className="w-14 h-14 rounded-full bg-[#36c276]/90 shadow-[0_0_30px_rgba(54,194,118,0.6)] flex items-center justify-center mb-4 transform translate-y-6 group-hover:translate-y-0 transition-transform duration-500 ease-out border border-[#36c276]/50">
                       <ArrowRight className="w-6 h-6 text-white transform -rotate-45" />
                     </div>
@@ -903,7 +987,7 @@ export function ServicesPage() {
                   </a>
                 </div>
 
-                <div className="mt-5 flex items-start justify-between px-2 gap-3">
+                <div className="mt-4 sm:mt-5 flex items-start justify-between px-1 sm:px-2 gap-3">
                   <div>
                     <p className="text-white font-bold text-[1.05rem] leading-tight mb-1">Official Go Green Certificate</p>
                     <p className="text-[#36c276] text-xs font-medium">Awarded to major donors & partners</p>

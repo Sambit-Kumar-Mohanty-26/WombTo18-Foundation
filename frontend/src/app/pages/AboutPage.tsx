@@ -38,7 +38,7 @@ function ValueCard({ val, index }: { val: typeof womboValues[0], index: number }
   };
 
   return (
-    <div style={{ perspective: 1200 }} className="h-full w-full">
+    <div style={{ perspective: 1200 }} className="w-full sm:h-full">
       <motion.div
         initial="hidden"
         whileInView="visible"
@@ -65,13 +65,13 @@ function ValueCard({ val, index }: { val: typeof womboValues[0], index: number }
           rotateY,
           transformStyle: "preserve-3d",
         }}
-        className="relative group w-full h-full min-h-[320px] will-change-transform"
+        className="relative group w-full will-change-transform sm:h-full sm:min-h-[300px] lg:min-h-[320px]"
       >
         {/* Cinematic Ambient Glow */}
         <div className="absolute -inset-0.5 rounded-[1.2rem] bg-gradient-to-br from-[var(--womb-forest)]/40 via-transparent to-[var(--journey-saffron)]/40 opacity-0 group-hover:opacity-100 blur-xl transition-all duration-700 pointer-events-none" />
 
         {/* Main Card */}
-        <div className="relative h-full bg-[#fdfcfb] rounded-[1rem] p-4 lg:p-6 xl:p-8 pt-8 xl:pt-10 border border-gray-200/50 shadow-sm overflow-hidden flex flex-col items-center justify-start text-center transition-all duration-700 group-hover:bg-white group-hover:border-[var(--womb-forest)]/20 group-hover:shadow-[0_20px_40px_-15px_rgba(29,110,63,0.15)] z-10 w-full">
+        <div className="relative bg-[#fdfcfb] rounded-[1rem] p-4 sm:p-5 lg:p-6 xl:p-8 pt-7 sm:pt-8 xl:pt-10 border border-gray-200/50 shadow-sm overflow-hidden flex flex-col items-center justify-start text-center transition-all duration-700 group-hover:bg-white group-hover:border-[var(--womb-forest)]/20 group-hover:shadow-[0_20px_40px_-15px_rgba(29,110,63,0.15)] z-10 w-full sm:h-full">
           
           {/* Spotlight */}
           <motion.div
@@ -90,7 +90,7 @@ function ValueCard({ val, index }: { val: typeof womboValues[0], index: number }
           {/* Background WOMBO Letter */}
           <motion.div 
              variants={itemVariants}
-             className="absolute top-0 right-0 -mr-2 -mt-4 text-[7rem] lg:text-[9rem] font-black leading-none text-gray-100/70 transition-all duration-700 ease-[0.23,1,0.32,1] z-0 select-none pointer-events-none origin-top-right group-hover:scale-110 group-hover:-translate-x-3 group-hover:translate-y-2 group-hover:text-[var(--womb-forest)]/10"
+             className="absolute top-0 right-0 -mr-1 -mt-3 text-[5.5rem] sm:text-[6.5rem] lg:text-[9rem] font-black leading-none text-gray-100/70 transition-all duration-700 ease-[0.23,1,0.32,1] z-0 select-none pointer-events-none origin-top-right group-hover:scale-110 group-hover:-translate-x-3 group-hover:translate-y-2 group-hover:text-[var(--womb-forest)]/10"
              style={{ transform: "translateZ(10px)" }}
           >
             {val.letter}
@@ -98,17 +98,17 @@ function ValueCard({ val, index }: { val: typeof womboValues[0], index: number }
 
           {/* Content Wrapper */}
           <div 
-             className="relative z-10 flex flex-col items-center justify-start flex-1 w-full"
+             className="relative z-10 flex flex-col items-center justify-start w-full sm:flex-1"
              style={{ transform: "translateZ(30px)" }}
           >
             <motion.div variants={itemVariants} className="relative mb-3 lg:mb-4 w-full">
-              <h3 className="text-[1.15rem] xl:text-[1.25rem] font-black text-[var(--womb-forest)] transition-colors duration-500 group-hover:text-[var(--journey-saffron)] tracking-tighter whitespace-nowrap">
+              <h3 className="text-[1.05rem] sm:text-[1.15rem] xl:text-[1.25rem] font-black text-[var(--womb-forest)] transition-colors duration-500 group-hover:text-[var(--journey-saffron)] tracking-tighter">
                 {val.title}
               </h3>
               <div className="absolute -bottom-[8px] left-1/2 w-0 h-[2.5px] bg-gradient-to-r from-[var(--womb-forest)] to-[var(--journey-saffron)] transition-all duration-500 ease-out group-hover:w-[80%] group-hover:left-[10%] rounded-full opacity-0 group-hover:opacity-100" />
             </motion.div>
 
-            <motion.p variants={itemVariants} className="text-[0.75rem] xl:text-[0.85rem] text-gray-600 leading-[1.6] font-medium transition-colors duration-500 group-hover:text-gray-900 mt-2 px-1">
+            <motion.p variants={itemVariants} className="text-[0.78rem] sm:text-[0.8rem] xl:text-[0.85rem] text-gray-600 leading-[1.6] font-medium transition-colors duration-500 group-hover:text-gray-900 mt-2 px-1">
               {val.desc}
             </motion.p>
           </div>

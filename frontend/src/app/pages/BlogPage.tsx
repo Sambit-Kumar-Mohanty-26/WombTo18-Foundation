@@ -67,8 +67,9 @@ const categoryColors: Record<string, string> = {
 export function BlogPage() {
   const { posts: allPosts } = useContent();
   const publishedPosts = allPosts.filter((p) => p.status === "published");
-  const featured = publishedPosts[0];
-  const rest = publishedPosts.slice(1);
+  const activePosts = publishedPosts.length > 0 ? publishedPosts : posts;
+  const featured = activePosts[0];
+  const rest = activePosts.slice(1);
 
   return (
     <>
@@ -85,16 +86,16 @@ export function BlogPage() {
       </section>
 
       {/* Featured Post */}
-      <section className="py-16 bg-white border-b border-gray-100 overflow-hidden">
+      <section className="py-12 sm:py-16 bg-white border-b border-gray-100 overflow-hidden">
         <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
           <motion.div 
-            initial={{ opacity: 0, clipPath: 'inset(100% 0 0 0)', y: 60 }}
-            whileInView={{ opacity: 1, clipPath: 'inset(0% 0 0 0)', y: 0 }}
+            initial={{ opacity: 0, y: 30 }}
+            whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true, margin: "-100px" }}
-            transition={{ duration: 1.2, ease: [0.16, 1, 0.3, 1] }}
-            className="grid lg:grid-cols-2 gap-12 items-center text-gray-900 group"
+            transition={{ duration: 0.8, ease: [0.16, 1, 0.3, 1] }}
+            className="grid gap-6 sm:gap-12 lg:grid-cols-2 items-center text-gray-900 group"
           >
-            <div className="overflow-hidden rounded-3xl shadow-[0_20px_40px_-20px_rgba(0,0,0,0.15)] h-[350px] lg:h-[450px]">
+            <div className="overflow-hidden rounded-[1.75rem] sm:rounded-3xl shadow-[0_20px_40px_-20px_rgba(0,0,0,0.15)] h-[240px] sm:h-[350px] lg:h-[450px]">
               <motion.img
                 whileHover={{ scale: 1.05 }}
                 transition={{ duration: 0.8, ease: "easeOut" }}
@@ -103,11 +104,11 @@ export function BlogPage() {
                 className="w-full h-full object-cover origin-center"
               />
             </div>
-            <div className="flex flex-col justify-center">
-              <Badge className={`${categoryColors[featured.category]} mb-6 self-start px-4 py-1.5 rounded-full text-xs font-black tracking-widest uppercase shadow-sm`}>{featured.category}</Badge>
-              <h2 className="text-3xl sm:text-[2.75rem] text-gray-900 mb-6 leading-[1.15] tracking-tight" style={{ fontWeight: 800 }}>{featured.title}</h2>
-              <p className="text-lg text-gray-600 mb-8 leading-relaxed font-medium">{featured.excerpt}</p>
-              <div className="flex items-center gap-6 text-sm text-gray-500 mb-10 font-bold">
+            <div className="flex flex-col justify-center min-w-0">
+              <Badge className={`${categoryColors[featured.category]} mb-4 sm:mb-6 self-start px-4 py-1.5 rounded-full text-xs font-black tracking-widest uppercase shadow-sm`}>{featured.category}</Badge>
+              <h2 className="text-[2rem] sm:text-[2.75rem] text-gray-900 mb-4 sm:mb-6 leading-[1.08] tracking-tight" style={{ fontWeight: 800 }}>{featured.title}</h2>
+              <p className="text-base sm:text-lg text-gray-600 mb-6 sm:mb-8 leading-relaxed font-medium">{featured.excerpt}</p>
+              <div className="flex flex-wrap items-center gap-4 sm:gap-6 text-sm text-gray-500 mb-8 sm:mb-10 font-bold">
                 <span className="flex items-center gap-2"><Calendar className="h-4 w-4 text-gray-400" />{featured.date}</span>
                 <span className="flex items-center gap-2"><Clock className="h-4 w-4 text-gray-400" />{featured.readTime}</span>
               </div>

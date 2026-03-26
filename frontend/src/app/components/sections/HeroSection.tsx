@@ -162,7 +162,7 @@ export function HeroSection() {
         initial={{ opacity: 0, y: 50 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ delay: 1.5, duration: 1 }}
-        className="absolute bottom-4 left-0 right-0 flex justify-center pointer-events-none"
+        className="absolute bottom-4 left-0 right-0 hidden sm:flex justify-center pointer-events-none"
       >
         <div className="flex flex-wrap justify-center gap-4 px-4 overflow-hidden mask-image:linear-gradient(to_right,transparent,black_10%,black_90%,transparent)">
            <div className="flex items-center gap-2 text-white/50 text-xs font-bold tracking-widest uppercase bg-white/5 backdrop-blur-sm px-4 py-2 rounded-full border border-white/10">
