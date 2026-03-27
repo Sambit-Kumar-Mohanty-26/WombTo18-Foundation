@@ -288,6 +288,18 @@ function PresidentLetterSection() {
     return false;
   };
 
+  const handOffScrollToPage = (deltaY: number) => {
+    if (deltaY === 0) {
+      return;
+    }
+
+    window.scrollBy({
+      top: deltaY,
+      left: 0,
+      behavior: "auto",
+    });
+  };
+
   useEffect(() => {
     const wrapper = scrollContainerRef.current;
     const content = scrollContentRef.current;
@@ -396,7 +408,12 @@ function PresidentLetterSection() {
                 onWheelCapture={(event) => {
                   if (canConsumeInnerScroll(event.deltaY)) {
                     event.stopPropagation();
+                    return;
                   }
+
+                  event.preventDefault();
+                  event.stopPropagation();
+                  handOffScrollToPage(event.deltaY);
                 }}
                 onTouchStart={(event) => {
                   touchStartYRef.current = event.touches[0]?.clientY ?? null;
@@ -413,6 +430,10 @@ function PresidentLetterSection() {
 
                   if (canConsumeInnerScroll(deltaY)) {
                     event.stopPropagation();
+                  } else {
+                    event.preventDefault();
+                    event.stopPropagation();
+                    handOffScrollToPage(deltaY);
                   }
 
                   touchStartYRef.current = currentY;
@@ -420,10 +441,10 @@ function PresidentLetterSection() {
                 onTouchEnd={() => {
                   touchStartYRef.current = null;
                 }}
-                className="overflow-y-auto overscroll-contain px-6 py-7 scroll-smooth sm:px-8 sm:py-8 lg:px-10"
+                className="overflow-y-auto px-6 py-7 scroll-smooth sm:px-8 sm:py-8 lg:px-10"
                 style={{
                   maxHeight: "min(60vh, 520px)",
-                  overscrollBehavior: "contain",
+                  overscrollBehavior: "auto",
                   scrollbarWidth: "thin",
                   scrollbarColor: "rgba(29,110,63,0.2) transparent",
                 }}
