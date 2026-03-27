@@ -204,6 +204,6 @@ export const impactPageContent = {
     title: 'Verified & Audited',
     subtitle:
       'Our financials are independently audited annually. We maintain the highest standards of nonprofit accountability.',
-    badges: ['FCRA Compliant', '80G Certified', '12A Registered', 'GuideStar Platinum', 'NITI Aayog Listed'],
+    badges: ['80G Certified', '12A Registered', 'GuideStar Platinum', 'NITI Aayog Listed'],
   },
 } as const;
