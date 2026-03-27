@@ -102,6 +102,7 @@ export function HomeVideoSection() {
   const isInView = useInView(sectionRef, { amount: 0.6, margin: "-10% 0px -10% 0px" });
   const [playerReady, setPlayerReady] = useState(false);
   const [isPlaying, setIsPlaying] = useState(false);
+  const [isInteractive, setIsInteractive] = useState(false);
 
   useEffect(() => {
     let isCancelled = false;
@@ -179,6 +180,26 @@ export function HomeVideoSection() {
     }
   }, [isInView, playerReady]);
 
+  useEffect(() => {
+    if (!isInteractive) {
+      return;
+    }
+
+    const releaseInteraction = () => {
+      setIsInteractive(false);
+    };
+
+    window.addEventListener("wheel", releaseInteraction, { passive: true });
+    window.addEventListener("touchmove", releaseInteraction, { passive: true });
+    window.addEventListener("keydown", releaseInteraction);
+
+    return () => {
+      window.removeEventListener("wheel", releaseInteraction);
+      window.removeEventListener("touchmove", releaseInteraction);
+      window.removeEventListener("keydown", releaseInteraction);
+    };
+  }, [isInteractive]);
+
   return (
     <section
       ref={sectionRef}
@@ -225,8 +246,24 @@ export function HomeVideoSection() {
             </div>
           </div>
 
-          <div className="aspect-video w-full bg-black">
-            <div id={PLAYER_ID} className="h-full w-full" />
+          <div className="relative aspect-video w-full bg-black">
+            <div
+              id={PLAYER_ID}
+              className={`h-full w-full ${isInteractive ? "" : "[&_iframe]:pointer-events-none"}`}
+            />
+
+            {!isInteractive && (
+              <button
+                type="button"
+                onClick={() => setIsInteractive(true)}
+                className="absolute inset-0 flex items-end justify-end bg-transparent p-4 text-left"
+                aria-label="Enable video interaction"
+              >
+                <span className="max-w-xs rounded-full border border-white/15 bg-black/65 px-4 py-2 text-xs font-semibold text-white shadow-xl backdrop-blur-sm sm:text-sm">
+                  Click to interact with video
+                </span>
+              </button>
+            )}
           </div>
         </motion.div>
       </div>
