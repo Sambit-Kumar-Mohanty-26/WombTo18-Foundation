@@ -4,6 +4,8 @@ import { Card, CardContent, CardHeader, CardTitle } from "../components/ui/card"
 import { Progress } from "../components/ui/progress";
 import { Badge } from "../components/ui/badge";
 import { useTranslation } from "react-i18next";
+import { useBhashiniRuntimeTranslation } from "../hooks/useBhashiniRuntimeTranslation";
+import { impactPageContent } from "./impactPageContent";
 
 function Counter({ from = 0, to, duration = 2.5, prefix = "", suffix = "", decimals = 0 }: { from?: number, to: number, duration?: number, prefix?: string, suffix?: string, decimals?: number }) {
   const ref = useRef<HTMLSpanElement>(null);
@@ -163,7 +165,7 @@ const AnimatedProgressCard = ({ p, index }: any) => {
                transition={{ duration: 1.5, delay: 0.2 + index * 0.15, ease: "easeOut" }}
              />
           </div>
-          <p className="text-[0.7rem] text-right text-[#F29F05] font-bold tracking-tight uppercase">Seed Phase — Preparing to scale</p>
+          <p className="text-[0.7rem] text-right text-[#F29F05] font-bold tracking-tight uppercase">{p.seedLabel}</p>
         </CardContent>
       </Card>
     </motion.div>
@@ -208,7 +210,35 @@ const AnimatedOutcomeCard = ({ o, index }: any) => {
 };
 
 export function ImpactPage() {
-  const { t } = useTranslation();
+  const { i18n } = useTranslation();
+  const currentLanguage = (i18n.resolvedLanguage || i18n.language || "en").split("-")[0];
+  const { content, isLoading: isTranslating, error: translationError } = useBhashiniRuntimeTranslation(
+    impactPageContent,
+    currentLanguage,
+  );
+  const fundUtilizationData = fundUtilization.map((item, index) => ({
+    ...item,
+    name: content.charts.fundUtilization[index] || item.name,
+  }));
+  const expenseBreakdownData = expenseBreakdown.map((item, index) => ({
+    ...item,
+    name: content.charts.expenseBreakdown[index] || item.name,
+  }));
+  const programSpendData = programSpend.map((item, index) => ({
+    ...item,
+    program: content.charts.programSpendPrograms[index] || item.program,
+  }));
+  const programProgressData = programProgress.map((item, index) => ({
+    ...item,
+    program: content.programProgress.items[index]?.program || item.program,
+    beneficiaries: content.programProgress.items[index]?.beneficiaries || item.beneficiaries,
+    seedLabel: content.programProgress.seedPhase,
+  }));
+  const outcomesData = outcomes.map((item, index) => ({
+    ...item,
+    metric: content.outcomes.items[index]?.metric || item.metric,
+    detail: content.outcomes.items[index]?.detail || item.detail,
+  }));
   const totalAllocated = programProgress.reduce((s, p) => s + p.allocated, 0);
   const totalUtilized = programProgress.reduce((s, p) => s + p.utilized, 0);
   const utilizationPercent = Math.round((totalUtilized / totalAllocated) * 100);
@@ -224,21 +254,30 @@ export function ImpactPage() {
         
         <div className="mx-auto max-w-7xl px-4 relative z-10 text-center">
           <motion.div initial={{ opacity: 0, y: 30 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.8, type: "spring" }} className="max-w-4xl mx-auto">
-            <Badge variant="secondary" className="bg-[#0284c7]/10 text-[#0369a1] border-none font-bold px-4 py-1.5 mb-6 uppercase tracking-widest text-xs shadow-sm">Projecting the Future</Badge>
+            <Badge variant="secondary" className="bg-[#0284c7]/10 text-[#0369a1] border-none font-bold px-4 py-1.5 mb-6 uppercase tracking-widest text-xs shadow-sm">{content.hero.badge}</Badge>
             <h1 className="text-[2.3rem] sm:text-[3.5rem] mb-6 font-black tracking-tight text-[#0f172a] leading-[1.1]">
-              A Roadmap to <span className="text-transparent bg-clip-text bg-gradient-to-r from-[#0284c7] to-[#1e40af]">Transformative Scale</span>
+              {content.hero.titlePrefix} <span className="text-transparent bg-clip-text bg-gradient-to-r from-[#0284c7] to-[#1e40af]">{content.hero.titleAccent}</span>
             </h1>
             <p className="text-base sm:text-xl text-gray-600 mb-10 font-medium leading-relaxed mx-auto">
-              Our vision is massive, and we are laying down the exact financial and structural framework needed to achieve it. Here is our rigorous blueprint for long-term growth and accountability.
+              {content.hero.subtitle}
             </p>
             <div className="flex justify-center gap-5 flex-wrap">
-              <Button size="lg" className="bg-[#1e40af] text-white hover:bg-[#1e3a8a] font-bold shadow-xl shadow-[#1e40af]/20 rounded-xl h-14 px-8 text-base transition-all hover:-translate-y-1 hover:shadow-2xl" onClick={() => toast.success("Download started", { description: "Downloading Strategic Plan 2026-2030" })}>
-                <Download className="h-5 w-5 mr-2" /> Strategic Plan 2026-2030
+              <Button size="lg" className="bg-[#1e40af] text-white hover:bg-[#1e3a8a] font-bold shadow-xl shadow-[#1e40af]/20 rounded-xl h-14 px-8 text-base transition-all hover:-translate-y-1 hover:shadow-2xl" onClick={() => toast.success(content.hero.primaryToastTitle, { description: content.hero.primaryToastDescription })}>
+                <Download className="h-5 w-5 mr-2" /> {content.hero.primaryCta}
               </Button>
-              <Button size="lg" variant="outline" className="group bg-white text-[#0f172a] border-gray-200 hover:border-[#1e40af]/30 hover:bg-[#1e40af] hover:text-white font-bold shadow-sm rounded-xl h-14 px-8 text-base transition-all hover:-translate-y-1" onClick={() => toast.success("Download started", { description: "Downloading Financial Blueprint" })}>
-                <FileText className="h-5 w-5 mr-3 group-hover:text-white transition-colors" /> Financial Blueprint
+              <Button size="lg" variant="outline" className="group bg-white text-[#0f172a] border-gray-200 hover:border-[#1e40af]/30 hover:bg-[#1e40af] hover:text-white font-bold shadow-sm rounded-xl h-14 px-8 text-base transition-all hover:-translate-y-1" onClick={() => toast.success(content.hero.secondaryToastTitle, { description: content.hero.secondaryToastDescription })}>
+                <FileText className="h-5 w-5 mr-3 group-hover:text-white transition-colors" /> {content.hero.secondaryCta}
               </Button>
             </div>
+            {currentLanguage !== "en" && (
+              <p className="mt-4 text-sm font-medium text-slate-500">
+                {isTranslating
+                  ? "Translating this page with Bhashini..."
+                  : translationError
+                    ? "Bhashini translation is unavailable right now, so this page is showing the default copy."
+                    : `Live translation active: ${currentLanguage.toUpperCase()}`}
+              </p>
+            )}
           </motion.div>
         </div>
       </section>
@@ -256,54 +295,14 @@ export function ImpactPage() {
             transition={{ duration: 0.8 }}
             className="text-center mb-12 lg:mb-14"
           >
-            <h2 className="text-[2rem] sm:text-4xl font-black text-gray-900 mb-5 tracking-tight">Aligned with Global Goals</h2>
+            <h2 className="text-[2rem] sm:text-4xl font-black text-gray-900 mb-5 tracking-tight">{content.sdg.title}</h2>
             <p className="text-lg text-gray-600 max-w-2xl mx-auto leading-relaxed">
-              Our grassroots execution directly contributes to three core United Nations Sustainable Development Goals, driving systemic change.
+              {content.sdg.subtitle}
             </p>
           </motion.div>
           
           <div className="grid md:grid-cols-3 gap-6 lg:gap-8 perspective-[2000px] items-stretch">
-            {[
-              {
-                id: "3",
-                title: "Good Health & Well-being",
-                color: "#4C9F38",
-                desc: "Ensuring healthy lives and promoting well-being for all ages through practical, community-led interventions.",
-                points: [
-                  "Children vaccinated on schedule",
-                  "Maternal health reminders delivered",
-                  "Mental wellness sessions conducted",
-                  "Emergency preparedness trainings run",
-                  "Health screenings completed in schools",
-                ],
-              },
-              {
-                id: "4",
-                title: "Quality Education",
-                color: "#C5192D",
-                desc: "Strengthening learning environments so children are healthy, supported, and ready to learn.",
-                points: [
-                  "Schools operating as Health Promoting Schools",
-                  "Teachers trained in wellness delivery",
-                  "Student wellness reports generated",
-                  "NEP 2020-aligned modules deployed",
-                  "Parent education sessions delivered",
-                ],
-              },
-              {
-                id: "13",
-                title: "Climate Action",
-                color: "#3F7E44",
-                desc: "Embedding environmental stewardship into child and community health through measurable green action.",
-                points: [
-                  "Geo-tagged trees planted and maintained",
-                  "Carbon offset (kg CO2) tracked per cohort",
-                  "Eco-learning sessions in partner schools",
-                  "Green Cohort dashboard entries active",
-                  "Children enrolled in Carbon-Neutral Cohort",
-                ],
-              },
-            ].map((sdg, i) => (
+            {content.sdg.cards.map((sdg, i) => (
               <motion.div
                 key={sdg.id}
                 initial={{ opacity: 0, rotateX: -40, y: 80, filter: 'blur(10px)' }}
@@ -329,10 +328,13 @@ export function ImpactPage() {
                 />
 
                 <div 
-                  className="w-14 h-14 rounded-[1.1rem] flex items-center justify-center text-white font-black text-xl mb-6 shadow-sm group-hover:scale-110 transition-transform duration-500 z-10"
-                  style={{ backgroundColor: sdg.color }}
+                  className="w-16 h-16 rounded-[1.1rem] flex items-center justify-center mb-6 shadow-sm group-hover:scale-110 transition-transform duration-500 z-10 overflow-hidden"
                 >
-                  {sdg.id}
+                  <img 
+                    src={sdg.image} 
+                    alt={sdg.title} 
+                    className="w-full h-full object-cover"
+                  />
                 </div>
                 
                 <h3 className="text-[1.2rem] lg:text-[1.3rem] font-extrabold text-gray-900 mb-3 z-10 tracking-tight">{sdg.title}</h3>
@@ -386,9 +388,9 @@ export function ImpactPage() {
                 <line x1="3" y1="10" x2="21" y2="10" />
               </svg>
             </motion.div>
-            <h2 className="text-[2rem] md:text-5xl font-black text-gray-900 tracking-tight mb-4">Reporting Calendar</h2>
+            <h2 className="text-[2rem] md:text-5xl font-black text-gray-900 tracking-tight mb-4">{content.reporting.title}</h2>
             <p className="text-lg text-gray-500 max-w-2xl mx-auto leading-relaxed font-medium">
-              Transparent, verifiable impact — published on schedule, every quarter.
+              {content.reporting.subtitle}
             </p>
           </motion.div>
 
@@ -530,10 +532,10 @@ export function ImpactPage() {
         <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 relative z-10">
           <div className="grid grid-cols-2 lg:grid-cols-4 gap-6 sm:gap-8">
             {[
-              { icon: IndianRupee, label: "Funding Target (2030)", to: 500, prefix: "₹", suffix: " Cr", decimals: 0, change: "Infrastructure Goal", color: "text-[#1D6E3F]" },
-              { icon: TrendingUp, label: "Projected Cost-Ratio", to: 82, prefix: "", suffix: "%", decimals: 0, change: "Direct to programs", color: "text-blue-600" },
-              { icon: Users, label: "Children (2030 Goal)", to: 25, prefix: "", suffix: "M", decimals: 0, change: "Expansive Reach", color: "text-[#1D6E3F]" },
-              { icon: ShieldCheck, label: "Target Cost per Child", to: 1200, prefix: "₹", suffix: "", decimals: 0, change: "Maximum efficiency", color: "text-amber-500" },
+              { icon: IndianRupee, label: content.metrics[0].label, to: 500, prefix: "₹", suffix: " Cr", decimals: 0, change: content.metrics[0].change, color: "text-[#1D6E3F]" },
+              { icon: TrendingUp, label: content.metrics[1].label, to: 82, prefix: "", suffix: "%", decimals: 0, change: content.metrics[1].change, color: "text-blue-600" },
+              { icon: Users, label: content.metrics[2].label, to: 25, prefix: "", suffix: "M", decimals: 0, change: content.metrics[2].change, color: "text-[#1D6E3F]" },
+              { icon: ShieldCheck, label: content.metrics[3].label, to: 1200, prefix: "₹", suffix: "", decimals: 0, change: content.metrics[3].change, color: "text-amber-500" },
             ].map((m, i) => (
               <motion.div 
                 key={m.label} 
@@ -571,16 +573,16 @@ export function ImpactPage() {
             <motion.div initial={{ opacity: 0, x: -30 }} whileInView={{ opacity: 1, x: 0 }} viewport={{ once: true, amount: 0.4 }} transition={{ duration: 0.8, type: "spring" }}>
               <Card className="bg-white border-gray-100 shadow-[0_15px_40px_-15px_rgba(0,0,0,0.08)] hover:shadow-[0_25px_50px_-15px_rgba(0,0,0,0.12)] transition-shadow duration-500 rounded-3xl h-full">
                 <CardHeader className="pb-4 pt-6 sm:pt-8 px-5 sm:px-8 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
-                  <CardTitle className="text-lg sm:text-xl font-extrabold text-gray-900 tracking-tight">Capped Implementation Costs</CardTitle>
-                  <Badge variant="secondary" className="w-fit bg-[#1D6E3F]/10 text-[#1D6E3F] border-none font-bold px-3 py-1 shadow-sm mt-0">Committed limits</Badge>
+                  <CardTitle className="text-lg sm:text-xl font-extrabold text-gray-900 tracking-tight">{content.charts.fundUtilizationTitle}</CardTitle>
+                  <Badge variant="secondary" className="w-fit bg-[#1D6E3F]/10 text-[#1D6E3F] border-none font-bold px-3 py-1 shadow-sm mt-0">{content.charts.fundUtilizationBadge}</Badge>
                 </CardHeader>
                 <CardContent className="px-3 sm:px-4 pb-6 sm:pb-8">
-                  <div className="h-[250px] sm:h-[320px]">
+                  <div className="h-[250px] sm:h-[320px] [WebkitTapHighlightColor:transparent] [&_.recharts-layer]:outline-none [&_.recharts-sector]:outline-none [&_.recharts-surface]:outline-none">
                     <AnimatedChart>
                     <ResponsiveContainer width="100%" height="100%">
                       <PieChart>
                         <Pie
-                          data={fundUtilization}
+                          data={fundUtilizationData}
                           cx="50%"
                           cy="42%"
                           innerRadius="48%"
@@ -595,7 +597,7 @@ export function ImpactPage() {
                           animationDuration={1500}
                           animationEasing="ease-out"
                         >
-                          {fundUtilization.map((entry, index) => (
+                          {fundUtilizationData.map((entry, index) => (
                             <Cell key={`util-${index}`} fill={entry.color} />
                           ))}
                         </Pie>
@@ -604,7 +606,7 @@ export function ImpactPage() {
                     </ResponsiveContainer>
                     </AnimatedChart>
                   </div>
-                  <MobileLegend items={fundUtilization} />
+                  <MobileLegend items={fundUtilizationData} />
                 </CardContent>
               </Card>
             </motion.div>
@@ -613,15 +615,15 @@ export function ImpactPage() {
             <motion.div initial={{ opacity: 0, x: 30 }} whileInView={{ opacity: 1, x: 0 }} viewport={{ once: true, amount: 0.4 }} transition={{ duration: 0.8, type: "spring", delay: 0.2 }}>
               <Card className="bg-white border-gray-100 shadow-[0_15px_40px_-15px_rgba(0,0,0,0.08)] hover:shadow-[0_25px_50px_-15px_rgba(0,0,0,0.12)] transition-shadow duration-500 rounded-3xl h-full">
                 <CardHeader className="pb-4 pt-6 sm:pt-8 px-5 sm:px-8">
-                  <CardTitle className="text-lg sm:text-xl font-extrabold text-gray-900 tracking-tight">Strict Budgetary Boundaries</CardTitle>
+                  <CardTitle className="text-lg sm:text-xl font-extrabold text-gray-900 tracking-tight">{content.charts.expenseBreakdownTitle}</CardTitle>
                 </CardHeader>
                 <CardContent className="px-3 sm:px-4 pb-6 sm:pb-8">
-                  <div className="h-[250px] sm:h-[320px]">
+                  <div className="h-[250px] sm:h-[320px] [WebkitTapHighlightColor:transparent] [&_.recharts-layer]:outline-none [&_.recharts-sector]:outline-none [&_.recharts-surface]:outline-none">
                     <AnimatedChart>
                     <ResponsiveContainer width="100%" height="100%">
                       <PieChart>
                         <Pie
-                          data={expenseBreakdown}
+                          data={expenseBreakdownData}
                           cx="50%"
                           cy="42%"
                           innerRadius="48%"
@@ -636,7 +638,7 @@ export function ImpactPage() {
                           animationDuration={1500}
                           animationEasing="ease-out"
                         >
-                          {expenseBreakdown.map((entry, index) => (
+                          {expenseBreakdownData.map((entry, index) => (
                             <Cell key={`expense-${index}`} fill={entry.color} />
                           ))}
                         </Pie>
@@ -645,7 +647,7 @@ export function ImpactPage() {
                     </ResponsiveContainer>
                     </AnimatedChart>
                   </div>
-                  <MobileLegend items={expenseBreakdown} />
+                  <MobileLegend items={expenseBreakdownData} />
                 </CardContent>
               </Card>
             </motion.div>
@@ -659,13 +661,13 @@ export function ImpactPage() {
           <motion.div initial={{ opacity: 0, y: 40 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true, amount: 0.4 }} transition={{ duration: 0.8, type: "spring" }}>
             <Card className="bg-white border-gray-100 shadow-[0_15px_40px_-15px_rgba(0,0,0,0.06)] hover:shadow-[0_25px_50px_-15px_rgba(0,0,0,0.1)] transition-shadow duration-500 rounded-3xl">
               <CardHeader className="pt-6 px-5 sm:px-8 border-b border-gray-50 pb-4 mb-4">
-                <CardTitle className="text-xl sm:text-2xl font-extrabold text-gray-900 tracking-tight">Phased Scaling Allocation (₹ Cr)</CardTitle>
+                <CardTitle className="text-xl sm:text-2xl font-extrabold text-gray-900 tracking-tight">{content.charts.programSpendTitle}</CardTitle>
               </CardHeader>
               <CardContent className="px-3 sm:px-4 pb-6">
                 <div className="h-[280px] sm:h-[320px]">
                   <AnimatedChart>
                   <ResponsiveContainer width="100%" height="100%">
-                    <BarChart data={programSpend} margin={{ top: 10, right: 30, left: 0, bottom: 0 }}>
+                    <BarChart data={programSpendData} margin={{ top: 10, right: 30, left: 0, bottom: 0 }}>
                       <defs>
                         <linearGradient id="colorSpent" x1="0" y1="0" x2="0" y2="1">
                           <stop offset="5%" stopColor="#1D6E3F" stopOpacity={1}/>
@@ -692,7 +694,7 @@ export function ImpactPage() {
                         dataKey="baseline" 
                         fill="url(#colorSpent)" 
                         radius={[6, 6, 0, 0]} 
-                        name="Baseline Foundation" 
+                        name={content.charts.programSpendLegendBaseline} 
                         barSize={32}
                         filter="url(#barShadow)"
                         animationDuration={1500}
@@ -702,7 +704,7 @@ export function ImpactPage() {
                         dataKey="target" 
                         fill="url(#colorTarget)" 
                         radius={[6, 6, 0, 0]} 
-                        name="Full Scale Objective"
+                        name={content.charts.programSpendLegendTarget}
 
                         barSize={32}
                         filter="url(#barShadow)"
@@ -725,11 +727,11 @@ export function ImpactPage() {
         <div className="absolute inset-0 bg-[radial-gradient(#e5e7eb_1px,transparent_1px)] [background-size:16px_16px] opacity-30 pointer-events-none" />
         <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 relative z-10">
           <motion.div initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} className="mb-10">
-            <h2 className="text-[2rem] text-gray-900 font-extrabold tracking-tight mb-2">Program Outreach Framework</h2>
-            <p className="text-gray-600 font-medium text-lg text-opacity-80">Our financial commitments mapped against exact outreach targets to guarantee efficiency.</p>
+            <h2 className="text-[2rem] text-gray-900 font-extrabold tracking-tight mb-2">{content.programProgress.title}</h2>
+            <p className="text-gray-600 font-medium text-lg text-opacity-80">{content.programProgress.subtitle}</p>
           </motion.div>
           <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-6">
-            {programProgress.map((p, index) => (
+            {programProgressData.map((p, index) => (
               <AnimatedProgressCard key={p.program} p={p} index={index} />
             ))}
           </div>
@@ -742,7 +744,7 @@ export function ImpactPage() {
           <motion.div initial={{ opacity: 0, y: 40 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true, amount: 0.4 }} transition={{ duration: 0.8, type: "spring" }}>
             <Card className="bg-white border-gray-100 shadow-[0_15px_40px_-15px_rgba(0,0,0,0.06)] hover:shadow-[0_25px_50px_-15px_rgba(0,0,0,0.1)] transition-shadow duration-500 rounded-3xl">
               <CardHeader className="pt-6 sm:pt-8 px-5 sm:px-8 border-b border-gray-50 pb-6 mb-6">
-                <CardTitle className="text-xl sm:text-2xl font-extrabold text-gray-900 tracking-tight">5-Year Exponential Output Scaling</CardTitle>
+                <CardTitle className="text-xl sm:text-2xl font-extrabold text-gray-900 tracking-tight">{content.charts.growthTitle}</CardTitle>
               </CardHeader>
               <CardContent className="px-3 sm:px-4 pb-6 sm:pb-8">
                 <div className="h-[300px] sm:h-[400px]">
@@ -787,7 +789,7 @@ export function ImpactPage() {
                           strokeWidth={4} 
                           fillOpacity={1} 
                           fill="url(#colorChildren)" 
-                          name="Children" 
+                          name={content.charts.growthSeries.children} 
                           filter="url(#lineShadow)"
                           animationDuration={2000}
                           animationEasing="ease-in-out"
@@ -799,7 +801,7 @@ export function ImpactPage() {
                           strokeWidth={4} 
                           fillOpacity={1} 
                           fill="url(#colorMothers)" 
-                          name="Mothers" 
+                          name={content.charts.growthSeries.mothers} 
                           filter="url(#lineShadow)"
                           animationDuration={2000}
                           animationEasing="ease-in-out"
@@ -812,7 +814,7 @@ export function ImpactPage() {
                           strokeWidth={4} 
                           fillOpacity={1} 
                           fill="url(#colorCommunities)" 
-                          name="Communities" 
+                          name={content.charts.growthSeries.communities} 
                           filter="url(#lineShadow)"
                           animationDuration={2000}
                           animationEasing="ease-in-out"
@@ -832,11 +834,11 @@ export function ImpactPage() {
       <section className="py-16 bg-white border-t border-gray-100 relative overflow-hidden">
         <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 relative z-10">
           <motion.div initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} className="mb-10">
-            <h2 className="text-[2rem] text-gray-900 font-extrabold tracking-tight mb-2">Strategic Key Performance Indicators (KPIs)</h2>
-            <p className="text-gray-600 font-medium text-lg text-opacity-80">The strict milestones we will hold ourselves to, with zero compromise.</p>
+            <h2 className="text-[2rem] text-gray-900 font-extrabold tracking-tight mb-2">{content.outcomes.title}</h2>
+            <p className="text-gray-600 font-medium text-lg text-opacity-80">{content.outcomes.subtitle}</p>
           </motion.div>
           <div className="space-y-6">
-            {outcomes.map((o, index) => (
+            {outcomesData.map((o, index) => (
               <AnimatedOutcomeCard key={o.metric} o={o} index={index} />
             ))}
           </div>
@@ -848,12 +850,12 @@ export function ImpactPage() {
       {/* Trust Section */}
       <section className="py-12 bg-[#f0faf4] border-t border-[#d1f5e0]">
         <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 text-center">
-          <h2 className="text-2xl text-gray-900 mb-2 font-bold">Verified & Audited</h2>
+          <h2 className="text-2xl text-gray-900 mb-2 font-bold">{content.trust.title}</h2>
           <p className="text-gray-600 mb-6 max-w-2xl mx-auto">
-            Our financials are independently audited annually. We maintain the highest standards of nonprofit accountability.
+            {content.trust.subtitle}
           </p>
           <div className="flex flex-wrap justify-center gap-4">
-            {["FCRA Compliant", "80G Certified", "12A Registered", "GuideStar Platinum", "NITI Aayog Listed"].map((badge) => (
+            {content.trust.badges.map((badge) => (
               <Badge key={badge} variant="outline" className="px-4 py-2 text-sm border-[#a7e8c3] text-[#155e33] bg-white shadow-sm">
                 <ShieldCheck className="h-3.5 w-3.5 mr-1.5 text-[#1D6E3F]" />
                 {badge}

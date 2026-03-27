@@ -1,33 +1,34 @@
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import useEmblaCarousel from "embla-carousel-react";
 import { Star, Quote, ChevronLeft, ChevronRight } from "lucide-react";
 
 const testimonials = [
   {
-    name: "Priya S.",
+    name: "Shruti Bhujbal",
     role: "Parent - Pune",
     rating: 5,
-    image: "https://images.pexels.com/photos/774909/pexels-photo-774909.jpeg?auto=compress&cs=tinysrgb&w=300&h=300&fit=crop",
-    quote: "My daughter almost missed her 9-month vaccination - we had shifted to a new locality and I simply forgot. WOMBTO18 sent three reminders. That one message changed everything.",
+    image: "/images/site-assets/testimonial_parent.png",
+    quote: "WombTo18 has been incredibly structured and practical, covering everything from health to learning in one place.Their simple tools and reminders have made life easier for both parents and teachers.",
   },
   {
-    name: "Dr. Ananya Joshi",
+    name: "Dhanashree Wagh",
     role: "School Principal, Maharashtra",
     rating: 5,
-    image: "https://images.unsplash.com/photo-1573497019940-1c28c88b4f3e?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxNHx8dGVhY2hlciUyMGluZGlhfGVufDB8fHx8MTc3MzE0MDMwNXww&ixlib=rb-4.1.0&q=80&w=150",
-    quote: "We had never run a structured health screening for our students before WOMBTO18. Today our teachers are trained, our students are tracked, and parents trust us more than ever before.",
+    image: "/images/site-assets/testimonial_principal.png",
+    quote: "WombTo18 has completely changed the way we look at student well-being.WombTo18 is the partner you need. This is not a program; this is a mission. Highly recommended.",
   },
   {
-    name: "Suresh Menon",
+    name: "anand anasane",
     role: "CSR Head, Pune",
     rating: 5,
-    image: "https://images.unsplash.com/photo-1556157382-97eda2d62296?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwyfHxwcm9mZXNzaW9uYWwlMjBpbmRpYW58ZW58MHx8fHwxNzczMTQwMzMyfDA&ixlib=rb-4.1.0&q=80&w=150",
-    quote: "Our CSR team needed a partner with verifiable, measurable outcomes. WOMBTO18's donor dashboard and quarterly reports give us exactly that - without chasing anyone for data.",
+    image: "/images/site-assets/testimonial_csr.png",
+    quote: "Best parenting support system. Reminders + milestones + easy guides = peace of mind.Very accurate immunization reminders. Never missed a vaccine after joining.",
   },
 ];
 
 export function TestimonialsSection() {
   const [emblaRef, emblaApi] = useEmblaCarousel({ loop: true });
+  const [expandedCards, setExpandedCards] = useState<Record<number, boolean>>({});
 
   useEffect(() => {
     if (!emblaApi) return;
@@ -41,6 +42,12 @@ export function TestimonialsSection() {
 
   const scrollPrev = () => emblaApi && emblaApi.scrollPrev();
   const scrollNext = () => emblaApi && emblaApi.scrollNext();
+  const toggleExpanded = (index: number) => {
+    setExpandedCards((current) => ({
+      ...current,
+      [index]: !current[index],
+    }));
+  };
 
   return (
     <section className="py-24 bg-[var(--womb-forest)]/5 relative overflow-hidden flex flex-col items-center">
@@ -58,28 +65,42 @@ export function TestimonialsSection() {
           <div className="flex touch-pan-y">
             {testimonials.map((t, idx) => (
               <div key={idx} className="flex-[0_0_100%] min-w-0 pl-3 sm:pl-4 py-4">
-                <div className="bg-white rounded-3xl p-5 sm:p-12 shadow-xl border border-gray-100 flex flex-row gap-4 sm:gap-8 items-start transition-all h-[400px] sm:h-auto sm:min-h-[340px]">
+                <div className="flex min-h-[340px] flex-col gap-5 rounded-3xl border border-gray-100 bg-white p-5 shadow-xl transition-all sm:min-h-[340px] sm:flex-row sm:gap-8 sm:p-12">
                   <div className="shrink-0 relative">
                     <img
                       src={t.image}
                       alt={t.name}
-                      className="w-16 h-16 sm:w-32 sm:h-32 rounded-full object-cover border-4 border-[var(--womb-forest)]/20 shadow-md"
+                      className="h-16 w-16 rounded-full border-4 border-[var(--womb-forest)]/20 object-cover shadow-md sm:h-32 sm:w-32"
                     />
                     <div className="absolute -bottom-2 -right-2 sm:-bottom-3 sm:-right-3 bg-white p-1.5 sm:p-2 rounded-full shadow-lg text-[var(--womb-forest)]">
                       <Quote className="w-4 h-4 sm:w-5 sm:h-5 fill-current" />
                     </div>
                   </div>
 
-                  <div className="flex-1 min-w-0 text-left flex flex-col self-stretch">
+                  <div className="flex min-w-0 flex-1 flex-col text-left self-stretch">
                     <div className="flex justify-start gap-1 mb-3 sm:mb-4">
                       {[...Array(t.rating)].map((_, i) => (
                         <Star key={i} className="w-4 h-4 sm:w-5 sm:h-5 fill-amber-400 text-amber-400" />
                       ))}
                     </div>
 
-                    <p className="text-base sm:text-2xl text-gray-700 leading-relaxed font-serif italic mb-4 sm:mb-6 flex-1 overflow-hidden">
+                    <p
+                      className={`mb-4 flex-1 overflow-hidden font-serif text-lg leading-relaxed text-gray-700 italic sm:mb-6 sm:text-2xl ${
+                        expandedCards[idx] ? "" : "line-clamp-7 sm:line-clamp-none"
+                      }`}
+                    >
                       "{t.quote}"
                     </p>
+
+                    {t.quote.length > 140 && (
+                      <button
+                        type="button"
+                        onClick={() => toggleExpanded(idx)}
+                        className="mb-4 w-fit text-sm font-semibold text-[var(--womb-forest)] transition-colors hover:text-[#155e33] sm:hidden"
+                      >
+                        {expandedCards[idx] ? "See less" : "See more"}
+                      </button>
+                    )}
 
                     <div className="mt-auto">
                       <p className="text-base sm:text-lg font-bold text-gray-900">{t.name}</p>

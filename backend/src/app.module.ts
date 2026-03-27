@@ -11,6 +11,7 @@ import { ProgramModule } from './program/program.module';
 import { BlogModule } from './blog/blog.module';
 import { AdminModule } from './admin/admin.module';
 import { DemoModule } from './demo/demo.module';
+import { BhashiniModule } from './bhashini/bhashini.module';
 
 @Module({
   imports: [
@@ -24,6 +25,7 @@ import { DemoModule } from './demo/demo.module';
     BlogModule,
     AdminModule,
     DemoModule,
+    BhashiniModule,
   ],
   controllers: [AppController],
   providers: [AppService],

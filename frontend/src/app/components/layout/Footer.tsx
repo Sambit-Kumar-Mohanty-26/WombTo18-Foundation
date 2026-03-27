@@ -1,5 +1,5 @@
 import { Link } from "react-router";
-import { Mail, Phone, MapPin, Facebook, Twitter, Instagram, Linkedin } from "lucide-react";
+import { Mail, Phone, MapPin, Instagram, Linkedin, Youtube } from "lucide-react";
 
 export function Footer() {
   return (
@@ -27,8 +27,19 @@ export function Footer() {
               Nurturing every child from conception to adulthood. Building a foundation of health, education, and opportunity.
             </p>
             <div className="flex gap-3">
-              {[Facebook, Twitter, Instagram, Linkedin].map((Icon, i) => (
-                <a key={i} href="#" className="p-2 rounded-full bg-white border border-slate-200 text-slate-400 hover:text-primary hover:border-primary/30 transition-all shadow-sm">
+              {[
+                { Icon: Instagram, href: "https://www.instagram.com/wombto18?utm_source=qr&igsh=MXYzYTZrNWV3cGI5NA==", label: "Instagram" },
+                { Icon: Linkedin, href: "https://www.linkedin.com/company/wombto18-foundation/", label: "LinkedIn" },
+                { Icon: Youtube, href: "https://www.youtube.com/@Wombto18", label: "YouTube" }
+              ].map(({ Icon, href, label }) => (
+                <a 
+                  key={label} 
+                  href={href} 
+                  target="_blank" 
+                  rel="noopener noreferrer"
+                  className="p-2 rounded-full bg-white border border-slate-200 text-slate-400 hover:text-primary hover:border-primary/30 transition-all shadow-sm"
+                  aria-label={label}
+                >
                   <Icon className="h-4 w-4" />
                 </a>
               ))}

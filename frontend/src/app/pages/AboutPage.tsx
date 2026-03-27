@@ -72,7 +72,7 @@ function ValueCard({ val, index }: { val: typeof womboValues[0], index: number }
 
         {/* Main Card */}
         <div className="relative bg-[#fdfcfb] rounded-[1rem] p-4 sm:p-5 lg:p-6 xl:p-8 pt-7 sm:pt-8 xl:pt-10 border border-gray-200/50 shadow-sm overflow-hidden flex flex-col items-center justify-start text-center transition-all duration-700 group-hover:bg-white group-hover:border-[var(--womb-forest)]/20 group-hover:shadow-[0_20px_40px_-15px_rgba(29,110,63,0.15)] z-10 w-full sm:h-full">
-          
+
           {/* Spotlight */}
           <motion.div
             className="pointer-events-none absolute -inset-px rounded-[1rem] opacity-0 group-hover:opacity-100 transition-opacity duration-500 z-0"
@@ -88,18 +88,18 @@ function ValueCard({ val, index }: { val: typeof womboValues[0], index: number }
           />
 
           {/* Background WOMBO Letter */}
-          <motion.div 
-             variants={itemVariants}
-             className="absolute top-0 right-0 -mr-1 -mt-3 text-[5.5rem] sm:text-[6.5rem] lg:text-[9rem] font-black leading-none text-gray-100/70 transition-all duration-700 ease-[0.23,1,0.32,1] z-0 select-none pointer-events-none origin-top-right group-hover:scale-110 group-hover:-translate-x-3 group-hover:translate-y-2 group-hover:text-[var(--womb-forest)]/10"
-             style={{ transform: "translateZ(10px)" }}
+          <motion.div
+            variants={itemVariants}
+            className="absolute top-0 right-0 -mr-1 -mt-3 text-[5.5rem] sm:text-[6.5rem] lg:text-[9rem] font-black leading-none text-gray-100/70 transition-all duration-700 ease-[0.23,1,0.32,1] z-0 select-none pointer-events-none origin-top-right group-hover:scale-110 group-hover:-translate-x-3 group-hover:translate-y-2 group-hover:text-[var(--womb-forest)]/10"
+            style={{ transform: "translateZ(10px)" }}
           >
             {val.letter}
           </motion.div>
 
           {/* Content Wrapper */}
-          <div 
-             className="relative z-10 flex flex-col items-center justify-start w-full sm:flex-1"
-             style={{ transform: "translateZ(30px)" }}
+          <div
+            className="relative z-10 flex flex-col items-center justify-start w-full sm:flex-1"
+            style={{ transform: "translateZ(30px)" }}
           >
             <motion.div variants={itemVariants} className="relative mb-3 lg:mb-4 w-full">
               <h3 className="text-[1.05rem] sm:text-[1.15rem] xl:text-[1.25rem] font-black text-[var(--womb-forest)] transition-colors duration-500 group-hover:text-[var(--journey-saffron)] tracking-tighter">
@@ -205,7 +205,7 @@ export function AboutPage() {
         <div className="absolute bottom-[-20%] right-[-10%] w-[50%] h-[70%] bg-[radial-gradient(ellipse_at_center,_var(--womb-forest)_0%,_transparent_70%)] opacity-[0.03] blur-[80px] rounded-full pointer-events-none" />
 
         <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 relative z-10">
-          <motion.div 
+          <motion.div
             initial={{ opacity: 0, y: 30, scale: 0.95 }}
             animate={{ opacity: 1, y: 0, scale: 1 }}
             transition={{ duration: 0.8, ease: "easeOut" }}
@@ -215,7 +215,7 @@ export function AboutPage() {
               Our Story
             </p>
             <h1 className="text-5xl sm:text-6xl md:text-[4.5rem] text-gray-900 mb-6" style={{ fontWeight: 900, lineHeight: 1.05, letterSpacing: "-0.01em" }}>
-              We Didn't Start With a Plan. <br className="hidden sm:block"/>
+              We Didn't Start With a Plan. <br className="hidden sm:block" />
               <span className="text-transparent bg-clip-text bg-gradient-to-r from-[var(--journey-saffron)] to-orange-400 drop-shadow-sm">We Started With a Question.</span>
             </h1>
             <p className="text-lg md:text-xl text-gray-600 max-w-3xl leading-relaxed">
@@ -229,12 +229,12 @@ export function AboutPage() {
           STORY CHAPTERS — Alternating immersive sections
       ════════════════════════════════════════════════════════ */}
       {storyChapters.map((chapter, i) => (
-        <section 
+        <section
           key={chapter.number}
           className={`relative py-28 sm:py-36 overflow-hidden ${i % 2 === 0 ? "bg-white" : "bg-[#FAFAF8]"}`}
         >
           {/* Accent glow */}
-          <motion.div 
+          <motion.div
             initial={{ opacity: 0, scale: 0.5 }}
             whileInView={{ opacity: 1, scale: 1 }}
             viewport={{ once: true, margin: "-200px" }}
@@ -245,7 +245,7 @@ export function AboutPage() {
 
           <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 relative z-10">
             <div className={`grid lg:grid-cols-12 gap-12 lg:gap-20 items-center ${i % 2 !== 0 ? "lg:direction-rtl" : ""}`}>
-              
+
               {/* Number + Highlight Column */}
               <motion.div
                 initial={{ opacity: 0, x: i % 2 === 0 ? -80 : 80 }}
@@ -255,7 +255,7 @@ export function AboutPage() {
                 className={`lg:col-span-4 flex flex-col ${i % 2 !== 0 ? "lg:order-2 lg:items-end lg:text-right" : "items-start text-left"}`}
                 style={{ direction: "ltr" }}
               >
-                <span 
+                <span
                   className="text-[8rem] sm:text-[10rem] lg:text-[12rem] font-black leading-none tracking-tighter select-none"
                   style={{ color: chapter.accent, opacity: 0.1 }}
                 >
@@ -286,7 +286,7 @@ export function AboutPage() {
                 className={`lg:col-span-8 ${i % 2 !== 0 ? "lg:order-1" : ""}`}
                 style={{ direction: "ltr" }}
               >
-                <p 
+                <p
                   className="text-xl sm:text-2xl lg:text-[1.7rem] text-gray-700 leading-[1.75] font-serif tracking-tight"
                   dangerouslySetInnerHTML={{ __html: chapter.body }}
                 />
@@ -338,7 +338,7 @@ export function AboutPage() {
       <section className="py-24 bg-gray-50 border-b border-gray-100">
         <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
           <div className="grid md:grid-cols-2 gap-8">
-            <motion.div 
+            <motion.div
               initial={{ opacity: 0, y: 50 }}
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true, margin: "-100px" }}
@@ -346,7 +346,7 @@ export function AboutPage() {
               className="bg-white p-10 rounded-3xl shadow-[0_20px_40px_-15px_rgba(0,0,0,0.05)] border border-gray-100/60 hover:shadow-[0_40px_80px_-20px_rgba(0,0,0,0.08)] transition-all duration-700 overflow-hidden relative group"
             >
               <div className="absolute -top-10 -right-10 w-40 h-40 bg-[var(--journey-saffron)]/10 rounded-full blur-[40px] opacity-0 group-hover:opacity-100 transition-opacity duration-700 pointer-events-none" />
-              
+
               <motion.div
                 initial={{ scale: 0, rotate: -45 }}
                 whileInView={{ scale: 1, rotate: 0 }}
@@ -357,7 +357,7 @@ export function AboutPage() {
                 <Target className="w-8 h-8 text-[var(--journey-saffron)]" />
               </motion.div>
 
-              <motion.h2 
+              <motion.h2
                 initial={{ opacity: 0, x: -20 }}
                 whileInView={{ opacity: 1, x: 0 }}
                 viewport={{ once: true }}
@@ -367,7 +367,7 @@ export function AboutPage() {
                 Our Mission
               </motion.h2>
 
-              <motion.p 
+              <motion.p
                 initial={{ opacity: 0 }}
                 whileInView={{ opacity: 1 }}
                 viewport={{ once: true }}
@@ -377,7 +377,7 @@ export function AboutPage() {
                 To ensure that every child in India — from the moment of conception to the age of 18 — has access to integrated, evidence-based health support, quality education infrastructure, and an environmental legacy worth inheriting.
               </motion.p>
 
-              <motion.div 
+              <motion.div
                 initial={{ opacity: 0, y: 20 }}
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true }}
@@ -388,7 +388,7 @@ export function AboutPage() {
               </motion.div>
             </motion.div>
 
-            <motion.div 
+            <motion.div
               initial={{ opacity: 0, y: 50 }}
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true, margin: "-100px" }}
@@ -407,7 +407,7 @@ export function AboutPage() {
                 <Globe className="w-8 h-8 text-[var(--future-sky)]" />
               </motion.div>
 
-              <motion.h2 
+              <motion.h2
                 initial={{ opacity: 0, x: -20 }}
                 whileInView={{ opacity: 1, x: 0 }}
                 viewport={{ once: true }}
@@ -425,7 +425,7 @@ export function AboutPage() {
                   "India’s first Carbon-Neutral Child Cohort — 1 tree per child.",
                   "Every donor empowered with real-time tracking dashboards."
                 ].map((item, i) => (
-                  <motion.li 
+                  <motion.li
                     key={i}
                     initial={{ opacity: 0, x: 30 }}
                     whileInView={{ opacity: 1, x: 0 }}
@@ -452,7 +452,7 @@ export function AboutPage() {
             <h2 className="text-4xl font-extrabold text-gray-900 mb-4">Core Values</h2>
             <p className="text-xl text-gray-600 max-w-2xl mx-auto">The philosophical framework driving our operations.</p>
           </div>
-          
+
           <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-4 xl:gap-6 items-stretch">
             {womboValues.map((val, i) => (
               <ValueCard key={val.title} val={val} index={i} />
@@ -500,7 +500,7 @@ export function AboutPage() {
 
         <div className="mx-auto max-w-6xl px-4 sm:px-6 lg:px-8 relative z-10">
           {/* Header */}
-          <motion.div 
+          <motion.div
             initial={{ opacity: 0, y: 30 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true, margin: "-80px" }}
@@ -587,7 +587,7 @@ export function AboutPage() {
               {[
                 { cert: "12A Registration", desc: "Foundation income is tax-exempt. All activities are public benefit.", icon: "🏛️" },
                 { cert: "80G Certification", desc: "Donations are eligible for tax benefits under Section 80G of the Income Tax Act.", icon: "📜" },
-                { cert: "DPIIT Recognition", desc: "Startup India validated innovation (#DIPP162172).", icon: "🚀" },
+                { cert: "NGO DARPAN Recognition", desc: "NITI Aayog registered for transparency & funding.", icon: "🚀" },
                 { cert: "TechSoup India", desc: "Verified non-profit for global tech grants.", icon: "🌐" },
               ].map((item, i) => (
                 <motion.div
@@ -618,7 +618,7 @@ export function AboutPage() {
                 >
                   {/* Glassmorphism card bg */}
                   <div className="absolute inset-0 rounded-[1.2rem] bg-white/[0.04] border border-white/[0.08] group-hover:bg-white/[0.08] group-hover:border-[var(--journey-saffron)]/30 transition-all duration-700" />
-                  
+
                   {/* Hover glow */}
                   <div className="absolute -inset-1 rounded-[1.5rem] bg-gradient-to-br from-[var(--journey-saffron)]/0 via-transparent to-[var(--womb-forest)]/0 group-hover:from-[var(--journey-saffron)]/15 group-hover:to-[var(--womb-forest)]/10 blur-xl transition-all duration-700 pointer-events-none opacity-0 group-hover:opacity-100" />
 
@@ -629,7 +629,7 @@ export function AboutPage() {
 
                   {/* Content */}
                   <div className="relative z-10 flex items-start gap-5">
-                    <motion.div 
+                    <motion.div
                       className="w-14 h-14 shrink-0 rounded-2xl bg-[var(--journey-saffron)]/10 group-hover:bg-[var(--journey-saffron)]/20 flex items-center justify-center text-2xl transition-all duration-500 border border-[var(--journey-saffron)]/10 group-hover:border-[var(--journey-saffron)]/40 group-hover:shadow-[0_0_30px_rgba(227,171,59,0.2)]"
                       whileHover={{ rotate: [0, -10, 10, 0], transition: { duration: 0.5 } }}
                     >
@@ -643,7 +643,7 @@ export function AboutPage() {
                         {item.desc}
                       </p>
                     </div>
-                    <motion.div 
+                    <motion.div
                       className="shrink-0 w-8 h-8 rounded-full bg-[var(--womb-forest)]/20 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-all duration-500"
                       whileHover={{ scale: 1.2 }}
                     >
@@ -675,11 +675,11 @@ export function AboutPage() {
               >
                 {/* Special gradient bg for foundation card */}
                 <div className="absolute inset-0 rounded-[1.2rem] bg-gradient-to-r from-[var(--womb-forest)]/10 via-white/[0.04] to-[var(--journey-saffron)]/10 border border-white/[0.08] group-hover:border-[var(--journey-saffron)]/30 transition-all duration-700" />
-                
+
                 {/* Animated border glow */}
-                <motion.div 
+                <motion.div
                   className="absolute inset-0 rounded-[1.2rem] pointer-events-none"
-                  style={{ 
+                  style={{
                     background: "linear-gradient(90deg, var(--journey-saffron), var(--womb-forest), var(--journey-saffron))",
                     backgroundSize: "200% 100%",
                     opacity: 0,
@@ -733,7 +733,7 @@ export function AboutPage() {
 
           <div className="grid lg:grid-cols-3 gap-8 mb-16">
             {advisoryBoard.map((member, i) => (
-              <motion.div 
+              <motion.div
                 key={member.name}
                 initial={{ opacity: 0, y: 50, rotateX: 20 }}
                 whileInView={{ opacity: 1, y: 0, rotateX: 0 }}
@@ -747,19 +747,19 @@ export function AboutPage() {
 
                 <div className="relative z-10">
                   <div className="w-16 h-16 lg:w-20 lg:h-20 rounded-2xl bg-gradient-to-br from-gray-50 to-gray-100 mb-6 flex items-center justify-center text-gray-400 group-hover:text-[var(--womb-forest)] transition-all duration-500 border border-gray-200 group-hover:border-[var(--womb-forest)]/30 group-hover:scale-110 shadow-sm group-hover:shadow-[0_10px_20px_-10px_rgba(29,110,63,0.2)] overflow-hidden">
-                     {member.image ? (
-                        <img src={member.image} alt={member.name} className="w-full h-full object-cover" />
-                     ) : (
-                        <Users className="w-8 h-8 lg:w-10 lg:h-10" />
-                     )}
+                    {member.image ? (
+                      <img src={member.image} alt={member.name} className="w-full h-full object-cover" />
+                    ) : (
+                      <Users className="w-8 h-8 lg:w-10 lg:h-10" />
+                    )}
                   </div>
                   <h3 className="text-2xl font-extrabold text-gray-900 mb-2 group-hover:-translate-y-0.5 transition-transform duration-500">{member.name}</h3>
                   <p className="text-sm font-bold text-[var(--journey-saffron)] mb-6 h-10 group-hover:-translate-y-0.5 transition-transform duration-500 delay-75">{member.role}</p>
-                  
+
                   <ul className="space-y-4">
                     {member.bio.map((point, idx) => (
-                      <motion.li 
-                        key={idx} 
+                      <motion.li
+                        key={idx}
                         initial={{ opacity: 0, x: -10 }}
                         whileInView={{ opacity: 1, x: 0 }}
                         viewport={{ once: true }}
@@ -776,7 +776,7 @@ export function AboutPage() {
             ))}
           </div>
 
-          <motion.div 
+          <motion.div
             initial={{ opacity: 0, scale: 0.95 }}
             whileInView={{ opacity: 1, scale: 1 }}
             viewport={{ once: true }}

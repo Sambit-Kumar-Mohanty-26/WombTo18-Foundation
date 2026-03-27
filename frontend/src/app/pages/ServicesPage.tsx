@@ -39,7 +39,7 @@ const programs = [
     description: "Comprehensive healthcare for expectant mothers including regular check-ups, nutrition counseling, birth preparedness, and postpartum support.",
     target2026: "Updating soon",
     features: ["Regular health check-ups", "Nutrition supplements", "Birth preparedness classes", "Postpartum counseling"],
-    image: "https://images.unsplash.com/photo-1770261430761-192b0b72e4a7?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHxtb3RoZXIlMjBjaGlsZCUyMGNhcmUlMjBwcmVnbmFuY3l8ZW58MXx8fHwxNzczMTM0MDIyfDA&ixlib=rb-4.1.0&q=80&w=1080&utm_source=figma&utm_medium=referral",
+    image: "/images/site-assets/program_prenatal.png",
     category: "Health",
   },
   {
@@ -50,7 +50,7 @@ const programs = [
     description: "Immunization drives, developmental screenings, growth monitoring, and early stimulation programs for infants and toddlers.",
     target2026: "Updating soon",
     features: ["Immunization tracking", "Developmental milestones", "Growth monitoring", "Parent education"],
-    image: "https://images.unsplash.com/photo-1728494049079-c262d3facee0?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHxjaGlsZHJlbiUyMGhlYWx0aGNhcmUlMjBudXRyaXRpb258ZW58MXx8fHwxNzczMTM0MDIyfDA&ixlib=rb-4.1.0&q=80&w=1080&utm_source=figma&utm_medium=referral",
+    image: "/images/site-assets/program_childhood.png",
     category: "Health",
   },
   {
@@ -61,7 +61,7 @@ const programs = [
     description: "Mid-day meal programs, nutrition supplements, awareness campaigns, and kitchen gardens to combat malnutrition at every stage.",
     target2026: "Updating soon",
     features: ["Mid-day meals", "Micronutrient supplements", "Community kitchens", "Nutrition awareness"],
-    image: "https://images.unsplash.com/photo-1586503452950-997923af27f9?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHxoYXBweSUyMGNoaWxkcmVuJTIwcGxheWluZyUyMHNjaG9vbHxlbnwxfHx8fDE3NzMxMzQwMjF8MA&ixlib=rb-4.1.0&q=80&w=1080&utm_source=figma&utm_medium=referral",
+    image: "/images/site-assets/Mid-Day-meal-3.jpg",
     category: "Nutrition",
   },
   {
@@ -72,7 +72,7 @@ const programs = [
     description: "Scholarships, school supplies, after-school tutoring, digital literacy, and career guidance for school-age children.",
     target2026: "Updating soon",
     features: ["Scholarships", "Digital literacy", "After-school tutoring", "Career guidance"],
-    image: "https://images.unsplash.com/photo-1542810634-71277d95dcbb?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHxjaGlsZHJlbiUyMGNsYXNzcm9vbSUyMGxlYXJuaW5nJTIwdG9nZXRoZXJ8ZW58MXx8fHwxNzczMTM0MDIyfDA&ixlib=rb-4.1.0&q=80&w=1080&utm_source=figma&utm_medium=referral",
+    image: "/images/site-assets/Education-Support-01.jpg",
     category: "Education",
   },
   {
@@ -83,7 +83,7 @@ const programs = [
     description: "Skill development, mentorship, leadership training, and career counseling to prepare teenagers for independent adult life.",
     target2026: "Updating soon",
     features: ["Skill development", "Mentorship", "Leadership programs", "Internship placements"],
-    image: "https://images.unsplash.com/photo-1764072970350-2ce4f354a483?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHxjb21tdW5pdHklMjB2b2x1bnRlZXIlMjBoZWxwaW5nJTIwY2hpbGRyZW58ZW58MXx8fHwxNzczMTM0MDIxfDA&ixlib=rb-4.1.0&q=80&w=1080&utm_source=figma&utm_medium=referral",
+    image: "/images/site-assets/National-Youth-Policy_Featured-Image-1.jpg",
     category: "Community",
   },
   {
@@ -94,7 +94,7 @@ const programs = [
     description: "Advocacy, community awareness, helplines, and support systems to protect children from abuse, exploitation, and trafficking.",
     target2026: "Updating soon",
     features: ["Helpline services", "Community awareness", "Legal support", "Rehabilitation"],
-    image: "https://images.unsplash.com/photo-1584376003963-e1aa9a61c0ac?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHxjaGlsZHJlbiUyMGVkdWNhdGlvbiUyMEluZGlhJTIwTkdPfGVufDF8fHx8MTc3MzEzNDAyMXww&ixlib=rb-4.1.0&q=80&w=1080&utm_source=figma&utm_medium=referral",
+    image: "https://images.unsplash.com/photo-1488521787991-ed7bbaae773c?q=80&w=800&auto=format&fit=crop",
     category: "Community",
   },
 ];

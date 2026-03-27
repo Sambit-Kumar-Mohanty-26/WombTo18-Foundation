@@ -6,10 +6,10 @@ import { useRef, useState, useEffect } from "react";
 
 const HERO_IMAGES = [
   "https://images.unsplash.com/photo-1542810634-71277d95dcbb?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwyfHxjaGlsZHJlbiUyMGhhcHB5JTIwSW5kaWF8ZW58MHx8fHwxNzczMTM0MDIxfDA&ixlib=rb-4.1.0&q=80&w=1920", // Original Happy children India
-  "https://images.unsplash.com/photo-1511895426328-dc8714191300?q=80&w=1920&auto=format&fit=crop", // Mother holding infant, health
-  "https://images.unsplash.com/photo-1594708767771-a7502209ff51?q=80&w=1920&auto=format&fit=crop", // Children studying/learning
-  "https://images.unsplash.com/photo-1488521787991-ed7bbaae773c?q=80&w=1920&auto=format&fit=crop", // Hands together, community protection
-  "https://images.unsplash.com/photo-1509062522246-3755977927d7?q=80&w=1920&auto=format&fit=crop"  // Classroom, hopeful look
+  "/images/site-assets/hero_health.png",
+  "https://images.unsplash.com/photo-1594708767771-a7502209ff51?q=80&w=1920&auto=format&fit=crop",
+  "https://images.unsplash.com/photo-1488521787991-ed7bbaae773c?q=80&w=1920&auto=format&fit=crop",
+  "https://images.unsplash.com/photo-1509062522246-3755977927d7?q=80&w=1920&auto=format&fit=crop"
 ];
 
 export function HeroSection() {
@@ -51,7 +51,10 @@ export function HeroSection() {
   };
 
   return (
-    <section ref={containerRef} className="relative w-full h-[calc(100vh-64px)] min-h-[600px] flex items-center justify-center overflow-hidden bg-black">
+    <section
+      ref={containerRef}
+      className="relative flex w-full min-h-[calc(100svh-64px)] items-center justify-center overflow-hidden bg-black md:min-h-[760px] xl:min-h-[calc(100vh-64px)]"
+    >
       
       {/* Cinematic Background Image Carousel with Slow Zoom & Parallax */}
       <motion.div style={{ y }} className="absolute inset-0 w-full h-full bg-black">
@@ -81,16 +84,16 @@ export function HeroSection() {
       </motion.div>
       
       {/* Central Content Container */}
-      <div className="relative z-10 w-full max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-col items-center text-center mt-12 sm:mt-20 pb-24 sm:pb-32">
+      <div className="relative z-10 mx-auto flex w-full max-w-5xl flex-col items-center px-4 pt-8 pb-10 text-center sm:px-6 sm:pt-14 sm:pb-24 lg:-translate-y-8 lg:px-8 lg:pt-20 lg:pb-32">
         <motion.div
           variants={containerVariants}
           initial="hidden"
           animate="visible"
-          className="flex flex-col items-center space-y-4 lg:space-y-6"
+          className="flex flex-col items-center space-y-3 sm:space-y-4 lg:space-y-6"
         >
           {/* Top Badge */}
           <motion.div variants={cinematicReveal}>
-            <div className="inline-flex items-center gap-2 bg-white/10 backdrop-blur-md text-white/90 px-5 py-2 rounded-full text-xs sm:text-sm font-semibold border border-white/20 shadow-2xl">
+            <div className="inline-flex max-w-full items-center gap-2 rounded-full border border-white/20 bg-white/10 px-3 py-1.5 text-[10px] font-semibold text-white/90 shadow-2xl backdrop-blur-md sm:px-5 sm:py-2 sm:text-sm">
               <span className="relative flex h-2 w-2">
                 <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-[var(--journey-saffron)] opacity-75"></span>
                 <span className="relative inline-flex rounded-full h-2 w-2 bg-[var(--journey-saffron)]"></span>
@@ -102,7 +105,7 @@ export function HeroSection() {
           {/* Main Headline */}
           <motion.h1 
             variants={cinematicReveal} 
-            className="text-5xl sm:text-6xl lg:text-[5rem] text-white tracking-tight drop-shadow-2xl" 
+            className="text-[clamp(2.45rem,12vw,5rem)] text-white tracking-tight drop-shadow-2xl"
             style={{ fontWeight: 800, lineHeight: 1.05 }}
           >
             Every Child, From{" "}
@@ -117,7 +120,7 @@ export function HeroSection() {
           {/* Description */}
           <motion.p 
             variants={cinematicReveal} 
-            className="text-lg sm:text-xl md:text-2xl text-white/80 max-w-3xl leading-relaxed drop-shadow-md font-medium"
+            className="max-w-3xl px-2 text-base leading-relaxed font-medium text-white/80 drop-shadow-md sm:px-0 sm:text-lg md:text-2xl"
           >
             Delivering 32 health services across India. Support the journey of a child today and track your impact live on our verified donor dashboard.
           </motion.p>
@@ -125,29 +128,29 @@ export function HeroSection() {
           {/* CTA Buttons */}
           <motion.div 
             variants={cinematicReveal} 
-            className="flex flex-col sm:flex-row flex-wrap justify-center gap-4 pt-4 w-full max-w-3xl"
+            className="flex w-full max-w-3xl flex-col justify-center gap-3 pt-3 sm:flex-row sm:flex-wrap sm:gap-4 sm:pt-4"
           >
-            <Link to="/donate" className="flex-1 min-w-[200px]">
-              <Button size="lg" className="w-full h-auto py-3.5 px-4 flex flex-col items-center justify-center text-white rounded-xl shadow-[0_0_30px_rgba(29,110,63,0.5)] hover:shadow-[0_0_40px_rgba(29,110,63,0.8)] transition-all hover:-translate-y-1 border border-white/10 backdrop-blur-sm" style={{ backgroundColor: 'var(--womb-forest, #1D6E3F)' }}>
-                <div className="flex items-center text-base lg:text-lg font-black mb-1">
+            <Link to="/donate" className="w-full sm:min-w-[200px] sm:flex-1">
+              <Button size="lg" className="flex h-auto w-full flex-col items-center justify-center rounded-xl border border-white/10 px-4 py-3 text-white shadow-[0_0_30px_rgba(29,110,63,0.5)] backdrop-blur-sm transition-all hover:-translate-y-1 hover:shadow-[0_0_40px_rgba(29,110,63,0.8)] sm:py-3.5" style={{ backgroundColor: 'var(--womb-forest, #1D6E3F)' }}>
+                <div className="mb-1 flex items-center text-sm font-black sm:text-base lg:text-lg">
                   <Heart className="h-5 w-5 mr-2 fill-current" /> DONATE NOW
                 </div>
                 <span className="text-[10px] lg:text-xs font-bold opacity-90 tracking-widest uppercase">80G Benefit • Instant Cert</span>
               </Button>
             </Link>
             
-            <Link to="/dashboard" className="flex-1 min-w-[200px]">
-              <Button size="lg" className="w-full h-auto py-3.5 px-4 flex flex-col items-center justify-center text-white rounded-xl shadow-[0_0_30px_rgba(255,153,0,0.3)] hover:shadow-[0_0_40px_rgba(255,153,0,0.6)] transition-all hover:-translate-y-1 border border-white/10 backdrop-blur-sm" style={{ backgroundColor: 'var(--journey-saffron, #FF9900)' }}>
-                <div className="flex items-center text-base lg:text-lg font-black mb-1">
+            <Link to="/dashboard" className="w-full sm:min-w-[200px] sm:flex-1">
+              <Button size="lg" className="flex h-auto w-full flex-col items-center justify-center rounded-xl border border-white/10 px-4 py-3 text-white shadow-[0_0_30px_rgba(255,153,0,0.3)] backdrop-blur-sm transition-all hover:-translate-y-1 hover:shadow-[0_0_40px_rgba(255,153,0,0.6)] sm:py-3.5" style={{ backgroundColor: 'var(--journey-saffron, #FF9900)' }}>
+                <div className="mb-1 flex items-center text-sm font-black sm:text-base lg:text-lg">
                   <LayoutDashboard className="h-5 w-5 mr-2" /> DASHBOARD
                 </div>
                 <span className="text-[10px] lg:text-xs font-bold opacity-90 tracking-widest uppercase">See funds working live</span>
               </Button>
             </Link>
             
-            <Link to="/get-involved" className="flex-1 min-w-[200px]">
-              <Button size="lg" className="w-full h-auto py-3.5 px-4 flex flex-col items-center justify-center text-white rounded-xl shadow-lg hover:shadow-xl transition-all hover:-translate-y-1 bg-white/10 backdrop-blur-md border border-white/30 hover:bg-white/20">
-                <div className="flex items-center text-base lg:text-lg font-black mb-1">
+            <Link to="/get-involved" className="w-full sm:min-w-[200px] sm:flex-1">
+              <Button size="lg" className="flex h-auto w-full flex-col items-center justify-center rounded-xl border border-white/30 bg-white/10 px-4 py-3 text-white shadow-lg backdrop-blur-md transition-all hover:-translate-y-1 hover:bg-white/20 hover:shadow-xl sm:py-3.5">
+                <div className="mb-1 flex items-center text-sm font-black sm:text-base lg:text-lg">
                   <Handshake className="h-5 w-5 mr-2" /> PARTNER
                 </div>
                 <span className="text-[10px] lg:text-xs font-bold opacity-90 tracking-widest uppercase">CSR • Institutional</span>

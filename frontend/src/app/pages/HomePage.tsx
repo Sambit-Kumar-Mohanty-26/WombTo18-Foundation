@@ -1,5 +1,6 @@
 import { HeroSection } from "../components/sections/HeroSection";
 import { AnimatedQuoteSection } from "../components/sections/home/AnimatedQuoteSection";
+import { HomeVideoSection } from "../components/sections/home/HomeVideoSection";
 // import { ImpactTicker } from "../components/sections/home/ImpactTicker";
 import { OurCredentials } from "../components/sections/home/OurCredentials";
 import { TrustStrip } from "../components/sections/home/TrustStrip";
@@ -17,6 +18,7 @@ export function HomePage() {
     <>
       <HeroSection />
       <AnimatedQuoteSection />
+      <HomeVideoSection />
       {/* <ImpactTicker /> */}
       <OurCredentials />
       <TrustStrip />

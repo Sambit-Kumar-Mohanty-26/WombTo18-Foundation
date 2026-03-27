@@ -29,7 +29,7 @@ export function AnimatedQuoteSection() {
   return (
     <section 
       ref={containerRef}
-      className="relative w-full py-16 md:py-24 min-h-[calc(100vh-64px)] bg-[#FFFDF7] overflow-hidden flex items-center justify-center border-t border-b border-[#1D6E3F]/10 shadow-[inset_0_20px_40px_rgba(0,0,0,0.02)]"
+      className="relative flex w-full min-h-[420px] items-center justify-center overflow-hidden border-t border-b border-[#1D6E3F]/10 bg-[#FFFDF7] py-14 sm:min-h-[500px] md:min-h-[620px] md:py-18 xl:min-h-[calc(100vh-64px)] xl:py-24 shadow-[inset_0_20px_40px_rgba(0,0,0,0.02)]"
     >
       <motion.div 
         style={{ y: y1 }}
@@ -47,7 +47,7 @@ export function AnimatedQuoteSection() {
         }}
       />
 
-      <div className="relative z-10 max-w-5xl mx-auto px-6 text-center" ref={quoteRef}>
+      <div className="relative z-10 mx-auto max-w-5xl px-6 text-center" ref={quoteRef}>
         <motion.div
           initial={{ opacity: 0, scale: 0.5 }}
           animate={isInView ? { opacity: 1, scale: 1 } : { opacity: 0, scale: 0.5 }}

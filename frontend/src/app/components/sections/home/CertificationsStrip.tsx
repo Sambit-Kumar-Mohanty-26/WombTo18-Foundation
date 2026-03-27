@@ -39,8 +39,8 @@ export function CertificationsStrip() {
 
           <div className="flex items-center justify-center grayscale opacity-70 transition-all duration-300 hover:grayscale-0 hover:opacity-100 min-h-[56px]">
             <div className="border-l-[3px] sm:border-l-4 border-orange-500 py-1 pl-3 text-left font-bold text-xs sm:text-sm">
-              <p className="text-gray-900 leading-tight">Startup India</p>
-              <p className="text-xs text-gray-500">#DIPP162172</p>
+              <p className="text-gray-900 leading-tight">NGO Darpan</p>
+              <p className="text-xs text-gray-500">KA/2026/0989129</p>
             </div>
           </div>
         </div>

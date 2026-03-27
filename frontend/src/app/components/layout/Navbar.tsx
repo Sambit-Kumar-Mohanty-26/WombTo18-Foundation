@@ -64,7 +64,7 @@ export function Navbar() {
           </Link>
 
           {/* Desktop Nav */}
-          <nav className="hidden md:flex items-center gap-1">
+          <nav className="hidden lg:flex items-center gap-1">
             {navLinks.map((link) => (
               <Link
                 key={link.href}
@@ -81,7 +81,7 @@ export function Navbar() {
           </nav>
 
           {/* CTA Buttons */}
-          <div className="hidden md:flex items-center gap-2">
+          <div className="hidden lg:flex items-center gap-2">
             {/* <LanguageSwitcher /> */}
             <Link to={isLoggedIn ? "/dashboard" : "/donor/login"}>
               <Button variant="ghost" size="sm" className="text-gray-600 hover:text-primary hover:bg-primary/5 font-medium transition-all">
@@ -101,7 +101,7 @@ export function Navbar() {
 
           {/* Mobile toggle */}
           <button
-            className="md:hidden p-2 rounded-md text-gray-700 hover:bg-gray-100"
+            className="lg:hidden p-2 rounded-md text-gray-700 hover:bg-gray-100"
             onClick={() => setMobileOpen(!mobileOpen)}
           >
             {mobileOpen ? <X className="h-5 w-5" /> : <Menu className="h-5 w-5" />}
@@ -111,7 +111,7 @@ export function Navbar() {
 
       {/* Mobile Menu */}
       {mobileOpen && (
-        <div className="md:hidden border-t border-gray-200 bg-white/98 backdrop-blur-lg">
+        <div className="lg:hidden border-t border-gray-200 bg-white/98 backdrop-blur-lg">
           <div className="px-4 py-3 space-y-1">
             {navLinks.map((link) => (
               <Link
