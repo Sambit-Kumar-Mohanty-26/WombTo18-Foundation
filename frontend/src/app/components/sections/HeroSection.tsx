@@ -122,7 +122,7 @@ export function HeroSection() {
             variants={cinematicReveal} 
             className="max-w-3xl px-2 text-base leading-relaxed font-medium text-white/80 drop-shadow-md sm:px-0 sm:text-lg md:text-2xl"
           >
-            Delivering 32 health services across India. Support the journey of a child today and track your impact live on our verified donor dashboard.
+            Touching 25 million lives from pregnancy to 18 years by 2030. Support the journey of the a mother and child today and track your impact live on our verified donor dashboard. 
           </motion.p>
           
           {/* CTA Buttons */}
@@ -135,7 +135,7 @@ export function HeroSection() {
                 <div className="mb-1 flex items-center text-sm font-black sm:text-base lg:text-lg">
                   <Heart className="h-5 w-5 mr-2 fill-current" /> DONATE NOW
                 </div>
-                <span className="text-[10px] lg:text-xs font-bold opacity-90 tracking-widest uppercase">80G Benefit • Instant Cert</span>
+                <span className="text-[10px] lg:text-xs font-bold opacity-90 tracking-widest uppercase">Tax Benefit • Instant Cert</span>
               </Button>
             </Link>
             
@@ -153,7 +153,7 @@ export function HeroSection() {
                 <div className="mb-1 flex items-center text-sm font-black sm:text-base lg:text-lg">
                   <Handshake className="h-5 w-5 mr-2" /> PARTNER
                 </div>
-                <span className="text-[10px] lg:text-xs font-bold opacity-90 tracking-widest uppercase">CSR • Institutional</span>
+                <span className="text-[10px] lg:text-xs font-bold opacity-90 tracking-widest uppercase">CSR • ESG • Institutional</span>
               </Button>
             </Link>
           </motion.div>

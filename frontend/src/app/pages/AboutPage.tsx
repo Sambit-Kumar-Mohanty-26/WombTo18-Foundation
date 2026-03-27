@@ -196,9 +196,6 @@ export function AboutPage() {
 
   return (
     <>
-      {/* ════════════════════════════════════════════════════════
-          HERO — Our Story
-      ════════════════════════════════════════════════════════ */}
       <section className="py-24 bg-gradient-to-b from-[#fef6ed] to-white overflow-hidden relative border-b border-gray-100">
         {/* Subtle Background Elements */}
         <div className="absolute top-[-20%] left-[-10%] w-[50%] h-[70%] bg-[radial-gradient(ellipse_at_center,_var(--journey-saffron)_0%,_transparent_70%)] opacity-[0.04] blur-[80px] rounded-full pointer-events-none" />
@@ -225,9 +222,6 @@ export function AboutPage() {
         </div>
       </section>
 
-      {/* ════════════════════════════════════════════════════════
-          STORY CHAPTERS — Alternating immersive sections
-      ════════════════════════════════════════════════════════ */}
       {storyChapters.map((chapter, i) => (
         <section
           key={chapter.number}

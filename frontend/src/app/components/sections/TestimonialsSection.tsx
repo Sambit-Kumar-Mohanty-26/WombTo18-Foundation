@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import useEmblaCarousel from "embla-carousel-react";
 import { Star, Quote, ChevronLeft, ChevronRight } from "lucide-react";
 
@@ -29,6 +29,8 @@ const testimonials = [
 export function TestimonialsSection() {
   const [emblaRef, emblaApi] = useEmblaCarousel({ loop: true });
   const [expandedCards, setExpandedCards] = useState<Record<number, boolean>>({});
+  const [overflowingCards, setOverflowingCards] = useState<Record<number, boolean>>({});
+  const quoteRefs = useRef<Array<HTMLParagraphElement | null>>([]);
 
   useEffect(() => {
     if (!emblaApi) return;
@@ -39,6 +41,60 @@ export function TestimonialsSection() {
 
     return () => clearInterval(interval);
   }, [emblaApi]);
+
+  useEffect(() => {
+    const measureOverflow = () => {
+      const nextOverflowState: Record<number, boolean> = {};
+
+      quoteRefs.current.forEach((element, index) => {
+        if (!element) {
+          return;
+        }
+
+        const clone = element.cloneNode(true) as HTMLParagraphElement;
+        clone.style.position = "fixed";
+        clone.style.top = "0";
+        clone.style.left = "0";
+        clone.style.visibility = "hidden";
+        clone.style.pointerEvents = "none";
+        clone.style.zIndex = "-1";
+        clone.style.height = "auto";
+        clone.style.maxHeight = "none";
+        clone.style.overflow = "visible";
+        clone.style.display = "block";
+        clone.style.width = `${element.clientWidth}px`;
+        clone.style.webkitLineClamp = "unset";
+        clone.style.WebkitLineClamp = "unset";
+        clone.style.webkitBoxOrient = "initial";
+        clone.style.WebkitBoxOrient = "initial";
+
+        document.body.appendChild(clone);
+        nextOverflowState[index] = clone.scrollHeight > element.clientHeight + 1;
+        document.body.removeChild(clone);
+      });
+
+      setOverflowingCards(nextOverflowState);
+    };
+
+    measureOverflow();
+
+    const resizeObserver = new ResizeObserver(() => {
+      measureOverflow();
+    });
+
+    quoteRefs.current.forEach((element) => {
+      if (element) {
+        resizeObserver.observe(element);
+      }
+    });
+
+    window.addEventListener("resize", measureOverflow);
+
+    return () => {
+      resizeObserver.disconnect();
+      window.removeEventListener("resize", measureOverflow);
+    };
+  }, []);
 
   const scrollPrev = () => emblaApi && emblaApi.scrollPrev();
   const scrollNext = () => emblaApi && emblaApi.scrollNext();
@@ -64,8 +120,8 @@ export function TestimonialsSection() {
         <div className="overflow-hidden" ref={emblaRef}>
           <div className="flex touch-pan-y">
             {testimonials.map((t, idx) => (
-              <div key={idx} className="flex-[0_0_100%] min-w-0 pl-3 sm:pl-4 py-4">
-                <div className="flex min-h-[340px] flex-col gap-5 rounded-3xl border border-gray-100 bg-white p-5 shadow-xl transition-all sm:min-h-[340px] sm:flex-row sm:gap-8 sm:p-12">
+              <div key={idx} className="flex-[0_0_100%] min-w-0 pl-3 py-4 sm:pl-4">
+                <div className="flex h-full min-h-[470px] flex-col gap-5 rounded-3xl border border-gray-100 bg-white p-5 shadow-xl transition-all sm:min-h-[340px] sm:flex-row sm:gap-8 sm:p-12">
                   <div className="shrink-0 relative">
                     <img
                       src={t.image}
@@ -84,15 +140,25 @@ export function TestimonialsSection() {
                       ))}
                     </div>
 
-                    <p
-                      className={`mb-4 flex-1 overflow-hidden font-serif text-lg leading-relaxed text-gray-700 italic sm:mb-6 sm:text-2xl ${
-                        expandedCards[idx] ? "" : "line-clamp-7 sm:line-clamp-none"
-                      }`}
-                    >
-                      "{t.quote}"
-                    </p>
+                    <div className="mb-4 flex-1 min-h-0 sm:mb-6">
+                      <p
+                        ref={(element) => {
+                          quoteRefs.current[idx] = element;
+                        }}
+                        className={`h-full min-h-0 font-serif text-lg leading-relaxed text-gray-700 italic sm:text-2xl ${
+                          expandedCards[idx]
+                            ? "overflow-y-auto pr-1 sm:overflow-visible sm:pr-0"
+                            : "overflow-hidden line-clamp-7 sm:line-clamp-none"
+                        }`}
+                        style={{
+                          scrollbarWidth: expandedCards[idx] ? "thin" : "none",
+                        }}
+                      >
+                        "{t.quote}"
+                      </p>
+                    </div>
 
-                    {t.quote.length > 140 && (
+                    {overflowingCards[idx] && (
                       <button
                         type="button"
                         onClick={() => toggleExpanded(idx)}

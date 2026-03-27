@@ -1,6 +1,7 @@
 import { motion, useScroll, useTransform } from "motion/react";
+import Lenis from "lenis";
 import { Quote, MapPin, Mail } from "lucide-react";
-import React, { useRef } from "react";
+import React, { useEffect, useRef } from "react";
 
 const letterParagraphs = [
   {
@@ -43,7 +44,9 @@ const letterParagraphs = [
 
 export function AboutSection() {
   const scrollContainerRef = useRef<HTMLDivElement>(null);
+  const scrollContentRef = useRef<HTMLDivElement>(null);
   const sectionRef = useRef<HTMLDivElement>(null);
+  const touchStartYRef = useRef<number | null>(null);
 
   const { scrollYProgress } = useScroll({
     target: sectionRef,
@@ -51,6 +54,65 @@ export function AboutSection() {
   });
 
   const bgY = useTransform(scrollYProgress, [0, 1], [0, -40]);
+
+  const canConsumeInnerScroll = (deltaY: number) => {
+    const wrapper = scrollContainerRef.current;
+
+    if (!wrapper) {
+      return false;
+    }
+
+    const maxScrollTop = wrapper.scrollHeight - wrapper.clientHeight;
+    if (maxScrollTop <= 0) {
+      return false;
+    }
+
+    const atTop = wrapper.scrollTop <= 1;
+    const atBottom = wrapper.scrollTop >= maxScrollTop - 1;
+
+    if (deltaY < 0 && !atTop) {
+      return true;
+    }
+
+    if (deltaY > 0 && !atBottom) {
+      return true;
+    }
+
+    return false;
+  };
+
+  useEffect(() => {
+    const wrapper = scrollContainerRef.current;
+    const content = scrollContentRef.current;
+
+    if (!wrapper || !content) {
+      return;
+    }
+
+    const lenis = new Lenis({
+      wrapper,
+      content,
+      eventsTarget: wrapper,
+      duration: 1.05,
+      smoothWheel: true,
+      syncTouch: false,
+      touchMultiplier: 1,
+    });
+
+    let frameId = 0;
+
+    const raf = (time: number) => {
+      lenis.raf(time);
+      frameId = window.requestAnimationFrame(raf);
+    };
+
+    frameId = window.requestAnimationFrame(raf);
+
+    return () => {
+      window.cancelAnimationFrame(frameId);
+      lenis.destroy();
+    };
+  }, []);
 
   return (
     <section 
@@ -101,15 +163,9 @@ export function AboutSection() {
                 alt="Sowjanya Reddy - Founder"
                 className="w-full aspect-[4/3] object-cover object-top transition-transform duration-[1.5s] ease-out group-hover:scale-105"
               />
-              <div className="absolute inset-0 bg-gradient-to-t from-[var(--womb-forest)]/90 via-[var(--womb-forest)]/10 to-transparent" />
+
               
-              <div className="absolute bottom-0 left-0 right-0 p-5">
-                <Quote className="h-5 w-5 mb-2 text-[var(--journey-saffron)] opacity-90" />
-                <p className="text-sm font-serif font-medium leading-snug italic text-white/90 tracking-tight" style={{ textShadow: "0 2px 10px rgba(0,0,0,0.5)" }}>
-                  "That is not charity.{" "}
-                  <span className="text-[var(--journey-saffron)] not-italic font-sans font-black">That is justice.</span>"
-                </p>
-              </div>
+
             </div>
 
             {/* Compact Founder Card */}
@@ -147,14 +203,45 @@ export function AboutSection() {
               {/* Scrollable content inside */}
               <div 
                 ref={scrollContainerRef}
-                className="h-full overflow-y-auto px-6 sm:px-10 py-8 sm:py-10 scroll-smooth"
+                onWheelCapture={(event) => {
+                  if (canConsumeInnerScroll(event.deltaY)) {
+                    event.stopPropagation();
+                  }
+                }}
+                onTouchStart={(event) => {
+                  touchStartYRef.current = event.touches[0]?.clientY ?? null;
+                }}
+                onTouchMoveCapture={(event) => {
+                  const currentY = event.touches[0]?.clientY;
+                  const previousY = touchStartYRef.current;
+
+                  if (currentY == null || previousY == null) {
+                    return;
+                  }
+
+                  const deltaY = previousY - currentY;
+
+                  if (canConsumeInnerScroll(deltaY)) {
+                    event.stopPropagation();
+                  }
+
+                  touchStartYRef.current = currentY;
+                }}
+                onTouchEnd={() => {
+                  touchStartYRef.current = null;
+                }}
+                className="h-full overflow-y-auto overscroll-contain px-6 py-8 scroll-smooth sm:px-10 sm:py-10"
                 style={{ 
                   maxHeight: "calc(100vh - 18rem)",
+                  overscrollBehavior: "contain",
                   scrollbarWidth: "thin",
                   scrollbarColor: "rgba(29,110,63,0.2) transparent",
                 }}
               >
-                <div className="prose prose-lg max-w-none text-gray-700 font-serif leading-[1.8] tracking-tight">
+                <div
+                  ref={scrollContentRef}
+                  className="prose prose-lg max-w-none text-gray-700 font-serif leading-[1.8] tracking-tight"
+                >
                   {letterParagraphs.map((para, i) => (
                     <motion.div
                       key={i}

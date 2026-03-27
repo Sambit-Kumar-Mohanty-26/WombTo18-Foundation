@@ -5,28 +5,10 @@ import { motion } from "motion/react";
 
 const programs = [
   {
-    icon: ShieldPlus,
-    title: "Integrated School Health",
-    description: "Annual screenings, doctor-led camps, WASH education, and emergency readiness in our Health Promoting Schools.",
-    route: "/programmes#school-health",
-  },
-  {
-    icon: Syringe,
-    title: "Vaccines",
-    description: "Our 9-touchpoint structured reminder system ensuring no child misses a critical dose.",
-    route: "/programmes#vaccines",
-  },
-  {
-    icon: Brain,
-    title: "Mental Wellness",
-    description: "Mental health and emotional regulation support tailored from prenatal stages right through to adolescence.",
-    route: "/programmes#mental-wellness",
-  },
-  {
-    icon: AlertTriangle,
-    title: "Emergency Preparedness",
-    description: "Hands-on disaster response and first-aid training led by real heroes on school campuses.",
-    route: "/programmes#emergency-preparedness",
+    icon: Baby,
+    title: "Maternal Care",
+    description: "Prenatal stress reduction, bonding exercises, and birth-preparedness support for expecting mothers.",
+    route: "/programmes#maternal-care",
   },
   {
     icon: Leaf,
@@ -35,10 +17,28 @@ const programs = [
     route: "/programmes#green-cohort",
   },
   {
-    icon: Baby,
-    title: "Maternal Care",
-    description: "Prenatal stress reduction, bonding exercises, and birth-preparedness support for expecting mothers.",
-    route: "/programmes#maternal-care",
+    icon: Syringe,
+    title: "Vaccines",
+    description: "Our 9-touchpoint structured reminder system ensuring no child misses a critical dose.",
+    route: "/programmes#vaccines",
+  },
+  {
+    icon: ShieldPlus,
+    title: "Integrated School Health",
+    description: "Annual screenings, doctor-led camps, WASH education, and emergency readiness in our Health Promoting Schools.",
+    route: "/programmes#school-health",
+  },
+  {
+    icon: AlertTriangle,
+    title: "Emergency Preparedness",
+    description: "Hands-on disaster response and first-aid training led by real heroes on school campuses.",
+    route: "/programmes#emergency-preparedness",
+  },
+  {
+    icon: Brain,
+    title: "Mental Wellness",
+    description: "Mental health and emotional regulation support tailored from prenatal stages right through to adolescence.",
+    route: "/programmes#mental-wellness",
   },
 ];
 
@@ -53,7 +53,7 @@ export function ServicesSection() {
             Programmes at a Glance
           </p>
           <h2 className="text-3xl sm:text-4xl lg:text-5xl text-gray-900 mb-6" style={{ fontWeight: 800 }}>
-            32 Services. <span style={{ color: 'var(--womb-forest)' }}>One Seamless Journey.</span>
+            One Seamless Journey. <span style={{ color: 'var(--womb-forest)' }}>One Journey from wombto18. </span>
           </h2>
           <p className="text-lg text-gray-600">
             From the moment of conception through adolescence, we unite healthcare, education, and environment.
