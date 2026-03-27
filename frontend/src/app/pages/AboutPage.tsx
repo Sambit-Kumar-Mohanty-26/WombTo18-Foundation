@@ -1,6 +1,7 @@
-import { Heart, Globe, Users, Target, CheckCircle, ArrowRight, Zap } from "lucide-react";
-import { motion, useTransform, useSpring, useMotionValue, useMotionTemplate } from "motion/react";
-import React from "react";
+import { Heart, Globe, Users, Target, CheckCircle, ArrowRight, Zap, Building2, MonitorSmartphone, MapPin } from "lucide-react";
+import { motion, useTransform, useSpring, useMotionValue, useMotionTemplate, useScroll } from "motion/react";
+import Lenis from "lenis";
+import React, { useEffect, useRef } from "react";
 
 const womboValues = [
   { letter: "W", title: "Wellness", desc: "Comprehensive health — physical, mental, emotional — from pregnancy through age 18. Health is not the absence of illness; it is the fullness of a well-supported life." },
@@ -126,6 +127,17 @@ function ValueCard({ val, index }: { val: typeof womboValues[0], index: number }
 
 const advisoryBoard = [
   {
+    name: "Eshwar Reddy",
+    role: "President • WOMBTO18 Foundation",
+    image: "/Eshwar Reddy.jpg",
+    bio: [
+      "Currently advising an AI SaaS startup in New Jersey",
+      "18+ years of enterprise operations leadership across India and the US",
+      "Leads the Foundation's institutional strategy",
+      "Applies scalable systems thinking to school-based health delivery"
+    ]
+  },
+  {
     name: "Dr. Pramod Jog",
     role: "Former President, Indian Academy of Pediatrics (IAP)",
     image: "/Dr.-Pramod-Jog.jpg",
@@ -147,17 +159,6 @@ const advisoryBoard = [
       "Currently practising at Prime Healthcare Group, Dubai"
     ]
   },
-  {
-    name: "Eshwar Reddy",
-    role: "President • WOMBTO18 Foundation",
-    image: "/Eshwar Reddy.jpg",
-    bio: [
-      "Currently advising an AI SaaS startup in New Jersey",
-      "18+ years of enterprise operations leadership across India and the US",
-      "Leads the Foundation's institutional strategy",
-      "Applies scalable systems thinking to school-based health delivery"
-    ]
-  }
 ];
 
 /* ─── Story chapter data ─── */
@@ -191,6 +192,303 @@ const storyChapters = [
     highlight: "32 health services united"
   }
 ];
+
+const instrumentsOfChange = [
+  {
+    title: "The Foundation",
+    icon: Building2,
+    accentClass: "text-[var(--womb-forest)]",
+    glowClass: "bg-[var(--womb-forest)]/18",
+    description:
+      "Drives access, equity, school partnerships, and on-ground delivery so preventive care reaches the children who need it most.",
+    label: "Public Impact",
+  },
+  {
+    title: "The Platform",
+    icon: MonitorSmartphone,
+    accentClass: "text-[var(--journey-saffron)]",
+    glowClass: "bg-[var(--journey-saffron)]/18",
+    description:
+      "Builds the connected health record, reminders, dashboards, and intelligence layer that keeps every intervention visible and accountable.",
+    label: "Systems Layer",
+  },
+];
+
+const presidentLetterParagraphs = [
+  {
+    type: "quote",
+    text: "Equity in child health is not a charity goal. It is a systems problem - and systems problems require institutional answers, not one-time interventions.",
+  },
+  {
+    type: "body",
+    text: "Public health has taught us one lesson above all others: the interventions that save the most lives are rarely the most visible ones. They are the quiet, structural ones - the vaccine that arrives on time, the screening that catches something early, the health worker who is present and trained and trusted.",
+  },
+  {
+    type: "body",
+    text: "The WOMBTO18 Foundation was built on that lesson. We do not run health camps. We do not conduct drives. We build the permanent infrastructure of care inside schools - the institutions that hold a child's life together for thirteen of their most formative years.",
+  },
+  {
+    type: "body",
+    text: "In India today, a child born into a low-income household is not simply disadvantaged by poverty. They are disadvantaged by the absence of systems: no school nurse, no longitudinal health record, no structured process for detecting developmental concerns before they become crises, no connection between the school that sees the child every day and the healthcare provider who sees them once a year.",
+  },
+  {
+    type: "highlight",
+    text: "The Foundation addresses this not by filling gaps one at a time, but by establishing the full continuum.",
+  },
+  {
+    type: "body",
+    text: "From maternal health awareness before birth, through immunisation, nutrition, early childhood development, mental wellness, and specialist referral pathways - we build the structure, train the people, and hold the accountability. What remains behind us in each school is not a programme. It is a functioning system.",
+  },
+  {
+    type: "body",
+    text: "We are grateful to every school that has partnered with us, every donor who has understood that systemic change is slower and more durable than visible impact, and every family that has placed their trust in what we are building. We are not doing this for them. We are doing it with them.",
+  },
+  {
+    type: "emphasis",
+    text: "The years from womb to 18 are not a statistic. They are the entirety of a childhood. They deserve more than good intentions. They deserve a system built to protect them.",
+  },
+];
+
+function PresidentLetterSection() {
+  const scrollContainerRef = useRef<HTMLDivElement>(null);
+  const scrollContentRef = useRef<HTMLDivElement>(null);
+  const sectionRef = useRef<HTMLDivElement>(null);
+  const touchStartYRef = useRef<number | null>(null);
+
+  const { scrollYProgress } = useScroll({
+    target: sectionRef,
+    offset: ["start end", "end start"]
+  });
+
+  const bgY = useTransform(scrollYProgress, [0, 1], [0, -40]);
+
+  const canConsumeInnerScroll = (deltaY: number) => {
+    const wrapper = scrollContainerRef.current;
+
+    if (!wrapper) {
+      return false;
+    }
+
+    const maxScrollTop = wrapper.scrollHeight - wrapper.clientHeight;
+    if (maxScrollTop <= 0) {
+      return false;
+    }
+
+    const atTop = wrapper.scrollTop <= 1;
+    const atBottom = wrapper.scrollTop >= maxScrollTop - 1;
+
+    if (deltaY < 0 && !atTop) {
+      return true;
+    }
+
+    if (deltaY > 0 && !atBottom) {
+      return true;
+    }
+
+    return false;
+  };
+
+  useEffect(() => {
+    const wrapper = scrollContainerRef.current;
+    const content = scrollContentRef.current;
+
+    if (!wrapper || !content) {
+      return;
+    }
+
+    const lenis = new Lenis({
+      wrapper,
+      content,
+      eventsTarget: wrapper,
+      duration: 1.05,
+      smoothWheel: true,
+      syncTouch: false,
+      touchMultiplier: 1,
+    });
+
+    let frameId = 0;
+
+    const raf = (time: number) => {
+      lenis.raf(time);
+      frameId = window.requestAnimationFrame(raf);
+    };
+
+    frameId = window.requestAnimationFrame(raf);
+
+    return () => {
+      window.cancelAnimationFrame(frameId);
+      lenis.destroy();
+    };
+  }, []);
+
+  return (
+    <section
+      ref={sectionRef}
+      className="relative overflow-hidden text-gray-900"
+    >
+      <motion.div style={{ y: bgY }} className="absolute inset-0 pointer-events-none">
+        <div className="absolute top-0 right-0 -mr-20 -mt-20 w-[600px] h-[600px] bg-[radial-gradient(ellipse_at_center,_var(--womb-forest)_0%,_transparent_70%)] opacity-[0.03] blur-[80px] rounded-full" />
+        <div className="absolute bottom-0 left-0 -ml-20 -mb-20 w-[600px] h-[600px] bg-[radial-gradient(ellipse_at_center,_var(--journey-saffron)_0%,_transparent_70%)] opacity-[0.03] blur-[80px] rounded-full" />
+      </motion.div>
+
+      <div className="relative z-10 px-6 py-10 sm:px-8 sm:py-12 lg:px-10 lg:py-12 flex flex-col">
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true }}
+          transition={{ duration: 0.7 }}
+          className="flex flex-col items-center text-center mb-8 sm:mb-10"
+        >
+          <p className="inline-flex items-center gap-2 text-[var(--womb-forest)] text-xs font-black tracking-[0.2em] uppercase mb-4">
+            A Letter From The President <span className="w-8 h-[2px] bg-gradient-to-r from-[var(--womb-forest)] to-transparent rounded-full ml-2" />
+          </p>
+          <h2 className="max-w-5xl text-3xl sm:text-4xl lg:text-[3.5rem] text-gray-900 tracking-tight" style={{ fontWeight: 900, lineHeight: 1.05 }}>
+            Systems Before Symbolism.{" "}
+            <span className="text-transparent bg-clip-text bg-gradient-to-r from-[var(--journey-saffron)] to-orange-400">Institutions Before Interventions.</span>
+          </h2>
+        </motion.div>
+
+        <div className="grid lg:grid-cols-12 gap-6 lg:gap-8 items-start min-h-0">
+          <motion.div
+            initial={{ opacity: 0, x: -40 }}
+            whileInView={{ opacity: 1, x: 0 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.8, ease: [0.22, 1, 0.36, 1] }}
+            className="lg:col-span-4 flex flex-col gap-4"
+          >
+            <div className="relative rounded-[1.5rem] overflow-hidden shadow-[0_20px_40px_-15px_rgba(29,110,63,0.25)] group flex-shrink-0">
+              <img
+                src="/Eshwar Reddy.jpg"
+                alt="Eshwar Reddy - President"
+                className="w-full aspect-[4/3] object-cover object-top transition-transform duration-[1.5s] ease-out group-hover:scale-105"
+              />
+            </div>
+
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              transition={{ delay: 0.3, duration: 0.6 }}
+              className="bg-white p-5 rounded-2xl shadow-[0_8px_24px_-12px_rgba(0,0,0,0.06)] border border-gray-100"
+            >
+              <p className="font-extrabold text-gray-900 text-base tracking-tight mb-0.5">Eshwar Reddy</p>
+              <p className="text-xs font-bold text-[var(--womb-forest)] mb-2">Co-Founder & President - WOMBTO18 Foundation</p>
+              <div className="flex flex-col gap-1.5 text-xs text-gray-500">
+                <span className="flex items-center gap-1.5"><MapPin className="w-3 h-3 text-[var(--journey-saffron)]" /> New Jersey, USA</span>
+              </div>
+            </motion.div>
+          </motion.div>
+
+          <motion.div
+            initial={{ opacity: 0, x: 40 }}
+            whileInView={{ opacity: 1, x: 0 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.8, delay: 0.15, ease: [0.22, 1, 0.36, 1] }}
+            className="lg:col-span-8 relative min-h-0 flex flex-col"
+          >
+            <div className="absolute -left-6 top-0 bottom-0 w-px bg-gradient-to-b from-gray-200 via-gray-200 to-transparent hidden lg:block" />
+
+            <div className="relative min-h-0 rounded-[1.5rem] bg-white shadow-[0_15px_50px_-15px_rgba(0,0,0,0.06)] border border-gray-100/80 overflow-hidden">
+              <div className="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-[var(--womb-forest)] via-[var(--journey-saffron)] to-[var(--womb-forest)]" />
+
+              <div
+                ref={scrollContainerRef}
+                onWheelCapture={(event) => {
+                  if (canConsumeInnerScroll(event.deltaY)) {
+                    event.stopPropagation();
+                  }
+                }}
+                onTouchStart={(event) => {
+                  touchStartYRef.current = event.touches[0]?.clientY ?? null;
+                }}
+                onTouchMoveCapture={(event) => {
+                  const currentY = event.touches[0]?.clientY;
+                  const previousY = touchStartYRef.current;
+
+                  if (currentY == null || previousY == null) {
+                    return;
+                  }
+
+                  const deltaY = previousY - currentY;
+
+                  if (canConsumeInnerScroll(deltaY)) {
+                    event.stopPropagation();
+                  }
+
+                  touchStartYRef.current = currentY;
+                }}
+                onTouchEnd={() => {
+                  touchStartYRef.current = null;
+                }}
+                className="overflow-y-auto overscroll-contain px-6 py-7 scroll-smooth sm:px-8 sm:py-8 lg:px-10"
+                style={{
+                  maxHeight: "min(60vh, 520px)",
+                  overscrollBehavior: "contain",
+                  scrollbarWidth: "thin",
+                  scrollbarColor: "rgba(29,110,63,0.2) transparent",
+                }}
+              >
+                <div
+                  ref={scrollContentRef}
+                  className="prose prose-lg max-w-none text-gray-700 font-serif leading-[1.8] tracking-tight"
+                >
+                  {presidentLetterParagraphs.map((para, i) => (
+                    <motion.div
+                      key={i}
+                      initial={{ opacity: 0, y: 15 }}
+                      whileInView={{ opacity: 1, y: 0 }}
+                      viewport={{ once: true, root: scrollContainerRef, margin: "-20px" }}
+                      transition={{ duration: 0.5, delay: i * 0.05, ease: "easeOut" }}
+                    >
+                      {para.type === "quote" && (
+                        <p className="text-lg sm:text-xl lg:text-[1.9rem] font-black text-gray-900 mb-6 font-sans leading-[1.35]">
+                          "{para.text}"
+                        </p>
+                      )}
+                      {para.type === "body" && (
+                        <p className="mb-5">{para.text}</p>
+                      )}
+                      {para.type === "highlight" && (
+                        <p className="text-lg font-black text-[var(--womb-forest)] italic font-sans py-3 border-l-4 border-[var(--journey-saffron)] pl-5 bg-[var(--womb-forest)]/[0.03] rounded-r-xl my-6">
+                          {para.text}
+                        </p>
+                      )}
+                      {para.type === "emphasis" && (
+                        <p className="font-sans font-bold text-gray-900 text-lg py-2 mb-5">{para.text}</p>
+                      )}
+                    </motion.div>
+                  ))}
+
+                  <motion.div
+                    initial={{ opacity: 0 }}
+                    whileInView={{ opacity: 1 }}
+                    viewport={{ once: true, root: scrollContainerRef }}
+                    transition={{ duration: 0.8 }}
+                    className="mt-8 pt-6 border-t border-gray-100 font-sans"
+                  >
+                    <p className="text-base font-bold text-gray-800 italic">With purpose,</p>
+                    <span className="text-3xl sm:text-4xl text-[var(--womb-forest)]/70 block mt-4 mb-2" style={{ fontFamily: "'Cedarville Cursive', 'Brush Script MT', cursive", transform: "rotate(-3deg)", display: "inline-block" }}>
+                      Eshwar Reddy
+                    </span>
+                    <p className="text-sm font-semibold text-gray-600">Co-Founder & President</p>
+                    <p className="text-sm text-gray-500">WOMBTO18 Foundation - Section 8 Non-Profit</p>
+                  </motion.div>
+                </div>
+              </div>
+
+              <div
+                className="absolute bottom-0 left-0 right-0 h-16 pointer-events-none z-10"
+                style={{
+                  background: "linear-gradient(to top, white 0%, transparent 100%)"
+                }}
+              />
+            </div>
+          </motion.div>
+        </div>
+      </div>
+    </section>
+  );
+}
 
 export function AboutPage() {
 
@@ -291,9 +589,102 @@ export function AboutPage() {
         </section>
       ))}
 
-      {/* ════════════════════════════════════════════════════════
-          FOUNDING PHILOSOPHY — Full-width immersive quote
-      ════════════════════════════════════════════════════════ */}
+      <section className="relative overflow-hidden bg-[linear-gradient(180deg,#fffdf7_0%,#f8f4ea_100%)] py-16 text-gray-900 sm:py-18">
+        <div className="absolute inset-0 pointer-events-none">
+          <motion.div
+            animate={{ opacity: [0.2, 0.34, 0.2], scale: [1, 1.08, 1] }}
+            transition={{ duration: 8, repeat: Infinity, ease: "easeInOut" }}
+            className="absolute left-1/2 top-[18%] h-[360px] w-[360px] -translate-x-1/2 rounded-full bg-[radial-gradient(circle_at_center,rgba(255,153,0,0.18)_0%,rgba(29,110,63,0.12)_32%,transparent_70%)] blur-[90px]"
+          />
+          <div className="absolute inset-0 bg-[linear-gradient(180deg,rgba(255,255,255,0.5)_0%,transparent_35%,rgba(255,255,255,0.4)_100%)]" />
+          <div
+            className="absolute inset-0 opacity-[0.05]"
+            style={{
+              backgroundImage:
+                "radial-gradient(circle at 1px 1px, rgba(29,110,63,0.9) 1px, transparent 0)",
+              backgroundSize: "28px 28px",
+            }}
+          />
+        </div>
+
+        <div className="relative z-10 mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+          <motion.div
+            initial={{ opacity: 0, y: 36, scale: 0.96 }}
+            whileInView={{ opacity: 1, y: 0, scale: 1 }}
+            viewport={{ once: true, margin: "-100px" }}
+            transition={{ duration: 0.9, ease: [0.22, 1, 0.36, 1] }}
+            className="mx-auto max-w-6xl overflow-hidden rounded-[2rem] border border-[#1D6E3F]/10 bg-[linear-gradient(135deg,rgba(255,255,255,0.92),rgba(255,255,255,0.78))] shadow-[0_36px_90px_-42px_rgba(0,0,0,0.18)] backdrop-blur-sm"
+          >
+            <div className="relative px-6 py-8 sm:px-10 sm:py-10 lg:px-14">
+              <motion.div
+                initial={{ width: 0, opacity: 0 }}
+                whileInView={{ width: 96, opacity: 1 }}
+                viewport={{ once: true }}
+                transition={{ duration: 1, delay: 0.18 }}
+                className="mx-auto mb-7 h-px bg-gradient-to-r from-transparent via-[var(--journey-saffron)] to-transparent"
+              />
+
+              <div className="grid items-start gap-8 lg:grid-cols-[minmax(0,0.95fr)_minmax(0,1.2fr)] lg:gap-10">
+                <motion.div
+                  initial={{ opacity: 0, x: -26 }}
+                  whileInView={{ opacity: 1, x: 0 }}
+                  viewport={{ once: true }}
+                  transition={{ duration: 0.75, delay: 0.16 }}
+                  className="text-center lg:text-left"
+                >
+                  <p className="mb-3 text-[11px] font-black uppercase tracking-[0.32em] text-gray-500">
+                    Strategic Architecture
+                  </p>
+                  <h2
+                    className="text-3xl font-black tracking-tight text-gray-900 sm:text-4xl md:text-[3.25rem]"
+                    style={{ lineHeight: 0.98 }}
+                  >
+                    One vision.
+                  </h2>
+                  <p
+                    className="mt-1 font-serif text-[1.75rem] italic text-[var(--journey-saffron)] sm:text-[2.3rem] md:text-[2.9rem]"
+                    style={{ lineHeight: 1.04 }}
+                  >
+                    Two instruments of change.
+                  </p>
+                  <p className="mt-5 max-w-xl text-sm leading-relaxed text-gray-600 sm:text-base">
+                    The Foundation and the Platform were not built separately. They were built as two halves of the same answer.
+                  </p>
+                </motion.div>
+
+                <motion.div
+                  initial={{ opacity: 0, x: 26 }}
+                  whileInView={{ opacity: 1, x: 0 }}
+                  viewport={{ once: true }}
+                  transition={{ duration: 0.9, delay: 0.28 }}
+                  className="relative"
+                >
+                  <div className="absolute left-0 top-0 hidden h-full w-px bg-gradient-to-b from-transparent via-[var(--journey-saffron)]/40 to-transparent lg:block" />
+                  <div className="pl-0 lg:pl-8">
+                    <p className="text-base font-serif italic leading-[1.75] tracking-tight text-gray-700 sm:text-lg lg:text-[1.32rem]">
+                      India has{" "}
+                      <span className="bg-gradient-to-r from-[var(--journey-saffron)] to-amber-300 bg-clip-text font-black not-italic text-transparent">
+                        450 million children under 18
+                      </span>
+                      . Most of them will pass through a school. Very few will have a health record that travels with them, a system that watches for what might go wrong, or an institution that treats their wellbeing as seriously as their academics.
+                    </p>
+                    <motion.p
+                      initial={{ opacity: 0, y: 18 }}
+                      whileInView={{ opacity: 1, y: 0 }}
+                      viewport={{ once: true }}
+                      transition={{ duration: 0.8, delay: 0.42 }}
+                      className="mt-5 text-xl font-black leading-[1.45] tracking-tight text-gray-900 sm:text-2xl"
+                    >
+                      WOMBTO18 was built to change all three of those facts simultaneously, at scale, and for good.
+                    </motion.p>
+                  </div>
+                </motion.div>
+              </div>
+            </div>
+          </motion.div>
+        </div>
+      </section>
+
       <section className="relative py-32 sm:py-40 bg-gradient-to-b from-[#FFFDF7] to-white overflow-hidden border-y border-gray-100">
         {/* Animated glow */}
         <div className="absolute inset-0 overflow-hidden pointer-events-none">
@@ -713,13 +1104,13 @@ export function AboutPage() {
       </section>
 
       {/* Advisory Board */}
-      <section className="py-24 bg-white">
+      <section className="py-24 bg-[#FAF9F6]">
         <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-16">
             <p className="inline-flex items-center gap-2 bg-[var(--future-sky)]/10 text-[var(--future-sky)] px-4 py-1.5 rounded-full text-sm font-bold tracking-widest uppercase border border-[var(--future-sky)]/20 mb-6">
               Leadership
             </p>
-            <h2 className="text-4xl font-extrabold text-gray-900 mb-4">Advisory Board</h2>
+            <h2 className="text-4xl font-extrabold text-gray-900 mb-4">Board Members</h2>
             <p className="text-lg text-gray-600 max-w-2xl mx-auto">
               Guided by clinical depth, national credibility, and global perspective.
             </p>
@@ -768,6 +1159,10 @@ export function AboutPage() {
                 </div>
               </motion.div>
             ))}
+          </div>
+
+          <div className="mb-16">
+            <PresidentLetterSection />
           </div>
 
           <motion.div
