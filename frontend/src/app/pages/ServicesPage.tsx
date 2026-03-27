@@ -99,6 +99,218 @@ const programs = [
   },
 ];
 
+const carePillars = [
+  {
+    id: "01",
+    title: "Maternal & Early Care",
+    color: "var(--journey-saffron)",
+    bg: "from-[#fff5e8] to-white",
+    border: "border-[#f4d6a3]",
+    iconBg: "bg-[#fff2df]",
+    Icon: Baby,
+    points: ["Prenatal support", "Safe delivery prep", "Early nutrition"],
+  },
+  {
+    id: "02",
+    title: "Preventive Healthcare",
+    color: "#2ca86e",
+    bg: "from-[#ecfbf3] to-white",
+    border: "border-[#bfead2]",
+    iconBg: "bg-[#e6f8ee]",
+    Icon: HeartPulse,
+    points: ["Vaccination", "Screenings", "Growth tracking"],
+  },
+  {
+    id: "03",
+    title: "Mental Wellness",
+    color: "#6d63ff",
+    bg: "from-[#f1efff] to-white",
+    border: "border-[#d9d2ff]",
+    iconBg: "bg-[#eeebff]",
+    Icon: Brain,
+    points: ["Emotional development", "Counselling", "School readiness"],
+  },
+  {
+    id: "04",
+    title: "School Health Systems",
+    color: "#3b82f6",
+    bg: "from-[#eef5ff] to-white",
+    border: "border-[#c9dcff]",
+    iconBg: "bg-[#e9f2ff]",
+    Icon: Shield,
+    points: ["Health programmes", "WASH", "Emergency readiness"],
+  },
+  {
+    id: "05",
+    title: "Green Cohort",
+    color: "#6b9f2f",
+    bg: "from-[#f3fae8] to-white",
+    border: "border-[#d7e8b7]",
+    iconBg: "bg-[#edf7dd]",
+    Icon: Leaf,
+    points: ["Tree per child", "Climate awareness", "Carbon-neutral future"],
+  },
+];
+
+function FivePillarsSection() {
+  return (
+    <section className="relative overflow-hidden bg-[#fbf8f1] py-20 sm:py-24 lg:py-28 border-y border-[#efe8da]">
+      <div className="absolute inset-0 pointer-events-none">
+        <motion.div
+          className="absolute left-[10%] top-[12%] h-64 w-64 rounded-full bg-[radial-gradient(circle,_rgba(29,110,63,0.12)_0%,_transparent_65%)] blur-3xl"
+          animate={{ x: [0, 18, -10, 0], y: [0, -10, 12, 0] }}
+          transition={{ duration: 11, repeat: Infinity, ease: "easeInOut" }}
+        />
+        <motion.div
+          className="absolute right-[8%] bottom-[10%] h-72 w-72 rounded-full bg-[radial-gradient(circle,_rgba(227,171,59,0.14)_0%,_transparent_70%)] blur-3xl"
+          animate={{ x: [0, -16, 10, 0], y: [0, 12, -12, 0] }}
+          transition={{ duration: 13, repeat: Infinity, ease: "easeInOut" }}
+        />
+        <div className="absolute inset-0 opacity-[0.22]" style={{ backgroundImage: "linear-gradient(rgba(29,110,63,0.05) 1px, transparent 1px), linear-gradient(90deg, rgba(29,110,63,0.05) 1px, transparent 1px)", backgroundSize: "38px 38px" }} />
+      </div>
+
+      <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 relative z-10">
+        <motion.div
+          initial={{ opacity: 0, y: 24 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true, margin: "-80px" }}
+          transition={{ duration: 0.8, ease: [0.22, 1, 0.36, 1] }}
+          className="max-w-4xl"
+        >
+          <p className="inline-flex items-center gap-2 rounded-full border border-[var(--womb-forest)]/15 bg-white/80 px-4 py-2 text-[10px] font-black uppercase tracking-[0.24em] text-[var(--womb-forest)] shadow-sm backdrop-blur-sm">
+            Our Five Pillars
+          </p>
+          <h2 className="mt-5 text-4xl font-black tracking-tight text-gray-900 sm:text-5xl lg:text-[4rem]" style={{ lineHeight: 1.02 }}>
+            One Platform.
+            <br />
+            <span className="text-transparent bg-clip-text bg-gradient-to-r from-[var(--womb-forest)] via-[#29ae79] to-[#67c79f] italic">Five Dimensions of Care.</span>
+          </h2>
+          <p className="mt-6 max-w-3xl text-lg leading-relaxed text-gray-600 sm:text-xl">
+            WOMBTO18 Foundation operates as India's first integrated child health non-profit platform - uniting <strong className="font-black text-gray-900">32 programmes</strong> across five pillars, delivered through schools, hospitals, and communities. Serving <strong className="font-black text-gray-900">25 schools today</strong>.
+          </p>
+        </motion.div>
+
+        <div className="relative mt-12 sm:mt-16">
+          <svg className="pointer-events-none absolute left-0 right-0 top-[5.4rem] hidden h-24 w-full lg:block" viewBox="0 0 1200 160" preserveAspectRatio="none">
+            <defs>
+              <linearGradient id="pillarBeam" x1="0%" y1="0%" x2="100%" y2="0%">
+                <stop offset="0%" stopColor="rgba(29,110,63,0)" />
+                <stop offset="20%" stopColor="rgba(29,110,63,0.18)" />
+                <stop offset="50%" stopColor="rgba(227,171,59,0.32)" />
+                <stop offset="80%" stopColor="rgba(29,110,63,0.18)" />
+                <stop offset="100%" stopColor="rgba(29,110,63,0)" />
+              </linearGradient>
+            </defs>
+            <motion.path
+              d="M40 84 C220 30, 350 128, 520 84 S860 36, 1160 84"
+              fill="none"
+              stroke="url(#pillarBeam)"
+              strokeWidth="3"
+              strokeLinecap="round"
+              initial={{ pathLength: 0, opacity: 0 }}
+              whileInView={{ pathLength: 1, opacity: 1 }}
+              viewport={{ once: true, margin: "-100px" }}
+              transition={{ duration: 1.6, ease: "easeInOut" }}
+            />
+          </svg>
+
+          <div className="grid gap-5 sm:grid-cols-2 xl:grid-cols-5">
+            {carePillars.map((pillar, index) => (
+              <motion.article
+                key={pillar.id}
+                initial={{ opacity: 0, y: 40, rotateX: 12 }}
+                whileInView={{ opacity: 1, y: 0, rotateX: 0 }}
+                viewport={{ once: true, margin: "-70px" }}
+                transition={{ duration: 0.8, delay: index * 0.1, ease: [0.22, 1, 0.36, 1] }}
+                whileHover={{ y: -10 }}
+                className="group relative"
+                style={{ perspective: 1200 }}
+              >
+                <motion.div
+                  className="absolute -inset-2 rounded-[2rem] opacity-0 blur-2xl transition-opacity duration-500 group-hover:opacity-100"
+                  style={{ background: `radial-gradient(circle, ${pillar.color}25 0%, transparent 70%)` }}
+                />
+                <div className={`relative h-full overflow-hidden rounded-[1.8rem] border ${pillar.border} bg-gradient-to-b ${pillar.bg} p-5 shadow-[0_14px_40px_-18px_rgba(0,0,0,0.12)] transition-all duration-500 group-hover:shadow-[0_28px_55px_-20px_rgba(0,0,0,0.18)]`}>
+                  <motion.div
+                    className="absolute right-4 top-4 h-16 w-16 rounded-full blur-2xl"
+                    style={{ backgroundColor: pillar.color, opacity: 0.12 }}
+                    animate={{ scale: [0.9, 1.08, 0.94], opacity: [0.08, 0.16, 0.1] }}
+                    transition={{ duration: 3.6, repeat: Infinity, delay: index * 0.25, ease: "easeInOut" }}
+                  />
+                  <div className="relative z-10 flex min-h-[220px] flex-col">
+                    <div className="flex items-start justify-between">
+                      <p className="text-[11px] font-black uppercase tracking-[0.18em]" style={{ color: pillar.color }}>
+                        Pillar {pillar.id}
+                      </p>
+                      <motion.div
+                        className={`flex h-14 w-14 items-center justify-center rounded-2xl ${pillar.iconBg} shadow-inner ring-1 ring-black/5`}
+                        animate={{ rotate: [0, -4, 4, 0], y: [0, -2, 2, 0] }}
+                        transition={{ duration: 5, repeat: Infinity, delay: index * 0.25, ease: "easeInOut" }}
+                      >
+                        <pillar.Icon className="h-6 w-6" style={{ color: pillar.color }} />
+                      </motion.div>
+                    </div>
+
+                    <h3 className="mt-6 text-[1.55rem] font-black tracking-tight text-gray-900 leading-[1.02]">
+                      {pillar.title}
+                    </h3>
+
+                    <div className="mt-4 h-1.5 w-16 rounded-full transition-all duration-500 group-hover:w-24" style={{ backgroundColor: pillar.color }} />
+
+                    <ul className="mt-5 space-y-2.5">
+                      {pillar.points.map((point, pointIndex) => (
+                        <motion.li
+                          key={point}
+                          initial={{ opacity: 0, x: -10 }}
+                          whileInView={{ opacity: 1, x: 0 }}
+                          viewport={{ once: true }}
+                          transition={{ duration: 0.45, delay: 0.25 + index * 0.08 + pointIndex * 0.06 }}
+                          className="flex items-start gap-3 text-[0.92rem] font-medium leading-snug text-gray-600"
+                        >
+                          <span className="mt-2 h-2 w-2 shrink-0 rounded-full" style={{ backgroundColor: pillar.color }} />
+                          <span>{point}</span>
+                        </motion.li>
+                      ))}
+                    </ul>
+
+                  </div>
+                </div>
+              </motion.article>
+            ))}
+          </div>
+        </div>
+
+        <motion.div
+          initial={{ opacity: 0, y: 24 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true, margin: "-60px" }}
+          transition={{ duration: 0.75, delay: 0.2, ease: [0.22, 1, 0.36, 1] }}
+          className="mt-12 rounded-[2rem] border border-white/70 bg-white/70 px-6 py-6 shadow-[0_18px_45px_-22px_rgba(0,0,0,0.12)] backdrop-blur-md sm:px-8"
+        >
+          <div className="grid gap-6 md:grid-cols-3 md:items-center">
+            {[
+              { value: "25", label: "Schools active" },
+              { value: "32", label: "Programmes" },
+              { value: "Preg-18", label: "Full lifecycle" },
+            ].map((stat, index) => (
+              <div key={stat.label} className="relative">
+                <p className="text-4xl font-black tracking-tight text-gray-900">{stat.value}</p>
+                <p className="mt-1 text-sm font-semibold text-gray-500">{stat.label}</p>
+                {index < 2 && <div className="absolute right-0 top-1/2 hidden h-10 w-px -translate-y-1/2 bg-gradient-to-b from-transparent via-[#dcd6ca] to-transparent md:block" />}
+              </div>
+            ))}
+          </div>
+          <div className="mt-6 border-t border-[#ece5d8] pt-6">
+            <p className="max-w-3xl text-lg leading-relaxed text-gray-600">
+              <span className="font-black text-[var(--womb-forest)]">India's first integrated child health platform</span> - from the moment of conception through adolescence, designed as connected infrastructure rather than isolated interventions.
+            </p>
+          </div>
+        </motion.div>
+      </div>
+    </section>
+  );
+}
+
 function formatINR(amount: number) {
   if (amount >= 100000) {
     return `₹${(amount / 100000).toFixed(1)}L`;
@@ -141,6 +353,8 @@ export function ServicesPage() {
           </motion.div>
         </div>
       </section>
+
+      <FivePillarsSection />
 
       {/* Programs Section */}
       <section className="py-20 bg-gray-50/50">
