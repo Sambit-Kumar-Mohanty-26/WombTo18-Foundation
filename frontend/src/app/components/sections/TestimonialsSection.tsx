@@ -24,6 +24,20 @@ const testimonials = [
     image: "/images/site-assets/testimonial_csr.png",
     quote: "Best parenting support system. Reminders + milestones + easy guides = peace of mind.Very accurate immunization reminders. Never missed a vaccine after joining.",
   },
+  {
+    name: "Niraj Devkar",
+    role: "Parent - Pune",
+    rating: 5,
+    image: "/images/site-assets/testimonial_niraj_devkar.jpg",
+    quote: "One of the most impactful, kind, and good doctors in Pune. I request all parents to consult Dr. Pramod Jog.",
+  },
+  {
+    name: "Diksha Kadam",
+    role: "School Leader",
+    rating: 5,
+    image: "/images/site-assets/testimonial_diksha_kadam.jpg",
+    quote: "WombTo18 helped our school create a culture of health, empathy, sustainability, and early habit formation. The modules are beautifully crafted, age-appropriate, and easy to integrate into daily routines. Their team handled everything - training, monitoring, implementation, and parent orientation. Most importantly, our children love the activities. From green cohort pledges to emotional well-being exercises to nutrition awareness, it feels like an upgraded version of schooling. Any school that wants long-term, measurable impact must adopt this.",
+  },
 ];
 
 export function TestimonialsSection() {
@@ -31,6 +45,8 @@ export function TestimonialsSection() {
   const [expandedCards, setExpandedCards] = useState<Record<number, boolean>>({});
   const [overflowingCards, setOverflowingCards] = useState<Record<number, boolean>>({});
   const quoteRefs = useRef<Array<HTMLParagraphElement | null>>([]);
+  const scrollContainerRefs = useRef<Array<HTMLDivElement | null>>([]);
+  const touchStartYRefs = useRef<Record<number, number | null>>({});
 
   useEffect(() => {
     if (!emblaApi) return;
@@ -103,6 +119,44 @@ export function TestimonialsSection() {
     }));
   };
 
+  const canConsumeInnerScroll = (index: number, deltaY: number) => {
+    const wrapper = scrollContainerRefs.current[index];
+
+    if (!wrapper || !expandedCards[index]) {
+      return false;
+    }
+
+    const maxScrollTop = wrapper.scrollHeight - wrapper.clientHeight;
+    if (maxScrollTop <= 0) {
+      return false;
+    }
+
+    const atTop = wrapper.scrollTop <= 1;
+    const atBottom = wrapper.scrollTop >= maxScrollTop - 1;
+
+    if (deltaY < 0 && !atTop) {
+      return true;
+    }
+
+    if (deltaY > 0 && !atBottom) {
+      return true;
+    }
+
+    return false;
+  };
+
+  const handOffScrollToPage = (deltaY: number) => {
+    if (deltaY === 0) {
+      return;
+    }
+
+    window.scrollBy({
+      top: deltaY,
+      left: 0,
+      behavior: "auto",
+    });
+  };
+
   return (
     <section className="py-24 bg-[var(--womb-forest)]/5 relative overflow-hidden flex flex-col items-center">
       <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 w-full text-center mb-12">
@@ -119,7 +173,7 @@ export function TestimonialsSection() {
           <div className="flex touch-pan-y">
             {testimonials.map((t, idx) => (
               <div key={idx} className="flex-[0_0_100%] min-w-0 pl-3 py-4 sm:pl-4">
-                <div className="flex h-full min-h-[470px] flex-col gap-5 rounded-3xl border border-gray-100 bg-white p-5 shadow-xl transition-all sm:min-h-[340px] sm:flex-row sm:gap-8 sm:p-12">
+                <div className="flex h-full min-h-[430px] sm:min-h-[380px] flex-col gap-5 rounded-3xl border border-gray-100 bg-white p-5 shadow-xl transition-all sm:flex-row sm:gap-8 sm:p-12">
                   <div className="shrink-0 relative">
                     <img
                       src={t.image}
@@ -139,30 +193,84 @@ export function TestimonialsSection() {
                     </div>
 
                     <div className="mb-4 flex-1 min-h-0 sm:mb-6">
-                      <p
+                      <div
                         ref={(element) => {
-                          quoteRefs.current[idx] = element;
+                          scrollContainerRefs.current[idx] = element;
                         }}
-                        className={`h-full min-h-0 font-serif text-lg leading-relaxed text-gray-700 italic sm:text-2xl ${
+                        onWheelCapture={(event) => {
+                          if (!expandedCards[idx]) {
+                            return;
+                          }
+
+                          if (canConsumeInnerScroll(idx, event.deltaY)) {
+                            event.stopPropagation();
+                            return;
+                          }
+
+                          event.preventDefault();
+                          event.stopPropagation();
+                          handOffScrollToPage(event.deltaY);
+                        }}
+                        onTouchStart={(event) => {
+                          touchStartYRefs.current[idx] = event.touches[0]?.clientY ?? null;
+                        }}
+                        onTouchMoveCapture={(event) => {
+                          if (!expandedCards[idx]) {
+                            return;
+                          }
+
+                          const currentY = event.touches[0]?.clientY;
+                          const previousY = touchStartYRefs.current[idx];
+
+                          if (currentY == null || previousY == null) {
+                            return;
+                          }
+
+                          const deltaY = previousY - currentY;
+
+                          if (canConsumeInnerScroll(idx, deltaY)) {
+                            event.stopPropagation();
+                          } else {
+                            event.preventDefault();
+                            event.stopPropagation();
+                            handOffScrollToPage(deltaY);
+                          }
+
+                          touchStartYRefs.current[idx] = currentY;
+                        }}
+                        onTouchEnd={() => {
+                          touchStartYRefs.current[idx] = null;
+                        }}
+                        className={`h-full min-h-0 ${
                           expandedCards[idx]
-                            ? "overflow-y-auto pr-1 sm:overflow-visible sm:pr-0"
-                            : "overflow-hidden line-clamp-7 sm:line-clamp-none"
+                            ? "max-h-[185px] overflow-y-auto pr-2 sm:max-h-[170px]"
+                            : "overflow-hidden"
                         }`}
                         style={{
                           scrollbarWidth: expandedCards[idx] ? "thin" : "none",
+                          overscrollBehavior: expandedCards[idx] ? "auto" : "contain",
                         }}
                       >
-                        "{t.quote}"
-                      </p>
+                        <p
+                          ref={(element) => {
+                            quoteRefs.current[idx] = element;
+                          }}
+                          className={`font-serif text-lg leading-relaxed text-gray-700 italic sm:text-2xl ${
+                            expandedCards[idx] ? "" : "line-clamp-6 sm:line-clamp-4"
+                          }`}
+                        >
+                          "{t.quote}"
+                        </p>
+                      </div>
                     </div>
 
                     {overflowingCards[idx] && (
                       <button
                         type="button"
                         onClick={() => toggleExpanded(idx)}
-                        className="mb-4 w-fit text-sm font-semibold text-[var(--womb-forest)] transition-colors hover:text-[#155e33] sm:hidden"
+                        className="mb-4 w-fit text-sm font-semibold text-[var(--womb-forest)] transition-colors hover:text-[#155e33]"
                       >
-                        {expandedCards[idx] ? "See less" : "See more"}
+                        {expandedCards[idx] ? "Read less" : "Read more"}
                       </button>
                     )}
 

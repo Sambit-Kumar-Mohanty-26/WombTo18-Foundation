@@ -32,7 +32,7 @@ const initialPosts: BlogPost[] = [
     category: "Health",
     date: "Mar 5, 2026",
     readTime: "5 min read",
-    image: "/images/site-assets/Prenatal2.JPG",
+    image: "/images/site-assets/Prenatal2.jpg",
     featured: true,
     status: "published",
   },
