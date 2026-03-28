@@ -81,6 +81,18 @@ export function AboutSection() {
     return false;
   };
 
+  const handOffScrollToPage = (deltaY: number) => {
+    if (deltaY === 0) {
+      return;
+    }
+
+    window.scrollBy({
+      top: deltaY,
+      left: 0,
+      behavior: "auto",
+    });
+  };
+
   useEffect(() => {
     const wrapper = scrollContainerRef.current;
     const content = scrollContentRef.current;
@@ -206,7 +218,12 @@ export function AboutSection() {
                 onWheelCapture={(event) => {
                   if (canConsumeInnerScroll(event.deltaY)) {
                     event.stopPropagation();
+                    return;
                   }
+
+                  event.preventDefault();
+                  event.stopPropagation();
+                  handOffScrollToPage(event.deltaY);
                 }}
                 onTouchStart={(event) => {
                   touchStartYRef.current = event.touches[0]?.clientY ?? null;
@@ -223,6 +240,10 @@ export function AboutSection() {
 
                   if (canConsumeInnerScroll(deltaY)) {
                     event.stopPropagation();
+                  } else {
+                    event.preventDefault();
+                    event.stopPropagation();
+                    handOffScrollToPage(deltaY);
                   }
 
                   touchStartYRef.current = currentY;

@@ -6,6 +6,10 @@ import { Progress } from "../components/ui/progress";
 import { Badge } from "../components/ui/badge";
 import { Link } from "react-router";
 import { motion, AnimatePresence, useInView, animate } from "motion/react";
+import { getDocument, GlobalWorkerOptions } from "pdfjs-dist";
+import pdfWorkerUrl from "pdfjs-dist/build/pdf.worker.min.mjs?url";
+
+GlobalWorkerOptions.workerSrc = pdfWorkerUrl;
 
 function Counter({ from = 0, to, duration = 2, prefix = "", suffix = "", decimals = 0 }: { from?: number, to: number, duration?: number, prefix?: string, suffix?: string, decimals?: number }) {
   const ref = useRef<HTMLSpanElement>(null);
@@ -27,6 +31,78 @@ function Counter({ from = 0, to, duration = 2, prefix = "", suffix = "", decimal
   }, [inView, from, to, duration, prefix, suffix, decimals]);
 
   return <span ref={ref}>{prefix}{from.toFixed(decimals)}{suffix}</span>;
+}
+
+function MobilePdfPreview({ pdfUrl, title }: { pdfUrl: string; title: string }) {
+  const [previewSrc, setPreviewSrc] = useState<string | null>(null);
+  const [hasError, setHasError] = useState(false);
+
+  useEffect(() => {
+    let isActive = true;
+
+    const renderPreview = async () => {
+      try {
+        setHasError(false);
+
+        const loadingTask = getDocument(pdfUrl);
+        const pdf = await loadingTask.promise;
+        const page = await pdf.getPage(1);
+        const baseViewport = page.getViewport({ scale: 1 });
+        const targetWidth = 900;
+        const scale = targetWidth / baseViewport.width;
+        const viewport = page.getViewport({ scale });
+
+        const canvas = document.createElement("canvas");
+        const context = canvas.getContext("2d");
+
+        if (!context) {
+          throw new Error("Canvas context unavailable");
+        }
+
+        canvas.width = Math.ceil(viewport.width);
+        canvas.height = Math.ceil(viewport.height);
+
+        await page.render({
+          canvasContext: context,
+          viewport,
+        }).promise;
+
+        if (!isActive) {
+          await pdf.destroy();
+          return;
+        }
+
+        setPreviewSrc(canvas.toDataURL("image/png"));
+        await pdf.destroy();
+      } catch {
+        if (isActive) {
+          setHasError(true);
+        }
+      }
+    };
+
+    void renderPreview();
+
+    return () => {
+      isActive = false;
+    };
+  }, [pdfUrl]);
+
+  if (previewSrc) {
+    return <img src={previewSrc} alt={title} className="h-full w-full object-cover object-top" />;
+  }
+
+  return (
+    <div className="flex h-full w-full flex-col items-center justify-center bg-[linear-gradient(180deg,#f8f7f2_0%,#ece5d8_100%)] px-6 text-center">
+      <div className="mb-4 flex h-16 w-16 items-center justify-center rounded-full border-4 border-[#e7d9a2] bg-white shadow-md">
+        <Leaf className="h-8 w-8 text-[#1D6E3F]" />
+      </div>
+      <p className="text-[0.72rem] font-black uppercase tracking-[0.22em] text-[#1D6E3F]">Go Green Certificate</p>
+      <p className="mt-3 max-w-[16rem] text-sm leading-relaxed text-[#5e5a4f]">
+        {hasError ? "Tap to open the full PDF certificate." : "Generating certificate preview..."}
+      </p>
+    </div>
+  );
 }
 
 
@@ -1174,11 +1250,10 @@ export function ServicesPage() {
                     rel="noopener noreferrer"
                     className="sm:hidden absolute inset-0 block bg-[#f8f9fa]"
                   >
-                    <div className="absolute inset-x-0 top-0 h-[220px] overflow-hidden">
-                      <iframe
-                        src="/Go%20Green%20Certificate.pdf#view=FitH&toolbar=0&navpanes=0&scrollbar=0"
+                    <div className="absolute inset-x-0 top-0 bottom-[68px] overflow-hidden">
+                      <MobilePdfPreview
+                        pdfUrl="/Go%20Green%20Certificate.pdf"
                         title="Go Green Official Certificate mobile preview"
-                        className="h-[420px] w-[178%] max-w-none origin-top-left scale-[0.56] border-none pointer-events-none mix-blend-multiply"
                       />
                     </div>
                     <div className="absolute inset-x-0 bottom-0 flex items-center justify-between gap-3 border-t border-gray-200 bg-[#184f34] px-4 py-3">
@@ -1201,7 +1276,7 @@ export function ServicesPage() {
                   </a>
                 </div>
 
-                <div className="mt-4 sm:mt-5 flex items-start justify-between px-1 sm:px-2 gap-3">
+                <div className="mt-5 hidden sm:flex items-start justify-between px-2 gap-3">
                   <div>
                     <p className="text-white font-bold text-[1.05rem] leading-tight mb-1">Official Go Green Certificate</p>
                     <p className="text-[#36c276] text-xs font-medium">Awarded to major donors & partners</p>

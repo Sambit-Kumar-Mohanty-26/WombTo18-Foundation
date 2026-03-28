@@ -7,6 +7,23 @@ import { Badge } from "../components/ui/badge";
 import { Calendar, Clock, ArrowLeft, Loader2 } from "lucide-react";
 import { Skeleton } from "../components/ui/skeleton";
 
+const FALLBACK_ARTICLE_IMAGE = "/images/site-assets/Prenatal2.JPG";
+
+function getArticleImageSrc(image?: string | null) {
+  if (!image) return FALLBACK_ARTICLE_IMAGE;
+
+  const value = image.trim();
+  if (!value || value === "undefined" || value === "null") {
+    return FALLBACK_ARTICLE_IMAGE;
+  }
+
+  if (value.startsWith("http://") || value.startsWith("https://") || value.startsWith("/")) {
+    return value;
+  }
+
+  return `/${value.replace(/^\/+/, "")}`;
+}
+
 export function ArticlePage() {
   const { slug } = useParams<{ slug: string }>();
   const [post, setPost] = useState<any>(null);
@@ -51,7 +68,7 @@ export function ArticlePage() {
         <article className="space-y-8">
           <div className="space-y-4">
             <Badge variant="secondary" className="bg-primary/10 text-primary px-3 py-1">
-              {post.category}
+              {post.category || "Article"}
             </Badge>
             <h1 className="text-4xl md:text-5xl font-bold text-foreground leading-tight tracking-tight">
               {post.title}
@@ -64,15 +81,20 @@ export function ArticlePage() {
 
           <div className="aspect-video relative rounded-3xl overflow-hidden border border-border/50 shadow-2xl">
             <img 
-              src={post.image || "https://images.unsplash.com/photo-1584376003963-e1aa9a61c0ac?q=80&w=2000"} 
+              src={getArticleImageSrc(post.image)} 
               alt={post.title}
               className="w-full h-full object-cover"
+              onError={(e) => {
+                const img = e.currentTarget;
+                if (img.src.endsWith(FALLBACK_ARTICLE_IMAGE)) return;
+                img.src = FALLBACK_ARTICLE_IMAGE;
+              }}
             />
           </div>
 
           <div className="prose prose-lg dark:prose-invert max-w-none">
             <p className="text-xl text-muted-foreground leading-relaxed mb-8 italic border-l-4 border-primary pl-6 py-2">
-              {post.excerpt}
+              {post.excerpt || "Explore the full story and latest updates from WombTo18 Foundation."}
             </p>
             <div dangerouslySetInnerHTML={{ __html: post.content }} />
           </div>
