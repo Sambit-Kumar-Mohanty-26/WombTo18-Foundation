@@ -64,9 +64,7 @@ export function TestimonialsSection() {
         clone.style.display = "block";
         clone.style.width = `${element.clientWidth}px`;
         clone.style.webkitLineClamp = "unset";
-        clone.style.WebkitLineClamp = "unset";
         clone.style.webkitBoxOrient = "initial";
-        clone.style.WebkitBoxOrient = "initial";
 
         document.body.appendChild(clone);
         nextOverflowState[index] = clone.scrollHeight > element.clientHeight + 1;
