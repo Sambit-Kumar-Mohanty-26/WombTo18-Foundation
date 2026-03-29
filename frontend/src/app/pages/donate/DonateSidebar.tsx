@@ -61,7 +61,8 @@ export function DonateSidebar({ activeColor = "#1D6E3F" }: { activeColor?: strin
   }
 
   return (
-    <div className="space-y-5 lg:sticky lg:top-24">
+    <div className="h-full">
+      <div className="space-y-5 lg:sticky lg:top-24 h-fit">
 
       <motion.div
         initial={{ opacity: 0, y: 20 }}
@@ -191,7 +192,7 @@ export function DonateSidebar({ activeColor = "#1D6E3F" }: { activeColor?: strin
            </div>
         ) : (
           <div className="space-y-2.5">
-            {stats.recentDonors.map((donor, i) => {
+            {stats.recentDonors.slice(0, 4).map((donor, i) => {
               const initial = donor.name.charAt(0).toUpperCase();
               const tagColor = ['#1D6E3F', '#F59E0B', '#3B82F6', '#8B5CF6'][i % 4];
               
@@ -233,6 +234,8 @@ export function DonateSidebar({ activeColor = "#1D6E3F" }: { activeColor?: strin
           </span>
         ))}
       </motion.div>
+
+      </div>
     </div>
   );
 }
