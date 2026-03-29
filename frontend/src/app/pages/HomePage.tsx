@@ -19,7 +19,6 @@ export function HomePage() {
       <HeroSection />
       <AnimatedQuoteSection />
       <HomeVideoSection />
-      {/* <ImpactTicker /> */}
       <OurCredentials />
       <TrustStrip />
       <ServicesSection />

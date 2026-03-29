@@ -72,7 +72,13 @@ export function OTPVerification({ identifier, onSuccess, onBack }: OTPVerificati
             <CardDescription className="text-[#d1f5e0]/70">
             We've sent a 6-digit one-time password to <span className="font-semibold text-[#d1f5e0]">{identifier}</span>.
             </CardDescription>
+            {sessionStorage.getItem("dev_otp") && (
+              <div className="mt-4 p-2 bg-primary/10 border border-primary/20 rounded-md text-sm text-primary-foreground font-mono">
+                Development OTP: <span className="font-bold tracking-widest">{sessionStorage.getItem("dev_otp")}</span>
+              </div>
+            )}
         </div>
+
       </CardHeader>
       <CardContent>
         <form onSubmit={handleSubmit(onSubmit)} className="space-y-4 pt-2">

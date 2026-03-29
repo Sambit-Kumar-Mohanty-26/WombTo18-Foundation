@@ -41,12 +41,17 @@ export function DonorLoginForm({ onSuccess }: DonorLoginFormProps) {
       
       if (response.eligible) {
          toast.success("OTP sent to your registered contact details.");
+         if (response.devOtp) {
+           console.log("Dev OTP:", response.devOtp);
+           sessionStorage.setItem("dev_otp", response.devOtp);
+         }
       } else {
          auth.setReceiptOnlySession(data.identifier);
          toast.info("Logging in to Receipts & History...");
       }
       
       onSuccess(response.eligible, data.identifier);
+
     } catch (error) {
       toast.error("Failed to login. Please try again.");
     } finally {

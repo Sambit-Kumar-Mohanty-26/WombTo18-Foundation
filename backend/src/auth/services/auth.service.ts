@@ -1,12 +1,16 @@
 import { Injectable, UnauthorizedException, BadRequestException } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import { PrismaService } from '../../prisma/services/prisma.service';
+import { MailerService } from './mailer.service';
+import { ConfigService } from '@nestjs/config';
 
 @Injectable()
 export class AuthService {
   constructor(
     private readonly prisma: PrismaService,
     private readonly jwtService: JwtService,
+    private readonly mailerService: MailerService,
+    private readonly configService: ConfigService,
   ) {}
 
   async donorLogin(email: string) {
@@ -33,7 +37,7 @@ export class AuthService {
 
     // Simulate OTP generation
     const otp = Math.floor(100000 + Math.random() * 900000).toString();
-    const otpHash = otp; // In prod, use bcrypt
+    const otpHash = otp; // In prod, use bcrypt or hashing
     const otpExpiry = new Date(Date.now() + 10 * 60 * 1000); // 10 mins
 
     await this.prisma.donor.update({
@@ -41,14 +45,17 @@ export class AuthService {
       data: { otpHash, otpExpiry },
     });
 
-    // In prod, send OTP via email service (Resend)
-    console.log(`[OTP for ${email}]: ${otp}`);
+    // Send OTP via email service
+    await this.mailerService.sendOtpEmail(email, otp);
+
+    const debugOtp = this.configService.get<string>('DEBUG_OTP') === 'true';
 
     if (!isEligible) {
       return {
         eligible: false,
         message: 'Dashboard access requires minimum ₹5000 donation',
         redirect: '/donor/receipts',
+        ...(debugOtp ? { devOtp: otp } : {}),
       };
     }
 
@@ -56,8 +63,10 @@ export class AuthService {
       eligible: true,
       otpSent: true,
       donorId: donor.donorId,
+      ...(debugOtp ? { devOtp: otp } : {}),
     };
   }
+
 
   async verifyOtp(email: string, otp: string) {
     const donor = await this.prisma.donor.findUnique({

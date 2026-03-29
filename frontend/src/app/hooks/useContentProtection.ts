@@ -14,6 +14,11 @@ function isAllowedTarget(target: EventTarget | null) {
 
 export function useContentProtection() {
   useEffect(() => {
+    // Disable protection features in development mode
+    if ((import.meta as any).env.DEV) {
+      return;
+    }
+
     document.body.classList.add("content-protection-enabled");
 
     const preventIfProtected = (event: Event) => {

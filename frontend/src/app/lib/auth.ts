@@ -1,3 +1,5 @@
+import { authApi } from "./api/auth";
+
 export interface DonorSession {
   identifier: string;
   eligible: boolean;
@@ -5,38 +7,28 @@ export interface DonorSession {
 }
 
 export const auth = {
-  async login(identifier: string): Promise<{ eligible: boolean; otpSent: boolean }> {
-    // Simulate network delay
-    await new Promise((resolve) => setTimeout(resolve, 800));
-
-    // Simple mock logic: If email includes "elite", they are a "high-tier" donor with >= ₹5000
-    // Otherwise, they are a standard donor with < ₹5000
-    const isEligible = identifier.toLowerCase().includes("elite");
-
-    return {
-      eligible: isEligible,
-      otpSent: isEligible, // Only send OTP if they are eligible for the full dashboard
-    };
+  async login(identifier: string): Promise<{ eligible: boolean; otpSent: boolean; devOtp?: string }> {
+    const response = await authApi.login(identifier);
+    return response;
   },
 
   async verifyOtp(identifier: string, otp: string): Promise<{ success: boolean; token?: string }> {
-    await new Promise((resolve) => setTimeout(resolve, 1000));
-
-    // Mock verification: standard OTP is 123456
-    if (otp === "123456") {
-      const token = `mock-jwt-${Date.now()}`;
+    const response = await authApi.verifyOtp(identifier, otp);
+    
+    if (response.success && response.token) {
       const session: DonorSession = {
         identifier,
         eligible: true,
-        token,
+        token: response.token,
       };
       
       localStorage.setItem("donor_session", JSON.stringify(session));
-      return { success: true, token };
+      return { success: true, token: response.token };
     }
 
     return { success: false };
   },
+
 
   setReceiptOnlySession(identifier: string) {
     const session: DonorSession = {
@@ -61,3 +53,4 @@ export const auth = {
     localStorage.removeItem("donor_session");
   },
 };
+

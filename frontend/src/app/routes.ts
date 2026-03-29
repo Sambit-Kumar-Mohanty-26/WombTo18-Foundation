@@ -20,7 +20,7 @@ import { DonorDonations } from "./pages/donor/DonorDonations";
 import { DonorReports } from "./pages/donor/DonorReports";
 import { DonorCertificates } from "./pages/donor/DonorCertificates";
 import { DonorEvents } from "./pages/donor/DonorEvents";
-// import { DonorLogin } from "./pages/donor/DonorLogin";
+import { DonorLogin } from "./pages/donor/DonorLogin";
 import { DonorVerifyOtp } from "./pages/donor/DonorVerifyOtp";
 import { DonorProfile } from "./pages/donor/DonorProfile";
 import { DonationSuccessPage } from "./pages/DonationSuccessPage";
@@ -54,9 +54,9 @@ export const router = createBrowserRouter([
       // { path: "donate", Component: DonatePage },
       { path: "donation-success", Component: DonationSuccessPage },
       { path: "dashboard-preview", Component: DashboardPreviewPage },
-      { path: "donor/login", Component: ComingSoonPage },
-      // { path: "donor/login", Component: DonorLogin },
+      { path: "donor/login", Component: DonorLogin },
       { path: "donor/verify-otp", Component: DonorVerifyOtp },
+
     ],
   },
   {

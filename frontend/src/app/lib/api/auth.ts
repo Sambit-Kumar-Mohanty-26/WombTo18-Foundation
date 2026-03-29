@@ -4,7 +4,9 @@ export interface LoginResponse {
   eligible: boolean;
   otpSent: boolean;
   message?: string;
+  devOtp?: string;
 }
+
 
 export interface VerifyOtpResponse {
   success: boolean;
