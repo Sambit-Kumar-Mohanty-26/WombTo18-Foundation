@@ -1,6 +1,6 @@
-import { motion } from "motion/react";
-import { Landmark, FileText, Globe, Building2, ShieldCheck, ArrowRight, Sparkles } from "lucide-react";
-import { useState } from "react";
+import { motion, useMotionValue, useSpring, useTransform } from "motion/react";
+import { Landmark, FileText, Globe, Building2, ShieldCheck, ArrowRight, Sparkles, CheckCircle2, BadgeCheck } from "lucide-react";
+import { useState, useRef } from "react";
 
 const credentials = [
   {
@@ -8,29 +8,35 @@ const credentials = [
     title: "80G Certified",
     subtitle: "Tax-Deductible Donations",
     description:
-      "All contributions are eligible for income tax deduction under Section 80G",
-    gradient: "from-emerald-500 to-emerald-600",
-    badge: "Tax Benefit",
-    stats: "Save up to 50% tax",
+      "All contributions are eligible for income tax deduction under Section 80G of the Income Tax Act",
+    accentColor: "var(--womb-forest)",
+    accentLight: "rgba(29,110,63,0.08)",
+    accentMedium: "rgba(29,110,63,0.15)",
+    badge: "Verified",
+    stats: "Save up to 50% Tax",
   },
   {
     icon: FileText,
     title: "12A Certified",
     subtitle: "Legally Recognised Non-Profit",
     description:
-      "Registered and certified under Section 12A of the Income Tax Act",
-    gradient: "from-amber-500 to-orange-500",
-    badge: "Legal Status",
-    stats: "Registered since 2015",
+      "Registered and certified under Section 12A of the Income Tax Act for tax exemption",
+    accentColor: "var(--journey-saffron)",
+    accentLight: "rgba(255,153,0,0.08)",
+    accentMedium: "rgba(255,153,0,0.15)",
+    badge: "Verified",
+    stats: "Registered Since 2015",
   },
   {
     icon: Globe,
     title: "TechSoup India",
-    subtitle: "Validated NGO",
+    subtitle: "Validated NGO Partner",
     description:
-      "Verified by TechSoup India — the global standard for NGO technology access",
-    gradient: "from-sky-500 to-blue-500",
-    badge: "Global Standard",
+      "Verified by TechSoup India — the global standard for NGO technology access and validation",
+    accentColor: "var(--future-sky)",
+    accentLight: "rgba(0,174,239,0.08)",
+    accentMedium: "rgba(0,174,239,0.15)",
+    badge: "Verified",
     stats: "Tech Access Partner",
   },
   {
@@ -39,213 +45,333 @@ const credentials = [
     subtitle: "Registered Foundation",
     description:
       "Incorporated as a Section 8 Company under the Companies Act, 2013",
-    gradient: "from-purple-500 to-violet-500",
-    badge: "Company Status",
+    accentColor: "#7c3aed",
+    accentLight: "rgba(124,58,237,0.08)",
+    accentMedium: "rgba(124,58,237,0.15)",
+    badge: "Verified",
     stats: "CSR Eligible",
   },
 ];
 
-export function OurCredentials() {
-  const [hoveredIndex, setHoveredIndex] = useState<number | null>(null);
+function CredentialCard({ cred, idx }: { cred: typeof credentials[0]; idx: number }) {
+  const [isHovered, setIsHovered] = useState(false);
+  const cardRef = useRef<HTMLDivElement>(null);
+  const mouseX = useMotionValue(0);
+  const mouseY = useMotionValue(0);
 
-  const getGradientColor = (gradient: string) => {
-    if (gradient.includes('emerald')) return '#10b981';
-    if (gradient.includes('amber')) return '#f59e0b';
-    if (gradient.includes('sky')) return '#0ea5e9';
-    if (gradient.includes('purple')) return '#a855f7';
-    return '#64748b';
+  const rotateX = useSpring(useTransform(mouseY, [-0.5, 0.5], [4, -4]), { stiffness: 300, damping: 30 });
+  const rotateY = useSpring(useTransform(mouseX, [-0.5, 0.5], [-4, 4]), { stiffness: 300, damping: 30 });
+
+  const handleMouseMove = (e: React.MouseEvent) => {
+    if (!cardRef.current) return;
+    const rect = cardRef.current.getBoundingClientRect();
+    const x = (e.clientX - rect.left) / rect.width - 0.5;
+    const y = (e.clientY - rect.top) / rect.height - 0.5;
+    mouseX.set(x);
+    mouseY.set(y);
+  };
+
+  const handleMouseLeave = () => {
+    setIsHovered(false);
+    mouseX.set(0);
+    mouseY.set(0);
   };
 
   return (
-    <section className="relative py-28 lg:py-36 bg-gradient-to-b from-white via-slate-50/30 to-white overflow-hidden">
-      {/* Animated Background Elements */}
-      <div className="absolute inset-0 z-0">
-        {/* Gradient Orbs */}
-        <div className="absolute top-20 -left-20 w-96 h-96 bg-emerald-300/20 rounded-full blur-[100px] animate-pulse" />
-        <div className="absolute bottom-20 -right-20 w-96 h-96 bg-purple-300/20 rounded-full blur-[100px] animate-pulse animation-delay-2000" />
-        
-        {/* Animated Grid Pattern */}
-        <div className="absolute inset-0 bg-[linear-gradient(rgba(0,0,0,0.02)_1px,transparent_1px),linear-gradient(90deg,rgba(0,0,0,0.02)_1px,transparent_1px)] bg-[size:64px_64px] [mask-image:radial-gradient(ellipse_80%_50%_at_50%_50%,black,transparent)]" />
-        
-        {/* Floating Particles */}
-        <div className="absolute inset-0 overflow-hidden">
-          {[...Array(20)].map((_, i) => (
-            <div
-              key={i}
-              className="absolute animate-custom-float"
+    <motion.div
+      ref={cardRef}
+      initial={{ opacity: 0, y: 40 }}
+      whileInView={{ opacity: 1, y: 0 }}
+      viewport={{ once: true, margin: "-50px" }}
+      transition={{ delay: idx * 0.12, duration: 0.7, ease: [0.22, 1, 0.36, 1] }}
+      onMouseEnter={() => setIsHovered(true)}
+      onMouseLeave={handleMouseLeave}
+      onMouseMove={handleMouseMove}
+      style={{
+        rotateX,
+        rotateY,
+        transformPerspective: 1200,
+      }}
+      className="group relative cursor-pointer will-change-transform"
+    >
+      {/* Outer glow on hover */}
+      <motion.div
+        className="absolute -inset-1 rounded-[2rem] opacity-0 group-hover:opacity-100 transition-opacity duration-700 -z-10"
+        style={{
+          background: `radial-gradient(ellipse at 50% 50%, ${cred.accentMedium}, transparent 70%)`,
+          filter: "blur(20px)",
+        }}
+      />
+      
+      {/* Card Body */}
+      <div
+        className="relative flex flex-col h-full rounded-[1.75rem] p-7 lg:p-9 transition-all duration-500 overflow-hidden"
+        style={{
+          background: isHovered
+            ? `linear-gradient(145deg, #ffffff 0%, ${cred.accentLight} 100%)`
+            : "linear-gradient(145deg, #ffffff 0%, #fafaf8 100%)",
+          border: isHovered
+            ? `1.5px solid ${cred.accentMedium}`
+            : "1.5px solid rgba(0,0,0,0.04)",
+          boxShadow: isHovered
+            ? `0 24px 48px -12px rgba(0,0,0,0.08), 0 0 0 1px ${cred.accentLight}`
+            : "0 4px 20px -4px rgba(0,0,0,0.04)",
+        }}
+      >
+        {/* Top accent line */}
+        <motion.div
+          className="absolute top-0 left-0 right-0 h-[3px] rounded-t-full"
+          initial={{ scaleX: 0 }}
+          animate={{ scaleX: isHovered ? 1 : 0 }}
+          transition={{ duration: 0.5, ease: [0.22, 1, 0.36, 1] }}
+          style={{
+            background: `linear-gradient(90deg, ${cred.accentColor}, transparent)`,
+            transformOrigin: "left",
+          }}
+        />
+
+        {/* Corner shimmer */}
+        <motion.div
+          className="absolute -top-16 -right-16 w-40 h-40 rounded-full opacity-0 group-hover:opacity-100 transition-opacity duration-700"
+          style={{
+            background: `radial-gradient(circle, ${cred.accentLight} 0%, transparent 70%)`,
+          }}
+        />
+
+        <div className="relative z-10 h-full flex flex-col items-start">
+          {/* Icon + Badge Row */}
+          <div className="flex items-start justify-between w-full mb-7">
+            <motion.div
+              className="w-14 h-14 rounded-2xl flex items-center justify-center shrink-0 relative overflow-hidden transition-all duration-500"
+              animate={isHovered ? { scale: 1.08 } : { scale: 1 }}
+              transition={{ type: "spring", stiffness: 400, damping: 20 }}
               style={{
-                left: `${Math.random() * 100}%`,
-                top: `${Math.random() * 100}%`,
-                animationDelay: `${Math.random() * 5}s`,
-                animationDuration: `${5 + Math.random() * 5}s`,
+                background: isHovered ? cred.accentColor : cred.accentLight,
+                boxShadow: isHovered
+                  ? `0 8px 20px -4px ${cred.accentMedium}`
+                  : "none",
               }}
             >
-              <div className="w-1 h-1 bg-emerald-400/30 rounded-full" />
-            </div>
-          ))}
+              <cred.icon
+                className="w-6 h-6 transition-colors duration-500"
+                style={{ color: isHovered ? "#fff" : cred.accentColor }}
+              />
+            </motion.div>
+
+            <motion.div
+              className="flex items-center gap-1.5 px-3 py-1.5 rounded-full text-[9px] font-extrabold uppercase tracking-[0.12em] transition-all duration-500"
+              animate={isHovered ? { scale: 1.05 } : { scale: 1 }}
+              style={{
+                background: isHovered ? cred.accentColor : cred.accentLight,
+                color: isHovered ? "#fff" : cred.accentColor,
+              }}
+            >
+              <BadgeCheck className="w-3 h-3" />
+              {cred.badge}
+            </motion.div>
+          </div>
+
+          {/* Content */}
+          <div className="flex-1">
+            <h3
+              className="text-xl font-black text-gray-900 tracking-tight leading-tight mb-1.5"
+              style={{ fontFamily: "'Poppins', sans-serif" }}
+            >
+              {cred.title}
+            </h3>
+            <p
+              className="text-[10px] font-bold mb-4 uppercase tracking-[0.15em]"
+              style={{ color: cred.accentColor, opacity: 0.8 }}
+            >
+              {cred.subtitle}
+            </p>
+            <p className="text-[13px] text-gray-500 leading-relaxed font-medium">
+              {cred.description}
+            </p>
+          </div>
+
+          {/* Footer */}
+          <motion.div
+            className="mt-7 flex items-center justify-between w-full pt-5"
+            style={{ borderTop: `1px solid ${isHovered ? cred.accentLight : 'rgba(0,0,0,0.04)'}` }}
+          >
+            <span
+              className="text-[10px] font-bold uppercase tracking-[0.15em] transition-colors duration-300"
+              style={{ color: isHovered ? cred.accentColor : '#94a3b8' }}
+            >
+              {cred.stats}
+            </span>
+            <motion.div
+              animate={isHovered ? { x: 4, opacity: 1 } : { x: 0, opacity: 0.3 }}
+              transition={{ duration: 0.3 }}
+            >
+              <ArrowRight
+                className="w-4 h-4 transition-colors duration-300"
+                style={{ color: isHovered ? cred.accentColor : '#cbd5e1' }}
+              />
+            </motion.div>
+          </motion.div>
         </div>
+      </div>
+    </motion.div>
+  );
+}
+
+export function OurCredentials() {
+  return (
+    <section className="relative py-12 lg:py-16 overflow-hidden" style={{ background: "linear-gradient(180deg, #FFFDF7 0%, #f8f7f2 50%, #FFFDF7 100%)" }}>
+      {/* Ambient Background */}
+      <div className="absolute inset-0 z-0 pointer-events-none">
+        <div className="absolute top-0 left-1/4 w-[400px] h-[400px] rounded-full opacity-[0.04] blur-[120px]" style={{ background: "var(--womb-forest)" }} />
+        <div className="absolute bottom-0 right-1/4 w-[300px] h-[300px] rounded-full opacity-[0.03] blur-[100px]" style={{ background: "#7c3aed" }} />
+        
+        {/* Subtle dot grid */}
+        <div className="absolute inset-0 opacity-[0.015]" style={{ backgroundImage: "radial-gradient(circle at 1px 1px, #1D6E3F 0.8px, transparent 0)", backgroundSize: "32px 32px" }} />
       </div>
 
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
-        <div className="grid lg:grid-cols-12 gap-16 lg:gap-24 items-start">
+        <div className="grid lg:grid-cols-12 gap-10 lg:gap-14 items-center">
           
           {/* Left Column: Branding & Highlight */}
           <div className="lg:col-span-4">
-            <div className="sticky top-24">
+            <div className="relative">
               <motion.div
                 initial={{ opacity: 0, y: 30 }}
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true }}
-                transition={{ duration: 0.8, ease: "easeOut" }}
-                className="mb-14"
+                transition={{ duration: 0.8, ease: [0.22, 1, 0.36, 1] }}
+                className="mb-6"
               >
-                {/* Animated Badge */}
+                {/* Badge */}
                 <motion.div
                   initial={{ scale: 0.8, opacity: 0 }}
                   whileInView={{ scale: 1, opacity: 1 }}
                   viewport={{ once: true }}
                   transition={{ delay: 0.2, duration: 0.5 }}
-                  className="inline-flex items-center gap-3 px-4 py-2 rounded-full bg-gradient-to-r from-emerald-50 to-emerald-100 border border-emerald-200 mb-8 shadow-sm"
+                  className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full mb-6 shadow-sm"
+                  style={{
+                    background: "linear-gradient(135deg, rgba(29,110,63,0.08) 0%, rgba(29,110,63,0.04) 100%)",
+                    border: "1px solid rgba(29,110,63,0.12)"
+                  }}
                 >
-                  <Sparkles className="w-4 h-4 text-emerald-600 animate-pulse" />
-                  <span className="text-xs font-bold uppercase tracking-[0.2em] bg-gradient-to-r from-emerald-700 to-emerald-600 bg-clip-text text-transparent">
+                  <Sparkles className="w-3.5 h-3.5 text-[var(--womb-forest)]" />
+                  <span className="text-[10px] font-extrabold uppercase tracking-[0.2em] text-[var(--womb-forest)]">
                     Transparency First
                   </span>
                 </motion.div>
                 
+                {/* Heading */}
                 <motion.h2 
-                  className="text-5xl md:text-6xl font-black leading-[1.1] tracking-tight"
+                  className="text-4xl md:text-5xl font-black leading-[1.05] tracking-tight"
+                  style={{ fontFamily: "'Poppins', sans-serif" }}
                   initial={{ opacity: 0, y: 20 }}
                   whileInView={{ opacity: 1, y: 0 }}
                   viewport={{ once: true }}
-                  transition={{ delay: 0.1, duration: 0.6 }}
+                  transition={{ delay: 0.1, duration: 0.7 }}
                 >
-                  <span className="bg-gradient-to-r from-slate-900 to-slate-700 bg-clip-text text-transparent">
-                    Trusted & 
+                  <span className="text-gray-900">
+                    Trusted &{" "}
                   </span>
                   <br />
-                  <span className="relative inline-block mt-2">
-                    <span className="bg-gradient-to-r from-emerald-600 to-emerald-500 bg-clip-text text-transparent">
+                  <span className="relative inline-block mt-1">
+                    <span className="text-transparent bg-clip-text bg-gradient-to-r from-[var(--womb-forest)] to-emerald-400">
                       Compliant
                     </span>
-                    {/* Animated Underline */}
                     <motion.div
-                      initial={{ width: 0 }}
-                      whileInView={{ width: "100%" }}
+                      initial={{ scaleX: 0 }}
+                      whileInView={{ scaleX: 1 }}
                       viewport={{ once: true }}
-                      transition={{ delay: 0.5, duration: 0.8, ease: "easeOut" }}
-                      className="absolute -bottom-2 left-0 h-1 bg-gradient-to-r from-emerald-500 to-emerald-300 rounded-full"
+                      transition={{ delay: 0.6, duration: 0.8, ease: [0.22, 1, 0.36, 1] }}
+                      className="absolute -bottom-1.5 left-0 w-full h-1 bg-gradient-to-r from-[var(--womb-forest)] to-emerald-300 rounded-full origin-left"
                     />
                   </span>
                 </motion.h2>
                 
-                <p className="mt-8 text-lg text-slate-600 leading-relaxed font-medium italic">
+                <motion.p
+                  className="mt-6 text-sm text-gray-600 leading-relaxed italic font-medium"
+                  style={{ fontFamily: "'Poppins', sans-serif" }}
+                  initial={{ opacity: 0 }}
+                  whileInView={{ opacity: 1 }}
+                  viewport={{ once: true }}
+                  transition={{ delay: 0.4, duration: 0.6 }}
+                >
                   "Your trust is our greatest fuel"
-                </p>
-                <p className="mt-4 text-sm text-slate-500 max-w-sm leading-relaxed">
-                  We maintain the highest standards of governance and legal compliance to ensure maximum impact.
-                </p>
+                </motion.p>
               </motion.div>
 
-              {/* Smaller Impact Preview in Sticky Column */}
+              {/* Trust Indicators */}
               <motion.div
-                initial={{ opacity: 0, scale: 0.9 }}
+                initial={{ opacity: 0, y: 20 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true }}
+                transition={{ delay: 0.6, duration: 0.7 }}
+                className="space-y-2 mt-6"
+              >
+                {[
+                  "Government verified & audited",
+                  "100% transparent fund allocation",
+                  "Annual compliance reports published",
+                ].map((item, i) => (
+                  <motion.div
+                    key={item}
+                    initial={{ opacity: 0, x: -15 }}
+                    whileInView={{ opacity: 1, x: 0 }}
+                    viewport={{ once: true }}
+                    transition={{ delay: 0.7 + i * 0.1, duration: 0.5 }}
+                    className="flex items-center gap-2"
+                  >
+                    <div className="w-4 h-4 rounded-full bg-[var(--womb-forest)]/10 flex items-center justify-center shrink-0">
+                      <CheckCircle2 className="w-3 h-3 text-[var(--womb-forest)]" />
+                    </div>
+                    <span className="text-[11px] text-gray-500 font-semibold">{item}</span>
+                  </motion.div>
+                ))}
+              </motion.div>
+
+              {/* Image */}
+              <motion.div
+                initial={{ opacity: 0, scale: 0.95 }}
                 whileInView={{ opacity: 1, scale: 1 }}
                 viewport={{ once: true }}
-                transition={{ duration: 0.8 }}
-                className="relative mt-10 overflow-hidden group"
+                transition={{ duration: 0.8, delay: 0.3 }}
+                className="relative mt-8 overflow-hidden rounded-2xl group max-w-[85%]"
               >
                 <img 
                   src="/images/19197952.jpg" 
                   alt="Financial Metrics" 
-                  className="w-full h-auto rounded-xl object-contain drop-shadow-2xl transform transition-transform duration-700 group-hover:scale-105"
+                  className="w-full h-auto rounded-2xl object-cover drop-shadow-lg transform transition-transform duration-700 group-hover:scale-[1.03]"
                 />
-                <div className="absolute inset-0 bg-gradient-to-t from-slate-900/10 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none" />
               </motion.div>
             </div>
           </div>
 
-          {/* Right Column: 2x2 Grid Layout */}
+          {/* Right Column: 2×2 Card Grid */}
           <div className="lg:col-span-8">
-            <div className="grid md:grid-cols-2 gap-6 lg:gap-8">
+            <div className="grid md:grid-cols-2 gap-5 lg:gap-6">
               {credentials.map((cred, idx) => (
-                <motion.div
-                  key={cred.title}
-                  initial={{ opacity: 0, y: 30 }}
-                  whileInView={{ opacity: 1, y: 0 }}
-                  viewport={{ once: true }}
-                  transition={{ delay: idx * 0.1, duration: 0.5, ease: "easeOut" }}
-                  onMouseEnter={() => setHoveredIndex(idx)}
-                  onMouseLeave={() => setHoveredIndex(null)}
-                  className="group relative bg-white border border-slate-100 rounded-3xl p-6 lg:p-8 transition-all duration-500 hover:shadow-2xl hover:-translate-y-2 cursor-pointer overflow-hidden"
-                >
-                  {/* Glowing background on hover */}
-                  <div className={`absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-500 bg-gradient-to-br ${cred.gradient} rounded-2xl blur-3xl -z-10`} />
-                  
-                  <div className="relative z-10 h-full flex flex-col items-start">
-                    <motion.div 
-                      className={`w-16 h-16 rounded-2xl flex items-center justify-center shrink-0 shadow-lg relative overflow-hidden bg-gradient-to-br ${cred.gradient} mb-6`}
-                      animate={hoveredIndex === idx ? { scale: 1.1, rotate: [0, 5, -5, 0] } : {}}
-                      transition={{ duration: 0.3 }}
-                    >
-                      <cred.icon className="w-8 h-8 text-white relative z-10" />
-                    </motion.div>
-
-                    <div className="flex-1">
-                      <div className="flex items-center justify-between mb-2 flex-wrap gap-2">
-                        <h3 className="text-xl font-black text-slate-900 leading-none">
-                          {cred.title}
-                        </h3>
-                        <span className={`text-[9px] font-black uppercase tracking-widest px-3 py-1 rounded-full bg-gradient-to-r ${cred.gradient} text-white shadow-sm`}>
-                          Verified
-                        </span>
-                      </div>
-                      <p className="text-[10px] font-black text-slate-400 mb-3 uppercase tracking-widest">
-                        {cred.subtitle}
-                      </p>
-                      <p className="text-sm text-slate-500 leading-relaxed font-medium">
-                        {cred.description}
-                      </p>
-                    </div>
-
-                    {/* Revealable details */}
-                    <motion.div 
-                      className="mt-6 flex items-center justify-between w-full"
-                      initial={{ opacity: 0.3 }}
-                      animate={hoveredIndex === idx ? { opacity: 1 } : { opacity: 0.3 }}
-                    >
-                      <span className="text-xs font-bold text-slate-400 uppercase tracking-widest">
-                        {cred.stats}
-                      </span>
-                      <ArrowRight className="w-5 h-5 text-slate-300 group-hover:text-slate-900 group-hover:translate-x-2 transition-all duration-300" />
-                    </motion.div>
-                  </div>
-                </motion.div>
+                <CredentialCard key={cred.title} cred={cred} idx={idx} />
               ))}
             </div>
+
+            {/* Bottom Trust Footer */}
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              transition={{ delay: 0.5, duration: 0.6 }}
+              className="mt-10 flex items-center justify-center gap-3 flex-wrap"
+            >
+              <div className="flex items-center gap-2 px-4 py-2 rounded-full bg-white/80 backdrop-blur-sm border border-gray-100 shadow-sm">
+                <ShieldCheck className="w-4 h-4 text-[var(--womb-forest)]" />
+                <span className="text-[10px] font-bold uppercase tracking-[0.12em] text-gray-500">
+                  All Certifications Independently Verified
+                </span>
+              </div>
+            </motion.div>
           </div>
 
         </div>
       </div>
-
-      <style dangerouslySetInnerHTML={{ __html: `
-        @keyframes float {
-          0%, 100% { transform: translateY(0px); }
-          50% { transform: translateY(-10px); }
-        }
-        
-        .animate-custom-float {
-          animation: float 8s ease-in-out infinite;
-        }
-        
-        .animation-delay-2000 {
-          animation-delay: 2s;
-        }
-        
-        .perspective-1000 {
-          perspective: 1000px;
-        }
-      `}} />
     </section>
   );
 }

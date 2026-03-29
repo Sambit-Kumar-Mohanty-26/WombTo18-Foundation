@@ -38,7 +38,7 @@ export function DonateSidebar({ activeColor = "#1D6E3F" }: { activeColor?: strin
       });
   }, []);
 
-  const goalPercent = stats ? Math.min(100, Math.round((stats.monthlyRaised / stats.monthlyGoal) * 100)) : 0;
+  const goalPercent = stats ? Math.min(100, Math.round(((stats.monthlyRaised || 0) / (stats.monthlyGoal || 1)) * 100)) : 0;
 
   function getTimeAgo(dateStr: string) {
     const d = new Date(dateStr);
@@ -115,10 +115,10 @@ export function DonateSidebar({ activeColor = "#1D6E3F" }: { activeColor?: strin
           </div>
         ) : (
           <div className="grid grid-cols-2 gap-2">
-            <StatsCard icon="👶" value={`${stats.childrenRegistered.toLocaleString()}+`} label="Children Registered" color="#F59E0B" />
-            <StatsCard icon="🌲" value={`${stats.treesPlanted.toLocaleString()}+`} label="Trees Planted" color="#10B981" />
-            <StatsCard icon="🏫" value={`${stats.schoolsOnboarded}+`} label="Schools Onboarded" color="#3B82F6" />
-            <StatsCard icon="💰" value={`₹${formatAmount(stats.monthlyRaised).replace('₹', '')}`} label="Raised This Month" color="#f97316" />
+            <StatsCard icon="👶" value={`${(stats.childrenRegistered || 0).toLocaleString()}+`} label="Children Registered" color="#F59E0B" />
+            <StatsCard icon="🌲" value={`${(stats.treesPlanted || 0).toLocaleString()}+`} label="Trees Planted" color="#10B981" />
+            <StatsCard icon="🏫" value={`${stats.schoolsOnboarded || 0}+`} label="Schools Onboarded" color="#3B82F6" />
+            <StatsCard icon="💰" value={`₹${formatAmount(stats.monthlyRaised || 0).replace('₹', '')}`} label="Raised This Month" color="#f97316" />
           </div>
         )}
       </motion.div>
@@ -140,8 +140,8 @@ export function DonateSidebar({ activeColor = "#1D6E3F" }: { activeColor?: strin
         ) : (
           <>
             <div className="flex items-baseline justify-between mb-2">
-              <span className="text-lg font-black" style={{ color: activeColor }}>₹{stats.monthlyRaised.toLocaleString("en-IN")}</span>
-              <span className="text-xs text-gray-400">/ ₹{stats.monthlyGoal.toLocaleString("en-IN")}</span>
+              <span className="text-lg font-black" style={{ color: activeColor }}>₹{(stats.monthlyRaised || 0).toLocaleString("en-IN")}</span>
+              <span className="text-xs text-gray-400">/ ₹{(stats.monthlyGoal || 0).toLocaleString("en-IN")}</span>
             </div>
             <div className="relative w-full h-2.5 bg-gray-100 rounded-full overflow-hidden">
               <motion.div
@@ -192,7 +192,7 @@ export function DonateSidebar({ activeColor = "#1D6E3F" }: { activeColor?: strin
            </div>
         ) : (
           <div className="space-y-2.5">
-            {stats.recentDonors.slice(0, 4).map((donor, i) => {
+            {(stats.recentDonors || []).slice(0, 4).map((donor, i) => {
               const initial = donor.name.charAt(0).toUpperCase();
               const tagColor = ['#1D6E3F', '#F59E0B', '#3B82F6', '#8B5CF6'][i % 4];
               

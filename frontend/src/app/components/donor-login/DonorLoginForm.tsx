@@ -2,15 +2,15 @@ import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "../ui/card";
 import { Input } from "../ui/input";
 import { Button } from "../ui/button";
 import { Label } from "../ui/label";
-import { Loader2, Mail, Lock, User, Phone, ArrowLeft, Eye, EyeOff } from "lucide-react";
+import { Loader2, Mail, Lock, User, Phone, ArrowLeft, Eye, EyeOff, Sparkles } from "lucide-react";
 import { auth } from "../../lib/auth";
 import { toast } from "sonner";
 import { useNavigate } from "react-router";
 import { useAuth } from "../../context/AuthContext";
+import { motion, AnimatePresence } from "motion/react";
 
 // --- Schemas ---
 const loginSchema = z.object({
@@ -82,41 +82,49 @@ function LoginTab({ onSuccess }: DonorLoginFormProps) {
   };
 
   return (
-    <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
-      <div className="space-y-2">
-        <Label className="text-xs font-semibold uppercase tracking-wider text-[#d1f5e0]/60">Email or Donor ID</Label>
-        <div className="relative">
-          <Mail className="absolute left-3 top-3 h-4 w-4 text-[#d1f5e0]/40" />
+    <motion.form 
+      initial={{ opacity: 0, x: -20 }}
+      animate={{ opacity: 1, x: 0 }}
+      exit={{ opacity: 0, x: 20 }}
+      transition={{ duration: 0.3 }}
+      onSubmit={handleSubmit(onSubmit)} 
+      className="space-y-4"
+    >
+      <div className="space-y-1.5">
+        <Label className="text-[11px] font-bold uppercase tracking-wider text-gray-500 ml-1">Email or Donor ID</Label>
+        <div className="relative group">
+          <Mail className="absolute left-3.5 top-3.5 h-4 w-4 text-gray-400 group-focus-within:text-[var(--womb-forest)] transition-colors" />
           <Input
             placeholder="donor@example.com or DNR1001"
             {...register("identifier")}
-            className="pl-10 bg-[#0a3a1e]/60 border-white/10 text-white placeholder:text-[#d1f5e0]/30 focus-visible:ring-primary"
+            className="pl-10 h-11 bg-gray-50/50 border-gray-200 text-gray-900 placeholder:text-gray-400 focus-visible:ring-[var(--womb-forest)] focus-visible:border-[var(--womb-forest)] rounded-xl shadow-sm transition-all"
           />
         </div>
-        {errors.identifier && <p className="text-xs text-red-400">{errors.identifier.message}</p>}
+        {errors.identifier && <p className="text-[11px] text-red-500 font-medium ml-1">{errors.identifier.message}</p>}
       </div>
 
-      <div className="space-y-2">
-        <Label className="text-xs font-semibold uppercase tracking-wider text-[#d1f5e0]/60">Password</Label>
-        <div className="relative">
-          <Lock className="absolute left-3 top-3 h-4 w-4 text-[#d1f5e0]/40" />
+      <div className="space-y-1.5">
+        <Label className="text-[11px] font-bold uppercase tracking-wider text-gray-500 ml-1">Password</Label>
+        <div className="relative group">
+          <Lock className="absolute left-3.5 top-3.5 h-4 w-4 text-gray-400 group-focus-within:text-[var(--womb-forest)] transition-colors" />
           <Input
             type={showPassword ? "text" : "password"}
             placeholder="Your password"
             {...register("password")}
-            className="pl-10 pr-10 bg-[#0a3a1e]/60 border-white/10 text-white placeholder:text-[#d1f5e0]/30 focus-visible:ring-primary"
+            className="pl-10 pr-10 h-11 bg-gray-50/50 border-gray-200 text-gray-900 placeholder:text-gray-400 focus-visible:ring-[var(--womb-forest)] focus-visible:border-[var(--womb-forest)] rounded-xl shadow-sm transition-all"
           />
-          <button type="button" onClick={() => setShowPassword(!showPassword)} className="absolute right-3 top-3 text-[#d1f5e0]/40 hover:text-white transition-colors">
+          <button type="button" onClick={() => setShowPassword(!showPassword)} className="absolute right-3.5 top-3.5 text-gray-400 hover:text-[var(--womb-forest)] transition-colors">
             {showPassword ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
           </button>
         </div>
-        {errors.password && <p className="text-xs text-red-400">{errors.password.message}</p>}
+        {errors.password && <p className="text-[11px] text-red-500 font-medium ml-1">{errors.password.message}</p>}
       </div>
 
-      <Button type="submit" disabled={isSubmitting} className="w-full bg-primary hover:bg-primary/90 text-primary-foreground font-bold h-11 mt-2">
-        {isSubmitting ? <><Loader2 className="mr-2 h-4 w-4 animate-spin" />Signing In...</> : "Sign In"}
+      <Button type="submit" disabled={isSubmitting} className="w-full bg-[var(--womb-forest)] hover:bg-[#15532f] text-white font-bold h-12 shadow-lg shadow-[var(--womb-forest)]/20 mt-4 rounded-xl transition-all active:scale-[0.98]">
+        {isSubmitting ? <Loader2 className="mr-2 h-4 w-4 animate-spin" /> : null}
+        {isSubmitting ? "Authenticating..." : "Sign In to Mission Dashboard"}
       </Button>
-    </form>
+    </motion.form>
   );
 }
 
@@ -161,67 +169,74 @@ function RegisterTab({ onSuccess }: DonorLoginFormProps) {
   };
 
   return (
-    <form onSubmit={handleSubmit(onSubmit)} className="space-y-3">
-      <div className="space-y-2">
-        <Label className="text-xs font-semibold uppercase tracking-wider text-[#d1f5e0]/60">Email Address</Label>
-        <div className="relative">
-          <Mail className="absolute left-3 top-3 h-4 w-4 text-[#d1f5e0]/40" />
-          <Input placeholder="donor@example.com" {...register("email")} className="pl-10 bg-[#0a3a1e]/60 border-white/10 text-white placeholder:text-[#d1f5e0]/30 focus-visible:ring-primary" />
+    <motion.form 
+      initial={{ opacity: 0, x: 20 }}
+      animate={{ opacity: 1, x: 0 }}
+      exit={{ opacity: 0, x: -20 }}
+      transition={{ duration: 0.3 }}
+      onSubmit={handleSubmit(onSubmit)} 
+      className="space-y-3"
+    >
+      <div className="space-y-1.5">
+        <Label className="text-[11px] font-bold uppercase tracking-wider text-gray-500 ml-1">Email Address</Label>
+        <div className="relative group">
+          <Mail className="absolute left-3.5 top-3.5 h-4 w-4 text-gray-400 group-focus-within:text-[var(--womb-forest)] transition-colors" />
+          <Input placeholder="donor@example.com" {...register("email")} className="pl-10 h-10 bg-gray-50/50 border-gray-200 text-gray-900 placeholder:text-gray-400 focus-visible:ring-[var(--womb-forest)] rounded-xl" />
         </div>
-        {errors.email && <p className="text-xs text-red-400">{errors.email.message}</p>}
+        {errors.email && <p className="text-[10px] text-red-500 ml-1">{errors.email.message}</p>}
       </div>
 
       <div className="grid grid-cols-2 gap-3">
-        <div className="space-y-2">
-          <Label className="text-xs font-semibold uppercase tracking-wider text-[#d1f5e0]/60">Full Name</Label>
-          <div className="relative">
-            <User className="absolute left-3 top-3 h-4 w-4 text-[#d1f5e0]/40" />
-            <Input placeholder="John Doe" {...register("name")} className="pl-10 bg-[#0a3a1e]/60 border-white/10 text-white placeholder:text-[#d1f5e0]/30 focus-visible:ring-primary" />
+        <div className="space-y-1.5">
+          <Label className="text-[11px] font-bold uppercase tracking-wider text-gray-500 ml-1">Full Name</Label>
+          <div className="relative group">
+            <User className="absolute left-3.5 top-3.5 h-4 w-4 text-gray-400 group-focus-within:text-[var(--womb-forest)] transition-colors" />
+            <Input placeholder="John Doe" {...register("name")} className="pl-10 h-10 bg-gray-50/50 border-gray-200 text-gray-900 placeholder:text-gray-400 focus-visible:ring-[var(--womb-forest)] rounded-xl" />
           </div>
-          {errors.name && <p className="text-xs text-red-400">{errors.name.message}</p>}
+          {errors.name && <p className="text-[10px] text-red-500 ml-1">{errors.name.message}</p>}
         </div>
-        <div className="space-y-2">
-          <Label className="text-xs font-semibold uppercase tracking-wider text-[#d1f5e0]/60">Mobile (Optional)</Label>
-          <div className="relative">
-            <Phone className="absolute left-3 top-3 h-4 w-4 text-[#d1f5e0]/40" />
-            <Input placeholder="+91 XXXXX XXXXX" {...register("mobile")} className="pl-10 bg-[#0a3a1e]/60 border-white/10 text-white placeholder:text-[#d1f5e0]/30 focus-visible:ring-primary" />
+        <div className="space-y-1.5">
+          <Label className="text-[11px] font-bold uppercase tracking-wider text-gray-500 ml-1">Mobile</Label>
+          <div className="relative group">
+            <Phone className="absolute left-3.5 top-3.5 h-4 w-4 text-gray-400 group-focus-within:text-[var(--womb-forest)] transition-colors" />
+            <Input placeholder="+91 XXXXX XXXXX" {...register("mobile")} className="pl-10 h-10 bg-gray-50/50 border-gray-200 text-gray-900 placeholder:text-gray-400 focus-visible:ring-[var(--womb-forest)] rounded-xl" />
           </div>
         </div>
       </div>
 
-      <div className="space-y-2">
-        <Label className="text-xs font-semibold uppercase tracking-wider text-[#d1f5e0]/60">Password</Label>
-        <div className="relative">
-          <Lock className="absolute left-3 top-3 h-4 w-4 text-[#d1f5e0]/40" />
+      <div className="space-y-1.5">
+        <Label className="text-[11px] font-bold uppercase tracking-wider text-gray-500 ml-1">Password</Label>
+        <div className="relative group">
+          <Lock className="absolute left-3.5 top-3.5 h-4 w-4 text-gray-400 group-focus-within:text-[var(--womb-forest)] transition-colors" />
           <Input
             type={showPassword ? "text" : "password"}
-            placeholder="Create a password (min 6 chars)"
+            placeholder="Create password"
             {...register("password")}
-            className="pl-10 pr-10 bg-[#0a3a1e]/60 border-white/10 text-white placeholder:text-[#d1f5e0]/30 focus-visible:ring-primary"
+            className="pl-10 pr-10 h-10 bg-gray-50/50 border-gray-200 text-gray-900 placeholder:text-gray-400 focus-visible:ring-[var(--womb-forest)] rounded-xl"
           />
-          <button type="button" onClick={() => setShowPassword(!showPassword)} className="absolute right-3 top-3 text-[#d1f5e0]/40 hover:text-white transition-colors">
+          <button type="button" onClick={() => setShowPassword(!showPassword)} className="absolute right-3.5 top-3.5 text-gray-400 hover:text-[var(--womb-forest)] transition-colors">
             {showPassword ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
           </button>
         </div>
-        {errors.password && <p className="text-xs text-red-400">{errors.password.message}</p>}
+        {errors.password && <p className="text-[10px] text-red-500 ml-1">{errors.password.message}</p>}
       </div>
 
-      <div className="grid grid-cols-2 gap-2 pt-1">
-        <label className={`flex items-center gap-2 p-2.5 rounded-xl border text-[11px] font-medium cursor-pointer transition-all ${isVolunteer ? "bg-emerald-500/10 border-emerald-500/30 text-emerald-300" : "bg-white/5 border-white/5 hover:border-white/10 text-white/50"}`}>
-          <input type="checkbox" checked={isVolunteer} onChange={e => setIsVolunteer(e.target.checked)} className="accent-emerald-400" />
+      <div className="grid grid-cols-2 gap-2 pt-1 pb-1">
+        <label className={`flex items-center gap-2 p-2.5 rounded-xl border text-[11px] font-bold cursor-pointer transition-all ${isVolunteer ? "bg-emerald-50 border-emerald-200 text-emerald-700 shadow-sm" : "bg-white border-gray-200 hover:border-gray-300 text-gray-500"}`}>
+          <input type="checkbox" checked={isVolunteer} onChange={e => setIsVolunteer(e.target.checked)} className="accent-emerald-500 w-3.5 h-3.5 rounded-sm bg-white" />
           Volunteer
         </label>
-        <label className={`flex items-center gap-2 p-2.5 rounded-xl border text-[11px] font-medium cursor-pointer transition-all ${isNonDonor ? "bg-orange-500/10 border-orange-500/30 text-orange-300" : "bg-white/5 border-white/5 hover:border-white/10 text-white/50"}`}>
-          <input type="checkbox" checked={isNonDonor} onChange={e => setIsNonDonor(e.target.checked)} className="accent-orange-400" />
+        <label className={`flex items-center gap-2 p-2.5 rounded-xl border text-[11px] font-bold cursor-pointer transition-all ${isNonDonor ? "bg-orange-50 border-orange-200 text-orange-700 shadow-sm" : "bg-white border-gray-200 hover:border-gray-300 text-gray-500"}`}>
+          <input type="checkbox" checked={isNonDonor} onChange={e => setIsNonDonor(e.target.checked)} className="accent-orange-500 w-3.5 h-3.5 rounded-sm bg-white" />
           Non-Donor
         </label>
       </div>
 
-      <Button type="submit" disabled={isSubmitting} className="w-full bg-primary hover:bg-primary/90 text-primary-foreground font-bold h-11 mt-1">
-        {isSubmitting ? <><Loader2 className="mr-2 h-4 w-4 animate-spin" />Creating Account...</> : "Create Account & Verify"}
+      <Button type="submit" disabled={isSubmitting} className="w-full bg-[var(--womb-forest)] hover:bg-[#15532f] text-white font-bold h-11 shadow-lg shadow-[var(--womb-forest)]/20 mt-2 rounded-xl transition-all active:scale-[0.98]">
+        {isSubmitting ? <Loader2 className="mr-2 h-4 w-4 animate-spin" /> : null}
+        {isSubmitting ? "Creating Account..." : "Create Account & Verify"}
       </Button>
-      <p className="text-[10px] text-center text-[#a7e8c3]/30 leading-tight">An OTP will be sent to your email for verification.</p>
-    </form>
+    </motion.form>
   );
 }
 
@@ -231,45 +246,66 @@ export function DonorLoginForm({ onSuccess }: DonorLoginFormProps) {
   const navigate = useNavigate();
 
   return (
-    <Card className="w-full max-w-md mx-auto bg-[#0a3a1e]/40 border-white/10 text-white backdrop-blur-sm shadow-2xl">
-      <CardHeader className="space-y-1 pb-4 text-center">
-        <div className="flex justify-start mb-2">
-          <Button variant="ghost" size="sm" onClick={() => navigate("/login")} className="text-[#a7e8c3]/50 hover:text-white hover:bg-white/5 -ml-2">
-            <ArrowLeft className="h-4 w-4 mr-1" /> Back
+    <motion.div 
+      initial={{ opacity: 0, y: 20 }}
+      animate={{ opacity: 1, y: 0 }}
+      transition={{ duration: 0.5, ease: [0.22, 1, 0.36, 1] }}
+      className="w-full max-w-[420px] bg-white/70 backdrop-blur-xl border border-white rounded-[2rem] shadow-[0_20px_60px_-15px_rgba(0,0,0,0.05)] overflow-hidden"
+    >
+      <div className="p-8 sm:p-10">
+        
+        <div className="flex items-center justify-between mb-8">
+          <Button variant="ghost" size="sm" onClick={() => navigate("/login")} className="text-gray-500 hover:text-gray-900 hover:bg-gray-100/50 -ml-3 rounded-full h-8 px-3">
+            <ArrowLeft className="h-4 w-4 mr-1.5" /> Back
           </Button>
+          <div className="w-10 h-10 rounded-full bg-emerald-50 border border-emerald-100 flex items-center justify-center">
+            <Sparkles className="h-5 w-5 text-[var(--womb-forest)]" />
+          </div>
         </div>
-        <CardTitle className="text-2xl font-bold tracking-tight text-white">
-          {isRegistering ? "Create Account" : "Donor Sign In"}
-        </CardTitle>
-        <CardDescription className="text-[#d1f5e0]/70">
-          {isRegistering ? "Register to join the WombTo18 family." : "Sign in with your email/ID and password."}
-        </CardDescription>
-      </CardHeader>
 
-      <CardContent>
+        <div className="mb-8">
+          <h2 className="text-2xl font-black text-gray-900 tracking-tight" style={{ fontFamily: "'Poppins', sans-serif" }}>
+            {isRegistering ? "Join the Mission" : "Welcome Back"}
+          </h2>
+          <p className="text-sm text-gray-500 font-medium mt-1.5">
+            {isRegistering ? "Register to start making an impact." : "Sign in to your mission dashboard."}
+          </p>
+        </div>
+
         {/* Tab Toggle */}
-        <div className="flex p-1 bg-white/5 rounded-lg border border-white/10 mb-5">
+        <div className="flex p-1 bg-gray-100/50 backdrop-blur-sm rounded-xl mb-8 border border-gray-200/50 relative">
+           <motion.div 
+             className="absolute top-1 bottom-1 w-[calc(50%-4px)] bg-white rounded-lg shadow-sm"
+             animate={{ x: isRegistering ? "100%" : "0%" }}
+             transition={{ type: "spring", stiffness: 400, damping: 30 }}
+           />
           <button
             type="button"
             onClick={() => setIsRegistering(false)}
-            className={`flex-1 py-1.5 text-xs font-semibold rounded-md transition-all ${!isRegistering ? "bg-primary text-primary-foreground shadow-sm" : "text-white/50 hover:text-white"}`}
+            className={`relative z-10 flex-1 py-1.5 text-[13px] font-bold rounded-lg transition-colors duration-300 ${!isRegistering ? "text-gray-900" : "text-gray-500 hover:text-gray-700"}`}
           >
-            Login
+            Sign In
           </button>
           <button
             type="button"
             onClick={() => setIsRegistering(true)}
-            className={`flex-1 py-1.5 text-xs font-semibold rounded-md transition-all ${isRegistering ? "bg-primary text-primary-foreground shadow-sm" : "text-white/50 hover:text-white"}`}
+            className={`relative z-10 flex-1 py-1.5 text-[13px] font-bold rounded-lg transition-colors duration-300 ${isRegistering ? "text-gray-900" : "text-gray-500 hover:text-gray-700"}`}
           >
             Register
           </button>
         </div>
 
-        {isRegistering
-          ? <RegisterTab onSuccess={onSuccess} />
-          : <LoginTab onSuccess={onSuccess} />
-        }
-      </CardContent>
-    </Card>
+        {/* Form Container */}
+        <div className="relative overflow-hidden">
+          <AnimatePresence mode="wait" initial={false}>
+            {isRegistering
+              ? <RegisterTab key="register" onSuccess={onSuccess} />
+              : <LoginTab key="login" onSuccess={onSuccess} />
+            }
+          </AnimatePresence>
+        </div>
+
+      </div>
+    </motion.div>
   );
 }
