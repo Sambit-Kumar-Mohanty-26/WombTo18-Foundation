@@ -1,7 +1,6 @@
 import { useSearchParams, useNavigate } from "react-router";
-import { Button } from "../components/ui/button";
-import { Card, CardContent } from "../components/ui/card";
-import { CheckCircle, Download, LayoutDashboard, Mail, Heart, Lock } from "lucide-react";
+import { motion } from "motion/react";
+import { CheckCircle2, Download, LayoutDashboard, Heart, Lock, Sparkles, CreditCard, ChevronRight } from "lucide-react";
 import { toast } from "sonner";
 
 export function DonationSuccessPage() {
@@ -17,99 +16,147 @@ export function DonationSuccessPage() {
   }
 
   return (
-    <section className="min-h-[80vh] py-20 bg-[#f0faf4] flex items-center text-gray-900">
-      <div className="mx-auto max-w-2xl px-4 w-full">
-        {/* Success Icon */}
-        <div className="text-center mb-8">
-          <div className="h-24 w-24 rounded-full bg-[#d1f5e0] flex items-center justify-center mx-auto mb-6 shadow-md">
-            <CheckCircle className="h-12 w-12 text-[#1D6E3F]" />
-          </div>
-          <h1 className="text-3xl sm:text-4xl text-gray-900 mb-3" style={{ fontWeight: 800 }}>
-            Donation Successful!
+    <div className="min-h-screen bg-[#FFFDF7] pt-24 pb-12 sm:pt-32 relative overflow-hidden">
+      <div className="absolute inset-0 bg-gradient-to-b from-[#f0faf4] via-[#fef6ed]/40 to-[#FFFDF7] pointer-events-none" />
+      <div className="absolute top-[-30%] right-[-15%] w-[60%] h-[80%] bg-[radial-gradient(ellipse_at_center,_var(--womb-forest)_0%,_transparent_65%)] opacity-[0.06] blur-[100px] rounded-full pointer-events-none" />
+      <div className="absolute top-[20%] left-[10%] w-[40%] h-[50%] bg-[radial-gradient(ellipse_at_center,_var(--journey-saffron)_0%,_transparent_65%)] opacity-[0.04] blur-[80px] rounded-full pointer-events-none" />
+
+      {/* Grid Pattern */}
+      <div className="absolute inset-0 opacity-[0.02] pointer-events-none" style={{ backgroundImage: "radial-gradient(circle at 1px 1px, #1D6E3F 1px, transparent 0)", backgroundSize: "40px 40px" }} />
+
+      <div className="mx-auto max-w-2xl px-4 sm:px-6 relative z-10 w-full">
+        <motion.div
+          initial={{ opacity: 0, y: 30, scale: 0.95 }}
+          animate={{ opacity: 1, y: 0, scale: 1 }}
+          transition={{ duration: 0.8, ease: [0.22, 1, 0.36, 1] }}
+          className="flex flex-col items-center text-center mb-10"
+        >
+          <motion.div
+            initial={{ scale: 0, rotate: -30 }}
+            animate={{ scale: 1, rotate: 0 }}
+            transition={{ type: "spring", bounce: 0.5, duration: 1, delay: 0.2 }}
+            className="w-24 h-24 rounded-[2rem] bg-gradient-to-br from-[var(--womb-forest)] to-emerald-500 shadow-[0_8px_30px_-5px_rgba(29,110,63,0.4)] flex items-center justify-center mb-8 relative"
+          >
+            <div className="absolute inset-0 bg-white/20 rounded-[2rem] animate-pulse" />
+            <CheckCircle2 className="w-12 h-12 text-white relative z-10" />
+          </motion.div>
+
+          {/* Badge */}
+          <motion.div
+            initial={{ opacity: 0, y: -10 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.5, delay: 0.4 }}
+            className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full text-[11px] font-bold tracking-[0.15em] uppercase mb-4 border shadow-sm backdrop-blur-sm bg-[var(--womb-forest)]/10 text-[var(--womb-forest)] border-[var(--womb-forest)]/20"
+          >
+            <Sparkles className="w-3.5 h-3.5" /> Payment Successful
+          </motion.div>
+
+          <h1 className="text-4xl sm:text-5xl text-gray-900 mb-4" style={{ fontWeight: 900, lineHeight: 1.1, letterSpacing: "-0.025em" }}>
+            Thank you for your{" "}
+            <span className="text-transparent bg-clip-text bg-gradient-to-r from-[var(--womb-forest)] to-emerald-400 drop-shadow-sm">
+              Generosity.
+            </span>
           </h1>
-          <p className="text-lg text-gray-600">
-            Your donation of{" "}
-            <span className="font-bold text-gray-900">₹{amount.toLocaleString("en-IN")}</span>{" "}
-            has been successfully received.
+
+          <p className="text-base sm:text-lg text-gray-600 max-w-md mx-auto leading-relaxed">
+            Your donation of <span className="font-black text-gray-900">₹{amount.toLocaleString("en-IN")}</span> has been securely processed. It's already making an impact.
           </p>
-        </div>
+        </motion.div>
 
-        {/* Payment ID Card */}
-        <Card className="mb-4 border-gray-200 bg-white shadow-sm">
-          <CardContent className="pt-5 pb-5">
-            <div className="flex items-center gap-3">
-              <div className="h-10 w-10 rounded-lg bg-[#f0faf4] flex items-center justify-center shrink-0">
-                <Heart className="h-5 w-5 text-[#1D6E3F]" />
-              </div>
-              <div>
-                <p className="text-xs text-gray-500 uppercase tracking-wide">Transaction ID</p>
-                <p className="font-mono text-sm font-semibold text-gray-800">{paymentId}</p>
-              </div>
-            </div>
-          </CardContent>
-        </Card>
-
-        {/* Receipt & Certificate Card */}
-        <Card className="mb-4 border-gray-200 bg-white shadow-sm">
-          <CardContent className="pt-5 pb-5 space-y-4">
-            <div>
-              <p className="text-sm font-semibold text-gray-800 mb-1">Your receipt is available for download.</p>
-              <p className="text-sm text-gray-600">
-                A copy of your donation receipt and 80G certificate has been sent to your registered email address.
-              </p>
-            </div>
-            <div className="flex items-start gap-3 bg-blue-50 border border-blue-100 rounded-lg p-3">
-              <Mail className="h-5 w-5 text-blue-500 mt-0.5 shrink-0" />
-              <p className="text-sm text-blue-700">
-                <strong>80G Certificate</strong> — Your tax exemption certificate has been sent to your registered email.
-              </p>
-            </div>
-          </CardContent>
-        </Card>
+        {/* Transaction Details Card */}
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.6, delay: 0.3 }}
+          className="rounded-3xl border border-gray-100 bg-white/80 backdrop-blur-xl p-6 sm:p-8 shadow-[0_8px_30px_-12px_rgba(0,0,0,0.08)] mb-6 text-left relative overflow-hidden"
+        >
+          {/* Subtle gradient border top */}
+          <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-[var(--womb-forest)] via-[var(--journey-saffron)] to-transparent opacity-50" />
+          
+          <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-6">
+             <div className="flex items-center gap-4">
+                <div className="w-12 h-12 rounded-2xl bg-[var(--womb-forest)]/10 flex items-center justify-center shrink-0">
+                  <CreditCard className="w-6 h-6 text-[var(--womb-forest)]" />
+                </div>
+                <div>
+                  <p className="text-[11px] font-bold text-gray-400 uppercase tracking-wider mb-1">Transaction ID</p>
+                  <p className="font-mono text-sm sm:text-base font-semibold text-gray-800 bg-gray-50 px-3 py-1.5 rounded-lg border border-gray-100">{paymentId}</p>
+                </div>
+             </div>
+             
+             <button
+                onClick={downloadReceipt}
+                className="group flex items-center gap-2 text-sm font-bold text-[var(--womb-forest)] hover:text-emerald-700 transition-colors w-full sm:w-auto bg-[var(--womb-forest)]/5 hover:bg-[var(--womb-forest)]/10 px-4 py-2.5 rounded-xl text-center justify-center"
+              >
+                <Download className="w-4 h-4" /> 
+                Download 80G Receipt
+              </button>
+          </div>
+        </motion.div>
 
         {/* Dashboard Access Card */}
-        {!isDashboardEligible && (
-          <Card className="mb-6 border-amber-200 bg-amber-50 shadow-sm">
-            <CardContent className="pt-5 pb-5 flex items-start gap-3">
-              <Lock className="h-5 w-5 text-amber-600 mt-0.5 shrink-0" />
-              <div>
-                <p className="text-sm font-semibold text-amber-800">Donor Dashboard Locked</p>
-                <p className="text-sm text-amber-700 mt-1">
-                  To unlock the full Donor Dashboard, your cumulative donation should be ₹5,000 or more.
-                </p>
-              </div>
-            </CardContent>
-          </Card>
-        )}
-
-        {/* Action Buttons */}
-        <div className="flex flex-col sm:flex-row gap-3">
-          <Button
-            onClick={downloadReceipt}
-            variant="outline"
-            className="flex-1 border-gray-300 text-gray-700 bg-white hover:bg-gray-50"
-          >
-            <Download className="h-4 w-4 mr-2" /> Download Receipt
-          </Button>
-
+        <motion.div
+           initial={{ opacity: 0, y: 20 }}
+           animate={{ opacity: 1, y: 0 }}
+           transition={{ duration: 0.6, delay: 0.4 }}
+           className="mb-8"
+        >
           {isDashboardEligible ? (
-            <Button
-              onClick={() => navigate("/dashboard")}
-              className="flex-1 bg-primary hover:bg-primary/90 text-primary-foreground font-bold shadow-lg shadow-orange-500/20"
-            >
-              <LayoutDashboard className="h-4 w-4 mr-2" /> Go to Donor Dashboard
-            </Button>
+             <div className="rounded-3xl border border-[var(--journey-saffron)]/20 bg-gradient-to-br from-white to-[#fff9f0] p-6 sm:p-8 shadow-sm text-left">
+                <div className="flex items-start gap-4">
+                  <div className="w-12 h-12 rounded-2xl bg-[var(--journey-saffron)]/15 flex items-center justify-center shrink-0">
+                    <Heart className="w-6 h-6 text-[var(--journey-saffron)]" />
+                  </div>
+                  <div>
+                    <h3 className="text-lg font-black text-gray-900 mb-1">Donor Dashboard Unlocked!</h3>
+                    <p className="text-sm text-gray-600 leading-relaxed mb-5">
+                      Because your contribution is ₹5,000 or above, you have exclusive access to view real-time tracking of your funds and impact reports.
+                    </p>
+                    <button
+                      onClick={() => navigate("/dashboard")}
+                      className="group inline-flex items-center gap-2 bg-gradient-to-r from-[var(--journey-saffron)] to-orange-500 text-white px-6 py-3 rounded-xl font-bold text-sm shadow-[0_4px_15px_-3px_rgba(255,153,0,0.4)] hover:shadow-[0_8px_25px_-5px_rgba(255,153,0,0.5)] transition-all duration-300"
+                    >
+                      <LayoutDashboard className="w-4 h-4" /> Enter Dashboard
+                      <ChevronRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
+                    </button>
+                  </div>
+                </div>
+             </div>
           ) : (
-            <Button
-              onClick={() => navigate("/dashboard-preview")}
-              variant="outline"
-              className="flex-1 border-[#6dd5a0] text-[#1D6E3F] bg-white hover:bg-[#f0faf4]"
-            >
-              <LayoutDashboard className="h-4 w-4 mr-2" /> View Dashboard Preview
-            </Button>
+            <div className="rounded-3xl border border-gray-200 bg-gray-50/80 p-6 sm:p-8 text-left">
+               <div className="flex items-start gap-4">
+                 <div className="w-10 h-10 rounded-xl bg-gray-200/60 flex items-center justify-center shrink-0">
+                   <Lock className="w-5 h-5 text-gray-500" />
+                 </div>
+                 <div className="flex-1">
+                   <h3 className="text-base font-black text-gray-900 mb-1">Impact Dashboard Preview</h3>
+                   <p className="text-[13px] text-gray-500 leading-relaxed mb-4">
+                     You can view a sample of our transparency dashboard. Cumulative donations of ₹5,000+ unlock full personalized access.
+                   </p>
+                   <button
+                     onClick={() => navigate("/dashboard-preview")}
+                     className="group inline-flex items-center gap-2 bg-white border border-gray-200 text-gray-700 hover:text-gray-900 hover:bg-gray-50 px-5 py-2.5 rounded-xl font-bold text-sm shadow-sm transition-all duration-200"
+                   >
+                     <LayoutDashboard className="w-4 h-4 text-gray-400 group-hover:text-gray-600" /> View Preview
+                   </button>
+                 </div>
+               </div>
+            </div>
           )}
-        </div>
+        </motion.div>
+
+        {/* Home Button */}
+        <motion.div
+           initial={{ opacity: 0 }}
+           animate={{ opacity: 1 }}
+           transition={{ duration: 0.6, delay: 0.6 }}
+           className="text-center"
+        >
+          <button onClick={() => navigate("/")} className="text-sm font-bold text-gray-400 hover:text-gray-600 transition-colors inline-flex items-center gap-2">
+            ← Return to Homepage
+          </button>
+        </motion.div>
       </div>
-    </section>
+    </div>
   );
 }

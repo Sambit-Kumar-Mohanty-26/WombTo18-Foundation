@@ -1,9 +1,7 @@
-/**
- * Base API Client for WombTo18 Foundation
- * Handles fetch requests, authorization tokens (via cookies), and standardized error responses.
- */
-
-const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:3000/api';
+const rawApiUrl = import.meta.env.VITE_API_URL || 'http://localhost:3000';
+const API_URL = rawApiUrl.endsWith('/api')
+  ? rawApiUrl
+  : `${rawApiUrl.replace(/\/$/, '')}/api`;
 
 export class ApiError extends Error {
   constructor(public status: number, public message: string, public data?: any) {
@@ -14,8 +12,6 @@ export class ApiError extends Error {
 
 async function apiFetch<T>(endpoint: string, options: RequestInit = {}): Promise<T> {
   const url = `${API_URL}${endpoint}`;
-  
-  // Ensure cookies (JWT) are sent with every request
   options.credentials = 'include';
   
   const headers = new Headers(options.headers);
@@ -27,8 +23,6 @@ async function apiFetch<T>(endpoint: string, options: RequestInit = {}): Promise
     ...options,
     headers,
   });
-
-  // Handle PDF/Blob responses (e.g., for certificates)
   const contentType = response.headers.get('Content-Type');
   if (contentType && contentType.includes('application/pdf')) {
     return response.blob() as unknown as T;

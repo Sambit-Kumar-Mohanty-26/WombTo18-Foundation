@@ -27,7 +27,6 @@ export declare class AdminController {
         updatedAt: Date;
         donorId: string;
         email: string;
-        userId: string | null;
         mobile: string | null;
         pan: string | null;
         address: string | null;
@@ -58,7 +57,6 @@ export declare class AdminController {
                 updatedAt: Date;
                 donorId: string;
                 email: string;
-                userId: string | null;
                 mobile: string | null;
                 pan: string | null;
                 address: string | null;

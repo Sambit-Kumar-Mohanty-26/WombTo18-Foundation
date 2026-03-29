@@ -7,10 +7,25 @@ export declare class DonationController {
         amount: any;
         currency: any;
         donationId: string;
+        donorId: string;
+        keyId: string;
     }>;
     verify(body: any): Promise<{
         success: boolean;
         tier: import(".prisma/client").$Enums.DonorTier;
         dashboardUnlocked: boolean;
+    }>;
+    getStats(): Promise<{
+        childrenRegistered: number;
+        treesPlanted: number;
+        schoolsOnboarded: number;
+        monthlyRaised: number;
+        activePrograms: number;
+        recentDonors: {
+            name: string;
+            amount: number;
+            createdAt: Date;
+        }[];
+        monthlyGoal: number;
     }>;
 }

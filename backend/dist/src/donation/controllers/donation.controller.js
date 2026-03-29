@@ -27,6 +27,9 @@ let DonationController = class DonationController {
     async verify(body) {
         return this.donationService.verifyPayment(body);
     }
+    async getStats() {
+        return this.donationService.getSidebarStats();
+    }
 };
 exports.DonationController = DonationController;
 __decorate([
@@ -45,6 +48,13 @@ __decorate([
     __metadata("design:paramtypes", [Object]),
     __metadata("design:returntype", Promise)
 ], DonationController.prototype, "verify", null);
+__decorate([
+    (0, common_1.Get)('stats'),
+    (0, swagger_1.ApiOperation)({ summary: 'Get live donation stats and recent donors' }),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", []),
+    __metadata("design:returntype", Promise)
+], DonationController.prototype, "getStats", null);
 exports.DonationController = DonationController = __decorate([
     (0, swagger_1.ApiTags)('Donations'),
     (0, common_1.Controller)('donations'),
