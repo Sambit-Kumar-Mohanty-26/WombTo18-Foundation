@@ -7,9 +7,8 @@ import { Badge } from "../components/ui/badge";
 import { Link } from "react-router";
 import { motion, AnimatePresence, useInView, animate } from "motion/react";
 import { getDocument, GlobalWorkerOptions } from "pdfjs-dist";
-import pdfWorkerUrl from "pdfjs-dist/build/pdf.worker.min.mjs?url";
 
-GlobalWorkerOptions.workerSrc = pdfWorkerUrl;
+GlobalWorkerOptions.workerSrc = new URL("pdfjs-dist/build/pdf.worker.min.mjs", import.meta.url).toString();
 
 function Counter({ from = 0, to, duration = 2, prefix = "", suffix = "", decimals = 0 }: { from?: number, to: number, duration?: number, prefix?: string, suffix?: string, decimals?: number }) {
   const ref = useRef<HTMLSpanElement>(null);
@@ -65,6 +64,7 @@ function MobilePdfPreview({ pdfUrl, title }: { pdfUrl: string; title: string }) 
         await page.render({
           canvasContext: context,
           viewport,
+          canvas,
         }).promise;
 
         if (!isActive) {

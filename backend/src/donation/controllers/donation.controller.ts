@@ -1,4 +1,4 @@
-import { Controller, Post, Body, UseGuards, Request } from '@nestjs/common';
+import { Controller, Post, Get, Body, UseGuards, Request } from '@nestjs/common';
 import { DonationService } from '../services/donation.service';
 import { ApiTags, ApiOperation, ApiBearerAuth } from '@nestjs/swagger';
 
@@ -17,5 +17,11 @@ export class DonationController {
   @ApiOperation({ summary: 'Verify Razorpay payment signature' })
   async verify(@Body() body: any) {
     return this.donationService.verifyPayment(body);
+  }
+
+  @Get('stats')
+  @ApiOperation({ summary: 'Get live donation stats and recent donors' })
+  async getStats() {
+    return this.donationService.getSidebarStats();
   }
 }

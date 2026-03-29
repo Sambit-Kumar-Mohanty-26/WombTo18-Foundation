@@ -14,7 +14,7 @@ import { GetInvolvedPage } from "./pages/GetInvolvedPage";
 import { CompliancePage } from "./pages/CompliancePage";
 import { PrivacyPolicyPage } from "./pages/PrivacyPolicyPage";
 import { TermsOfUsePage } from "./pages/TermsOfUsePage";
-// import { DonatePage } from "./pages/DonatePage";
+import { DonatePage } from "./pages/DonatePage";
 import { DonorDashboard } from "./pages/donor/DonorDashboard";
 import { DonorDonations } from "./pages/donor/DonorDonations";
 import { DonorReports } from "./pages/donor/DonorReports";
@@ -50,8 +50,7 @@ export const router = createBrowserRouter([
       { path: "privacy-policy", Component: PrivacyPolicyPage },
       { path: "terms-of-use", Component: TermsOfUsePage },
       { path: "coming-soon", Component: ComingSoonPage },
-      { path: "donate", Component: ComingSoonPage },
-      // { path: "donate", Component: DonatePage },
+      { path: "donate", Component: DonatePage },
       { path: "donation-success", Component: DonationSuccessPage },
       { path: "dashboard-preview", Component: DashboardPreviewPage },
       { path: "donor/login", Component: DonorLogin },

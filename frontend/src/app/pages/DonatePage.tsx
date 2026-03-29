@@ -1,202 +1,194 @@
-import { useState } from "react";
-import { Card, CardContent } from "../components/ui/card";
-import { Button } from "../components/ui/button";
-import { Heart, Shield, CheckCircle, CreditCard, Smartphone, Building2, ArrowRight, Activity, BookOpen, Utensils, Award, Leaf } from "lucide-react";
-import { toast } from "sonner";
-import { useNavigate } from "react-router";
-import { DonationTabs } from "../components/forms/DonationTabs";
-import { IndividualDonationForm } from "../components/forms/IndividualDonationForm";
-import { OrganizationDonationForm } from "../components/forms/OrganizationDonationForm";
-import { motion } from "motion/react";
+import { useState, useEffect } from "react";
+import { motion, AnimatePresence } from "motion/react";
+import { Heart, Building2, Users, Sparkles, Shield, FileText, BarChart3, Target } from "lucide-react";
+import { DonateSidebar } from "./donate/DonateSidebar";
+import { DonorForm } from "./donate/DonorForm";
+import { PartnerForm } from "./donate/PartnerForm";
+import { VolunteerForm } from "./donate/VolunteerForm";
 
-const impactTiers = [
-  { id: 't1', icon: Utensils, title: "Nutrition Pack", amount: 1500, desc: "Monthly nutritional supplements for 1 expecting mother.", color: "border-orange-200 bg-orange-50 text-orange-600" },
-  { id: 't2', icon: Activity, title: "Vaccine Lifeline", amount: 3000, desc: "Complete immunization schedule tracking for 5 infants.", color: "border-[var(--journey-saffron)]/30 bg-[var(--journey-saffron)]/10 text-[var(--journey-saffron)]" },
-  { id: 't3', icon: BookOpen, title: "School Health", amount: 5000, desc: "Full year of health screenings for 10 school children.", color: "border-[var(--future-sky)]/30 bg-[var(--future-sky)]/10 text-[var(--future-sky)]" },
-  { id: 't4', icon: Heart, title: "Maternal Care", amount: 10000, desc: "End-to-end prenatal care and hospital transport for 2 drops.", color: "border-[var(--womb-forest)]/30 bg-[var(--womb-forest)]/10 text-[var(--womb-forest)]" },
-  { id: 't5', icon: Award, title: "Youth Empowerment", amount: 25000, desc: "Vocational skills and mental wellness counseling for 10 adolescents.", color: "border-indigo-200 bg-indigo-50 text-indigo-600" },
-  { id: 't6', icon: Leaf, title: "Green Cohort", amount: 50000, desc: "Sponsor a carbon-neutral village cluster (tree planting + care).", color: "border-[#a7e8c3] bg-[#f0faf4] text-[#1D6E3F]" }
+const TABS = [
+  { id: "donor" as const, label: "Donate", sublabel: "Individual Giving", icon: Heart, color: "#FF9900", bg: "from-[#FF9900] to-[#f97316]", lightBg: "bg-[#FF9900]/8" },
+  { id: "partner" as const, label: "Sponsor", sublabel: "ESG / CSR Partner", icon: Building2, color: "#00AEEF", bg: "from-[#00AEEF] to-[#3b82f6]", lightBg: "bg-[#00AEEF]/8" },
+  { id: "volunteer" as const, label: "Volunteer", sublabel: "Lend Your Expertise", icon: Users, color: "#1D6E3F", bg: "from-[#1D6E3F] to-[#10b981]", lightBg: "bg-[#1D6E3F]/8" },
 ];
 
+type TabId = typeof TABS[number]["id"];
+
 export function DonatePage() {
-  const [isProcessing, setIsProcessing] = useState(false);
-  const [donationType, setDonationType] = useState<"individual" | "organization">("individual");
-  const navigate = useNavigate();
+  const [activeTab, setActiveTab] = useState<TabId>("donor");
 
-  const loadRazorpayScript = () => {
-    return new Promise((resolve) => {
-      if ((window as any).Razorpay) {
-        resolve(true);
-        return;
-      }
-      const script = document.createElement("script");
-      script.src = "https://checkout.razorpay.com/v1/checkout.js";
-      script.onload = () => resolve(true);
-      script.onerror = () => resolve(false);
-      document.body.appendChild(script);
-    });
-  };
+  useEffect(() => {
+    if (document.getElementById("razorpay-script")) return;
+    const s = document.createElement("script");
+    s.id = "razorpay-script";
+    s.src = "https://checkout.razorpay.com/v1/checkout.js";
+    s.async = true;
+    document.head.appendChild(s);
+  }, []);
 
-  const handlePayment = async (amount: number, donorDetails: any) => {
-    setIsProcessing(true);
-
-    const res = await loadRazorpayScript();
-    if (!res) {
-      toast.error("Razorpay SDK failed to load. Are you online?");
-      setIsProcessing(false);
-      return;
-    }
-
-    toast.info("Initializing Razorpay checkout...");
-
-    const options = {
-      // @ts-ignore
-      key: process.env.NEXT_PUBLIC_RAZORPAY_KEY_ID,
-      amount: amount * 100,
-      currency: "INR",
-      name: "WombTo18 Foundation",
-      description: "Donation Payment",
-      handler: function (response: any) {
-        setIsProcessing(false);
-        navigate(`/donation-success?amount=${amount}&paymentId=${response.razorpay_payment_id}`);
-      },
-      prefill: {
-        name: donorDetails.name || donorDetails.organizationName || "",
-        email: donorDetails.email || "",
-        contact: donorDetails.mobile || donorDetails.contactNumber || ""
-      },
-      theme: { color: "#FF9900" }
-    };
-
-    const rzp = new (window as any).Razorpay(options);
-
-    rzp.on("payment.failed", function (response: any) {
-      toast.error(`Payment failed: ${response.error.description}`);
-      setIsProcessing(false);
-    });
-
-    rzp.open();
-  };
+  const activeTabData = TABS.find(t => t.id === activeTab)!;
 
   return (
-    <div className="bg-gray-50 min-h-screen pb-24">
-      {/* Hero */}
-      <section className="pt-24 pb-16 bg-[var(--journey-saffron)] text-white text-center px-4 relative overflow-hidden">
-        <div className="absolute inset-0 bg-[url('https://www.transparenttextures.com/patterns/cubes.png')] opacity-10 mix-blend-overlay"></div>
-        <div className="relative z-10 max-w-3xl mx-auto">
-          <Heart className="h-12 w-12 mx-auto mb-6 opacity-80" />
-          <h1 className="text-4xl sm:text-5xl font-extrabold mb-4">Invest in a Generation</h1>
-          <p className="text-lg text-teal-100 font-medium">
-            Your donation powers India's most comprehensive 0-18 child health platform. <br className="hidden sm:block"/> 100% transparent. Donations are eligible for tax benefits under Section 80G.
-          </p>
-        </div>
-      </section>
+    <div className="bg-[#FFFDF7] min-h-screen">
 
-      {/* Tiers */}
-      <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 -mt-8 relative z-20 mb-20">
-        <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
-          {impactTiers.map(tier => (
-            <motion.div whileHover={{ y: -4 }} key={tier.id} className="bg-white rounded-2xl shadow-xl shadow-gray-200/50 p-6 border border-gray-100 flex flex-col relative overflow-hidden">
-              <div className="absolute top-4 right-4 bg-[#d1f5e0] text-[#155e33] text-[10px] font-bold px-2 py-1 rounded-full uppercase tracking-widest border border-[#a7e8c3]">
-                Tax Saving
-              </div>
-              <div className={`w-12 h-12 rounded-xl border flex items-center justify-center mb-4 ${tier.color}`}>
-                <tier.icon className="w-6 h-6" />
-              </div>
-              <h3 className="text-xl font-bold text-gray-900 mb-1">{tier.title}</h3>
-              <p className="text-2xl font-black text-[var(--womb-forest)] mb-3">₹{tier.amount.toLocaleString('en-IN')}</p>
-              <p className="text-sm text-gray-500 flex-1 leading-relaxed">{tier.desc}</p>
-            </motion.div>
+      <section className="relative pt-20 pb-6 sm:pt-24 sm:pb-8 overflow-hidden">
+        <div className="absolute inset-0 bg-gradient-to-b from-[#f0faf4] via-[#fef6ed]/40 to-[#FFFDF7]" />
+        <div className="absolute top-0 left-0 w-full h-full">
+          <div className="absolute top-[-30%] right-[-15%] w-[60%] h-[80%] bg-[radial-gradient(ellipse_at_center,_var(--journey-saffron)_0%,_transparent_65%)] opacity-[0.06] blur-[100px] rounded-full" />
+          <div className="absolute bottom-[-30%] left-[-15%] w-[60%] h-[80%] bg-[radial-gradient(ellipse_at_center,_var(--womb-forest)_0%,_transparent_65%)] opacity-[0.05] blur-[100px] rounded-full" />
+          <div className="absolute top-[20%] left-[40%] w-[40%] h-[50%] bg-[radial-gradient(ellipse_at_center,_var(--future-sky)_0%,_transparent_65%)] opacity-[0.04] blur-[80px] rounded-full" />
+        </div>
+
+        {/* Animated grid pattern */}
+        <div className="absolute inset-0 opacity-[0.015]" style={{ backgroundImage: "radial-gradient(circle at 1px 1px, #1D6E3F 1px, transparent 0)", backgroundSize: "40px 40px" }} />
+
+        {/* orbs */}
+        <div className="absolute inset-0 pointer-events-none overflow-hidden">
+          {Array.from({ length: 8 }).map((_, i) => (
+            <motion.div
+              key={`orb-${i}`}
+              className="absolute rounded-full"
+              style={{
+                width: 4 + Math.random() * 8, height: 4 + Math.random() * 8,
+                top: `${10 + Math.random() * 80}%`, left: `${5 + Math.random() * 90}%`,
+                background: [activeTabData.color, "var(--womb-forest)", "var(--future-sky)"][i % 3],
+                opacity: 0, filter: "blur(1px)",
+              }}
+              animate={{ opacity: [0, 0.5, 0], y: [0, -60, -120], scale: [0.3, 1, 0.3] }}
+              transition={{ duration: 6 + Math.random() * 4, repeat: Infinity, delay: i * 0.8, ease: "easeInOut" }}
+            />
           ))}
         </div>
-      </section>
 
-      {/* Forms & Sidebar */}
-      <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="grid lg:grid-cols-12 gap-12">
-          
-          <div className="lg:col-span-7 bg-white p-8 sm:p-10 rounded-3xl shadow-lg border border-gray-100">
-            <div className="mb-8">
-              <h2 className="text-3xl font-extrabold text-gray-900 mb-2">Make Your Contribution</h2>
-              <p className="text-gray-500">Select whether you are donating as an individual or an organization.</p>
+        <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 relative z-10">
+          <motion.div
+            initial={{ opacity: 0, y: 24 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.7, ease: [0.22, 1, 0.36, 1] }}
+            className="flex flex-col items-center text-center"
+          >
+            {/* Badge */}
+            <motion.div
+              initial={{ opacity: 0, scale: 0.8 }}
+              animate={{ opacity: 1, scale: 1 }}
+              transition={{ duration: 0.5, delay: 0.1 }}
+              className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full text-[10px] sm:text-[11px] font-bold tracking-[0.15em] uppercase mb-5 border shadow-sm backdrop-blur-sm"
+              style={{ color: activeTabData.color, borderColor: `${activeTabData.color}30`, background: `${activeTabData.color}08` }}
+            >
+              <Sparkles className="w-3 h-3" /> Make a Difference Today
+            </motion.div>
+
+            {/* Heading */}
+            <h1 className="text-[2.5rem] sm:text-[3.5rem] md:text-[4rem] text-gray-900 mb-3 max-w-3xl" style={{ fontWeight: 900, lineHeight: 1.05, letterSpacing: "-0.025em" }}>
+              Support the{" "}
+              <span className={`text-transparent bg-clip-text bg-gradient-to-r ${activeTabData.bg} drop-shadow-sm`}>
+                {activeTab === "donor" ? "Mission" : activeTab === "partner" ? "Future" : "Cause"}.
+              </span>
+            </h1>
+
+            <p className="text-sm sm:text-base text-gray-500 max-w-xl leading-relaxed mb-7">
+              Every action creates real, measurable impact for children across India.
+            </p>
+          </motion.div>
+
+          <motion.div
+            initial={{ opacity: 0, y: 16 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.6, delay: 0.25 }}
+            className="flex justify-center"
+          >
+            <div className="relative inline-flex bg-white/80 backdrop-blur-xl rounded-2xl p-1 border border-gray-200/60 shadow-[0_4px_20px_-4px_rgba(0,0,0,0.08),_0_1px_3px_rgba(0,0,0,0.04)]">
+              {TABS.map((tab) => {
+                const isActive = activeTab === tab.id;
+                const Icon = tab.icon;
+                return (
+                  <button
+                    key={tab.id}
+                    id={`tab-${tab.id}`}
+                    onClick={() => setActiveTab(tab.id)}
+                    className={`relative flex items-center gap-2 px-4 sm:px-6 py-2.5 sm:py-3 rounded-xl text-[13px] font-bold transition-all duration-300 z-10 ${
+                      isActive ? "text-white" : "text-gray-500 hover:text-gray-700"
+                    }`}
+                  >
+                    {isActive && (
+                      <motion.div
+                        layoutId="activeTabBg"
+                        className={`absolute inset-0 rounded-xl bg-gradient-to-r ${tab.bg} shadow-lg`}
+                        style={{ boxShadow: `0 4px 15px -3px ${tab.color}40` }}
+                        transition={{ type: "spring", bounce: 0.15, duration: 0.5 }}
+                      />
+                    )}
+                    <span className="relative z-10 flex items-center gap-1.5">
+                      <Icon className="w-3.5 h-3.5" />
+                      <span>{tab.label}</span>
+                      <span className="hidden sm:inline text-[9px] font-medium opacity-75 ml-0.5">({tab.sublabel})</span>
+                    </span>
+                  </button>
+                );
+              })}
             </div>
-
-            <DonationTabs 
-              onTypeChange={setDonationType}
-              individualForm={
-                <IndividualDonationForm onSubmit={(data) => handlePayment(data.amount, data)} isProcessing={isProcessing} />
-              }
-              organizationForm={
-                <OrganizationDonationForm onSubmit={(data) => handlePayment(data.amount, data)} isProcessing={isProcessing} />
-              }
-            />
-
-            <div className="mt-8 pt-8 border-t border-gray-100">
-              <div className="flex justify-center items-center gap-6 opacity-60">
-                <div className="flex items-center gap-2 text-sm font-semibold text-gray-600"><CreditCard className="w-5 h-5" /> Cards</div>
-                <div className="flex items-center gap-2 text-sm font-semibold text-gray-600"><Smartphone className="w-5 h-5" /> UPI</div>
-                <div className="flex items-center gap-2 text-sm font-semibold text-gray-600"><Building2 className="w-5 h-5" /> Net Banking</div>
-              </div>
-            </div>
-          </div>
-
-          <div className="lg:col-span-5 space-y-8">
-            {/* 80G Illustrated Flow */}
-            <div className="bg-white p-8 rounded-3xl shadow-lg border border-gray-100">
-              <h3 className="text-xl font-bold text-gray-900 mb-6 flex items-center gap-3">
-                <Shield className="w-6 h-6 text-[var(--journey-saffron)]" />
-                Instant 80G Certificate Flow
-              </h3>
-              
-              <div className="relative pl-6 space-y-8 before:absolute before:inset-0 before:ml-[31px] before:-translate-x-px md:before:mx-auto md:before:translate-x-0 before:h-full before:w-0.5 before:bg-gradient-to-b before:from-[var(--journey-saffron)] before:via-[var(--womb-forest)] before:to-gray-200">
-                <div className="relative flex items-center gap-6">
-                  <div className="!absolute left-0 w-8 h-8 -ml-[16px] flex items-center justify-center bg-white border-4 border-[var(--journey-saffron)] rounded-full z-10">
-                    <span className="text-xs font-bold text-[var(--journey-saffron)]">1</span>
-                  </div>
-                  <div className="ml-6 flex-1">
-                    <p className="font-bold text-gray-900">Secure Payment</p>
-                    <p className="text-sm text-gray-500">Complete transaction securely via Razorpay.</p>
-                  </div>
-                </div>
-
-                <div className="relative flex items-center gap-6">
-                  <div className="!absolute left-0 w-8 h-8 -ml-[16px] flex items-center justify-center bg-white border-4 border-[var(--womb-forest)] rounded-full z-10">
-                    <span className="text-xs font-bold text-[var(--womb-forest)]">2</span>
-                  </div>
-                  <div className="ml-6 flex-1">
-                    <p className="font-bold text-gray-900">Auto-Generation</p>
-                    <p className="text-sm text-gray-500">System processes your PAN & details instantly.</p>
-                  </div>
-                </div>
-
-                <div className="relative flex items-center gap-6">
-                  <div className="!absolute left-0 w-8 h-8 -ml-[16px] flex items-center justify-center bg-white border-4 border-gray-300 rounded-full z-10">
-                    <CheckCircle className="w-4 h-4 text-gray-400" />
-                  </div>
-                  <div className="ml-6 flex-1">
-                    <p className="font-bold text-gray-900">Delivered to Inbox</p>
-                    <p className="text-sm text-gray-500">80G PDF and tax receipt emailed within 2 mins.</p>
-                  </div>
-                </div>
-              </div>
-            </div>
-
-            <div className="bg-[var(--womb-forest)]/5 p-8 rounded-3xl border border-[var(--womb-forest)]/20 text-center">
-              <p className="text-[10px] uppercase tracking-widest text-[var(--womb-forest)] font-bold mb-4">Securely Processed By</p>
-              <img src="/razorpay.svg" alt="Razorpay" className="h-10 mx-auto opacity-80" />
-              <p className="text-xs text-gray-500 mt-4 leading-relaxed">
-                We use industry-standard 256-bit encryption. Your payment details are never stored on our servers.
-              </p>
-            </div>
-
-          </div>
-
+          </motion.div>
         </div>
       </section>
 
+      <section className="py-6 sm:py-10">
+        <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+          <div className="grid lg:grid-cols-12 gap-6 lg:gap-10 items-start">
+            <div className="lg:col-span-5 xl:col-span-4 order-2 lg:order-1">
+              <DonateSidebar activeColor={activeTabData.color} />
+            </div>
+
+            <div className="lg:col-span-7 xl:col-span-8 order-1 lg:order-2">
+              <AnimatePresence mode="wait">
+                <motion.div
+                  key={activeTab}
+                  initial={{ opacity: 0, x: 12 }}
+                  animate={{ opacity: 1, x: 0 }}
+                  exit={{ opacity: 0, x: -12 }}
+                  transition={{ duration: 0.35, ease: [0.22, 1, 0.36, 1] }}
+                >
+                  {activeTab === "donor" && <DonorForm />}
+                  {activeTab === "partner" && <PartnerForm />}
+                  {activeTab === "volunteer" && <VolunteerForm />}
+                </motion.div>
+              </AnimatePresence>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section className="py-10 sm:py-14 relative overflow-hidden">
+        <div className="absolute inset-0 bg-gradient-to-r from-[var(--womb-forest)]/[0.02] via-transparent to-[var(--future-sky)]/[0.02]" />
+        <div className="absolute top-0 left-0 right-0 h-px bg-gradient-to-r from-transparent via-gray-200 to-transparent" />
+        <div className="mx-auto max-w-5xl px-4 sm:px-6 lg:px-8 relative z-10">
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-6 sm:gap-8">
+            {[
+              { value: "2 min", label: "80G Certificate", icon: FileText, color: "#FF9900" },
+              { value: "100%", label: "Ring-fenced Funds", icon: Shield, color: "#1D6E3F" },
+              { value: "Live", label: "Impact Dashboard", icon: BarChart3, color: "#00AEEF" },
+              { value: "32", label: "Programs to Support", icon: Target, color: "#FF9900" },
+            ].map((item, i) => (
+              <motion.div
+                key={item.label}
+                initial={{ opacity: 0, y: 20 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true }}
+                transition={{ duration: 0.5, delay: i * 0.08 }}
+                className="flex flex-col items-center gap-2.5 group cursor-default"
+              >
+                <div className="w-11 h-11 rounded-xl flex items-center justify-center transition-all duration-300 group-hover:scale-110 group-hover:shadow-lg"
+                  style={{ background: `${item.color}10`, boxShadow: `0 0 0 1px ${item.color}15` }}>
+                  <item.icon className="w-5 h-5" style={{ color: item.color }} />
+                </div>
+                <div className="text-center">
+                  <p className="text-lg sm:text-xl font-black text-gray-900">{item.value}</p>
+                  <p className="text-[10px] sm:text-xs text-gray-400 font-semibold tracking-wide">{item.label}</p>
+                </div>
+              </motion.div>
+            ))}
+          </div>
+        </div>
+      </section>
     </div>
   );
 }
-
-
-
