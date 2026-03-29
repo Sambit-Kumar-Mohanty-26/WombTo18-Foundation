@@ -4,13 +4,13 @@ import { DonorLoginForm } from "../../components/donor-login/DonorLoginForm";
 export function DonorLogin() {
   const navigate = useNavigate();
 
-  const handleLoginSuccess = (eligible: boolean, identifier: string) => {
-    if (eligible) {
-      // Pass the identifier via state for the OTP page to use
-      navigate("/donor/verify-otp", { state: { identifier } });
+  const handleLoginSuccess = (eligible: boolean, identifier: string, otpSent?: boolean) => {
+    if (otpSent) {
+      // Register flow → must verify OTP
+      navigate("/donor/verify-otp", { state: { identifier, eligible } });
     } else {
-      // Ineligible donors are redirected straight to receipts
-      navigate("/dashboard/certificates"); 
+      // Password login → already authenticated → go to dashboard
+      navigate("/dashboard", { replace: true });
     }
   };
 

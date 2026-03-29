@@ -35,7 +35,7 @@ export declare class DonationService {
         razorpay_signature: string;
     }): Promise<{
         success: boolean;
-        tier: import(".prisma/client").$Enums.DonorTier;
+        tier: string;
         dashboardUnlocked: boolean;
     }>;
     getSidebarStats(): Promise<{

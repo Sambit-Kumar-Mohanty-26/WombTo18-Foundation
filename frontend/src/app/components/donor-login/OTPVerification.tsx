@@ -9,6 +9,7 @@ import { Label } from "../ui/label";
 import { Loader2, ShieldCheck, ArrowLeft } from "lucide-react";
 import { auth } from "../../lib/auth";
 import { toast } from "sonner";
+import { useAuth } from "../../context/AuthContext";
 
 const otpSchema = z.object({
   otp: z.string().length(6, "OTP must be exactly 6 digits").regex(/^\d+$/, "OTP must contain only numbers"),
@@ -18,12 +19,13 @@ type OtpFormData = z.infer<typeof otpSchema>;
 
 interface OTPVerificationProps {
   identifier: string;
-  onSuccess: () => void;
+  onSuccess: (name?: string) => void;
   onBack: () => void;
 }
 
 export function OTPVerification({ identifier, onSuccess, onBack }: OTPVerificationProps) {
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const { login } = useAuth();
 
   const {
     register,
@@ -39,16 +41,24 @@ export function OTPVerification({ identifier, onSuccess, onBack }: OTPVerificati
   const onSubmit = async (data: OtpFormData) => {
     setIsSubmitting(true);
     try {
+      console.log("[OTPVerification] Verifying OTP for identifier:", identifier, "OTP:", data.otp);
       const response = await auth.verifyOtp(identifier, data.otp);
+      console.log("[OTPVerification] Verification response:", response);
       
       if (response.success) {
         toast.success("Verification successful!");
-        onSuccess();
+        login(identifier, true, response.name);
+        onSuccess(response.name ?? undefined);
       } else {
         toast.error("Invalid OTP. Please try again. (Hint: use 123456)");
       }
-    } catch (error) {
-      toast.error("Verification failed. Please try again.");
+    } catch (error: any) {
+      console.error("[OTPVerification] Verification error:", {
+        message: error.message,
+        status: error.status,
+        data: error.data
+      });
+      toast.error(error.message || "Verification failed. Please try again.");
     } finally {
       setIsSubmitting(false);
     }

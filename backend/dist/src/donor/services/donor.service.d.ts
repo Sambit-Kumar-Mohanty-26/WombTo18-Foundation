@@ -2,11 +2,11 @@ import { PrismaService } from '../../prisma/services/prisma.service';
 export declare class DonorService {
     private readonly prisma;
     constructor(prisma: PrismaService);
-    getDashboard(donorId: string): Promise<{
+    getDashboard(identifier: string): Promise<{
         donor: {
             name: string;
             donorId: string;
-            tier: import(".prisma/client").$Enums.DonorTier;
+            tier: string;
             totalDonated: number;
         };
         impact: {
@@ -24,10 +24,10 @@ export declare class DonorService {
             programsSupported: number;
         };
     }>;
-    getDonations(donorId: string): Promise<{
+    getDonations(identifier: string): Promise<{
         amount: number;
         program: string;
         date: string;
-        status: import(".prisma/client").$Enums.DonationStatus;
+        status: string;
     }[]>;
 }

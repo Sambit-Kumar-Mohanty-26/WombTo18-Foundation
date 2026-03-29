@@ -10,8 +10,16 @@ export class AuthController {
 
   @Post('login')
   @ApiOperation({ summary: 'Identify donor and check eligibility' })
-  async login(@Body('email') email: string) {
-    return this.authService.donorLogin(email);
+  async login(
+    @Body('email') email: string,
+    @Body('password') password?: string,
+    @Body('isVolunteer') isVolunteer?: boolean,
+    @Body('isNonDonor') isNonDonor?: boolean,
+    @Body('name') name?: string,
+    @Body('mobile') mobile?: string,
+  ) {
+    const flags = { isVolunteer, isNonDonor, name, mobile, password };
+    return this.authService.donorLogin(email, flags);
   }
 
   @Post('verify-otp')

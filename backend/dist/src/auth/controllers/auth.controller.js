@@ -21,8 +21,9 @@ let AuthController = class AuthController {
     constructor(authService) {
         this.authService = authService;
     }
-    async login(email) {
-        return this.authService.donorLogin(email);
+    async login(email, password, isVolunteer, isNonDonor, name, mobile) {
+        const flags = { isVolunteer, isNonDonor, name, mobile, password };
+        return this.authService.donorLogin(email, flags);
     }
     async verifyOtp(email, otp, res) {
         const result = await this.authService.verifyOtp(email, otp);
@@ -40,8 +41,13 @@ __decorate([
     (0, common_1.Post)('login'),
     (0, swagger_1.ApiOperation)({ summary: 'Identify donor and check eligibility' }),
     __param(0, (0, common_1.Body)('email')),
+    __param(1, (0, common_1.Body)('password')),
+    __param(2, (0, common_1.Body)('isVolunteer')),
+    __param(3, (0, common_1.Body)('isNonDonor')),
+    __param(4, (0, common_1.Body)('name')),
+    __param(5, (0, common_1.Body)('mobile')),
     __metadata("design:type", Function),
-    __metadata("design:paramtypes", [String]),
+    __metadata("design:paramtypes", [String, String, Boolean, Boolean, String, String]),
     __metadata("design:returntype", Promise)
 ], AuthController.prototype, "login", null);
 __decorate([

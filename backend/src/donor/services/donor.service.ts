@@ -5,17 +5,19 @@ import { PrismaService } from '../../prisma/services/prisma.service';
 export class DonorService {
   constructor(private readonly prisma: PrismaService) {}
 
-  async getDashboard(donorId: string) {
-    const donor = await this.prisma.donor.findUnique({
-      where: { donorId },
+  async getDashboard(identifier: string) {
+    const donor = await this.prisma.donor.findFirst({
+      where: {
+        OR: [{ email: identifier }, { donorId: identifier }],
+      },
       include: { donations: { where: { status: 'SUCCESS' } } },
     });
 
     if (!donor) throw new NotFoundException('Donor not found');
 
-    const impact = await this.prisma.impactMetrics.findUnique({
+    const impact = (await this.prisma.impactMetrics.findUnique({
       where: { id: 'global' },
-    }) || {
+    })) || {
       childrenImpacted: 150,
       schoolsReached: 12,
       healthCheckups: 89,
@@ -33,9 +35,11 @@ export class DonorService {
     };
   }
 
-  async getDonations(donorId: string) {
-    const donor = await this.prisma.donor.findUnique({
-      where: { donorId },
+  async getDonations(identifier: string) {
+    const donor = await this.prisma.donor.findFirst({
+      where: {
+        OR: [{ email: identifier }, { donorId: identifier }],
+      },
     });
     if (!donor) throw new NotFoundException('Donor not found');
 

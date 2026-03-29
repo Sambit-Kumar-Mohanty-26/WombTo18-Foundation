@@ -1,21 +1,24 @@
 import { useEffect } from "react";
 import { useLocation, useNavigate } from "react-router";
 import { OTPVerification } from "../../components/donor-login/OTPVerification";
+import { useAuth } from "../../context/AuthContext";
 
 export function DonorVerifyOtp() {
   const navigate = useNavigate();
   const location = useLocation();
+  const { login } = useAuth();
   const identifier = location.state?.identifier;
+  const eligible: boolean = location.state?.eligible ?? true;
 
   useEffect(() => {
-    // If user tries to access this page directly without an identifier, redirect them back to login
     if (!identifier) {
       navigate("/donor/login", { replace: true });
     }
   }, [identifier, navigate]);
 
-  const handleVerificationSuccess = () => {
-    navigate("/dashboard", { replace: true }); // Prevent them from returning to the OTP screen via back button
+  const handleVerificationSuccess = (name?: string) => {
+    login(identifier, eligible, name);
+    navigate("/dashboard", { replace: true });
   };
 
   const handleBack = () => {

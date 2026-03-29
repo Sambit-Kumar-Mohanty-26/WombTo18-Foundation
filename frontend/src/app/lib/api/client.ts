@@ -18,6 +18,14 @@ async function apiFetch<T>(endpoint: string, options: RequestInit = {}): Promise
   if (!(options.body instanceof FormData)) {
     headers.set('Content-Type', 'application/json');
   }
+
+  // Attach JWT from session if available
+  try {
+    const session = JSON.parse(localStorage.getItem('donor_session') || 'null');
+    if (session?.token) {
+      headers.set('Authorization', `Bearer ${session.token}`);
+    }
+  } catch { /* ignore */ }
   
   const response = await fetch(url, {
     ...options,

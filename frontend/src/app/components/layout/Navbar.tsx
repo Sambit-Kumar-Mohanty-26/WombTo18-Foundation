@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { Link, useLocation } from "react-router";
+import { Link, useLocation, useNavigate } from "react-router";
 import { Button } from "../ui/button";
 import { Menu, X, Heart, LayoutDashboard } from "lucide-react";
 import { auth } from "../../lib/auth";
@@ -16,11 +16,15 @@ const navLinks = [
   // { href: "/press", label: "Press", key: "press" },
 ];
 
+import { toast } from "sonner";
+import { useAuth } from "../../context/AuthContext";
+
 export function Navbar() {
   const { t } = useTranslation();
+  const { state, logout } = useAuth();
+  const navigate = useNavigate();
   const [mobileOpen, setMobileOpen] = useState(false);
   const [isScrolled, setIsScrolled] = useState(false);
-  const [isLoggedIn, setIsLoggedIn] = useState(false);
   const location = useLocation();
 
   useEffect(() => {
@@ -31,10 +35,14 @@ export function Navbar() {
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
 
-  // Re-check session on every route change
-  useEffect(() => {
-    setIsLoggedIn(!!auth.getSession());
-  }, [location.pathname]);
+  const isLoggedIn = state.isAuthenticated;
+  
+  const handleSignOut = () => {
+    logout();
+    navigate("/");
+    setMobileOpen(false);
+    toast.success("Signed out successfully");
+  };
 
   return (
     <header 
@@ -82,16 +90,29 @@ export function Navbar() {
 
           {/* CTA Buttons */}
           <div className="hidden lg:flex items-center gap-2">
-            {/* <LanguageSwitcher /> */}
-            <Link to={isLoggedIn ? "/dashboard" : "/donor/login"}>
-              <Button variant="ghost" size="sm" className="text-gray-600 hover:text-primary hover:bg-primary/5 font-medium transition-all">
-                {isLoggedIn ? (
-                  <><LayoutDashboard className="h-4 w-4 mr-1.5" />{t('nav.dashboard')}</>
-                ) : (
-                  t('nav.donorLogin')
-                )}
-              </Button>
-            </Link>
+            {isLoggedIn ? (
+              <>
+                <Link to="/dashboard">
+                  <Button variant="ghost" size="sm" className="text-gray-600 hover:text-primary hover:bg-primary/5 font-medium transition-all">
+                    <LayoutDashboard className="h-4 w-4 mr-1.5" />{t('nav.dashboard')}
+                  </Button>
+                </Link>
+                  <Button 
+                  variant="ghost" 
+                  size="sm" 
+                  onClick={handleSignOut}
+                  className="text-red-500 hover:text-red-600 hover:bg-red-50 font-medium transition-all"
+                >
+                  Sign Out
+                </Button>
+              </>
+            ) : (
+              <Link to="/login">
+                <Button variant="ghost" size="sm" className="text-gray-600 hover:text-primary hover:bg-primary/5 font-medium transition-all">
+                  {t('nav.donorLogin')}
+                </Button>
+              </Link>
+            )}
             <Link to="/donate">
               <Button size="sm" className="bg-primary hover:bg-primary/90 text-primary-foreground font-bold shadow-lg shadow-orange-500/20">
                 <Heart className="h-4 w-4 mr-1 fill-current" /> {t('nav.donate')}
@@ -128,18 +149,24 @@ export function Navbar() {
               </Link>
             ))}
             <div className="pt-3 border-t border-gray-100 flex flex-col gap-2">
-              {/* <div className="px-1 pb-1">
-                <LanguageSwitcher />
-              </div> */}
-              <Link to={isLoggedIn ? "/dashboard" : "/donor/login"} onClick={() => setMobileOpen(false)}>
-                <Button variant="ghost" size="sm" className="w-full text-gray-600 hover:text-primary hover:bg-primary/5 font-medium justify-start transition-all">
-                  {isLoggedIn ? (
-                    <><LayoutDashboard className="h-4 w-4 mr-1.5" />{t('nav.dashboard')}</>
-                  ) : (
-                    t('nav.donorLogin')
-                  )}
-                </Button>
-              </Link>
+              {isLoggedIn ? (
+                <>
+                  <Link to="/dashboard" onClick={() => setMobileOpen(false)}>
+                    <Button variant="ghost" size="sm" className="w-full text-gray-600 hover:text-primary hover:bg-primary/5 font-medium justify-start transition-all">
+                      <LayoutDashboard className="h-4 w-4 mr-1.5" />{t('nav.dashboard')}
+                    </Button>
+                  </Link>
+                  <Button variant="ghost" size="sm" onClick={handleSignOut} className="w-full text-red-500 hover:text-red-600 hover:bg-red-50 font-medium justify-start transition-all">
+                    Sign Out
+                  </Button>
+                </>
+              ) : (
+                <Link to="/login" onClick={() => setMobileOpen(false)}>
+                  <Button variant="ghost" size="sm" className="w-full text-gray-600 hover:text-primary hover:bg-primary/5 font-medium justify-start transition-all">
+                    {t('nav.donorLogin')}
+                  </Button>
+                </Link>
+              )}
               <Link to="/donate" onClick={() => setMobileOpen(false)}>
                 <Button size="sm" className="w-full bg-primary hover:bg-primary/90 text-primary-foreground font-bold shadow-lg shadow-orange-500/20">
                   <Heart className="h-4 w-4 mr-1 fill-current" /> {t('nav.donate')}

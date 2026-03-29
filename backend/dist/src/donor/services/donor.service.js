@@ -17,16 +17,18 @@ let DonorService = class DonorService {
     constructor(prisma) {
         this.prisma = prisma;
     }
-    async getDashboard(donorId) {
-        const donor = await this.prisma.donor.findUnique({
-            where: { donorId },
+    async getDashboard(identifier) {
+        const donor = await this.prisma.donor.findFirst({
+            where: {
+                OR: [{ email: identifier }, { donorId: identifier }],
+            },
             include: { donations: { where: { status: 'SUCCESS' } } },
         });
         if (!donor)
             throw new common_1.NotFoundException('Donor not found');
-        const impact = await this.prisma.impactMetrics.findUnique({
+        const impact = (await this.prisma.impactMetrics.findUnique({
             where: { id: 'global' },
-        }) || {
+        })) || {
             childrenImpacted: 150,
             schoolsReached: 12,
             healthCheckups: 89,
@@ -42,9 +44,11 @@ let DonorService = class DonorService {
             impact,
         };
     }
-    async getDonations(donorId) {
-        const donor = await this.prisma.donor.findUnique({
-            where: { donorId },
+    async getDonations(identifier) {
+        const donor = await this.prisma.donor.findFirst({
+            where: {
+                OR: [{ email: identifier }, { donorId: identifier }],
+            },
         });
         if (!donor)
             throw new common_1.NotFoundException('Donor not found');

@@ -3,7 +3,7 @@ generator client {
 }
 
 datasource db {
-  provider = "postgresql"
+  provider = "sqlite"
   url      = env("DATABASE_URL")
 }
 
@@ -13,46 +13,37 @@ model Donor {
   email          String     @unique
   name           String?
   mobile         String?
+  password       String?    // Hashed password for secure access
   pan            String?
   address        String?
-  tier           DonorTier  @default(DONOR)
+  tier           String     @default("DONOR") // Enum DonorTier: DONOR, PATRON, CHAMPION
   totalDonated   Float      @default(0)
   otpHash        String?
   otpExpiry      DateTime?
   donations      Donation[]
-  isEligible     Boolean    @default(false) // Calculated: totalDonated >= 5000
+  isEligible     Boolean    @default(false)
+  isVolunteer    Boolean    @default(false)
+  isNonDonor     Boolean    @default(false)
   createdAt      DateTime   @default(now())
   updatedAt      DateTime   @updatedAt
 }
 
-enum DonorTier {
-  DONOR
-  PATRON
-  CHAMPION
-}
-
 model Donation {
-  id                String         @id @default(cuid())
+  id                String   @id @default(cuid())
   amount            Float
-  currency          String         @default("INR")
-  status            DonationStatus @default(PENDING)
-  razorpayOrderId   String         @unique
-  razorpayPaymentId String?        @unique
+  currency          String   @default("INR")
+  status            String   @default("PENDING") // Enum DonationStatus: PENDING, SUCCESS, FAILED
+  razorpayOrderId   String   @unique
+  razorpayPaymentId String?  @unique
   razorpaySignature String?
   donorId           String
-  donor             Donor          @relation(fields: [donorId], references: [id])
+  donor             Donor    @relation(fields: [donorId], references: [id])
   programId         String
-  program           Program        @relation(fields: [programId], references: [id])
-  displayName       Boolean        @default(true)
-  receiptNumber     String?        @unique
-  createdAt         DateTime       @default(now())
-  updatedAt         DateTime       @updatedAt
-}
-
-enum DonationStatus {
-  PENDING
-  SUCCESS
-  FAILED
+  program           Program  @relation(fields: [programId], references: [id])
+  displayName       Boolean  @default(true)
+  receiptNumber     String?  @unique
+  createdAt         DateTime @default(now())
+  updatedAt         DateTime @updatedAt
 }
 
 model Program {

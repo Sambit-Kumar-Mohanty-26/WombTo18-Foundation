@@ -25,7 +25,12 @@ import { DonorVerifyOtp } from "./pages/donor/DonorVerifyOtp";
 import { DonorProfile } from "./pages/donor/DonorProfile";
 import { DonationSuccessPage } from "./pages/DonationSuccessPage";
 import { DashboardPreviewPage } from "./pages/DashboardPreviewPage";
+import { LoginSelectionPage } from "./pages/LoginSelectionPage";
 
+import { AdminLoginPage } from "./pages/admin/AdminLoginPage";
+import { PartnerLayout } from "./components/layout/PartnerLayout";
+import { PartnerDashboard } from "./pages/partner/PartnerDashboard";
+import { PartnerLogin } from "./pages/partner/PartnerLogin";
 import { AdminDashboard } from "./pages/admin/AdminDashboard";
 import { AdminDonors } from "./pages/admin/AdminDonors";
 import { AdminPrograms } from "./pages/admin/AdminPrograms";
@@ -71,6 +76,19 @@ export const router = createBrowserRouter([
 
     ],
   },
+  // Standalone login selection and portal logins
+  {
+    path: "/login",
+    Component: LoginSelectionPage,
+  },
+  {
+    path: "/admin/login",
+    Component: AdminLoginPage,
+  },
+  {
+    path: "/partner/login",
+    Component: PartnerLogin,
+  },
   {
     path: "/admin",
     Component: AdminLayout,
@@ -81,6 +99,13 @@ export const router = createBrowserRouter([
       { path: "reports", Component: AdminReports },
       { path: "blog", Component: AdminBlog },
       { path: "case-studies", Component: AdminCaseStudies },
+    ],
+  },
+  {
+    path: "/partner",
+    Component: PartnerLayout,
+    children: [
+      { index: true, Component: PartnerDashboard },
     ],
   },
 ]);

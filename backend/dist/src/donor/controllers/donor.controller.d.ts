@@ -6,7 +6,7 @@ export declare class DonorController {
         donor: {
             name: string;
             donorId: string;
-            tier: import(".prisma/client").$Enums.DonorTier;
+            tier: string;
             totalDonated: number;
         };
         impact: {
@@ -28,6 +28,6 @@ export declare class DonorController {
         amount: number;
         program: string;
         date: string;
-        status: import(".prisma/client").$Enums.DonationStatus;
+        status: string;
     }[]>;
 }

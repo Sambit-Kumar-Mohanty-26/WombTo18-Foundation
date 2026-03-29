@@ -12,7 +12,7 @@ export declare class DonationController {
     }>;
     verify(body: any): Promise<{
         success: boolean;
-        tier: import(".prisma/client").$Enums.DonorTier;
+        tier: string;
         dashboardUnlocked: boolean;
     }>;
     getStats(): Promise<{

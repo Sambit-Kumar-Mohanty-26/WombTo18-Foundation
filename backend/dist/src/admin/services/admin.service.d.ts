@@ -8,7 +8,7 @@ export declare class AdminService {
             createdAt: Date;
             updatedAt: Date;
             donorId: string;
-            status: import(".prisma/client").$Enums.DonationStatus;
+            status: string;
             amount: number;
             currency: string;
             razorpayOrderId: string;
@@ -26,13 +26,16 @@ export declare class AdminService {
         donorId: string;
         email: string;
         mobile: string | null;
+        password: string | null;
         pan: string | null;
         address: string | null;
-        tier: import(".prisma/client").$Enums.DonorTier;
+        tier: string;
         totalDonated: number;
         otpHash: string | null;
         otpExpiry: Date | null;
         isEligible: boolean;
+        isVolunteer: boolean;
+        isNonDonor: boolean;
     })[]>;
     findAllPrograms(): Promise<{
         id: string;
@@ -74,20 +77,23 @@ export declare class AdminService {
                 donorId: string;
                 email: string;
                 mobile: string | null;
+                password: string | null;
                 pan: string | null;
                 address: string | null;
-                tier: import(".prisma/client").$Enums.DonorTier;
+                tier: string;
                 totalDonated: number;
                 otpHash: string | null;
                 otpExpiry: Date | null;
                 isEligible: boolean;
+                isVolunteer: boolean;
+                isNonDonor: boolean;
             };
         } & {
             id: string;
             createdAt: Date;
             updatedAt: Date;
             donorId: string;
-            status: import(".prisma/client").$Enums.DonationStatus;
+            status: string;
             amount: number;
             currency: string;
             razorpayOrderId: string;

@@ -56,10 +56,19 @@ export class MailerService {
         text,
         html,
       });
-      console.log(`[EMAIL SENT] To: ${to} | Subject: ${subject}`);
+      console.log(`[EMAIL SENT SUCCESS] To: ${to} | Subject: ${subject}`);
     } catch (error) {
-      console.error('[EMAIL ERROR]', error);
-      throw error;
+      console.error('[EMAIL ERROR] Failed to send email.', {
+        to,
+        subject,
+        error: error.message
+      });
+      
+      // In development, we don't want to crash the whole process if email fails
+      // This allows the login flow to proceed with the devOtp or mock OTP
+      if (this.configService.get<string>('NODE_ENV') === 'production') {
+        throw error;
+      }
     }
   }
 

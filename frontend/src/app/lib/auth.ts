@@ -1,29 +1,39 @@
-import { authApi } from "./api/auth";
+import { authApi, LoginResponse } from "./api/auth";
 
 export interface DonorSession {
   identifier: string;
   eligible: boolean;
   token: string;
+  name?: string;
+  donorId?: string;
+  role: 'DONOR' | 'PARTNER' | 'ADMIN';
 }
 
 export const auth = {
-  async login(identifier: string): Promise<{ eligible: boolean; otpSent: boolean; devOtp?: string }> {
-    const response = await authApi.login(identifier);
+  async login(
+    identifier: string,
+    flags?: { isVolunteer?: boolean; isNonDonor?: boolean; name?: string; mobile?: string; password?: string }
+  ): Promise<LoginResponse> {
+    const response = await authApi.login(identifier, flags);
     return response;
   },
 
-  async verifyOtp(identifier: string, otp: string): Promise<{ success: boolean; token?: string }> {
+  async verifyOtp(identifier: string, otp: string): Promise<{ success: boolean; token?: string; name?: string; donorId?: string; role?: string }> {
     const response = await authApi.verifyOtp(identifier, otp);
     
     if (response.success && response.token) {
+      const role = (response as any).role || 'DONOR';
       const session: DonorSession = {
         identifier,
         eligible: true,
         token: response.token,
+        name: response.name,
+        donorId: response.donorId,
+        role: role as any,
       };
       
       localStorage.setItem("donor_session", JSON.stringify(session));
-      return { success: true, token: response.token };
+      return { success: true, token: response.token, name: response.name, donorId: response.donorId, role };
     }
 
     return { success: false };
@@ -35,6 +45,7 @@ export const auth = {
       identifier,
       eligible: false,
       token: `mock-receipt-token-${Date.now()}`,
+      role: 'DONOR',
     };
     localStorage.setItem("donor_session", JSON.stringify(session));
   },

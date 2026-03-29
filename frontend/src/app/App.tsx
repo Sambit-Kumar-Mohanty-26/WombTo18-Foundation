@@ -5,13 +5,17 @@ import { SpeedInsights } from "@vercel/speed-insights/react";
 import { router } from "./routes";
 import { SmoothScrollProvider } from "./components/providers/SmoothScrollProvider";
 
+import { AuthProvider } from "./context/AuthContext";
+
 export default function App() {
   return (
-    <SmoothScrollProvider>
-      <RouterProvider router={router} />
-      <Analytics />
-      <SpeedInsights />
-      <Toaster position="top-right" richColors />
-    </SmoothScrollProvider>
+    <AuthProvider>
+      <SmoothScrollProvider>
+        <RouterProvider router={router} />
+        <Analytics />
+        <SpeedInsights />
+        <Toaster position="top-right" richColors />
+      </SmoothScrollProvider>
+    </AuthProvider>
   );
 }

@@ -1,8 +1,12 @@
 import { client } from './client';
 
 export interface LoginResponse {
-  eligible: boolean;
-  otpSent: boolean;
+  eligible?: boolean;
+  otpSent?: boolean;
+  authenticated?: boolean;   // true when password login succeeded immediately
+  token?: string;            // JWT returned on password login
+  name?: string | null;
+  donorId?: string;
   message?: string;
   devOtp?: string;
 }
@@ -10,7 +14,9 @@ export interface LoginResponse {
 
 export interface VerifyOtpResponse {
   success: boolean;
-  token?: string; // JWT might be in cookie, but sometimes returned for storage
+  token?: string;
+  name?: string;
+  donorId?: string;
   donor?: {
     id: string;
     email: string;
@@ -21,8 +27,8 @@ export interface VerifyOtpResponse {
 }
 
 export const authApi = {
-  login: (email: string) => 
-    client.post<LoginResponse>('/donor/login', { email }),
+  login: (email: string, flags?: { isVolunteer?: boolean; isNonDonor?: boolean; name?: string; mobile?: string; password?: string }) => 
+    client.post<LoginResponse>('/donor/login', { email, ...flags }),
     
   verifyOtp: (email: string, otp: string) => 
     client.post<VerifyOtpResponse>('/donor/verify-otp', { email, otp }),

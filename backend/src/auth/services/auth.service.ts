@@ -3,6 +3,7 @@ import { JwtService } from '@nestjs/jwt';
 import { PrismaService } from '../../prisma/services/prisma.service';
 import { MailerService } from './mailer.service';
 import { ConfigService } from '@nestjs/config';
+import * as bcrypt from 'bcryptjs';
 
 @Injectable()
 export class AuthService {
@@ -13,26 +14,77 @@ export class AuthService {
     private readonly configService: ConfigService,
   ) {}
 
-  async donorLogin(email: string) {
-    let donor = await this.prisma.donor.findUnique({
-      where: { email },
+  async donorLogin(identifier: string, flags?: { isVolunteer?: boolean; isNonDonor?: boolean; name?: string; mobile?: string; password?: string }) {
+    console.log(`[AuthService] Attempting donor identification for: ${identifier}`, flags);
+    
+    // Find donor by email OR donorId
+    let donor = await this.prisma.donor.findFirst({
+      where: {
+        OR: [
+          { email: identifier },
+          { donorId: identifier },
+        ],
+      },
     });
 
+    // If existing donor has a password and one was provided, verify it immediately
+    if (donor && donor.password && flags?.password) {
+      const isPasswordValid = await bcrypt.compare(flags.password, donor.password);
+      if (isPasswordValid) {
+        console.log(`[AuthService] Password verified for ${donor.donorId}`);
+        const payload = { sub: donor.id, email: donor.email, donorId: donor.donorId };
+        return {
+          authenticated: true,
+          eligible: donor.totalDonated >= 5000,
+          token: this.jwtService.sign(payload),
+          name: donor.name,
+          donorId: donor.donorId,
+          message: 'Login successful via password',
+        };
+      } else {
+        throw new UnauthorizedException('Invalid credentials');
+      }
+    }
+
     if (!donor) {
-      // Create new donor if not exists
+      console.log(`[AuthService] Donor not found for ${identifier}. Creating new record...`);
+      
+      if (!identifier.includes('@')) {
+        throw new BadRequestException('Please provide a valid email address to register.');
+      }
+
       const lastDonor = await this.prisma.donor.findFirst({
         orderBy: { createdAt: 'desc' },
       });
       const nextId = lastDonor ? parseInt(lastDonor.donorId.replace('DNR', '')) + 1 : 1000;
       
+      const hashedPassword = flags?.password ? await bcrypt.hash(flags.password, 10) : null;
+
       donor = await this.prisma.donor.create({
         data: {
-          email,
+          email: identifier,
           donorId: `DNR${nextId}`,
+          name: flags?.name,
+          mobile: flags?.mobile,
+          password: hashedPassword,
+          isVolunteer: flags?.isVolunteer ?? false,
+          isNonDonor: flags?.isNonDonor ?? false,
+        },
+      });
+    } else if (flags?.password && !donor.password) {
+      // Set password for existing donor who didn't have one
+      const hashedPassword = await bcrypt.hash(flags.password, 10);
+      donor = await this.prisma.donor.update({
+        where: { id: donor.id },
+        data: { 
+          password: hashedPassword,
+          ...(flags.name ? { name: flags.name } : {}),
+          ...(flags.mobile ? { mobile: flags.mobile } : {}),
         },
       });
     }
 
+    const email = donor.email;
     const isEligible = donor.totalDonated >= 5000;
 
     // Simulate OTP generation
@@ -53,7 +105,8 @@ export class AuthService {
     if (!isEligible) {
       return {
         eligible: false,
-        message: 'Dashboard access requires minimum ₹5000 donation',
+        otpSent: true,
+        message: 'Registration successful. Please verify your email to continue.',
         redirect: '/donor/receipts',
         ...(debugOtp ? { devOtp: otp } : {}),
       };
@@ -68,9 +121,14 @@ export class AuthService {
   }
 
 
-  async verifyOtp(email: string, otp: string) {
-    const donor = await this.prisma.donor.findUnique({
-      where: { email },
+  async verifyOtp(identifier: string, otp: string) {
+    const donor = await this.prisma.donor.findFirst({
+      where: {
+        OR: [
+          { email: identifier },
+          { donorId: identifier },
+        ],
+      },
     });
 
     if (!donor || !donor.otpHash || !donor.otpExpiry) {
@@ -97,6 +155,9 @@ export class AuthService {
     return {
       success: true,
       token,
+      name: donor.name,
+      donorId: donor.donorId,
+      eligible: donor.totalDonated >= 5000,
       redirect: '/donor/dashboard',
     };
   }
