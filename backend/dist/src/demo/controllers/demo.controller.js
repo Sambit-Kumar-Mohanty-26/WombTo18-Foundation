@@ -109,7 +109,7 @@ __decorate([
     __metadata("design:returntype", Promise)
 ], DemoController.prototype, "donateDummy", null);
 exports.DemoController = DemoController = __decorate([
-    (0, common_1.Controller)('api/demo'),
+    (0, common_1.Controller)('demo'),
     __metadata("design:paramtypes", [prisma_service_1.PrismaService])
 ], DemoController);
 //# sourceMappingURL=demo.controller.js.map

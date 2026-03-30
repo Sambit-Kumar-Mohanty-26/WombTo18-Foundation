@@ -41,7 +41,8 @@ import { AdminReports } from "./pages/admin/AdminReports";
 import { AdminBlog } from "./pages/admin/AdminBlog";
 import { AdminCaseStudies } from "./pages/admin/AdminCaseStudies";
 import { AdvisoryBoardApplicationPage } from "./pages/AdvisoryBoardApplicationPage";
-
+import { AdvisoryBoardApplyPage } from "./pages/AdvisoryBoardApplyPage";
+import { EmailVerificationPage } from "./pages/EmailVerificationPage";
 export const router = createBrowserRouter([
   {
     path: "/",
@@ -66,6 +67,8 @@ export const router = createBrowserRouter([
       { path: "volunteer-success", Component: VolunteerSuccessPage },
       { path: "dashboard-preview", Component: DashboardPreviewPage },
       { path: "advisory-board", Component: AdvisoryBoardApplicationPage },
+      { path: "advisory-board/apply", Component: AdvisoryBoardApplyPage },
+      { path: "verify-email", Component: EmailVerificationPage },
       { path: "donor/login", Component: DonorLogin },
       { path: "donor/verify-otp", Component: DonorVerifyOtp },
 

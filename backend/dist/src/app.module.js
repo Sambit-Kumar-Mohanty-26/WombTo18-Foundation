@@ -21,6 +21,8 @@ const blog_module_1 = require("./blog/blog.module");
 const admin_module_1 = require("./admin/admin.module");
 const demo_module_1 = require("./demo/demo.module");
 const bhashini_module_1 = require("./bhashini/bhashini.module");
+const verification_module_1 = require("./verification/verification.module");
+const advisory_module_1 = require("./advisory/advisory.module");
 let AppModule = class AppModule {
 };
 exports.AppModule = AppModule;
@@ -38,6 +40,8 @@ exports.AppModule = AppModule = __decorate([
             admin_module_1.AdminModule,
             demo_module_1.DemoModule,
             bhashini_module_1.BhashiniModule,
+            verification_module_1.VerificationModule,
+            advisory_module_1.AdvisoryModule,
         ],
         controllers: [app_controller_1.AppController],
         providers: [app_service_1.AppService],

@@ -19,18 +19,16 @@ export function LoginSelectionPage() {
 
   const itemVariants = {
     hidden: { opacity: 0, y: 30 },
-    visible: { opacity: 1, y: 0, transition: { duration: 0.8, ease: "easeOut" } }
+    visible: { opacity: 1, y: 0, transition: { duration: 0.8, ease: "easeOut" as const } }
   };
 
   return (
     <section className="min-h-screen flex flex-col items-center justify-center bg-[#FFFDF7] relative overflow-hidden px-4 md:px-6 py-8">
-      {/* Ambient Light Background */}
       <div className="absolute inset-0 overflow-hidden pointer-events-none">
         <div className="absolute top-[-10%] right-[-10%] w-[60%] h-[60%] rounded-full bg-[var(--womb-forest)] opacity-[0.03] blur-[120px] animate-pulse" />
         <div className="absolute bottom-[-10%] left-[-10%] w-[50%] h-[50%] rounded-full bg-[var(--future-sky)] opacity-[0.03] blur-[100px]" />
         <div className="absolute top-[20%] left-[10%] w-[30%] h-[30%] rounded-full bg-[var(--journey-saffron)] opacity-[0.03] blur-[90px]" />
         
-        {/* Subtle dot pattern grid */}
         <div className="absolute inset-0 opacity-[0.02]" style={{ backgroundImage: 'radial-gradient(circle at 1px 1px, #1D6E3F 1px, transparent 0)', backgroundSize: '32px 32px' }} />
       </div>
 
@@ -40,7 +38,6 @@ export function LoginSelectionPage() {
         animate="visible"
         className="w-full max-w-5xl z-20 flex flex-col items-center"
       >
-        {/* Brand Identity */}
         <motion.div variants={itemVariants} className="text-center mb-10 relative w-full">
           <div className="absolute -inset-10 bg-gradient-to-b from-white to-transparent opacity-80 blur-2xl -z-10 rounded-full" />
           
@@ -57,10 +54,8 @@ export function LoginSelectionPage() {
           <p className="text-gray-500 text-sm font-bold uppercase tracking-[0.25em]">Access Your Mission Dashboard</p>
         </motion.div>
 
-        {/* Access Cards Grid */}
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6 w-full max-w-4xl mx-auto">
           
-          {/* Supporter Portal Card */}
           <motion.div variants={itemVariants} whileHover={{ y: -8 }} className="group relative h-full">
             <div className="absolute -inset-0.5 bg-gradient-to-br from-[var(--womb-forest)]/20 to-transparent rounded-[2.5rem] blur-md opacity-0 group-hover:opacity-100 transition duration-700" />
             <div className="relative flex flex-col h-full bg-white/70 backdrop-blur-xl border border-gray-100/80 rounded-[2.5rem] p-8 md:p-10 shadow-[0_8px_40px_-12px_rgba(0,0,0,0.06)] group-hover:shadow-[0_20px_50px_-12px_rgba(29,110,63,0.15)] transition-all duration-500 hover:bg-white text-left">
@@ -96,7 +91,6 @@ export function LoginSelectionPage() {
             </div>
           </motion.div>
 
-          {/* Partner Portal Card */}
           <motion.div variants={itemVariants} whileHover={{ y: -8 }} className="group relative h-full">
             <div className="absolute -inset-0.5 bg-gradient-to-br from-[var(--future-sky)]/20 to-transparent rounded-[2.5rem] blur-md opacity-0 group-hover:opacity-100 transition duration-700" />
             <div className="relative flex flex-col h-full bg-white/70 backdrop-blur-xl border border-gray-100/80 rounded-[2.5rem] p-8 md:p-10 shadow-[0_8px_40px_-12px_rgba(0,0,0,0.06)] group-hover:shadow-[0_20px_50px_-12px_rgba(0,174,239,0.15)] transition-all duration-500 hover:bg-white text-left">
@@ -134,7 +128,6 @@ export function LoginSelectionPage() {
 
         </div>
 
-        {/* Compliance / Security Footer */}
         <motion.div variants={itemVariants} className="mt-12 z-20 max-w-xl text-center">
           <div className="flex flex-wrap items-center justify-center gap-3 sm:gap-6 opacity-80 grayscale hover:grayscale-0 transition-all duration-700">
             <div className="flex items-center gap-2 text-gray-500 text-[10px] font-bold uppercase tracking-[0.2em] bg-white/60 backdrop-blur-sm shadow-sm px-4 py-2 rounded-full border border-gray-200/60">

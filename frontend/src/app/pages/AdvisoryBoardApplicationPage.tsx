@@ -188,9 +188,9 @@ export function AdvisoryBoardApplicationPage() {
               </p>
 
               <div className="flex flex-col sm:flex-row items-center gap-3 border-b border-gray-200 pb-6 mb-5">
-                <a href="#apply" className="w-full sm:w-auto inline-flex items-center justify-center bg-[var(--womb-forest)] text-white px-7 h-12 rounded-xl font-bold hover:bg-green-900 hover:shadow-[0_15px_30px_-10px_rgba(29,110,63,0.4)] hover:-translate-y-1 transition-all">
+                <Link to="/advisory-board/apply" className="w-full sm:w-auto inline-flex items-center justify-center bg-[var(--womb-forest)] text-white px-7 h-12 rounded-xl font-bold hover:bg-green-900 hover:shadow-[0_15px_30px_-10px_rgba(29,110,63,0.4)] hover:-translate-y-1 transition-all">
                   Apply to join the board
-                </a>
+                </Link>
                 <a href="#process" className="w-full sm:w-auto inline-flex items-center justify-center bg-white border border-[#E8DFCE] text-[var(--womb-forest)] px-7 h-12 rounded-xl font-bold hover:border-[var(--womb-forest)] hover:bg-[#FAF9F6] transition-all">
                   Learn about the process
                 </a>
@@ -628,9 +628,9 @@ export function AdvisoryBoardApplicationPage() {
             viewport={{ once: true }}
             transition={{ duration: 0.6, delay: 0.5 }}
           >
-            <a href="mailto:advisory@wombto18.org" className="inline-flex items-center gap-3 bg-gradient-to-r from-[var(--womb-forest)] to-green-800 text-white px-10 h-14 rounded-2xl font-bold text-base shadow-[0_20px_40px_-10px_rgba(29,110,63,0.3)] hover:shadow-[0_30px_60px_-15px_rgba(29,110,63,0.4)] hover:-translate-y-1.5 transition-all duration-300 group">
+            <Link to="/advisory-board/apply" className="inline-flex items-center gap-3 bg-gradient-to-r from-[var(--womb-forest)] to-green-800 text-white px-10 h-14 rounded-2xl font-bold text-base shadow-[0_20px_40px_-10px_rgba(29,110,63,0.3)] hover:shadow-[0_30px_60px_-15px_rgba(29,110,63,0.4)] hover:-translate-y-1.5 transition-all duration-300 group">
               Start Application <ArrowRight className="w-5 h-5 group-hover:translate-x-1.5 transition-transform" />
-            </a>
+            </Link>
           </motion.div>
 
           {/* Trust signals */}

@@ -12,6 +12,8 @@ import { BlogModule } from './blog/blog.module';
 import { AdminModule } from './admin/admin.module';
 import { DemoModule } from './demo/demo.module';
 import { BhashiniModule } from './bhashini/bhashini.module';
+import { VerificationModule } from './verification/verification.module';
+import { AdvisoryModule } from './advisory/advisory.module';
 
 @Module({
   imports: [
@@ -26,6 +28,8 @@ import { BhashiniModule } from './bhashini/bhashini.module';
     AdminModule,
     DemoModule,
     BhashiniModule,
+    VerificationModule,
+    AdvisoryModule,
   ],
   controllers: [AppController],
   providers: [AppService],
