@@ -3,8 +3,15 @@ import { Button } from "../ui/button";
 import { Heart, LayoutDashboard, Handshake } from "lucide-react";
 import { motion, useScroll, useTransform, AnimatePresence } from "motion/react";
 import { useRef, useState, useEffect } from "react";
+import dashboard_img1 from "../../../../dist/images/dashboard/657ae878-799e-44e7-a0e6-759a9b0420dc.jpeg"
+import dashboard_img2 from "../../../../dist/images/dashboard/WhatsApp Image 2025-11-14 at 12.30.17.jpeg"
+import dashboard_img3 from "../../../../dist/images/dashboard/ec9e78d6-4820-48e0-abfa-f6af927c9682.jpeg"
+
 
 const HERO_IMAGES = [
+  dashboard_img1,
+  dashboard_img2,
+  dashboard_img3,
   "https://images.unsplash.com/photo-1542810634-71277d95dcbb?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwyfHxjaGlsZHJlbiUyMGhhcHB5JTIwSW5kaWF8ZW58MHx8fHwxNzczMTM0MDIxfDA&ixlib=rb-4.1.0&q=80&w=1920", // Original Happy children India
   "/images/site-assets/hero_health.png",
   "https://images.unsplash.com/photo-1594708767771-a7502209ff51?q=80&w=1920&auto=format&fit=crop",

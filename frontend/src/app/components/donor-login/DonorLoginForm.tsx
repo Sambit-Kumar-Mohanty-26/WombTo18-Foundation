@@ -9,7 +9,7 @@ import { Label } from "../ui/label";
 import { Loader2, Mail, Lock, User, Phone, ArrowLeft, Eye, EyeOff } from "lucide-react";
 import { auth } from "../../lib/auth";
 import { toast } from "sonner";
-import { useNavigate } from "react-router";
+import { useNavigate, useSearchParams } from "react-router";
 import { useAuth } from "../../context/AuthContext";
 
 // --- Schemas ---
@@ -84,37 +84,37 @@ function LoginTab({ onSuccess }: DonorLoginFormProps) {
   return (
     <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
       <div className="space-y-2">
-        <Label className="text-xs font-semibold uppercase tracking-wider text-[#d1f5e0]/60">Email or Donor ID</Label>
+        <Label className="text-xs font-black uppercase tracking-widest text-emerald-800/40">Email or Donor ID</Label>
         <div className="relative">
-          <Mail className="absolute left-3 top-3 h-4 w-4 text-[#d1f5e0]/40" />
+          <Mail className="absolute left-3 top-3 h-4 w-4 text-emerald-600/30" />
           <Input
             placeholder="donor@example.com or DNR1001"
             {...register("identifier")}
-            className="pl-10 bg-[#0a3a1e]/60 border-white/10 text-white placeholder:text-[#d1f5e0]/30 focus-visible:ring-primary"
+            className="pl-10 bg-gray-50 border-gray-200 text-gray-900 placeholder:text-gray-400 focus-visible:ring-emerald-500 rounded-xl h-11"
           />
         </div>
-        {errors.identifier && <p className="text-xs text-red-400">{errors.identifier.message}</p>}
+        {errors.identifier && <p className="text-xs text-red-500 font-bold">{errors.identifier.message}</p>}
       </div>
 
       <div className="space-y-2">
-        <Label className="text-xs font-semibold uppercase tracking-wider text-[#d1f5e0]/60">Password</Label>
+        <Label className="text-xs font-black uppercase tracking-widest text-emerald-800/40">Password</Label>
         <div className="relative">
-          <Lock className="absolute left-3 top-3 h-4 w-4 text-[#d1f5e0]/40" />
+          <Lock className="absolute left-3 top-3 h-4 w-4 text-emerald-600/30" />
           <Input
             type={showPassword ? "text" : "password"}
             placeholder="Your password"
             {...register("password")}
-            className="pl-10 pr-10 bg-[#0a3a1e]/60 border-white/10 text-white placeholder:text-[#d1f5e0]/30 focus-visible:ring-primary"
+            className="pl-10 pr-10 bg-gray-50 border-gray-200 text-gray-900 placeholder:text-gray-400 focus-visible:ring-emerald-500 rounded-xl h-11"
           />
-          <button type="button" onClick={() => setShowPassword(!showPassword)} className="absolute right-3 top-3 text-[#d1f5e0]/40 hover:text-white transition-colors">
+          <button type="button" onClick={() => setShowPassword(!showPassword)} className="absolute right-3 top-3 text-gray-400 hover:text-emerald-600 transition-colors">
             {showPassword ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
           </button>
         </div>
-        {errors.password && <p className="text-xs text-red-400">{errors.password.message}</p>}
+        {errors.password && <p className="text-xs text-red-500 font-bold">{errors.password.message}</p>}
       </div>
 
-      <Button type="submit" disabled={isSubmitting} className="w-full bg-primary hover:bg-primary/90 text-primary-foreground font-bold h-11 mt-2">
-        {isSubmitting ? <><Loader2 className="mr-2 h-4 w-4 animate-spin" />Signing In...</> : "Sign In"}
+      <Button type="submit" disabled={isSubmitting} className="w-full bg-emerald-600 hover:bg-emerald-500 text-white font-black h-12 mt-2 rounded-xl shadow-lg shadow-emerald-100">
+        {isSubmitting ? <><Loader2 className="mr-2 h-4 w-4 animate-spin" />Signing In...</> : "Authorize Access"}
       </Button>
     </form>
   );
@@ -126,6 +126,8 @@ function RegisterTab({ onSuccess }: DonorLoginFormProps) {
   const [showPassword, setShowPassword] = useState(false);
   const [isVolunteer, setIsVolunteer] = useState(false);
   const [isNonDonor, setIsNonDonor] = useState(false);
+  const [searchParams] = useSearchParams();
+  const refCode = searchParams.get("ref");
 
   const { register, handleSubmit, formState: { errors } } = useForm<RegisterFormData>({
     resolver: zodResolver(registerSchema),
@@ -140,6 +142,7 @@ function RegisterTab({ onSuccess }: DonorLoginFormProps) {
         mobile: data.mobile,
         isVolunteer,
         isNonDonor,
+        referredById: refCode || undefined,
       });
 
       if (response.otpSent) {
@@ -163,64 +166,64 @@ function RegisterTab({ onSuccess }: DonorLoginFormProps) {
   return (
     <form onSubmit={handleSubmit(onSubmit)} className="space-y-3">
       <div className="space-y-2">
-        <Label className="text-xs font-semibold uppercase tracking-wider text-[#d1f5e0]/60">Email Address</Label>
+        <Label className="text-xs font-black uppercase tracking-widest text-emerald-800/40">Email Address</Label>
         <div className="relative">
-          <Mail className="absolute left-3 top-3 h-4 w-4 text-[#d1f5e0]/40" />
-          <Input placeholder="donor@example.com" {...register("email")} className="pl-10 bg-[#0a3a1e]/60 border-white/10 text-white placeholder:text-[#d1f5e0]/30 focus-visible:ring-primary" />
+          <Mail className="absolute left-3 top-3 h-4 w-4 text-emerald-600/30" />
+          <Input placeholder="donor@example.com" {...register("email")} className="pl-10 bg-gray-50 border-gray-200 text-gray-900 placeholder:text-gray-400 focus-visible:ring-emerald-500 rounded-xl h-11" />
         </div>
-        {errors.email && <p className="text-xs text-red-400">{errors.email.message}</p>}
+        {errors.email && <p className="text-xs text-red-500 font-bold">{errors.email.message}</p>}
       </div>
 
       <div className="grid grid-cols-2 gap-3">
         <div className="space-y-2">
-          <Label className="text-xs font-semibold uppercase tracking-wider text-[#d1f5e0]/60">Full Name</Label>
+          <Label className="text-xs font-black uppercase tracking-widest text-emerald-800/40">Full Name</Label>
           <div className="relative">
-            <User className="absolute left-3 top-3 h-4 w-4 text-[#d1f5e0]/40" />
-            <Input placeholder="John Doe" {...register("name")} className="pl-10 bg-[#0a3a1e]/60 border-white/10 text-white placeholder:text-[#d1f5e0]/30 focus-visible:ring-primary" />
+            <User className="absolute left-3 top-3 h-4 w-4 text-emerald-600/30" />
+            <Input placeholder="John Doe" {...register("name")} className="pl-10 bg-gray-50 border-gray-200 text-gray-900 placeholder:text-gray-400 focus-visible:ring-emerald-500 rounded-xl h-11" />
           </div>
-          {errors.name && <p className="text-xs text-red-400">{errors.name.message}</p>}
+          {errors.name && <p className="text-xs text-red-500 font-bold">{errors.name.message}</p>}
         </div>
         <div className="space-y-2">
-          <Label className="text-xs font-semibold uppercase tracking-wider text-[#d1f5e0]/60">Mobile (Optional)</Label>
+          <Label className="text-xs font-black uppercase tracking-widest text-emerald-800/40">Mobile</Label>
           <div className="relative">
-            <Phone className="absolute left-3 top-3 h-4 w-4 text-[#d1f5e0]/40" />
-            <Input placeholder="+91 XXXXX XXXXX" {...register("mobile")} className="pl-10 bg-[#0a3a1e]/60 border-white/10 text-white placeholder:text-[#d1f5e0]/30 focus-visible:ring-primary" />
+            <Phone className="absolute left-3 top-3 h-4 w-4 text-emerald-600/30" />
+            <Input placeholder="+91 XXXXX XXXXX" {...register("mobile")} className="pl-10 bg-gray-50 border-gray-200 text-gray-900 placeholder:text-gray-400 focus-visible:ring-emerald-500 rounded-xl h-11" />
           </div>
         </div>
       </div>
 
       <div className="space-y-2">
-        <Label className="text-xs font-semibold uppercase tracking-wider text-[#d1f5e0]/60">Password</Label>
+        <Label className="text-xs font-black uppercase tracking-widest text-emerald-800/40">Secure Password</Label>
         <div className="relative">
-          <Lock className="absolute left-3 top-3 h-4 w-4 text-[#d1f5e0]/40" />
+          <Lock className="absolute left-3 top-3 h-4 w-4 text-emerald-600/30" />
           <Input
             type={showPassword ? "text" : "password"}
             placeholder="Create a password (min 6 chars)"
             {...register("password")}
-            className="pl-10 pr-10 bg-[#0a3a1e]/60 border-white/10 text-white placeholder:text-[#d1f5e0]/30 focus-visible:ring-primary"
+            className="pl-10 pr-10 bg-gray-50 border-gray-200 text-gray-900 placeholder:text-gray-400 focus-visible:ring-emerald-500 rounded-xl h-11"
           />
-          <button type="button" onClick={() => setShowPassword(!showPassword)} className="absolute right-3 top-3 text-[#d1f5e0]/40 hover:text-white transition-colors">
+          <button type="button" onClick={() => setShowPassword(!showPassword)} className="absolute right-3 top-3 text-gray-400 hover:text-emerald-600 transition-colors">
             {showPassword ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
           </button>
         </div>
-        {errors.password && <p className="text-xs text-red-400">{errors.password.message}</p>}
+        {errors.password && <p className="text-xs text-red-500 font-bold">{errors.password.message}</p>}
       </div>
 
       <div className="grid grid-cols-2 gap-2 pt-1">
-        <label className={`flex items-center gap-2 p-2.5 rounded-xl border text-[11px] font-medium cursor-pointer transition-all ${isVolunteer ? "bg-emerald-500/10 border-emerald-500/30 text-emerald-300" : "bg-white/5 border-white/5 hover:border-white/10 text-white/50"}`}>
-          <input type="checkbox" checked={isVolunteer} onChange={e => setIsVolunteer(e.target.checked)} className="accent-emerald-400" />
+        <label className={`flex items-center gap-2 p-2.5 rounded-xl border text-[11px] font-bold cursor-pointer transition-all ${isVolunteer ? "bg-emerald-500/10 border-emerald-500/30 text-emerald-700" : "bg-gray-50 border-gray-100 text-gray-400"}`}>
+          <input type="checkbox" checked={isVolunteer} onChange={e => setIsVolunteer(e.target.checked)} className="accent-emerald-600" />
           Volunteer
         </label>
-        <label className={`flex items-center gap-2 p-2.5 rounded-xl border text-[11px] font-medium cursor-pointer transition-all ${isNonDonor ? "bg-orange-500/10 border-orange-500/30 text-orange-300" : "bg-white/5 border-white/5 hover:border-white/10 text-white/50"}`}>
-          <input type="checkbox" checked={isNonDonor} onChange={e => setIsNonDonor(e.target.checked)} className="accent-orange-400" />
+        <label className={`flex items-center gap-2 p-2.5 rounded-xl border text-[11px] font-bold cursor-pointer transition-all ${isNonDonor ? "bg-orange-500/10 border-orange-500/30 text-orange-700" : "bg-gray-50 border-gray-100 text-gray-400"}`}>
+          <input type="checkbox" checked={isNonDonor} onChange={e => setIsNonDonor(e.target.checked)} className="accent-orange-600" />
           Non-Donor
         </label>
       </div>
 
-      <Button type="submit" disabled={isSubmitting} className="w-full bg-primary hover:bg-primary/90 text-primary-foreground font-bold h-11 mt-1">
-        {isSubmitting ? <><Loader2 className="mr-2 h-4 w-4 animate-spin" />Creating Account...</> : "Create Account & Verify"}
+      <Button type="submit" disabled={isSubmitting} className="w-full bg-emerald-600 hover:bg-emerald-500 text-white font-black h-12 mt-1 rounded-xl shadow-lg shadow-emerald-100">
+        {isSubmitting ? <><Loader2 className="mr-2 h-4 w-4 animate-spin" />Registering...</> : "Create Identity"}
       </Button>
-      <p className="text-[10px] text-center text-[#a7e8c3]/30 leading-tight">An OTP will be sent to your email for verification.</p>
+      <p className="text-[10px] text-center text-gray-400 font-medium leading-tight">Verification OTP will be dispatched to your email endpoint.</p>
     </form>
   );
 }
@@ -231,35 +234,35 @@ export function DonorLoginForm({ onSuccess }: DonorLoginFormProps) {
   const navigate = useNavigate();
 
   return (
-    <Card className="w-full max-w-md mx-auto bg-[#0a3a1e]/40 border-white/10 text-white backdrop-blur-sm shadow-2xl">
+    <Card className="w-full max-w-md mx-auto bg-white/90 border-emerald-100 text-gray-900 backdrop-blur-md shadow-2xl rounded-[2.5rem] overflow-hidden">
       <CardHeader className="space-y-1 pb-4 text-center">
         <div className="flex justify-start mb-2">
-          <Button variant="ghost" size="sm" onClick={() => navigate("/login")} className="text-[#a7e8c3]/50 hover:text-white hover:bg-white/5 -ml-2">
-            <ArrowLeft className="h-4 w-4 mr-1" /> Back
+          <Button variant="ghost" size="sm" onClick={() => navigate("/login")} className="text-emerald-800/40 hover:text-emerald-600 hover:bg-emerald-50 -ml-2">
+            <ArrowLeft className="h-4 w-4 mr-1" /> Return
           </Button>
         </div>
-        <CardTitle className="text-2xl font-bold tracking-tight text-white">
-          {isRegistering ? "Create Account" : "Donor Sign In"}
+        <CardTitle className="text-3xl font-black tracking-tighter text-gray-900">
+          {isRegistering ? "Supporter Entry" : "Portal Access"}
         </CardTitle>
-        <CardDescription className="text-[#d1f5e0]/70">
-          {isRegistering ? "Register to join the WombTo18 family." : "Sign in with your email/ID and password."}
+        <CardDescription className="text-gray-500 font-medium">
+          {isRegistering ? "Join our mission-driven network." : "Secure entry via institutional credentials."}
         </CardDescription>
       </CardHeader>
 
       <CardContent>
         {/* Tab Toggle */}
-        <div className="flex p-1 bg-white/5 rounded-lg border border-white/10 mb-5">
+        <div className="flex p-1 bg-gray-50 rounded-2xl border border-gray-100 mb-6">
           <button
             type="button"
             onClick={() => setIsRegistering(false)}
-            className={`flex-1 py-1.5 text-xs font-semibold rounded-md transition-all ${!isRegistering ? "bg-primary text-primary-foreground shadow-sm" : "text-white/50 hover:text-white"}`}
+            className={`flex-1 py-2 text-xs font-black uppercase tracking-widest rounded-xl transition-all ${!isRegistering ? "bg-white text-emerald-600 shadow-sm border border-emerald-50" : "text-gray-400 hover:text-gray-900"}`}
           >
             Login
           </button>
           <button
             type="button"
             onClick={() => setIsRegistering(true)}
-            className={`flex-1 py-1.5 text-xs font-semibold rounded-md transition-all ${isRegistering ? "bg-primary text-primary-foreground shadow-sm" : "text-white/50 hover:text-white"}`}
+            className={`flex-1 py-2 text-xs font-black uppercase tracking-widest rounded-xl transition-all ${isRegistering ? "bg-white text-emerald-600 shadow-sm border border-emerald-50" : "text-gray-400 hover:text-gray-900"}`}
           >
             Register
           </button>
@@ -273,3 +276,4 @@ export function DonorLoginForm({ onSuccess }: DonorLoginFormProps) {
     </Card>
   );
 }
+

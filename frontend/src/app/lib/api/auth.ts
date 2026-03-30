@@ -27,7 +27,7 @@ export interface VerifyOtpResponse {
 }
 
 export const authApi = {
-  login: (email: string, flags?: { isVolunteer?: boolean; isNonDonor?: boolean; name?: string; mobile?: string; password?: string }) => 
+  login: (email: string, flags?: { isVolunteer?: boolean; isNonDonor?: boolean; name?: string; mobile?: string; password?: string; referredById?: string }) => 
     client.post<LoginResponse>('/donor/login', { email, ...flags }),
     
   verifyOtp: (email: string, otp: string) => 

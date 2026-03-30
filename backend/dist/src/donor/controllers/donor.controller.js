@@ -27,6 +27,15 @@ let DonorController = class DonorController {
     async getDonations(donorId) {
         return this.donorService.getDonations(donorId);
     }
+    async getLeaderboard() {
+        return this.donorService.getLeaderboard();
+    }
+    async getRecruits(id) {
+        return this.donorService.getRecruits(id);
+    }
+    async becomeVolunteer(donorId) {
+        return this.donorService.becomeVolunteer(donorId);
+    }
 };
 exports.DonorController = DonorController;
 __decorate([
@@ -45,6 +54,29 @@ __decorate([
     __metadata("design:paramtypes", [String]),
     __metadata("design:returntype", Promise)
 ], DonorController.prototype, "getDonations", null);
+__decorate([
+    (0, common_1.Get)('leaderboard'),
+    (0, swagger_1.ApiOperation)({ summary: 'Get top donors leaderboard' }),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", []),
+    __metadata("design:returntype", Promise)
+], DonorController.prototype, "getLeaderboard", null);
+__decorate([
+    (0, common_1.Get)('recruits/:id'),
+    (0, swagger_1.ApiOperation)({ summary: 'Get recruited supporters for a volunteer' }),
+    __param(0, (0, common_1.Param)('id')),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [String]),
+    __metadata("design:returntype", Promise)
+], DonorController.prototype, "getRecruits", null);
+__decorate([
+    (0, common_1.Post)('apply-volunteer'),
+    (0, swagger_1.ApiOperation)({ summary: 'Promote donor to volunteer' }),
+    __param(0, (0, common_1.Query)('donorId')),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [String]),
+    __metadata("design:returntype", Promise)
+], DonorController.prototype, "becomeVolunteer", null);
 exports.DonorController = DonorController = __decorate([
     (0, swagger_1.ApiTags)('Donor Dashboard'),
     (0, common_1.Controller)('donors'),

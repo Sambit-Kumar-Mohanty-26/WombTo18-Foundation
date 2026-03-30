@@ -8,6 +8,7 @@ export declare class DonorService {
             donorId: string;
             tier: string;
             totalDonated: number;
+            isVolunteer: any;
         };
         impact: {
             id: string;
@@ -30,4 +31,37 @@ export declare class DonorService {
         date: string;
         status: string;
     }[]>;
+    getLeaderboard(): Promise<{
+        name: string | null;
+        donorId: string;
+        tier: string;
+        totalDonated: number;
+    }[]>;
+    getRecruits(donorId: string): Promise<{
+        name: string | null;
+        createdAt: Date;
+        donorId: string;
+        email: string;
+        totalDonated: number;
+    }[]>;
+    becomeVolunteer(donorId: string): Promise<{
+        id: string;
+        name: string | null;
+        createdAt: Date;
+        updatedAt: Date;
+        donorId: string;
+        email: string;
+        mobile: string | null;
+        password: string | null;
+        pan: string | null;
+        address: string | null;
+        tier: string;
+        totalDonated: number;
+        otpHash: string | null;
+        otpExpiry: Date | null;
+        isEligible: boolean;
+        isVolunteer: boolean;
+        isNonDonor: boolean;
+        referredById: string | null;
+    }>;
 }

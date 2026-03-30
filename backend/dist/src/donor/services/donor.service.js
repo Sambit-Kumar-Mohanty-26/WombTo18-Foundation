@@ -40,6 +40,7 @@ let DonorService = class DonorService {
                 donorId: donor.donorId,
                 tier: donor.tier,
                 totalDonated: donor.totalDonated,
+                isVolunteer: donor.isVolunteer || false,
             },
             impact,
         };
@@ -63,6 +64,43 @@ let DonorService = class DonorService {
             date: d.createdAt.toISOString().split('T')[0],
             status: d.status,
         }));
+    }
+    async getLeaderboard() {
+        return this.prisma.donor.findMany({
+            where: { totalDonated: { gt: 0 } },
+            orderBy: { totalDonated: 'desc' },
+            take: 10,
+            select: {
+                name: true,
+                donorId: true,
+                totalDonated: true,
+                tier: true,
+            },
+        });
+    }
+    async getRecruits(donorId) {
+        return this.prisma.donor.findMany({
+            where: { referredById: donorId },
+            select: {
+                name: true,
+                donorId: true,
+                email: true,
+                totalDonated: true,
+                createdAt: true,
+            },
+            orderBy: { createdAt: 'desc' },
+        });
+    }
+    async becomeVolunteer(donorId) {
+        const donor = await this.prisma.donor.findUnique({
+            where: { donorId },
+        });
+        if (!donor)
+            throw new common_1.NotFoundException('Donor not found');
+        return this.prisma.donor.update({
+            where: { id: donor.id },
+            data: { isVolunteer: true },
+        });
     }
 };
 exports.DonorService = DonorService;

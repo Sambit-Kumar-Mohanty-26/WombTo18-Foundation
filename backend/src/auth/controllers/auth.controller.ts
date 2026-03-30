@@ -1,4 +1,4 @@
-import { Controller, Post, Body, Res } from '@nestjs/common';
+import { Controller, Post, Body, Res, Get, Param } from '@nestjs/common';
 import { AuthService } from '../services/auth.service';
 import { ApiTags, ApiOperation } from '@nestjs/swagger';
 import type { Response } from 'express';
@@ -17,8 +17,9 @@ export class AuthController {
     @Body('isNonDonor') isNonDonor?: boolean,
     @Body('name') name?: string,
     @Body('mobile') mobile?: string,
+    @Body('referredById') referredById?: string,
   ) {
-    const flags = { isVolunteer, isNonDonor, name, mobile, password };
+    const flags = { isVolunteer, isNonDonor, name, mobile, password, referredById };
     return this.authService.donorLogin(email, flags);
   }
 
@@ -42,3 +43,5 @@ export class AuthController {
     return result;
   }
 }
+
+

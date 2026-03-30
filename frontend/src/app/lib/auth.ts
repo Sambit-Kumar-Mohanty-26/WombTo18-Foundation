@@ -12,7 +12,7 @@ export interface DonorSession {
 export const auth = {
   async login(
     identifier: string,
-    flags?: { isVolunteer?: boolean; isNonDonor?: boolean; name?: string; mobile?: string; password?: string }
+    flags?: { isVolunteer?: boolean; isNonDonor?: boolean; name?: string; mobile?: string; password?: string; referredById?: string }
   ): Promise<LoginResponse> {
     const response = await authApi.login(identifier, flags);
     return response;

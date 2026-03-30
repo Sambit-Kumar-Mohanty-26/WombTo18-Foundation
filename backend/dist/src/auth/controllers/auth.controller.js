@@ -21,8 +21,8 @@ let AuthController = class AuthController {
     constructor(authService) {
         this.authService = authService;
     }
-    async login(email, password, isVolunteer, isNonDonor, name, mobile) {
-        const flags = { isVolunteer, isNonDonor, name, mobile, password };
+    async login(email, password, isVolunteer, isNonDonor, name, mobile, referredById) {
+        const flags = { isVolunteer, isNonDonor, name, mobile, password, referredById };
         return this.authService.donorLogin(email, flags);
     }
     async verifyOtp(email, otp, res) {
@@ -46,8 +46,9 @@ __decorate([
     __param(3, (0, common_1.Body)('isNonDonor')),
     __param(4, (0, common_1.Body)('name')),
     __param(5, (0, common_1.Body)('mobile')),
+    __param(6, (0, common_1.Body)('referredById')),
     __metadata("design:type", Function),
-    __metadata("design:paramtypes", [String, String, Boolean, Boolean, String, String]),
+    __metadata("design:paramtypes", [String, String, Boolean, Boolean, String, String, String]),
     __metadata("design:returntype", Promise)
 ], AuthController.prototype, "login", null);
 __decorate([

@@ -38,6 +38,7 @@ export declare class AdminController {
         isEligible: boolean;
         isVolunteer: boolean;
         isNonDonor: boolean;
+        referredById: string | null;
     })[]>;
     getStats(): Promise<{
         totalDonations: number;
@@ -71,6 +72,7 @@ export declare class AdminController {
                 isEligible: boolean;
                 isVolunteer: boolean;
                 isNonDonor: boolean;
+                referredById: string | null;
             };
         } & {
             id: string;

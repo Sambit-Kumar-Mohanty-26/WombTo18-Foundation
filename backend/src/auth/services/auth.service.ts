@@ -14,7 +14,7 @@ export class AuthService {
     private readonly configService: ConfigService,
   ) {}
 
-  async donorLogin(identifier: string, flags?: { isVolunteer?: boolean; isNonDonor?: boolean; name?: string; mobile?: string; password?: string }) {
+  async donorLogin(identifier: string, flags?: { isVolunteer?: boolean; isNonDonor?: boolean; name?: string; mobile?: string; password?: string; referredById?: string }) {
     console.log(`[AuthService] Attempting donor identification for: ${identifier}`, flags);
     
     // Find donor by email OR donorId
@@ -39,6 +39,7 @@ export class AuthService {
           token: this.jwtService.sign(payload),
           name: donor.name,
           donorId: donor.donorId,
+          role: 'DONOR',
           message: 'Login successful via password',
         };
       } else {
@@ -69,6 +70,7 @@ export class AuthService {
           password: hashedPassword,
           isVolunteer: flags?.isVolunteer ?? false,
           isNonDonor: flags?.isNonDonor ?? false,
+          referredById: flags?.referredById,
         },
       });
     } else if (flags?.password && !donor.password) {
@@ -89,7 +91,7 @@ export class AuthService {
 
     // Simulate OTP generation
     const otp = Math.floor(100000 + Math.random() * 900000).toString();
-    const otpHash = otp; // In prod, use bcrypt or hashing
+    const otpHash = otp; 
     const otpExpiry = new Date(Date.now() + 10 * 60 * 1000); // 10 mins
 
     await this.prisma.donor.update({
@@ -119,7 +121,6 @@ export class AuthService {
       ...(debugOtp ? { devOtp: otp } : {}),
     };
   }
-
 
   async verifyOtp(identifier: string, otp: string) {
     const donor = await this.prisma.donor.findFirst({
@@ -158,7 +159,11 @@ export class AuthService {
       name: donor.name,
       donorId: donor.donorId,
       eligible: donor.totalDonated >= 5000,
+      isVolunteer: donor.isVolunteer,
       redirect: '/donor/dashboard',
     };
   }
 }
+
+
+

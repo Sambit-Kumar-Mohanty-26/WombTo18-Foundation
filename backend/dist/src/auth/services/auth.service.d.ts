@@ -14,12 +14,14 @@ export declare class AuthService {
         name?: string;
         mobile?: string;
         password?: string;
+        referredById?: string;
     }): Promise<{
         authenticated: boolean;
         eligible: boolean;
         token: string;
         name: string | null;
         donorId: string;
+        role: string;
         message: string;
     } | {
         devOtp?: string | undefined;
@@ -31,6 +33,7 @@ export declare class AuthService {
         token?: undefined;
         name?: undefined;
         donorId?: undefined;
+        role?: undefined;
     } | {
         devOtp?: string | undefined;
         eligible: boolean;
@@ -39,6 +42,7 @@ export declare class AuthService {
         authenticated?: undefined;
         token?: undefined;
         name?: undefined;
+        role?: undefined;
         message?: undefined;
     }>;
     verifyOtp(identifier: string, otp: string): Promise<{
@@ -47,6 +51,7 @@ export declare class AuthService {
         name: string | null;
         donorId: string;
         eligible: boolean;
+        isVolunteer: boolean;
         redirect: string;
     }>;
 }

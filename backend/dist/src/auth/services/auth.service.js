@@ -81,6 +81,7 @@ let AuthService = class AuthService {
                     token: this.jwtService.sign(payload),
                     name: donor.name,
                     donorId: donor.donorId,
+                    role: 'DONOR',
                     message: 'Login successful via password',
                 };
             }
@@ -107,6 +108,7 @@ let AuthService = class AuthService {
                     password: hashedPassword,
                     isVolunteer: flags?.isVolunteer ?? false,
                     isNonDonor: flags?.isNonDonor ?? false,
+                    referredById: flags?.referredById,
                 },
             });
         }
@@ -178,6 +180,7 @@ let AuthService = class AuthService {
             name: donor.name,
             donorId: donor.donorId,
             eligible: donor.totalDonated >= 5000,
+            isVolunteer: donor.isVolunteer,
             redirect: '/donor/dashboard',
         };
     }

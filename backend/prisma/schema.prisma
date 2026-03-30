@@ -24,6 +24,9 @@ model Donor {
   isEligible     Boolean    @default(false)
   isVolunteer    Boolean    @default(false)
   isNonDonor     Boolean    @default(false)
+  referredById   String?
+  referredBy     Donor?     @relation("Referrals", fields: [referredById], references: [id])
+  referrals      Donor[]    @relation("Referrals")
   createdAt      DateTime   @default(now())
   updatedAt      DateTime   @updatedAt
 }

@@ -36,6 +36,7 @@ export declare class AdminService {
         isEligible: boolean;
         isVolunteer: boolean;
         isNonDonor: boolean;
+        referredById: string | null;
     })[]>;
     findAllPrograms(): Promise<{
         id: string;
@@ -87,6 +88,7 @@ export declare class AdminService {
                 isEligible: boolean;
                 isVolunteer: boolean;
                 isNonDonor: boolean;
+                referredById: string | null;
             };
         } & {
             id: string;

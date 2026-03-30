@@ -30,6 +30,7 @@ export class DonorService {
         donorId: donor.donorId,
         tier: donor.tier,
         totalDonated: donor.totalDonated,
+        isVolunteer: (donor as any).isVolunteer || false,
       },
       impact,
     };
@@ -56,4 +57,46 @@ export class DonorService {
       status: d.status,
     }));
   }
+
+  async getLeaderboard() {
+    return this.prisma.donor.findMany({
+      where: { totalDonated: { gt: 0 } },
+      orderBy: { totalDonated: 'desc' },
+      take: 10,
+      select: {
+        name: true,
+        donorId: true,
+        totalDonated: true,
+        tier: true,
+      },
+    });
+  }
+
+  async getRecruits(donorId: string) {
+    return this.prisma.donor.findMany({
+      where: { referredById: donorId } as any,
+      select: {
+        name: true,
+        donorId: true,
+        email: true,
+        totalDonated: true,
+        createdAt: true,
+      },
+
+      orderBy: { createdAt: 'desc' },
+    });
+  }
+
+  async becomeVolunteer(donorId: string) {
+    const donor = await this.prisma.donor.findUnique({
+      where: { donorId },
+    });
+    if (!donor) throw new NotFoundException('Donor not found');
+
+    return this.prisma.donor.update({
+      where: { id: donor.id },
+      data: { isVolunteer: true } as any,
+    });
+  }
 }
+
