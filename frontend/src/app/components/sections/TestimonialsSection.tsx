@@ -24,13 +24,7 @@ const testimonials = [
     image: "/images/site-assets/testimonial_csr.png",
     quote: "Best parenting support system. Reminders + milestones + easy guides = peace of mind.Very accurate immunization reminders. Never missed a vaccine after joining.",
   },
-  {
-    name: "Niraj Devkar",
-    role: "Parent - Pune",
-    rating: 5,
-    image: "/images/site-assets/testimonial_niraj_devkar.jpg",
-    quote: "One of the most impactful, kind, and good doctors in Pune. I request all parents to consult Dr. Pramod Jog.",
-  },
+
   {
     name: "Diksha Kadam",
     role: "School Leader",

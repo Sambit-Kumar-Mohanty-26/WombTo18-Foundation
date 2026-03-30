@@ -1,7 +1,8 @@
 import { useState, useMemo } from "react";
 import { motion, AnimatePresence } from "motion/react";
-import { Heart, ChevronDown, ChevronRight, Search, Info, CreditCard, Lock } from "lucide-react";
-import { PROGRAMS, PROGRAM_CATEGORIES, SCHOOLS } from "./donateData";
+import { Heart, CreditCard, Lock, CheckCircle2, X } from "lucide-react";
+import { PROGRAMS, SCHOOLS } from "./donateData";
+import { ProgramSelector } from "./ProgramSelector";
 import { toast } from "sonner";
 
 const API = import.meta.env.VITE_API_URL || "http://localhost:6001";
@@ -10,8 +11,7 @@ declare global { interface Window { Razorpay: any; } }
 
 interface DonorFormData {
   name: string; email: string; mobile: string; pan: string;
-  programId: string; school: string; quantity: number;
-  customAmount: number; displayName: boolean; wantVolunteer: boolean;
+  displayName: boolean; wantVolunteer: boolean; volunteerInfo: string;
 }
 
 function PremiumInput({ id, label, required, ...props }: any) {
@@ -29,31 +29,48 @@ function PremiumInput({ id, label, required, ...props }: any) {
 export function DonorForm() {
   const [form, setForm] = useState<DonorFormData>({
     name: "", email: "", mobile: "", pan: "",
-    programId: "", school: "", quantity: 1,
-    customAmount: 0, displayName: true, wantVolunteer: false,
+    displayName: true, wantVolunteer: false, volunteerInfo: "",
   });
-  const [search, setSearch] = useState("");
-  const [expandedCat, setExpandedCat] = useState<string | null>(null);
+  const [selectedPrograms, setSelectedPrograms] = useState<Record<string, { quantity: number; school?: string }>>({});
   const [loading, setLoading] = useState(false);
 
-  const selectedProgram = useMemo(() => PROGRAMS.find(p => p.id === form.programId), [form.programId]);
   const totalAmount = useMemo(() => {
-    if (form.customAmount > 0) return form.customAmount;
-    if (!selectedProgram) return 0;
-    return selectedProgram.costPerUnit * form.quantity;
-  }, [selectedProgram, form.quantity, form.customAmount]);
+    let total = 0;
+    Object.keys(selectedPrograms).forEach(id => {
+      const prog = PROGRAMS.find(p => p.id === id);
+      if (prog) {
+        total += prog.costPerUnit * selectedPrograms[id].quantity;
+      }
+    });
+    return total;
+  }, [selectedPrograms]);
 
-  const filteredPrograms = useMemo(() => {
-    if (!search.trim()) return PROGRAMS;
-    const q = search.toLowerCase();
-    return PROGRAMS.filter(p => p.name.toLowerCase().includes(q) || p.category.toLowerCase().includes(q));
-  }, [search]);
 
   const set = (key: keyof DonorFormData, val: any) => setForm(prev => ({ ...prev, [key]: val }));
+
+  function toggleProgram(progId: string) {
+    setSelectedPrograms(prev => {
+      const next = { ...prev };
+      if (next[progId]) {
+        delete next[progId];
+      } else {
+        next[progId] = { quantity: 1, school: "" };
+      }
+      return next;
+    });
+  }
+
+  function updateProgram(progId: string, key: 'quantity' | 'school', val: any) {
+    setSelectedPrograms(prev => ({
+      ...prev,
+      [progId]: { ...prev[progId], [key]: val }
+    }));
+  }
 
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
     if (!form.email || !form.name) { toast.error("Name and email are required"); return; }
+    if (Object.keys(selectedPrograms).length === 0 && totalAmount < 100) { toast.error("Please select at least one program"); return; }
     if (totalAmount < 100) { toast.error("Minimum donation is ₹100"); return; }
     setLoading(true);
     try {
@@ -62,15 +79,17 @@ export function DonorForm() {
         body: JSON.stringify({
           amount: totalAmount, email: form.email, name: form.name,
           mobile: form.mobile, pan: form.pan, donorType: "INDIVIDUAL",
-          programName: selectedProgram?.name || "General Donation",
-          schoolName: form.school, displayName: form.displayName,
+          programName: Object.keys(selectedPrograms).length > 0 ? Object.keys(selectedPrograms).map(id => PROGRAMS.find(p => p.id === id)?.name).join(", ") : "General Donation",
+          schoolName: Object.values(selectedPrograms).find(p => p.school)?.school || "", 
+          displayName: form.displayName,
+          notes: form.wantVolunteer ? `Volunteer Interest: ${form.volunteerInfo}` : "",
         }),
       });
       const data = await res.json();
       if (!res.ok) throw new Error(data.message || "Order creation failed");
       const options = {
         key: RAZORPAY_KEY, amount: data.amount, currency: data.currency || "INR",
-        name: "WOMBTO18 Foundation", description: selectedProgram?.name || "Donation",
+        name: "WOMBTO18 Foundation", description: Object.keys(selectedPrograms).length > 0 ? `Donation for ${Object.keys(selectedPrograms).length} program(s)` : "Donation",
         order_id: data.orderId,
         prefill: { name: form.name, email: form.email, contact: form.mobile },
         theme: { color: "#1D6E3F" },
@@ -81,7 +100,12 @@ export function DonorForm() {
               body: JSON.stringify(response),
             });
             const result = await verifyRes.json();
-            if (result.success) window.location.href = `/donation-success?amount=${totalAmount}&paymentId=${response.razorpay_payment_id}`;
+            if (result.success) {
+              const volunteerParam = form.wantVolunteer 
+                ? `&volunteer=true&name=${encodeURIComponent(form.name)}&email=${encodeURIComponent(form.email)}&mobile=${encodeURIComponent(form.mobile)}` 
+                : "";
+              window.location.href = `/donation-success?amount=${totalAmount}&paymentId=${response.razorpay_payment_id}${volunteerParam}`;
+            }
           } catch { toast.error("Verification failed. Please contact support."); }
         },
         modal: { ondismiss: () => toast.info("Payment cancelled") },
@@ -110,134 +134,87 @@ export function DonorForm() {
         </div>
       </motion.div>
 
-      <motion.div initial={{ opacity: 0, y: 16 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.5, delay: 0.08 }}
-        className="rounded-2xl border border-gray-100 bg-white p-5 sm:p-6 shadow-[0_1px_3px_rgba(0,0,0,0.04)]">
-        <div className="flex items-center gap-2.5 mb-5">
-          <div className="w-8 h-8 rounded-lg bg-[var(--womb-forest)]/10 flex items-center justify-center">
-            <span className="text-sm">📋</span>
-          </div>
-          <div>
-            <h3 className="text-sm font-black text-gray-900 tracking-tight">Choose a Program</h3>
-            <p className="text-[10px] text-gray-400 mt-0.5">Select from 32 impact programs</p>
-          </div>
-        </div>
-
-        <div className="relative mb-3">
-          <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-gray-300" />
-          <input id="program-search" value={search} onChange={e => setSearch(e.target.value)}
-            className="w-full pl-9 pr-4 py-2 rounded-xl border border-gray-200 bg-white text-sm placeholder:text-gray-300 focus:border-[var(--womb-forest)] focus:ring-2 focus:ring-[var(--womb-forest)]/10 outline-none transition-all shadow-[0_1px_2px_rgba(0,0,0,0.04)]" placeholder="Search programs..." />
-        </div>
-
-        <div className="space-y-1 max-h-[280px] overflow-y-auto pr-1 scroll-hide">
-          {PROGRAM_CATEGORIES.map(cat => {
-            const items = filteredPrograms.filter(p => p.category === cat);
-            if (items.length === 0) return null;
-            const isOpen = expandedCat === cat;
-            return (
-              <div key={cat}>
-                <button type="button" onClick={() => setExpandedCat(isOpen ? null : cat)}
-                  className="w-full flex items-center justify-between px-3 py-2 rounded-lg hover:bg-gray-50 transition-colors text-left group">
-                  <span className="text-[13px] font-bold text-gray-700 group-hover:text-gray-900">{cat}</span>
-                  <div className="flex items-center gap-1.5">
-                    <span className="text-[9px] font-bold text-gray-400 bg-gray-100 px-1.5 py-0.5 rounded-md">{items.length}</span>
-                    <motion.div animate={{ rotate: isOpen ? 90 : 0 }} transition={{ duration: 0.2 }}>
-                      <ChevronRight className="w-3.5 h-3.5 text-gray-400" />
-                    </motion.div>
-                  </div>
-                </button>
-                <AnimatePresence>
-                  {isOpen && (
-                    <motion.div initial={{ height: 0, opacity: 0 }} animate={{ height: "auto", opacity: 1 }} exit={{ height: 0, opacity: 0 }} transition={{ duration: 0.25 }} className="overflow-hidden">
-                      <div className="py-1 space-y-0.5 pl-1">
-                        {items.map(prog => {
-                          const isSelected = form.programId === prog.id;
-                          return (
-                            <button key={prog.id} type="button"
-                              onClick={() => { set("programId", prog.id); set("customAmount", 0); set("quantity", 1); set("school", ""); }}
-                              className={`w-full flex items-center gap-2.5 px-3 py-2 rounded-xl text-left transition-all duration-200 ${isSelected
-                                ? "bg-[var(--womb-forest)]/6 border border-[var(--womb-forest)]/15 shadow-sm"
-                                : "hover:bg-gray-50 border border-transparent"}`}>
-                              <span className="text-base shrink-0">{prog.icon}</span>
-                              <div className="flex-1 min-w-0">
-                                <p className={`text-[13px] font-semibold truncate ${isSelected ? "text-[var(--womb-forest)]" : "text-gray-700"}`}>{prog.name}</p>
-                                <p className="text-[10px] text-gray-400 truncate">{prog.description}</p>
-                              </div>
-                              <span className="text-[10px] font-bold text-gray-400 shrink-0 bg-gray-50 px-1.5 py-0.5 rounded-md">₹{prog.costPerUnit.toLocaleString("en-IN")}</span>
-                            </button>
-                          );
-                        })}
-                      </div>
-                    </motion.div>
-                  )}
-                </AnimatePresence>
-              </div>
-            );
-          })}
-        </div>
-      </motion.div>
+      <ProgramSelector
+        selectedPrograms={selectedPrograms}
+        onToggleProgram={toggleProgram}
+        accentColor="var(--womb-forest)"
+        sectionTitle="Choose Programs"
+        sectionSubtitle="Select multiple programs and donate together"
+      />
 
       <AnimatePresence>
-        {selectedProgram && (
+        {Object.keys(selectedPrograms).length > 0 && (
           <motion.div initial={{ opacity: 0, y: 12, height: 0 }} animate={{ opacity: 1, y: 0, height: "auto" }} exit={{ opacity: 0, y: -8, height: 0 }}
             transition={{ duration: 0.35 }}
-            className="rounded-2xl border border-gray-100 bg-white p-5 sm:p-6 shadow-[0_1px_3px_rgba(0,0,0,0.04)] overflow-hidden">
-            <div className="flex items-center gap-2.5 mb-4">
-              <span className="text-xl">{selectedProgram.icon}</span>
-              <div>
-                <h3 className="text-sm font-black text-gray-900">{selectedProgram.name}</h3>
-                <p className="text-[10px] text-gray-400">{selectedProgram.description}</p>
-              </div>
+            className="rounded-2xl border border-[var(--womb-forest)]/20 bg-gradient-to-b from-[var(--womb-forest)]/[0.02] to-transparent p-5 sm:p-6 shadow-[0_1px_3px_rgba(0,0,0,0.04)] overflow-hidden">
+            <h3 className="text-sm font-black text-gray-900 mb-4 flex items-center gap-2">🛒 Your Selected Programs</h3>
+            
+            <div className="space-y-4 mb-4">
+              {Object.keys(selectedPrograms).map(progId => {
+                const prog = PROGRAMS.find(p => p.id === progId);
+                if (!prog) return null;
+                const sp = selectedPrograms[progId];
+                return (
+                  <div key={progId} className="p-4 bg-white rounded-xl border border-gray-100 relative shadow-sm">
+                    <button type="button" onClick={() => toggleProgram(progId)} className="absolute top-3 right-3 p-1 rounded-md hover:bg-red-50 text-gray-300 hover:text-red-500 transition-colors">
+                      <X className="w-4 h-4" />
+                    </button>
+                    <div className="flex items-center gap-2.5 mb-3 pr-6">
+                      <span className="text-xl">{prog.icon}</span>
+                      <div>
+                        <h4 className="text-[13px] font-bold text-gray-900">{prog.name}</h4>
+                        <p className="text-[10px] text-gray-400">₹{prog.costPerUnit.toLocaleString("en-IN")} per {prog.unit}</p>
+                      </div>
+                    </div>
+                    
+                    {prog.hasSchoolDropdown && (
+                      <div className="mb-3">
+                        <select value={sp.school || ""} onChange={e => updateProgram(progId, "school", e.target.value)}
+                          className="w-full px-3 py-2 rounded-lg border border-gray-200 bg-gray-50 text-xs focus:border-[var(--womb-forest)] focus:ring-1 focus:ring-[var(--womb-forest)]/10 outline-none transition-all">
+                          <option value="">Choose a school...</option>
+                          {SCHOOLS.map(s => <option key={s} value={s}>{s}</option>)}
+                        </select>
+                      </div>
+                    )}
+                    
+                    <div className="flex items-center justify-between mt-2 pt-3 border-t border-gray-50">
+                      <div className="flex items-center gap-2">
+                        <span className="text-[10px] font-bold text-gray-400 uppercase tracking-wide">Qty:</span>
+                        <div className="flex items-center gap-1.5 bg-gray-50 rounded-lg p-0.5">
+                          <button type="button" onClick={() => sp.quantity > 1 && updateProgram(progId, "quantity", sp.quantity - 1)}
+                            className="w-6 h-6 rounded bg-white border border-gray-200 hover:border-gray-300 flex items-center justify-center text-xs font-bold text-gray-600 transition-all shadow-sm">−</button>
+                          <input type="number" min={1} value={sp.quantity} onChange={e => updateProgram(progId, "quantity", Math.max(1, parseInt(e.target.value) || 1))}
+                            className="w-10 text-center px-1 py-1 bg-transparent text-xs font-bold outline-none" />
+                          <button type="button" onClick={() => updateProgram(progId, "quantity", sp.quantity + 1)}
+                            className="w-6 h-6 rounded bg-white border border-gray-200 hover:border-gray-300 flex items-center justify-center text-xs font-bold text-gray-600 transition-all shadow-sm">+</button>
+                        </div>
+                      </div>
+                      <div className="text-right">
+                        <p className="text-sm font-black text-[var(--womb-forest)]">₹{(prog.costPerUnit * sp.quantity).toLocaleString("en-IN")}</p>
+                      </div>
+                    </div>
+                  </div>
+                );
+              })}
             </div>
 
-            {selectedProgram.hasSchoolDropdown && (
-              <div className="mb-4">
-                <label className="text-[11px] font-bold text-gray-400 tracking-wide uppercase mb-1.5 block">Select School</label>
-                <select id="donor-school" value={form.school} onChange={e => set("school", e.target.value)}
-                  className="w-full px-4 py-2.5 rounded-xl border border-gray-200 bg-white text-sm focus:border-[var(--womb-forest)] focus:ring-2 focus:ring-[var(--womb-forest)]/10 outline-none transition-all shadow-[0_1px_2px_rgba(0,0,0,0.04)]">
-                  <option value="">Choose a school...</option>
-                  {SCHOOLS.map(s => <option key={s} value={s}>{s}</option>)}
-                </select>
-              </div>
-            )}
-
-            <div className="mb-4">
-              <label className="text-[11px] font-bold text-gray-400 tracking-wide uppercase mb-1.5 block">
-                Number of {selectedProgram.unit}s
-              </label>
-              <div className="flex items-center gap-2">
-                <button type="button" onClick={() => form.quantity > 1 && set("quantity", form.quantity - 1)}
-                  className="w-9 h-9 rounded-lg bg-gray-100 hover:bg-gray-200 flex items-center justify-center text-sm font-bold text-gray-600 transition-all active:scale-95">−</button>
-                <input type="number" min={1} value={form.quantity} onChange={e => set("quantity", Math.max(1, parseInt(e.target.value) || 1))}
-                  className="w-16 text-center px-2 py-2 rounded-xl border border-gray-200 bg-white text-sm font-bold focus:border-[var(--womb-forest)] focus:ring-2 focus:ring-[var(--womb-forest)]/10 outline-none" />
-                <button type="button" onClick={() => set("quantity", form.quantity + 1)}
-                  className="w-9 h-9 rounded-lg bg-gray-100 hover:bg-gray-200 flex items-center justify-center text-sm font-bold text-gray-600 transition-all active:scale-95">+</button>
-              </div>
-            </div>
-
-            <div className="p-4 rounded-xl bg-gradient-to-br from-[var(--womb-forest)]/[0.04] to-emerald-50/50 border border-[var(--womb-forest)]/10 flex items-center justify-between">
+            <div className="p-4 rounded-xl bg-gradient-to-br from-[var(--womb-forest)]/[0.04] to-emerald-50/50 border border-[var(--womb-forest)]/10 flex items-center justify-between mt-2">
               <div>
                 <p className="text-[10px] text-gray-500 font-semibold uppercase tracking-wider">Total Amount</p>
                 <p className="text-2xl font-black text-[var(--womb-forest)] tracking-tight">
-                  ₹{(selectedProgram.costPerUnit * form.quantity).toLocaleString("en-IN")}
+                  ₹{totalAmount.toLocaleString("en-IN")}
                 </p>
-                <p className="text-[10px] text-gray-400 mt-0.5">{form.quantity} × ₹{selectedProgram.costPerUnit.toLocaleString("en-IN")} per {selectedProgram.unit}</p>
               </div>
               <div className="w-10 h-10 rounded-xl bg-[var(--womb-forest)]/10 flex items-center justify-center">
                 <CreditCard className="w-5 h-5 text-[var(--womb-forest)]" />
               </div>
-            </div>
-
-            <div className="mt-4">
-              <label className="text-[11px] font-bold text-gray-400 tracking-wide uppercase mb-1.5 block">Custom Amount (₹)</label>
-              <input type="number" min={0} value={form.customAmount || ""} onChange={e => set("customAmount", parseInt(e.target.value) || 0)}
-                className="w-full px-4 py-2.5 rounded-xl border border-gray-200 bg-white text-sm placeholder:text-gray-300 focus:border-[var(--womb-forest)] focus:ring-2 focus:ring-[var(--womb-forest)]/10 outline-none transition-all shadow-[0_1px_2px_rgba(0,0,0,0.04)]" placeholder="Override calculated amount" />
             </div>
           </motion.div>
         )}
       </AnimatePresence>
 
       <motion.div initial={{ opacity: 0, y: 16 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.5, delay: 0.16 }}
-        className="rounded-2xl border border-gray-100 bg-white p-5 shadow-[0_1px_3px_rgba(0,0,0,0.04)] space-y-2.5">
+        className="rounded-2xl border border-gray-100 bg-white p-5 shadow-[0_1px_3px_rgba(0,0,0,0.04)] space-y-3">
         {[
           { key: "displayName" as const, label: "Display my name publicly as a donor", checked: form.displayName },
           { key: "wantVolunteer" as const, label: "I'd also like to volunteer with WOMBTO18 🙋", checked: form.wantVolunteer },
@@ -250,10 +227,22 @@ export function DonorForm() {
             <span className="text-[13px] text-gray-600 group-hover:text-gray-800 transition-colors">{opt.label}</span>
           </label>
         ))}
+
+        <AnimatePresence>
+          {form.wantVolunteer && (
+            <motion.div initial={{ opacity: 0, height: 0 }} animate={{ opacity: 1, height: "auto" }} exit={{ opacity: 0, height: 0 }} className="overflow-hidden">
+              <div className="pt-2 pb-1 pl-10 pr-2">
+                <label className="text-[11px] font-bold text-gray-400 tracking-wide uppercase mb-1.5 block">How would you like to help?</label>
+                <textarea value={form.volunteerInfo} onChange={e => set("volunteerInfo", e.target.value)} rows={2}
+                  className="w-full px-3 py-2 rounded-xl border border-gray-200 bg-white text-xs placeholder:text-gray-300 focus:border-[var(--womb-forest)] focus:ring-1 focus:ring-[var(--womb-forest)]/10 outline-none transition-all resize-none" placeholder="e.g. Teaching, Event organizing, Tech support..." />
+              </div>
+            </motion.div>
+          )}
+        </AnimatePresence>
       </motion.div>
 
       <motion.button
-        type="submit" disabled={loading || totalAmount < 100}
+        type="submit" disabled={loading || totalAmount < 100 || Object.keys(selectedPrograms).length === 0}
         whileHover={{ scale: 1.005 }} whileTap={{ scale: 0.995 }}
         className="group w-full py-3.5 rounded-2xl bg-gradient-to-r from-[var(--journey-saffron)] to-orange-500 text-white font-black shadow-[0_4px_15px_-3px_rgba(255,153,0,0.4)] hover:shadow-[0_8px_25px_-5px_rgba(255,153,0,0.5)] disabled:opacity-50 disabled:cursor-not-allowed disabled:shadow-none transition-all duration-300 flex items-center justify-center gap-2.5 relative overflow-hidden"
       >

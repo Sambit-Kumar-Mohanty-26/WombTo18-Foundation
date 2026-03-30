@@ -7,7 +7,7 @@ export function VolunteerSuccessPage() {
   const navigate = useNavigate();
 
   return (
-    <div className="min-h-screen bg-[#FFFDF7] pt-24 pb-12 sm:pt-32 relative overflow-hidden">
+    <div className="min-h-screen lg:h-screen flex flex-col justify-center bg-[#FFFDF7] pt-16 pb-6 relative overflow-hidden overflow-y-auto place-content-center">
       {/*Background Effects */}
       <div className="absolute inset-0 bg-gradient-to-b from-[#f0faf4] via-[#fef6ed]/40 to-[#FFFDF7] pointer-events-none" />
       <div className="absolute top-[-30%] right-[-15%] w-[60%] h-[80%] bg-[radial-gradient(ellipse_at_center,_var(--womb-forest)_0%,_transparent_65%)] opacity-[0.08] blur-[100px] rounded-full pointer-events-none" />
@@ -21,17 +21,17 @@ export function VolunteerSuccessPage() {
           initial={{ opacity: 0, y: 30, scale: 0.95 }}
           animate={{ opacity: 1, y: 0, scale: 1 }}
           transition={{ duration: 0.8, ease: [0.22, 1, 0.36, 1] }}
-          className="flex flex-col items-center mb-10"
+          className="flex flex-col items-center mb-5"
         >
           {/*Success Icon */}
           <motion.div
             initial={{ scale: 0, rotate: -30 }}
             animate={{ scale: 1, rotate: 0 }}
             transition={{ type: "spring", bounce: 0.5, duration: 1, delay: 0.2 }}
-            className="w-24 h-24 rounded-[2rem] bg-gradient-to-br from-[var(--womb-forest)] to-emerald-500 shadow-[0_8px_30px_-5px_rgba(29,110,63,0.4)] flex items-center justify-center mb-8 relative"
+            className="w-16 h-16 rounded-[1.5rem] bg-gradient-to-br from-[var(--womb-forest)] to-emerald-500 shadow-[0_4px_20px_-5px_rgba(29,110,63,0.4)] flex items-center justify-center mb-4 relative"
           >
-            <div className="absolute inset-0 bg-white/20 rounded-[2rem] animate-pulse" />
-            <HeartHandshake className="w-12 h-12 text-white relative z-10" />
+            <div className="absolute inset-0 bg-white/20 rounded-[1.5rem] animate-pulse" />
+            <HeartHandshake className="w-8 h-8 text-white relative z-10" />
           </motion.div>
 
           {/* Badge */}
@@ -39,19 +39,19 @@ export function VolunteerSuccessPage() {
             initial={{ opacity: 0, y: -10 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.5, delay: 0.4 }}
-            className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full text-[11px] font-bold tracking-[0.15em] uppercase mb-4 border shadow-sm backdrop-blur-sm bg-[var(--womb-forest)]/10 text-[var(--womb-forest)] border-[var(--womb-forest)]/20"
+            className="inline-flex items-center gap-2 px-3 py-1 rounded-full text-[10px] font-bold tracking-[0.1em] uppercase mb-3 border shadow-sm backdrop-blur-sm bg-[var(--womb-forest)]/10 text-[var(--womb-forest)] border-[var(--womb-forest)]/20"
           >
-            <Sparkles className="w-3.5 h-3.5" /> Registration Received
+            <Sparkles className="w-3 h-3" /> Registration Received
           </motion.div>
 
-          <h1 className="text-4xl sm:text-5xl text-gray-900 mb-4" style={{ fontWeight: 900, lineHeight: 1.1, letterSpacing: "-0.025em" }}>
+          <h1 className="text-3xl sm:text-4xl text-gray-900 mb-3" style={{ fontWeight: 900, lineHeight: 1.1, letterSpacing: "-0.025em" }}>
             Welcome to the{" "}
             <span className="text-transparent bg-clip-text bg-gradient-to-r from-[var(--womb-forest)] to-emerald-400 drop-shadow-sm">
               Community.
             </span>
           </h1>
 
-          <p className="text-base sm:text-lg text-gray-600 max-w-lg mx-auto leading-relaxed">
+          <p className="text-sm sm:text-base text-gray-600 max-w-lg mx-auto leading-relaxed">
             Thank you for offering your time and expertise. Volunteering is the heartbeat of our foundation.
           </p>
         </motion.div>
@@ -61,18 +61,18 @@ export function VolunteerSuccessPage() {
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.6, delay: 0.3 }}
-          className="rounded-3xl border border-[var(--womb-forest)]/20 bg-gradient-to-br from-white to-[#f0faf4] p-8 sm:p-10 shadow-[0_8px_30px_-12px_rgba(0,0,0,0.08)] mb-8 text-left relative overflow-hidden"
+          className="rounded-2xl sm:rounded-3xl border border-[var(--womb-forest)]/20 bg-gradient-to-br from-white to-[#f0faf4] p-5 sm:p-6 shadow-[0_8px_30px_-12px_rgba(0,0,0,0.08)] mb-5 text-left relative overflow-hidden"
         >
           {/* Subtle gradient border top */}
           <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-[var(--womb-forest)] via-emerald-400 to-transparent opacity-50" />
           
           <div className="flex items-start gap-5">
-             <div className="w-14 h-14 rounded-2xl bg-[var(--womb-forest)]/15 flex items-center justify-center shrink-0">
-               <Mail className="w-7 h-7 text-[var(--womb-forest)]" />
+             <div className="w-10 h-10 sm:w-12 sm:h-12 rounded-xl sm:rounded-2xl bg-[var(--womb-forest)]/15 flex items-center justify-center shrink-0">
+               <Mail className="w-5 h-5 sm:w-6 sm:h-6 text-[var(--womb-forest)]" />
              </div>
              <div>
-               <h3 className="text-xl font-black text-gray-900 mb-2">What's Next?</h3>
-               <p className="text-[14px] text-gray-600 leading-relaxed mb-6">
+               <h3 className="text-lg sm:text-xl font-black text-gray-900 mb-1">What's Next?</h3>
+               <p className="text-[12px] sm:text-[13px] text-gray-600 leading-relaxed mb-4">
                  Our team is reviewing your profile and skills. We will reach out to you within <b>48 hours</b> with specific volunteering opportunities that match your availability and expertise.
                </p>
                

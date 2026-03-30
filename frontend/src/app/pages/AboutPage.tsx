@@ -2,6 +2,7 @@ import { Heart, Globe, Users, Target, CheckCircle, ArrowRight, Zap, Building2, M
 import { motion, useTransform, useSpring, useMotionValue, useMotionTemplate, useScroll } from "motion/react";
 import Lenis from "lenis";
 import React, { useEffect, useRef } from "react";
+import { Link } from "react-router";
 
 const womboValues = [
   { letter: "W", title: "Wellness", desc: "Comprehensive health — physical, mental, emotional — from pregnancy through age 18. Health is not the absence of illness; it is the fullness of a well-supported life." },
@@ -1205,9 +1206,9 @@ export function AboutPage() {
               <p className="text-lg md:text-xl text-indigo-100 max-w-2xl mx-auto mb-10 font-medium leading-relaxed">
                 We are actively building our Advisory Board. If you bring subject expertise, policy experience, or health/education credentials — without financial obligation — we welcome your interest.
               </p>
-              <a href="mailto:advisory@wombto18.org" className="inline-flex items-center gap-2 bg-white hover:bg-gray-100 text-[var(--womb-forest)] font-extrabold shadow-xl hover:shadow-2xl hover:-translate-y-1 transition-all h-14 px-8 text-base rounded-xl group">
-                advisory@wombto18.org <ArrowRight className="w-5 h-5 ml-1 group-hover:translate-x-1 transition-transform" />
-              </a>
+              <Link to="/advisory-board" className="inline-flex items-center gap-2 bg-white hover:bg-gray-100 text-[var(--womb-forest)] font-extrabold shadow-xl hover:shadow-2xl hover:-translate-y-1 transition-all h-14 px-8 text-base rounded-xl group">
+                Apply Now <ArrowRight className="w-5 h-5 ml-1 group-hover:translate-x-1 transition-transform" />
+              </Link>
             </div>
           </motion.div>
         </div>

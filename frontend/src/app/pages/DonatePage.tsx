@@ -16,6 +16,7 @@ type TabId = typeof TABS[number]["id"];
 
 export function DonatePage() {
   const [activeTab, setActiveTab] = useState<TabId>("donor");
+  const [showMobileSidebar, setShowMobileSidebar] = useState(false);
 
   useEffect(() => {
     if (document.getElementById("razorpay-script")) return;
@@ -39,7 +40,7 @@ export function DonatePage() {
           <div className="absolute top-[20%] left-[40%] w-[40%] h-[50%] bg-[radial-gradient(ellipse_at_center,_var(--future-sky)_0%,_transparent_65%)] opacity-[0.04] blur-[80px] rounded-full" />
         </div>
 
-        {/* Animated grid pattern */}
+        {/* grid pattern */}
         <div className="absolute inset-0 opacity-[0.015]" style={{ backgroundImage: "radial-gradient(circle at 1px 1px, #1D6E3F 1px, transparent 0)", backgroundSize: "40px 40px" }} />
 
         {/* orbs */}
@@ -79,7 +80,7 @@ export function DonatePage() {
             </motion.div>
 
             {/* Heading */}
-            <h1 className="text-[2.5rem] sm:text-[3.5rem] md:text-[4rem] text-gray-900 mb-3 max-w-3xl" style={{ fontWeight: 900, lineHeight: 1.05, letterSpacing: "-0.025em" }}>
+            <h1 className="text-[2rem] sm:text-[3.5rem] md:text-[4rem] text-gray-900 mb-3 max-w-3xl" style={{ fontWeight: 900, lineHeight: 1.05, letterSpacing: "-0.025em" }}>
               Support the{" "}
               <span className={`text-transparent bg-clip-text bg-gradient-to-r ${activeTabData.bg} drop-shadow-sm`}>
                 {activeTab === "donor" ? "Mission" : activeTab === "partner" ? "Future" : "Cause"}.
@@ -95,9 +96,9 @@ export function DonatePage() {
             initial={{ opacity: 0, y: 16 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.6, delay: 0.25 }}
-            className="flex justify-center"
+            className="flex justify-center w-full"
           >
-            <div className="relative inline-flex bg-white/80 backdrop-blur-xl rounded-2xl p-1 border border-gray-200/60 shadow-[0_4px_20px_-4px_rgba(0,0,0,0.08),_0_1px_3px_rgba(0,0,0,0.04)]">
+            <div className="relative flex max-w-full overflow-x-auto scroll-hide bg-white/80 backdrop-blur-xl rounded-2xl p-1 border border-gray-200/60 shadow-[0_4px_20px_-4px_rgba(0,0,0,0.08),_0_1px_3px_rgba(0,0,0,0.04)] items-center touch-pan-x">
               {TABS.map((tab) => {
                 const isActive = activeTab === tab.id;
                 const Icon = tab.icon;
@@ -106,7 +107,7 @@ export function DonatePage() {
                     key={tab.id}
                     id={`tab-${tab.id}`}
                     onClick={() => setActiveTab(tab.id)}
-                    className={`relative flex items-center gap-2 px-4 sm:px-6 py-2.5 sm:py-3 rounded-xl text-[13px] font-bold transition-all duration-300 z-10 ${
+                    className={`relative flex items-center shrink-0 gap-1.5 sm:gap-2 px-3 sm:px-6 py-2.5 sm:py-3 rounded-xl text-[12px] sm:text-[13px] font-bold transition-all duration-300 z-10 ${
                       isActive ? "text-white" : "text-gray-500 hover:text-gray-700"
                     }`}
                   >
@@ -133,12 +134,12 @@ export function DonatePage() {
 
       <section className="py-6 sm:py-10">
         <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-          <div className="grid lg:grid-cols-12 gap-6 lg:gap-10 items-start">
-            <div className="lg:col-span-5 xl:col-span-4 order-2 lg:order-1">
+          <div className="flex flex-col lg:grid lg:grid-cols-12 gap-6 lg:gap-10">
+            <div className="hidden lg:block lg:col-span-5 xl:col-span-4 lg:order-1">
               <DonateSidebar activeColor={activeTabData.color} />
             </div>
 
-            <div className="lg:col-span-7 xl:col-span-8 order-1 lg:order-2">
+            <div className="lg:col-span-7 xl:col-span-8 order-1 lg:order-2 flex flex-col gap-6">
               <AnimatePresence mode="wait">
                 <motion.div
                   key={activeTab}
@@ -152,6 +153,31 @@ export function DonatePage() {
                   {activeTab === "volunteer" && <VolunteerForm />}
                 </motion.div>
               </AnimatePresence>
+
+              <div className="lg:hidden w-full space-y-4">
+                <button
+                  type="button"
+                  onClick={() => setShowMobileSidebar(!showMobileSidebar)}
+                  className="w-full sm:w-auto px-6 py-3.5 rounded-xl border-2 border-dashed border-gray-200 text-sm font-bold text-gray-500 hover:text-gray-700 bg-gray-50/50 hover:bg-gray-50 flex items-center justify-center gap-2 transition-all mx-auto"
+                >
+                  <BarChart3 className="w-4 h-4 text-[var(--journey-saffron)]" />
+                  {showMobileSidebar ? "Hide Impact Details" : "View Live Impact & Donors"}
+                </button>
+
+                <AnimatePresence>
+                  {showMobileSidebar && (
+                    <motion.div
+                      initial={{ height: 0, opacity: 0 }}
+                      animate={{ height: "auto", opacity: 1 }}
+                      exit={{ height: 0, opacity: 0 }}
+                      transition={{ duration: 0.4 }}
+                      className="overflow-hidden pb-4"
+                    >
+                      <DonateSidebar activeColor={activeTabData.color} />
+                    </motion.div>
+                  )}
+                </AnimatePresence>
+              </div>
             </div>
           </div>
         </div>

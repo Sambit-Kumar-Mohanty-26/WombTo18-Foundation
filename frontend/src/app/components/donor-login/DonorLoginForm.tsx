@@ -2,15 +2,15 @@ import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "../ui/card";
 import { Input } from "../ui/input";
 import { Button } from "../ui/button";
 import { Label } from "../ui/label";
-import { Loader2, Mail, Lock, User, Phone, ArrowLeft, Eye, EyeOff } from "lucide-react";
+import { Loader2, Mail, Lock, User, Phone, ArrowLeft, Eye, EyeOff, Sparkles } from "lucide-react";
 import { auth } from "../../lib/auth";
 import { toast } from "sonner";
 import { useNavigate, useSearchParams } from "react-router";
 import { useAuth } from "../../context/AuthContext";
+import { motion, AnimatePresence } from "motion/react";
 
 // --- Schemas ---
 const loginSchema = z.object({
@@ -116,7 +116,7 @@ function LoginTab({ onSuccess }: DonorLoginFormProps) {
       <Button type="submit" disabled={isSubmitting} className="w-full bg-emerald-600 hover:bg-emerald-500 text-white font-black h-12 mt-2 rounded-xl shadow-lg shadow-emerald-100">
         {isSubmitting ? <><Loader2 className="mr-2 h-4 w-4 animate-spin" />Signing In...</> : "Authorize Access"}
       </Button>
-    </form>
+    </motion.form>
   );
 }
 
@@ -198,7 +198,7 @@ function RegisterTab({ onSuccess }: DonorLoginFormProps) {
           <Lock className="absolute left-3 top-3 h-4 w-4 text-emerald-600/30" />
           <Input
             type={showPassword ? "text" : "password"}
-            placeholder="Create a password (min 6 chars)"
+            placeholder="Create password"
             {...register("password")}
             className="pl-10 pr-10 bg-gray-50 border-gray-200 text-gray-900 placeholder:text-gray-400 focus-visible:ring-emerald-500 rounded-xl h-11"
           />
@@ -240,6 +240,18 @@ export function DonorLoginForm({ onSuccess }: DonorLoginFormProps) {
           <Button variant="ghost" size="sm" onClick={() => navigate("/login")} className="text-emerald-800/40 hover:text-emerald-600 hover:bg-emerald-50 -ml-2">
             <ArrowLeft className="h-4 w-4 mr-1" /> Return
           </Button>
+          <div className="w-10 h-10 rounded-full bg-emerald-50 border border-emerald-100 flex items-center justify-center">
+            <Sparkles className="h-5 w-5 text-[var(--womb-forest)]" />
+          </div>
+        </div>
+
+        <div className="mb-8">
+          <h2 className="text-2xl font-black text-gray-900 tracking-tight" style={{ fontFamily: "'Poppins', sans-serif" }}>
+            {isRegistering ? "Join the Mission" : "Welcome Back"}
+          </h2>
+          <p className="text-sm text-gray-500 font-medium mt-1.5">
+            {isRegistering ? "Register to start making an impact." : "Sign in to your mission dashboard."}
+          </p>
         </div>
         <CardTitle className="text-3xl font-black tracking-tighter text-gray-900">
           {isRegistering ? "Supporter Entry" : "Portal Access"}
@@ -257,7 +269,7 @@ export function DonorLoginForm({ onSuccess }: DonorLoginFormProps) {
             onClick={() => setIsRegistering(false)}
             className={`flex-1 py-2 text-xs font-black uppercase tracking-widest rounded-xl transition-all ${!isRegistering ? "bg-white text-emerald-600 shadow-sm border border-emerald-50" : "text-gray-400 hover:text-gray-900"}`}
           >
-            Login
+            Sign In
           </button>
           <button
             type="button"
@@ -268,12 +280,18 @@ export function DonorLoginForm({ onSuccess }: DonorLoginFormProps) {
           </button>
         </div>
 
-        {isRegistering
-          ? <RegisterTab onSuccess={onSuccess} />
-          : <LoginTab onSuccess={onSuccess} />
-        }
-      </CardContent>
-    </Card>
+        {/* Form Container */}
+        <div className="relative overflow-hidden">
+          <AnimatePresence mode="wait" initial={false}>
+            {isRegistering
+              ? <RegisterTab key="register" onSuccess={onSuccess} />
+              : <LoginTab key="login" onSuccess={onSuccess} />
+            }
+          </AnimatePresence>
+        </div>
+
+      </div>
+    </motion.div>
   );
 }
 

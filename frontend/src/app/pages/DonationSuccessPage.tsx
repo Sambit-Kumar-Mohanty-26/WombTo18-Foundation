@@ -1,6 +1,7 @@
+import { useEffect, useState } from "react";
 import { useSearchParams, useNavigate } from "react-router";
 import { motion } from "motion/react";
-import { CheckCircle2, Download, LayoutDashboard, Heart, Lock, Sparkles, CreditCard, ChevronRight } from "lucide-react";
+import { CheckCircle2, Download, LayoutDashboard, Heart, Lock, Sparkles, CreditCard, ChevronRight, Users } from "lucide-react";
 import { toast } from "sonner";
 
 export function DonationSuccessPage() {
@@ -9,7 +10,27 @@ export function DonationSuccessPage() {
 
   const amount = Number(searchParams.get("amount") || "0");
   const paymentId = searchParams.get("paymentId") || "N/A";
+  const wantsToVolunteer = searchParams.get("volunteer") === "true";
   const isDashboardEligible = amount >= 5000;
+
+  const [countdown, setCountdown] = useState(5);
+
+  useEffect(() => {
+    if (!wantsToVolunteer) return;
+    
+    const timer = setInterval(() => {
+      setCountdown((prev) => {
+        if (prev <= 1) {
+          clearInterval(timer);
+          navigate(`/volunteer-onboarding?name=${encodeURIComponent(searchParams.get("name") || "")}&email=${encodeURIComponent(searchParams.get("email") || "")}&mobile=${encodeURIComponent(searchParams.get("mobile") || "")}&amount=${amount}`);
+          return 0;
+        }
+        return prev - 1;
+      });
+    }, 1000);
+
+    return () => clearInterval(timer);
+  }, [wantsToVolunteer, navigate]);
 
   function downloadReceipt() {
     toast.info("Receipt download will be available once backend integration is completed.");
@@ -94,14 +115,35 @@ export function DonationSuccessPage() {
           </div>
         </motion.div>
 
-        {/* Dashboard Access Card */}
         <motion.div
            initial={{ opacity: 0, y: 20 }}
            animate={{ opacity: 1, y: 0 }}
            transition={{ duration: 0.6, delay: 0.4 }}
            className="mb-8"
         >
-          {isDashboardEligible ? (
+          {wantsToVolunteer ? (
+            <div className="rounded-3xl border border-[var(--womb-forest)]/20 bg-gradient-to-br from-[#f0faf4] to-emerald-50/50 p-6 sm:p-8 shadow-sm text-center sm:text-left">
+              <div className="flex flex-col sm:flex-row items-center sm:items-start gap-5">
+                <div className="w-14 h-14 rounded-2xl bg-[var(--womb-forest)]/10 flex items-center justify-center shrink-0">
+                  <Users className="w-7 h-7 text-[var(--womb-forest)]" />
+                </div>
+                <div className="flex-1">
+                  <h3 className="text-xl font-black text-gray-900 mb-2">Volunteer Registration</h3>
+                  <p className="text-[14px] text-gray-600 leading-relaxed mb-5">
+                    Thank you for offering your time. You are being securely redirected to complete your volunteer profile in{" "}
+                    <span className="font-bold text-[var(--womb-forest)]">{countdown}s</span>...
+                  </p>
+                  <button
+                    onClick={() => navigate(`/volunteer-onboarding?name=${encodeURIComponent(searchParams.get("name") || "")}&email=${encodeURIComponent(searchParams.get("email") || "")}&mobile=${encodeURIComponent(searchParams.get("mobile") || "")}&amount=${amount}`)}
+                    className="group inline-flex items-center gap-2 bg-gradient-to-r from-[var(--womb-forest)] to-emerald-500 text-white px-6 py-3 rounded-xl font-bold text-sm shadow-[0_4px_15px_-3px_rgba(29,110,63,0.3)] hover:shadow-lg transition-all duration-300"
+                  >
+                    <span>Continue to Profile Now</span>
+                    <ChevronRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
+                  </button>
+                </div>
+              </div>
+            </div>
+          ) : isDashboardEligible ? (
              <div className="rounded-3xl border border-[var(--journey-saffron)]/20 bg-gradient-to-br from-white to-[#fff9f0] p-6 sm:p-8 shadow-sm text-left">
                 <div className="flex items-start gap-4">
                   <div className="w-12 h-12 rounded-2xl bg-[var(--journey-saffron)]/15 flex items-center justify-center shrink-0">

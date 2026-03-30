@@ -31,13 +31,18 @@ import { AdminLoginPage } from "./pages/admin/AdminLoginPage";
 import { PartnerLayout } from "./components/layout/PartnerLayout";
 import { PartnerDashboard } from "./pages/partner/PartnerDashboard";
 import { PartnerLogin } from "./pages/partner/PartnerLogin";
+import { VolunteerOnboardingPage } from "./pages/VolunteerOnboardingPage";
+import { VolunteerBenefitsPage } from "./pages/VolunteerBenefitsPage";
+import { VolunteerSuccessPage } from "./pages/VolunteerSuccessPage";
 import { AdminDashboard } from "./pages/admin/AdminDashboard";
 import { AdminDonors } from "./pages/admin/AdminDonors";
 import { AdminPrograms } from "./pages/admin/AdminPrograms";
 import { AdminReports } from "./pages/admin/AdminReports";
 import { AdminBlog } from "./pages/admin/AdminBlog";
 import { AdminCaseStudies } from "./pages/admin/AdminCaseStudies";
-
+import { AdvisoryBoardApplicationPage } from "./pages/AdvisoryBoardApplicationPage";
+import { AdvisoryBoardApplyPage } from "./pages/AdvisoryBoardApplyPage";
+import { EmailVerificationPage } from "./pages/EmailVerificationPage";
 export const router = createBrowserRouter([
   {
     path: "/",
@@ -57,7 +62,13 @@ export const router = createBrowserRouter([
       { path: "coming-soon", Component: ComingSoonPage },
       { path: "donate", Component: DonatePage },
       { path: "donation-success", Component: DonationSuccessPage },
+      { path: "volunteer-onboarding", Component: VolunteerOnboardingPage },
+      { path: "volunteer-benefits", Component: VolunteerBenefitsPage },
+      { path: "volunteer-success", Component: VolunteerSuccessPage },
       { path: "dashboard-preview", Component: DashboardPreviewPage },
+      { path: "advisory-board", Component: AdvisoryBoardApplicationPage },
+      { path: "advisory-board/apply", Component: AdvisoryBoardApplyPage },
+      { path: "verify-email", Component: EmailVerificationPage },
       { path: "donor/login", Component: DonorLogin },
       { path: "donor/verify-otp", Component: DonorVerifyOtp },
 
@@ -76,7 +87,6 @@ export const router = createBrowserRouter([
 
     ],
   },
-  // Standalone login selection and portal logins
   {
     path: "/login",
     Component: LoginSelectionPage,

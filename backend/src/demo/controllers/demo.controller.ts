@@ -4,7 +4,7 @@ import * as path from 'path';
 import * as fs from 'fs';
 import type { Response } from 'express';
 
-@Controller('api/demo')
+@Controller('demo')
 export class DemoController {
   constructor(private readonly prisma: PrismaService) {}
 
