@@ -4,9 +4,9 @@ import { DonorLoginForm } from "../../components/donor-login/DonorLoginForm";
 export function DonorLogin() {
   const navigate = useNavigate();
 
-  const handleLoginSuccess = (eligible: boolean, identifier: string, otpSent?: boolean) => {
+  const handleLoginSuccess = (eligible: boolean, identifier: string, otpSent?: boolean, requiresMobileOtp?: boolean) => {
     if (otpSent) {
-      navigate("/donor/verify-otp", { state: { identifier, eligible } });
+      navigate("/donor/verify-otp", { state: { identifier, eligible, requiresMobileOtp } });
     } else {
       navigate("/dashboard", { replace: true });
     }

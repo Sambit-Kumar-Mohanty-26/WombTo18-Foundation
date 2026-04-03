@@ -14,6 +14,12 @@ import { DemoModule } from './demo/demo.module';
 import { BhashiniModule } from './bhashini/bhashini.module';
 import { VerificationModule } from './verification/verification.module';
 import { AdvisoryModule } from './advisory/advisory.module';
+import { VolunteerModule } from './volunteer/volunteer.module';
+import { PartnerMgmtModule } from './partner/partner.module';
+import { CoinModule } from './coin/coin.module';
+import { ReferralModule } from './referral/referral.module';
+import { LeaderboardModule } from './leaderboard/leaderboard.module';
+import { CampModule } from './camp/camp.module';
 
 @Module({
   imports: [
@@ -30,6 +36,12 @@ import { AdvisoryModule } from './advisory/advisory.module';
     BhashiniModule,
     VerificationModule,
     AdvisoryModule,
+    VolunteerModule,
+    PartnerMgmtModule,
+    CoinModule,
+    ReferralModule,
+    LeaderboardModule,
+    CampModule,
   ],
   controllers: [AppController],
   providers: [AppService],

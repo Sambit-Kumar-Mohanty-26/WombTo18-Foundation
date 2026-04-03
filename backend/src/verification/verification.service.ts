@@ -36,60 +36,74 @@ export class VerificationService {
     });
   }
 
-  async sendMobileOtp(mobile: string): Promise<any> {
+  async sendMobileOtp(mobile: string, customOtp?: string): Promise<any> {
     const apiKey = this.configService.get<string>('FAST2SMS_API_KEY');
-    
+    const senderId = this.configService.get<string>('FAST2SMS_SENDER_ID');
+    const messageId = this.configService.get<string>('FAST2SMS_OTP_MESSAGE_ID');
+
     if (!apiKey) {
       console.warn("FAST2SMS_API_KEY is not set. Simulating OTP.");
       return { success: true, message: "Mock OTP sent successfully due to missing API key." };
     }
 
     try {
-      const otp = Math.floor(1000 + Math.random() * 9000);
-      const message = `Your WOMBTO18 verification OTP is: ${otp}. Valid for 10 minutes. Do not share this code with anyone.`;
-      
-      // Used "q" (Quick Transactional SMS) route - does NOT require website verification
-      // The "otp" route requires DLT/website verification on Fast2SMS dashboard
+      // Normalize mobile: strip +, spaces, dashes, then remove country code 91 only if number > 10 digits
+      const stripped = mobile.replace(/[\s\-\+]/g, '');
+      const cleanMobile = stripped.length > 10 && stripped.startsWith('91') ? stripped.substring(2) : stripped;
+
+      const otp = customOtp || Math.floor(1000 + Math.random() * 9000).toString();
+
+      // DLT Route
+      // Uses TRAI-registered DLT template. The message text is pre-approved;
+      // we only pass OTP as a variable. Fast2SMS fills {#var#} in the template.
+      // Template format (ID 173130): "Your OTP is {#var#} ..." (registered under sender OTAAT)
       const payload = {
-        route: "q",
-        message: message,
-        language: "english",
+        route: "dlt",
+        sender_id: senderId || "OTAAT",
+        message: messageId || "173130",
+        variables_values: otp,
         flash: 0,
-        numbers: mobile,
+        numbers: cleanMobile,
       };
-      
-      console.log(`Sending OTP ${otp} to ${mobile} via Fast2SMS Quick SMS route...`);
-      
+
+      console.log(`Sending OTP ${otp} to ${cleanMobile} via Fast2SMS DLT route (sender: ${payload.sender_id}, template: ${payload.message})...`);
+
       const response = await this.makeHttpsRequest('https://www.fast2sms.com/dev/bulkV2', 'POST', {
         'authorization': apiKey,
-        'Content-Type': 'application/json'
+        'Content-Type': 'application/json',
       }, payload);
-      
+
       console.log('Fast2SMS Raw Response:', response.data);
-      
+
       try {
         const data = JSON.parse(response.data);
         if (data.return === true) {
-           console.log('OTP sent successfully via Fast2SMS');
-           return { success: true, message: "OTP sent successfully via Fast2SMS", otp };
+          console.log('OTP sent successfully via Fast2SMS DLT route');
+          return { success: true, message: "OTP sent successfully", otp };
         }
-        
-        // If the Quick route also fails, try the DLT route as final fallback
+
+        // Handle common Fast2SMS error codes
         if (data.status_code === 996 || data.status_code === 995 || data.status_code === 411) {
-           console.warn(`Fast2SMS Policy Error: ${data.message}`);
-           console.warn('This typically means your Fast2SMS account needs wallet balance or further verification.');
-           console.warn('Returning mock OTP for development. In production, complete Fast2SMS verification.');
-           return { success: true, message: "Mock OTP (Fast2SMS requires account setup).", otp };
+          console.warn(`Fast2SMS DLT Error (${data.status_code}): ${data.message}`);
+          // In dev mode, return the OTP so testing can continue
+          if (this.configService.get<string>('DEBUG_OTP') === 'true') {
+            console.warn('DEBUG_OTP=true → returning OTP for development.');
+            return { success: true, message: "Mock OTP (DLT template issue, debug mode).", otp };
+          }
+          throw new HttpException(
+            `SMS delivery failed: ${data.message || 'DLT template or sender ID issue'}`,
+            HttpStatus.SERVICE_UNAVAILABLE,
+          );
         }
-        
+
         console.error('Fast2SMS rejected:', data);
         throw new HttpException(data.message || 'Fast2SMS rejected request', HttpStatus.BAD_REQUEST);
       } catch (parseErr) {
         if (parseErr instanceof HttpException) throw parseErr;
         throw new HttpException('Fast2SMS invalid response: ' + response.data, HttpStatus.BAD_REQUEST);
       }
-      
-    } catch (error) {
+
+      } catch (error: any) {
       if (error instanceof HttpException) throw error;
       console.error("Fast2SMS Critical Error:", error);
       throw new HttpException('Failed to communicate with Fast2SMS API: ' + (error.message || error), HttpStatus.INTERNAL_SERVER_ERROR);
@@ -138,7 +152,7 @@ export class VerificationService {
       
       console.error('EmailJS Error:', response.data);
       throw new HttpException('EmailJS rejected request: ' + response.data, HttpStatus.BAD_REQUEST);
-    } catch (error) {
+    } catch (error: any) {
       console.error("EmailJS Critical Error:", error);
       throw new HttpException('Failed to communicate with EmailJS API: ' + (error.message || error), HttpStatus.INTERNAL_SERVER_ERROR);
     }

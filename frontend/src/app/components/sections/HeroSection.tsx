@@ -3,23 +3,19 @@ import { Button } from "../ui/button";
 import { Heart, LayoutDashboard, Handshake } from "lucide-react";
 import { motion, useScroll, useTransform, AnimatePresence } from "motion/react";
 import { useRef, useState, useEffect } from "react";
-import dashboard_img1 from "../../../../dist/images/dashboard/657ae878-799e-44e7-a0e6-759a9b0420dc.jpeg"
-import dashboard_img2 from "../../../../dist/images/dashboard/WhatsApp Image 2025-11-14 at 12.30.17.jpeg"
-import dashboard_img3 from "../../../../dist/images/dashboard/ec9e78d6-4820-48e0-abfa-f6af927c9682.jpeg"
+import { useTranslation } from "react-i18next";
 
 
 const HERO_IMAGES = [
-  dashboard_img1,
-  dashboard_img2,
-  dashboard_img3,
+  "https://images.unsplash.com/photo-1488521787991-ed7bbaae773c?q=80&w=1920&auto=format&fit=crop", // Children learning
+  "https://images.unsplash.com/photo-1509062522246-3755977927d7?q=80&w=1920&auto=format&fit=crop", // Education
+  "https://images.unsplash.com/photo-1594708767771-a7502209ff51?q=80&w=1920&auto=format&fit=crop", // Healthcare
   "https://images.unsplash.com/photo-1542810634-71277d95dcbb?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwyfHxjaGlsZHJlbiUyMGhhcHB5JTIwSW5kaWF8ZW58MHx8fHwxNzczMTM0MDIxfDA&ixlib=rb-4.1.0&q=80&w=1920", // Original Happy children India
   "/images/site-assets/hero_health.png",
-  "https://images.unsplash.com/photo-1594708767771-a7502209ff51?q=80&w=1920&auto=format&fit=crop",
-  "https://images.unsplash.com/photo-1488521787991-ed7bbaae773c?q=80&w=1920&auto=format&fit=crop",
-  "https://images.unsplash.com/photo-1509062522246-3755977927d7?q=80&w=1920&auto=format&fit=crop"
 ];
 
 export function HeroSection() {
+  const { t } = useTranslation();
   const containerRef = useRef<HTMLElement>(null);
   const [currentImageIndex, setCurrentImageIndex] = useState(0);
   
@@ -105,7 +101,7 @@ export function HeroSection() {
                 <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-[var(--journey-saffron)] opacity-75"></span>
                 <span className="relative inline-flex rounded-full h-2 w-2 bg-[var(--journey-saffron)]"></span>
               </span>
-              The Child Who Grows Healthy Changes the World
+              {t('home.heroBadge')}
             </div>
           </motion.div>
           
@@ -115,13 +111,13 @@ export function HeroSection() {
             className="text-[clamp(2.45rem,12vw,5rem)] text-white tracking-tight drop-shadow-2xl"
             style={{ fontWeight: 800, lineHeight: 1.05 }}
           >
-            Every Child, From{" "}
+            {t('home.heroEveryChild')}
             <br className="hidden sm:block" />
-            <span className="text-transparent bg-clip-text bg-gradient-to-r from-green-300 to-[var(--womb-forest)] drop-shadow-[0_2px_10px_rgba(0,0,0,0.8)]">Pregnancy</span>
+            <span className="text-transparent bg-clip-text bg-gradient-to-r from-green-300 to-[var(--womb-forest)] drop-shadow-[0_2px_10px_rgba(0,0,0,0.8)]">{t('home.heroPregnancy')}</span>
             {" "}
-            <span className="text-[var(--journey-saffron)] drop-shadow-[0_2px_10px_rgba(0,0,0,0.8)]">To <span className="text-[var(--future-sky)]">18</span></span>
+            <span className="text-[var(--journey-saffron)] drop-shadow-[0_2px_10px_rgba(0,0,0,0.8)]">{t('home.heroTo')} <span className="text-[var(--future-sky)]">{t('home.hero18')}</span></span>
             <br />
-            <span className="text-white/90 font-bold">— Healthy & Counted.</span>
+            <span className="text-white/90 font-bold">{t('home.heroHealthy')}</span>
           </motion.h1>
           
           {/* Description */}
@@ -129,7 +125,7 @@ export function HeroSection() {
             variants={cinematicReveal} 
             className="max-w-3xl px-2 text-base leading-relaxed font-medium text-white/80 drop-shadow-md sm:px-0 sm:text-lg md:text-2xl"
           >
-            Touching 25 million lives from pregnancy to 18 years by 2030. Support the journey of the a mother and child today and track your impact live on our verified donor dashboard. 
+            {t('home.heroDesc')} 
           </motion.p>
           
           {/* CTA Buttons */}
@@ -140,27 +136,27 @@ export function HeroSection() {
             <Link to="/donate" className="w-full sm:min-w-[200px] sm:flex-1">
               <Button size="lg" className="flex h-auto w-full flex-col items-center justify-center rounded-xl border border-white/10 px-4 py-3 text-white shadow-[0_0_30px_rgba(29,110,63,0.5)] backdrop-blur-sm transition-all hover:-translate-y-1 hover:shadow-[0_0_40px_rgba(29,110,63,0.8)] sm:py-3.5" style={{ backgroundColor: 'var(--womb-forest, #1D6E3F)' }}>
                 <div className="mb-1 flex items-center text-sm font-black sm:text-base lg:text-lg">
-                  <Heart className="h-5 w-5 mr-2 fill-current" /> DONATE NOW
+                  <Heart className="h-5 w-5 mr-2 fill-current" /> {t('home.btnDonate')}
                 </div>
-                <span className="text-[10px] lg:text-xs font-bold opacity-90 tracking-widest uppercase">Tax Benefit • Instant Cert</span>
+                <span className="text-[10px] lg:text-xs font-bold opacity-90 tracking-widest uppercase">{t('home.btnDonateSub')}</span>
               </Button>
             </Link>
             
             <Link to="/dashboard" className="w-full sm:min-w-[200px] sm:flex-1">
               <Button size="lg" className="flex h-auto w-full flex-col items-center justify-center rounded-xl border border-white/10 px-4 py-3 text-white shadow-[0_0_30px_rgba(255,153,0,0.3)] backdrop-blur-sm transition-all hover:-translate-y-1 hover:shadow-[0_0_40px_rgba(255,153,0,0.6)] sm:py-3.5" style={{ backgroundColor: 'var(--journey-saffron, #FF9900)' }}>
                 <div className="mb-1 flex items-center text-sm font-black sm:text-base lg:text-lg">
-                  <LayoutDashboard className="h-5 w-5 mr-2" /> DASHBOARD
+                  <LayoutDashboard className="h-5 w-5 mr-2" /> {t('home.btnDashboard')}
                 </div>
-                <span className="text-[10px] lg:text-xs font-bold opacity-90 tracking-widest uppercase">See funds working live</span>
+                <span className="text-[10px] lg:text-xs font-bold opacity-90 tracking-widest uppercase">{t('home.btnDashboardSub')}</span>
               </Button>
             </Link>
             
             <Link to="/get-involved" className="w-full sm:min-w-[200px] sm:flex-1">
               <Button size="lg" className="flex h-auto w-full flex-col items-center justify-center rounded-xl border border-white/30 bg-white/10 px-4 py-3 text-white shadow-lg backdrop-blur-md transition-all hover:-translate-y-1 hover:bg-white/20 hover:shadow-xl sm:py-3.5">
                 <div className="mb-1 flex items-center text-sm font-black sm:text-base lg:text-lg">
-                  <Handshake className="h-5 w-5 mr-2" /> PARTNER
+                  <Handshake className="h-5 w-5 mr-2" /> {t('home.btnPartner')}
                 </div>
-                <span className="text-[10px] lg:text-xs font-bold opacity-90 tracking-widest uppercase">CSR • ESG • Institutional</span>
+                <span className="text-[10px] lg:text-xs font-bold opacity-90 tracking-widest uppercase">{t('home.btnPartnerSub')}</span>
               </Button>
             </Link>
           </motion.div>

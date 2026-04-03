@@ -1,8 +1,10 @@
 import { PrismaService } from '../../prisma/services/prisma.service';
+import { PdfGeneratorService } from './pdf-generator.service';
 export declare class DonationService {
     private readonly prisma;
+    private readonly pdfGenerator;
     private razorpay;
-    constructor(prisma: PrismaService);
+    constructor(prisma: PrismaService, pdfGenerator: PdfGeneratorService);
     private buildDonorId;
     createOrder(data: {
         amount: number;
@@ -21,6 +23,7 @@ export declare class DonationService {
         contactPerson?: string;
         schoolName?: string;
         notes?: string;
+        referralCode?: string;
     }): Promise<{
         orderId: any;
         amount: any;
@@ -37,6 +40,11 @@ export declare class DonationService {
         success: boolean;
         tier: string;
         dashboardUnlocked: boolean;
+        certificateUrl: string | null;
+        certId: string | null;
+        donationId: string;
+        donorId: string | null;
+        email: string | null;
     }>;
     getSidebarStats(): Promise<{
         childrenRegistered: number;
@@ -51,4 +59,5 @@ export declare class DonationService {
         }[];
         monthlyGoal: number;
     }>;
+    getWallOfFame(filter: string): Promise<any[]>;
 }

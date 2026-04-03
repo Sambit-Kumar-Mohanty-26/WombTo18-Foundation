@@ -45,13 +45,16 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.DonationService = void 0;
 const common_1 = require("@nestjs/common");
 const prisma_service_1 = require("../../prisma/services/prisma.service");
+const pdf_generator_service_1 = require("./pdf-generator.service");
 const Razorpay = require("razorpay");
 const crypto = __importStar(require("crypto"));
 let DonationService = class DonationService {
     prisma;
+    pdfGenerator;
     razorpay;
-    constructor(prisma) {
+    constructor(prisma, pdfGenerator) {
         this.prisma = prisma;
+        this.pdfGenerator = pdfGenerator;
         this.razorpay = new Razorpay({
             key_id: process.env.RAZORPAY_KEY_ID || 'rzp_test_placeholder',
             key_secret: process.env.RAZORPAY_KEY_SECRET || 'secret_placeholder',
@@ -150,6 +153,7 @@ let DonationService = class DonationService {
                 donorId: donor.id,
                 programId: program.id,
                 displayName: data.displayName ?? true,
+                referralCode: data.referralCode,
             },
         });
         return {
@@ -164,6 +168,29 @@ let DonationService = class DonationService {
     async verifyPayment(data) {
         const { razorpay_order_id, razorpay_payment_id, razorpay_signature } = data;
         const key_secret = process.env.RAZORPAY_KEY_SECRET || 'secret_placeholder';
+        const existingDonation = await this.prisma.donation.findUnique({
+            where: { razorpayOrderId: razorpay_order_id },
+        });
+        if (!existingDonation) {
+            throw new common_1.BadRequestException('Donation order not found');
+        }
+        if (existingDonation.status === 'SUCCESS') {
+            const donor = await this.prisma.donor.findUnique({ where: { id: existingDonation.donorId } });
+            const cert = await this.prisma.certificate.findFirst({
+                where: { donorId: existingDonation.donorId, type: '80G' },
+                orderBy: { createdAt: 'desc' },
+            });
+            return {
+                success: true,
+                tier: donor?.tier || 'DONOR',
+                dashboardUnlocked: donor?.isEligible || false,
+                certificateUrl: cert?.fileUrl || null,
+                certId: cert?.id || null,
+                donationId: existingDonation.id,
+                donorId: donor?.donorId || null,
+                email: donor?.email || null,
+            };
+        }
         const generated_signature = crypto
             .createHmac('sha256', key_secret)
             .update(razorpay_order_id + '|' + razorpay_payment_id)
@@ -220,10 +247,110 @@ let DonationService = class DonationService {
                 isEligible: totalDonated >= 5000,
             },
         });
+        if (donation.referralCode) {
+            const volunteer = await this.prisma.volunteer.findUnique({
+                where: { volunteerId: donation.referralCode },
+            });
+            if (volunteer && volunteer.email !== donor.email) {
+                const existingReferral = await this.prisma.coinTransaction.findFirst({
+                    where: {
+                        volunteerId: volunteer.id,
+                        type: 'REFERRAL',
+                        metadata: { contains: donation.id },
+                    },
+                });
+                if (!existingReferral) {
+                    let coinConfig = await this.prisma.coinConfig.findUnique({ where: { id: 'global' } });
+                    if (!coinConfig) {
+                        coinConfig = await this.prisma.coinConfig.create({ data: { id: 'global' } });
+                    }
+                    let tiers = [];
+                    try {
+                        tiers = JSON.parse(coinConfig.referralTiers);
+                    }
+                    catch {
+                        tiers = [];
+                    }
+                    const matchedTier = tiers.find(t => donation.amount >= t.min && donation.amount <= t.max);
+                    const coinsEarned = matchedTier ? matchedTier.coins : (tiers.length > 0 ? tiers[tiers.length - 1].coins : 50);
+                    await this.prisma.$transaction([
+                        this.prisma.volunteer.update({
+                            where: { id: volunteer.id },
+                            data: { totalCoins: { increment: coinsEarned } },
+                        }),
+                        this.prisma.coinTransaction.create({
+                            data: {
+                                volunteerId: volunteer.id,
+                                amount: coinsEarned,
+                                type: 'REFERRAL',
+                                description: `Referral bonus: ${coinsEarned} coins for ₹${donation.amount} donation`,
+                                metadata: JSON.stringify({ donationId: donation.id, donorEmail: donor.email }),
+                            },
+                        }),
+                        this.prisma.referral.create({
+                            data: {
+                                referrerType: 'VOLUNTEER',
+                                volunteerId: volunteer.id,
+                                referredName: donor.name,
+                                referredEmail: donor.email,
+                                referredPhone: donor.mobile,
+                                paymentAmount: donation.amount,
+                                coinsAwarded: coinsEarned,
+                                status: 'DONATED',
+                                joinedDonorId: donor.id,
+                            },
+                        }),
+                    ]);
+                }
+            }
+        }
+        let fileUrl = null;
+        let certId = null;
+        try {
+            const frontendUrl = process.env.FRONTEND_URL || 'http://localhost:5173';
+            const receiptNum = `RCPT-${Date.now()}`;
+            await this.prisma.donation.update({ where: { id: donation.id }, data: { receiptNumber: receiptNum } });
+            certId = `80G-${donation.id}`;
+            const existingCert = await this.prisma.certificate.findUnique({ where: { id: certId } });
+            if (existingCert) {
+                fileUrl = existingCert.fileUrl;
+            }
+            else {
+                fileUrl = await this.pdfGenerator.generate80GCertificate({
+                    donorName: donor.name || 'Anonymous Donor',
+                    donorPan: donor.pan || 'N/A',
+                    amount: donation.amount,
+                    receiptNumber: receiptNum,
+                    date: new Date(),
+                    certId,
+                    frontendUrl,
+                });
+                await this.prisma.certificate.create({
+                    data: {
+                        id: certId,
+                        type: '80G',
+                        title: 'Donation Receipt & 80G',
+                        recipientName: donor.name || 'Anonymous Donor',
+                        recipientType: 'DONOR',
+                        donorId: donor.id,
+                        fileUrl,
+                        metadata: JSON.stringify({ amount: donation.amount, donationId: donation.id }),
+                    },
+                });
+            }
+        }
+        catch (err) {
+            console.error('Failed to generate 80G certificate:', err);
+        }
         return {
             success: true,
             tier: updatedDonor.tier,
             dashboardUnlocked: updatedDonor.isEligible,
+            certificateUrl: fileUrl,
+            certId: certId,
+            donationId: donation.id,
+            donorId: updatedDonor.donorId,
+            email: donor.email,
         };
     }
     async getSidebarStats() {
@@ -257,18 +384,78 @@ let DonationService = class DonationService {
             schoolsOnboarded: metrics?.schoolsReached || 120,
             monthlyRaised: currentMonthRaised || 77500,
             activePrograms: activeProgramsCount > 0 ? activeProgramsCount : 32,
-            recentDonors: recentDonorsData.length >= 2 ? recentDonorsData : [
-                { name: "Rahul Sharma", amount: 5000, createdAt: new Date(Date.now() - 2 * 86400000) },
-                { name: "Anonymous Donor", amount: 15000, createdAt: new Date(Date.now() - 5 * 86400000) },
-                { name: "Priya Singh", amount: 2000, createdAt: new Date(Date.now() - 10 * 86400000) },
-            ],
+            recentDonors: recentDonorsData,
             monthlyGoal: 500000,
         };
+    }
+    async getWallOfFame(filter) {
+        let result = [];
+        const limit = 100;
+        if (filter === 'top_all_time') {
+            const topDonors = await this.prisma.donor.findMany({
+                where: { totalDonated: { gt: 0 } },
+                orderBy: { totalDonated: 'desc' },
+                take: limit,
+            });
+            result = topDonors.map(d => ({
+                id: d.id,
+                name: d.showOnLeaderboard && d.name ? d.name : 'Anonymous Donor',
+                amount: d.totalDonated,
+                tier: d.tier,
+                date: d.updatedAt,
+            }));
+        }
+        else if (filter === 'top_month') {
+            const startOfMonth = new Date();
+            startOfMonth.setDate(1);
+            startOfMonth.setHours(0, 0, 0, 0);
+            const groupedDonations = await this.prisma.donation.groupBy({
+                by: ['donorId'],
+                where: {
+                    status: 'SUCCESS',
+                    createdAt: { gte: startOfMonth },
+                },
+                _sum: { amount: true },
+                orderBy: { _sum: { amount: 'desc' } },
+                take: limit,
+            });
+            const donorIds = groupedDonations.map(g => g.donorId);
+            const donors = await this.prisma.donor.findMany({
+                where: { id: { in: donorIds } },
+            });
+            result = groupedDonations.map(g => {
+                const donor = donors.find(d => d.id === g.donorId);
+                return {
+                    id: g.donorId,
+                    name: donor?.showOnLeaderboard && donor?.name ? donor.name : 'Anonymous Donor',
+                    amount: g._sum.amount || 0,
+                    tier: donor?.tier || 'DONOR',
+                    date: new Date(),
+                };
+            });
+        }
+        else {
+            const recentDonations = await this.prisma.donation.findMany({
+                where: { status: 'SUCCESS' },
+                orderBy: { createdAt: 'desc' },
+                take: limit,
+                include: { donor: true },
+            });
+            result = recentDonations.map(d => ({
+                id: d.id,
+                name: d.displayName && d.donor.name ? d.donor.name : 'Anonymous Donor',
+                amount: d.amount,
+                tier: d.donor.tier,
+                date: d.createdAt,
+            }));
+        }
+        return result;
     }
 };
 exports.DonationService = DonationService;
 exports.DonationService = DonationService = __decorate([
     (0, common_1.Injectable)(),
-    __metadata("design:paramtypes", [prisma_service_1.PrismaService])
+    __metadata("design:paramtypes", [prisma_service_1.PrismaService,
+        pdf_generator_service_1.PdfGeneratorService])
 ], DonationService);
 //# sourceMappingURL=donation.service.js.map

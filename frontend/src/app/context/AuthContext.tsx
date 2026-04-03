@@ -6,45 +6,39 @@ interface AuthState {
     identifier: string;
     eligible: boolean;
     name?: string;
-    role: 'DONOR' | 'PARTNER' | 'ADMIN';
+    donorId?: string;
+    volunteerId?: string;
+    partnerId?: string;
+    organizationName?: string;
+    role: 'DONOR' | 'VOLUNTEER' | 'PARTNER' | 'ADMIN';
   } | null;
   isAuthenticated: boolean;
   isLoaded: boolean;
 }
 
 type AuthAction =
-  | { type: "LOGIN"; payload: { identifier: string; eligible: boolean; name?: string; role: 'DONOR' | 'PARTNER' | 'ADMIN' } }
+  | { type: "LOGIN"; payload: AuthState["user"] }
   | { type: "LOGOUT" }
-  | { type: "SET_LOADED" };
+  | { type: "SET_LOADED" }
+  | { type: "UPDATE_ROLE"; payload: Partial<NonNullable<AuthState["user"]>> };
 
 const AuthContext = createContext<{
   state: AuthState;
   dispatch: React.Dispatch<AuthAction>;
-  login: (identifier: string, eligible: boolean, name?: string, role?: 'DONOR' | 'PARTNER' | 'ADMIN') => void;
+  login: (identifier: string, eligible: boolean, name?: string, role?: string, extra?: Record<string, any>) => void;
   logout: () => void;
 } | undefined>(undefined);
 
 function authReducer(state: AuthState, action: AuthAction): AuthState {
   switch (action.type) {
     case "LOGIN":
-      return {
-        ...state,
-        user: action.payload,
-        isAuthenticated: true,
-        isLoaded: true,
-      };
+      return { ...state, user: action.payload, isAuthenticated: true, isLoaded: true };
     case "LOGOUT":
-      return {
-        ...state,
-        user: null,
-        isAuthenticated: false,
-        isLoaded: true,
-      };
+      return { ...state, user: null, isAuthenticated: false, isLoaded: true };
     case "SET_LOADED":
-      return {
-        ...state,
-        isLoaded: true,
-      };
+      return { ...state, isLoaded: true };
+    case "UPDATE_ROLE":
+      return state.user ? { ...state, user: { ...state.user, ...action.payload } } : state;
     default:
       return state;
   }
@@ -60,22 +54,35 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
   useEffect(() => {
     const session = auth.getSession();
     if (session) {
-      dispatch({ 
-        type: "LOGIN", 
-        payload: { 
-          identifier: session.identifier, 
+      dispatch({
+        type: "LOGIN",
+        payload: {
+          identifier: session.identifier,
           eligible: session.eligible,
           name: session.name,
-          role: (session as any).role || 'DONOR'
-        } 
+          donorId: session.donorId,
+          volunteerId: session.volunteerId,
+          partnerId: session.partnerId,
+          organizationName: session.organizationName,
+          role: session.role || 'DONOR',
+        },
       });
     } else {
       dispatch({ type: "SET_LOADED" });
     }
   }, []);
 
-  const login = (identifier: string, eligible: boolean, name?: string, role?: 'DONOR' | 'PARTNER' | 'ADMIN') => {
-    dispatch({ type: "LOGIN", payload: { identifier, eligible, name, role: role || 'DONOR' } });
+  const login = (identifier: string, eligible: boolean, name?: string, role?: string, extra?: Record<string, any>) => {
+    dispatch({
+      type: "LOGIN",
+      payload: {
+        identifier,
+        eligible,
+        name,
+        role: (role as any) || 'DONOR',
+        ...extra,
+      },
+    });
   };
 
   const logout = () => {

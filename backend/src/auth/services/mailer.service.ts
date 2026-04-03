@@ -58,10 +58,11 @@ export class MailerService {
       });
       console.log(`[EMAIL SENT SUCCESS] To: ${to} | Subject: ${subject}`);
     } catch (error) {
+      const errorMessage = error instanceof Error ? error.message : 'Unknown error';
       console.error('[EMAIL ERROR] Failed to send email.', {
         to,
         subject,
-        error: error.message
+        error: errorMessage
       });
       
       // In development, we don't want to crash the whole process if email fails
@@ -93,5 +94,45 @@ export class MailerService {
     `;
 
     await this.sendEmail(email, subject, html, text);
+  }
+
+  async sendCampNotificationEmail(params: {
+    email: string;
+    volunteerName: string;
+    campName: string;
+    message: string;
+    link?: string;
+    selected: boolean;
+  }): Promise<void> {
+    const subject = params.selected
+      ? `Your camp attendance link is ready for ${params.campName}`
+      : `More camps are coming soon`;
+
+    const text = params.selected
+      ? `${params.volunteerName}, your attendance link for ${params.campName} is ready.\n\n${params.message}\n${params.link ? `\nOpen link: ${params.link}` : ''}`
+      : `${params.volunteerName}, you were not selected for the current camp window.\n\n${params.message}`;
+
+    const html = `
+      <div style="font-family:sans-serif;max-width:560px;margin:0 auto;padding:32px;background:#f8fafc;border-radius:16px;">
+        <div style="text-align:center;margin-bottom:24px;">
+          <div style="font-size:1.6rem;font-weight:900;color:#14532d;">WombTo18</div>
+          <div style="font-size:0.95rem;color:#64748b;margin-top:4px;">Camp Attendance Update</div>
+        </div>
+        <div style="background:white;border:1px solid #e2e8f0;border-radius:18px;padding:28px;">
+          <p style="font-size:1rem;color:#0f172a;margin:0 0 12px;"><strong>${params.volunteerName}</strong></p>
+          <h2 style="font-size:1.35rem;line-height:1.4;margin:0 0 16px;color:#0f172a;">${params.selected ? `Your link for ${params.campName} is ready` : 'A new camp update for you'}</h2>
+          <p style="font-size:0.98rem;line-height:1.7;color:#334155;margin:0 0 20px;">${params.message}</p>
+          ${params.link ? `
+            <div style="text-align:center;margin:28px 0 10px;">
+              <a href="${params.link}" style="display:inline-block;background:linear-gradient(90deg,#16a34a,#22c55e);color:white;text-decoration:none;padding:14px 22px;border-radius:999px;font-weight:800;">Open Attendance Link</a>
+            </div>
+            <p style="font-size:0.8rem;color:#64748b;text-align:center;word-break:break-all;">${params.link}</p>
+          ` : ''}
+        </div>
+        <p style="color:#94a3b8;font-size:0.8rem;text-align:center;margin-top:20px;">If this wasn't expected, you can safely ignore this message.</p>
+      </div>
+    `;
+
+    await this.sendEmail(params.email, subject, html, text);
   }
 }

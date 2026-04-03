@@ -1,6 +1,6 @@
 import { Card, CardContent, CardHeader, CardTitle } from "../../components/ui/card";
 import { Badge } from "../../components/ui/badge";
-import { Users, IndianRupee, TrendingUp, Heart, ArrowUp, ArrowDown } from "lucide-react";
+import { Users, IndianRupee, TrendingUp, Heart, ArrowUp, ArrowDown, Tent } from "lucide-react";
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, LineChart, Line, PieChart, Pie, Cell, Legend } from "recharts";
 
 const monthlyRevenue = [
@@ -44,12 +44,13 @@ export function AdminDashboard() {
       </div>
 
       {/* KPIs / Stat Cards */}
-      <div className="grid grid-cols-2 lg:grid-cols-4 gap-6">
+      <div className="grid grid-cols-2 lg:grid-cols-5 gap-6">
         {[
           { icon: IndianRupee, label: "Total Revenue", value: "₹13.8 Cr", change: "+24%", up: true },
           { icon: Users, label: "Active Donors", value: "1,245", change: "+12%", up: true },
           { icon: Heart, label: "Children Served", value: "15,234", change: "+15%", up: true },
           { icon: TrendingUp, label: "Fund Utilization", value: "98%", change: "+2%", up: true },
+          { icon: Tent, label: "Active Camps", value: "8", change: "+3 this week", up: true },
         ].map((kpi) => (
           <Card key={kpi.label} className="bg-white border-gray-200 shadow-sm hover:shadow-md transition-all duration-300 rounded-lg">
             <CardContent className="pt-6">

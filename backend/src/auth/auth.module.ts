@@ -5,6 +5,7 @@ import { MailerService } from './services/mailer.service';
 import { JwtModule } from '@nestjs/jwt';
 import { PassportModule } from '@nestjs/passport';
 import { ConfigService } from '@nestjs/config';
+import { VerificationModule } from '../verification/verification.module';
 
 @Module({
   imports: [
@@ -16,10 +17,10 @@ import { ConfigService } from '@nestjs/config';
         signOptions: { expiresIn: '1d' },
       }),
     }),
+    VerificationModule,
   ],
   controllers: [AuthController],
   providers: [AuthService, MailerService],
-  exports: [AuthService],
+  exports: [AuthService, MailerService],
 })
 export class AuthModule {}
-

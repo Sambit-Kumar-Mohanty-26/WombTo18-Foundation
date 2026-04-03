@@ -55,6 +55,7 @@ export function Footer() {
               { href: "/impact", label: "Our Impact" },
               { href: "/donate", label: "Donate" },
               { href: "/blog", label: "Blog" },
+              { href: "/verify", label: "Verify Certificate" },
             ].map((link) => (
               <Link
                 key={link.href}

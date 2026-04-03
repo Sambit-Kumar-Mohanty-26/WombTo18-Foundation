@@ -14,6 +14,11 @@ export declare class DonationController {
         success: boolean;
         tier: string;
         dashboardUnlocked: boolean;
+        certificateUrl: string | null;
+        certId: string | null;
+        donationId: string;
+        donorId: string | null;
+        email: string | null;
     }>;
     getStats(): Promise<{
         childrenRegistered: number;
@@ -28,4 +33,5 @@ export declare class DonationController {
         }[];
         monthlyGoal: number;
     }>;
+    getWallOfFame(filter?: string): Promise<any[]>;
 }

@@ -1,8 +1,9 @@
 import { useEffect, useState } from "react";
 import { useSearchParams, useNavigate } from "react-router";
 import { motion } from "motion/react";
-import { CheckCircle2, Download, LayoutDashboard, Heart, Lock, Sparkles, CreditCard, ChevronRight, Users } from "lucide-react";
+import { CheckCircle2, Download, LayoutDashboard, Heart, Lock, Sparkles, CreditCard, ChevronRight, Users, Loader2 } from "lucide-react";
 import { toast } from "sonner";
+import { certificateApi } from "../lib/api/certificates";
 
 export function DonationSuccessPage() {
   const [searchParams] = useSearchParams();
@@ -12,8 +13,14 @@ export function DonationSuccessPage() {
   const paymentId = searchParams.get("paymentId") || "N/A";
   const wantsToVolunteer = searchParams.get("volunteer") === "true";
   const isDashboardEligible = amount >= 5000;
+  const certId = searchParams.get("certId") || "";
+  const donationId = searchParams.get("donationId") || "";
+  const donorId = searchParams.get("donorId") || "";
+  const email = searchParams.get("email") || "";
+  const certificateUrl = searchParams.get("certificateUrl") || "";
 
   const [countdown, setCountdown] = useState(5);
+  const [downloading, setDownloading] = useState(false);
 
   useEffect(() => {
     if (!wantsToVolunteer) return;
@@ -32,8 +39,41 @@ export function DonationSuccessPage() {
     return () => clearInterval(timer);
   }, [wantsToVolunteer, navigate]);
 
-  function downloadReceipt() {
-    toast.info("Receipt download will be available once backend integration is completed.");
+  async function downloadReceipt() {
+    if (downloading) return;
+    setDownloading(true);
+    
+    try {
+      // Prioritize the dedicated API download endpoint rather than static file fetch
+      if (certId) {
+        await certificateApi.download80G(certId);
+        toast.success("80G Certificate downloaded!");
+        return;
+      }
+
+      // Fallback: Generate on-the-fly by donationId
+      if (donationId) {
+        await certificateApi.download80GByDonation(donationId);
+        toast.success("80G Certificate downloaded!");
+        return;
+      }
+
+      toast.error("Certificate is not available yet. Please try from your dashboard.");
+    } catch (err: any) {
+      console.error("Download error:", err);
+      toast.error("Download failed. Please try again from your dashboard.");
+    } finally {
+      setDownloading(false);
+    }
+  }
+
+  function enterDashboard() {
+    // If donor has a donorId, navigate to donor login with their email pre-filled
+    if (email) {
+      navigate(`/donor/login?email=${encodeURIComponent(email)}&from=donation`);
+    } else {
+      navigate("/donor/login");
+    }
   }
 
   return (
@@ -107,10 +147,15 @@ export function DonationSuccessPage() {
              
              <button
                 onClick={downloadReceipt}
-                className="group flex items-center gap-2 text-sm font-bold text-[var(--womb-forest)] hover:text-emerald-700 transition-colors w-full sm:w-auto bg-[var(--womb-forest)]/5 hover:bg-[var(--womb-forest)]/10 px-4 py-2.5 rounded-xl text-center justify-center"
+                disabled={downloading}
+                className="group flex items-center gap-2 text-sm font-bold text-[var(--womb-forest)] hover:text-emerald-700 transition-colors w-full sm:w-auto bg-[var(--womb-forest)]/5 hover:bg-[var(--womb-forest)]/10 px-4 py-2.5 rounded-xl text-center justify-center disabled:opacity-50"
               >
-                <Download className="w-4 h-4" /> 
-                Download 80G Receipt
+                {downloading ? (
+                  <Loader2 className="w-4 h-4 animate-spin" />
+                ) : (
+                  <Download className="w-4 h-4" />
+                )}
+                {downloading ? "Downloading..." : "Download 80G Receipt"}
               </button>
           </div>
         </motion.div>
@@ -155,7 +200,7 @@ export function DonationSuccessPage() {
                       Because your contribution is ₹5,000 or above, you have exclusive access to view real-time tracking of your funds and impact reports.
                     </p>
                     <button
-                      onClick={() => navigate("/dashboard")}
+                      onClick={enterDashboard}
                       className="group inline-flex items-center gap-2 bg-gradient-to-r from-[var(--journey-saffron)] to-orange-500 text-white px-6 py-3 rounded-xl font-bold text-sm shadow-[0_4px_15px_-3px_rgba(255,153,0,0.4)] hover:shadow-[0_8px_25px_-5px_rgba(255,153,0,0.5)] transition-all duration-300"
                     >
                       <LayoutDashboard className="w-4 h-4" /> Enter Dashboard

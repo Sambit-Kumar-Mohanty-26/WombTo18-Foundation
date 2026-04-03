@@ -8,4 +8,12 @@ export declare class MailerService {
     constructor(configService: ConfigService);
     sendEmail(to: string, subject: string, html: string, text: string): Promise<void>;
     sendOtpEmail(email: string, code: string): Promise<void>;
+    sendCampNotificationEmail(params: {
+        email: string;
+        volunteerName: string;
+        campName: string;
+        message: string;
+        link?: string;
+        selected: boolean;
+    }): Promise<void>;
 }

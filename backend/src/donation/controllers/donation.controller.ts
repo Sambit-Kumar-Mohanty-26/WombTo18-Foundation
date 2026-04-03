@@ -1,4 +1,4 @@
-import { Controller, Post, Get, Body, UseGuards, Request } from '@nestjs/common';
+import { Controller, Post, Get, Body, UseGuards, Request, Query } from '@nestjs/common';
 import { DonationService } from '../services/donation.service';
 import { ApiTags, ApiOperation, ApiBearerAuth } from '@nestjs/swagger';
 
@@ -23,5 +23,11 @@ export class DonationController {
   @ApiOperation({ summary: 'Get live donation stats and recent donors' })
   async getStats() {
     return this.donationService.getSidebarStats();
+  }
+
+  @Get('wall-of-fame')
+  @ApiOperation({ summary: 'Get ranked wall of fame donors' })
+  async getWallOfFame(@Query('filter') filter?: string) {
+    return this.donationService.getWallOfFame(filter || 'recent');
   }
 }

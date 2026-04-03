@@ -4,11 +4,16 @@ export declare class DonorController {
     constructor(donorService: DonorService);
     getDashboard(donorId: string): Promise<{
         donor: {
+            id: string;
             name: string;
             donorId: string;
+            email: string;
             tier: string;
             totalDonated: number;
-            isVolunteer: any;
+            isVolunteer: boolean;
+            showOnLeaderboard: boolean;
+            volunteerId: string | null;
+            volunteerCoins: number;
         };
         impact: {
             id: string;
@@ -26,30 +31,33 @@ export declare class DonorController {
         };
     }>;
     getDonations(donorId: string): Promise<{
+        id: string;
         amount: number;
         program: string;
         date: string;
         status: string;
+        receiptNumber: string | null;
     }[]>;
     getLeaderboard(): Promise<{
-        name: string | null;
         donorId: string;
+        name: string | null;
         tier: string;
         totalDonated: number;
+        showOnLeaderboard: boolean;
     }[]>;
-    getRecruits(id: string): Promise<{
-        name: string | null;
-        createdAt: Date;
+    getRecruits(donorId: string): Promise<{
         donorId: string;
+        createdAt: Date;
+        name: string | null;
         email: string;
         totalDonated: number;
     }[]>;
     becomeVolunteer(donorId: string): Promise<{
         id: string;
-        name: string | null;
+        donorId: string;
         createdAt: Date;
         updatedAt: Date;
-        donorId: string;
+        name: string | null;
         email: string;
         mobile: string | null;
         password: string | null;
@@ -59,9 +67,87 @@ export declare class DonorController {
         totalDonated: number;
         otpHash: string | null;
         otpExpiry: Date | null;
+        emailOtpHash: string | null;
+        mobileOtpHash: string | null;
+        emailVerified: boolean;
+        mobileVerified: boolean;
         isEligible: boolean;
         isVolunteer: boolean;
         isNonDonor: boolean;
+        showOnLeaderboard: boolean;
+        profileImage: string | null;
         referredById: string | null;
+    }>;
+    toggleLeaderboard(donorId: string, show: boolean): Promise<{
+        id: string;
+        donorId: string;
+        createdAt: Date;
+        updatedAt: Date;
+        name: string | null;
+        email: string;
+        mobile: string | null;
+        password: string | null;
+        pan: string | null;
+        address: string | null;
+        tier: string;
+        totalDonated: number;
+        otpHash: string | null;
+        otpExpiry: Date | null;
+        emailOtpHash: string | null;
+        mobileOtpHash: string | null;
+        emailVerified: boolean;
+        mobileVerified: boolean;
+        isEligible: boolean;
+        isVolunteer: boolean;
+        isNonDonor: boolean;
+        showOnLeaderboard: boolean;
+        profileImage: string | null;
+        referredById: string | null;
+    }>;
+    getProfile(donorId: string): Promise<{
+        id: string;
+        donorId: string;
+        name: string | null;
+        email: string;
+        mobile: string | null;
+        pan: string | null;
+        address: string | null;
+        tier: string;
+        totalDonated: number;
+        isVolunteer: boolean;
+        showOnLeaderboard: boolean;
+        volunteerId: string | null;
+        recentDonations: {
+            id: string;
+            amount: number;
+            program: string;
+            date: string;
+        }[];
+        createdAt: Date;
+    }>;
+    lookup(email: string): Promise<{
+        donorId: string;
+        name: string | null;
+        email: string;
+        tier: string;
+        totalDonated: number;
+        isEligible: boolean;
+        emailVerified: boolean;
+        mobileVerified: boolean;
+        donationCount: number;
+        certificateCount: number;
+        donations: {
+            id: string;
+            amount: number;
+            date: string;
+            receiptNumber: string | null;
+        }[];
+        certificates: {
+            id: string;
+            type: string;
+            title: string;
+            fileUrl: string | null;
+            createdAt: Date;
+        }[];
     }>;
 }

@@ -1,20 +1,33 @@
-import { useState } from "react";
-import { Link, Outlet, useLocation, useNavigate } from "react-router";
+import { useState, useEffect } from "react";
+import { Link, Outlet, useLocation, useNavigate, useParams } from "react-router";
 import { LayoutDashboard, Building2, Bell, LogOut, Menu, X, ChevronLeft, MapPin } from "lucide-react";
 import { Avatar, AvatarFallback } from "../ui/avatar";
 import { useAuth } from "../../context/AuthContext";
-
-const partnerLinks = [
-  { href: "/partner", label: "Overview", icon: LayoutDashboard },
-  { href: "/partner/projects", label: "My Projects", icon: MapPin },
-  { href: "/partner/notices", label: "Announcements", icon: Bell },
-];
 
 export function PartnerLayout() {
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const location = useLocation();
   const navigate = useNavigate();
+  const { id } = useParams();
   const { state, logout } = useAuth();
+  
+  useEffect(() => {
+    if (state.user) {
+      const expectedId = state.user.donorId;
+      if (id && expectedId && id !== expectedId) {
+        navigate(`/partner/${expectedId}/dashboard`, { replace: true });
+      }
+    } else if (state.isLoaded) {
+      navigate('/partner/login', { replace: true });
+    }
+  }, [navigate, id, state.user, state.isLoaded]);
+
+  const ptnId = state.user?.donorId || 'legacy';
+  const partnerLinks = [
+    { href: `/partner/${ptnId}/dashboard`, label: "Overview", icon: LayoutDashboard },
+    { href: `/partner/${ptnId}/projects`, label: "My Projects", icon: MapPin },
+    { href: `/partner/${ptnId}/notices`, label: "Announcements", icon: Bell },
+  ];
 
   const handleLogout = () => {
     logout();

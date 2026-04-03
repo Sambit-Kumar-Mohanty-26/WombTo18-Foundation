@@ -1,22 +1,42 @@
 import { client } from './client';
 
 export interface LoginResponse {
+  success?: boolean;
   eligible?: boolean;
   otpSent?: boolean;
-  authenticated?: boolean;   // true when password login succeeded immediately
-  token?: string;            // JWT returned on password login
+  authenticated?: boolean;
+  token?: string;
   name?: string | null;
+  donorId?: string;
+  volunteerId?: string;
+  role?: string;
+  redirect?: string;
+  isVolunteer?: boolean;
+  message?: string;
+  devOtp?: string;
+  devMobileOtp?: string;
+  requiresMobileOtp?: boolean;
+}
+
+export interface RegisterResponse {
+  success?: boolean;
+  otpSent?: boolean;
   donorId?: string;
   message?: string;
   devOtp?: string;
+  devMobileOtp?: string;
+  requiresMobileOtp?: boolean;
 }
-
 
 export interface VerifyOtpResponse {
   success: boolean;
   token?: string;
   name?: string;
   donorId?: string;
+  volunteerId?: string;
+  partnerId?: string;
+  eligible?: boolean;
+  role?: string;
   donor?: {
     id: string;
     email: string;
@@ -26,13 +46,41 @@ export interface VerifyOtpResponse {
   };
 }
 
+export interface ResendOtpResponse {
+  success: boolean;
+  message?: string;
+  devOtp?: string;
+  devMobileOtp?: string;
+  requiresMobileOtp?: boolean;
+}
+
 export const authApi = {
-  login: (email: string, flags?: { isVolunteer?: boolean; isNonDonor?: boolean; name?: string; mobile?: string; password?: string; referredById?: string }) => 
-    client.post<LoginResponse>('/donor/login', { email, ...flags }),
-    
-  verifyOtp: (email: string, otp: string) => 
+  adminLogin: (email: string, password: string) =>
+    client.post<LoginResponse>('/admin/login', { email, password }),
+
+  login: (email: string, password: string) =>
+    client.post<LoginResponse>('/donor/login', { email, password }),
+
+  register: (data: {
+    email: string;
+    password: string;
+    name: string;
+    mobile?: string;
+    isVolunteer?: boolean;
+    isNonDonor?: boolean;
+    referredById?: string;
+  }) =>
+    client.post<RegisterResponse>('/donor/register', data),
+
+  verifyOtp: (email: string, otp: string) =>
     client.post<VerifyOtpResponse>('/donor/verify-otp', { email, otp }),
-    
-  logout: () => 
+
+  verifyDualOtp: (email: string, emailOtp: string, mobileOtp?: string) =>
+    client.post<VerifyOtpResponse>('/auth/verify-dual-otp', { email, emailOtp, mobileOtp }),
+
+  resendOtp: (email: string) =>
+    client.post<ResendOtpResponse>('/donor/resend-otp', { email }),
+
+  logout: () =>
     client.post<{ success: boolean }>('/auth/logout'),
 };
