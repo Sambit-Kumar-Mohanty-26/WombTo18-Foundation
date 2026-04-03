@@ -7,35 +7,239 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
+// ─────────────────────────────────────────────────────
+// DONOR — The base user who donates
+// ─────────────────────────────────────────────────────
 model Donor {
-  id             String     @id @default(cuid())
-  donorId        String     @unique // e.g., DNR1023
-  email          String     @unique
-  name           String?
-  mobile         String?
-  password       String?    // Hashed password for secure access
-  pan            String?
-  address        String?
-  tier           String     @default("DONOR") // Enum DonorTier: DONOR, PATRON, CHAMPION
-  totalDonated   Float      @default(0)
-  otpHash        String?
-  otpExpiry      DateTime?
-  donations      Donation[]
-  isEligible     Boolean    @default(false)
-  isVolunteer    Boolean    @default(false)
-  isNonDonor     Boolean    @default(false)
-  referredById   String?
-  referredBy     Donor?     @relation("Referrals", fields: [referredById], references: [id])
-  referrals      Donor[]    @relation("Referrals")
-  createdAt      DateTime   @default(now())
-  updatedAt      DateTime   @updatedAt
+  id                String        @id @default(cuid())
+  donorId           String        @unique // e.g., DNR1023
+  email             String        @unique
+  name              String?
+  mobile            String?
+  password          String? // Hashed password
+  pan               String?
+  address           String?
+  tier              String        @default("DONOR") // DONOR, PATRON, CHAMPION
+  totalDonated      Float         @default(0)
+  otpHash           String?
+  otpExpiry         DateTime?
+  emailOtpHash      String?
+  mobileOtpHash     String?
+  emailVerified     Boolean       @default(false)
+  mobileVerified    Boolean       @default(false)
+  donations         Donation[]
+  isEligible        Boolean       @default(false)
+  isVolunteer       Boolean       @default(false) // Flag: has upgraded to volunteer
+  isNonDonor        Boolean       @default(false)
+  showOnLeaderboard Boolean       @default(true)
+  profileImage      String?
+  referredById      String?
+  referredBy        Donor?        @relation("DonorReferrals", fields: [referredById], references: [id])
+  referrals         Donor[]       @relation("DonorReferrals")
+  volunteer         Volunteer? // One-to-one link if upgraded
+  certificates      Certificate[]
+  createdAt         DateTime      @default(now())
+  updatedAt         DateTime      @updatedAt
 }
+
+// ─────────────────────────────────────────────────────
+// VOLUNTEER — Donor who upgraded via volunteer registration
+// ─────────────────────────────────────────────────────
+model Volunteer {
+  id                  String              @id @default(cuid())
+  volunteerId         String              @unique // e.g., VOL1001
+  donorId             String              @unique
+  donor               Donor               @relation(fields: [donorId], references: [id])
+  email               String              @unique
+  name                String
+  mobile              String
+  city                String?
+  profession          String?
+  skills              String[]
+  availability        String?
+  linkedIn            String?
+  motivation          String?
+  totalCoins          Int                 @default(0)
+  showOnLeaderboard   Boolean             @default(true)
+  hasClaimedLoginCoin Boolean             @default(false)
+  emailOtpHash        String?
+  mobileOtpHash       String?
+  emailVerified       Boolean             @default(false)
+  mobileVerified      Boolean             @default(false)
+  isActive            Boolean             @default(true)
+  referrals           Referral[]          @relation("VolunteerReferrals")
+  coinTransactions    CoinTransaction[]
+  campParticipations  CampParticipation[]
+  notifications       Notification[]
+  certificates        Certificate[]       @relation("VolunteerCerts")
+  createdAt           DateTime            @default(now())
+  updatedAt           DateTime            @updatedAt
+}
+
+// ─────────────────────────────────────────────────────
+// PARTNER — CSR Partner (admin-provisioned accounts)
+// ─────────────────────────────────────────────────────
+model Partner {
+  id               String        @id @default(cuid())
+  partnerId        String        @unique // e.g., PTR1001
+  organizationName String
+  contactPerson    String
+  email            String        @unique
+  mobile           String?
+  password         String // Hashed, set by admin
+  panNumber        String?
+  csrCategory      String?
+  emailOtpHash     String?
+  mobileOtpHash    String?
+  emailVerified    Boolean       @default(false)
+  mobileVerified   Boolean       @default(false)
+  totalSponsored   Float         @default(0)
+  isActive         Boolean       @default(true)
+  referrals        Referral[]    @relation("PartnerReferrals")
+  certificates     Certificate[] @relation("PartnerCerts")
+  createdAt        DateTime      @default(now())
+  updatedAt        DateTime      @updatedAt
+}
+
+// ─────────────────────────────────────────────────────
+// REFERRAL — Tracks who referred whom (volunteer OR partner)
+// ─────────────────────────────────────────────────────
+model Referral {
+  id            String     @id @default(cuid())
+  referrerType  String // "VOLUNTEER" | "PARTNER"
+  volunteerId   String?
+  volunteer     Volunteer? @relation("VolunteerReferrals", fields: [volunteerId], references: [id])
+  partnerId     String?
+  partner       Partner?   @relation("PartnerReferrals", fields: [partnerId], references: [id])
+  referredName  String?
+  referredEmail String
+  referredPhone String?
+  paymentAmount Float      @default(0) // How much the referred person donated
+  coinsAwarded  Int        @default(0) // Coins given to referrer for this referral
+  status        String     @default("PENDING") // PENDING, JOINED, DONATED
+  joinedDonorId String? // Links to new donor if they joined
+  createdAt     DateTime   @default(now())
+  updatedAt     DateTime   @updatedAt
+}
+
+// ─────────────────────────────────────────────────────
+// COIN TRANSACTION — Ledger of all volunteer coin activity
+// ─────────────────────────────────────────────────────
+model CoinTransaction {
+  id          String    @id @default(cuid())
+  volunteerId String
+  volunteer   Volunteer @relation(fields: [volunteerId], references: [id])
+  amount      Int // Positive = earned, Negative = spent/deducted
+  type        String // "FIRST_LOGIN" | "CAMP_JOIN" | "CAMP_ACTIVE" | "REFERRAL" | "BONUS"
+  description String
+  metadata    String? // JSON string for extra context (campId, referralId, etc.)
+  createdAt   DateTime  @default(now())
+}
+
+// ─────────────────────────────────────────────────────
+// COIN CONFIG — Admin-configurable coin reward values
+// ─────────────────────────────────────────────────────
+model CoinConfig {
+  id            String   @id @default("global")
+  firstLogin    Int      @default(50) // One-time login reward
+  campJoin      Int      @default(30) // Joining a camp
+  campActive    Int      @default(100) // Active participation (admin verified)
+  // Referral coins are dynamic based on payment:
+  // referralTiers stored as JSON: [{"minAmount":0,"maxAmount":999,"coins":25},...]
+  referralTiers String   @default("[{\"min\":0,\"max\":999,\"coins\":25},{\"min\":1000,\"max\":4999,\"coins\":50},{\"min\":5000,\"max\":99999999,\"coins\":100}]")
+  updatedAt     DateTime @updatedAt
+}
+
+// ─────────────────────────────────────────────────────
+// CAMP — Organized by WombTo18 with admin assignment
+// ─────────────────────────────────────────────────────
+model Camp {
+  id              String    @id @default(cuid())
+  name            String
+  description     String
+  location        String
+  date            DateTime
+  endDate         DateTime?
+  assignedAdminId String? // Admin user managing this camp
+  // QR tokens for scanning
+  normalQrToken   String    @unique @default(cuid())
+  activeQrToken   String    @unique @default(cuid())
+
+  // Expiry and rotation tracking for real-time secure QR
+  normalQrExpiry    DateTime?
+  activeQrExpiry    DateTime?
+  normalQrRotatedAt DateTime?
+  activeQrRotatedAt DateTime?
+
+  status         String              @default("UPCOMING") // UPCOMING, ACTIVE, COMPLETED
+  participations CampParticipation[]
+  createdAt      DateTime            @default(now())
+  updatedAt      DateTime            @updatedAt
+}
+
+// ─────────────────────────────────────────────────────
+// CAMP PARTICIPATION — Volunteer participation in camps
+// ─────────────────────────────────────────────────────
+model CampParticipation {
+  id                String    @id @default(cuid())
+  campId            String
+  camp              Camp      @relation(fields: [campId], references: [id])
+  volunteerId       String
+  volunteer         Volunteer @relation(fields: [volunteerId], references: [id])
+  participationType String    @default("NORMAL") // "NORMAL" | "ACTIVE"
+  status            String    @default("PENDING") // "PENDING" | "APPROVED" | "REJECTED" | "ATTENDED"
+  shareSelected     Boolean   @default(false)
+  coinsAwarded      Int       @default(0)
+  scannedAt         DateTime  @default(now())
+  createdAt         DateTime  @default(now())
+  updatedAt         DateTime  @updatedAt
+
+  @@unique([campId, volunteerId])
+}
+
+model Notification {
+  id          String    @id @default(cuid())
+  volunteerId String
+  volunteer   Volunteer @relation(fields: [volunteerId], references: [id])
+  type        String    @default("CAMP_UPDATE")
+  title       String
+  message     String
+  link        String?
+  isRead      Boolean   @default(false)
+  metadata    String?
+  createdAt   DateTime  @default(now())
+}
+
+// ─────────────────────────────────────────────────────
+// CERTIFICATE — For all user types with share support
+// ─────────────────────────────────────────────────────
+model Certificate {
+  id            String     @id @default(cuid())
+  type          String // "DONATION_RECEIPT" | "80G" | "VOLUNTEER" | "PARTNER" | "CAMP" | "MILESTONE"
+  title         String
+  recipientName String
+  recipientType String // "DONOR" | "VOLUNTEER" | "PARTNER"
+  donorId       String?
+  donor         Donor?     @relation(fields: [donorId], references: [id])
+  volunteerId   String?
+  volunteer     Volunteer? @relation("VolunteerCerts", fields: [volunteerId], references: [id])
+  partnerId     String?
+  partner       Partner?   @relation("PartnerCerts", fields: [partnerId], references: [id])
+  fileUrl       String? // URL to generated PDF/image
+  shareText     String? // Pre-built social media share text
+  metadata      String? // JSON with cert-specific data (amounts, events, etc.)
+  createdAt     DateTime   @default(now())
+}
+
+// ─────────────────────────────────────────────────────
+// EXISTING MODELS (unchanged)
+// ─────────────────────────────────────────────────────
 
 model Donation {
   id                String   @id @default(cuid())
   amount            Float
   currency          String   @default("INR")
-  status            String   @default("PENDING") // Enum DonationStatus: PENDING, SUCCESS, FAILED
+  status            String   @default("PENDING") // PENDING, SUCCESS, FAILED
   razorpayOrderId   String   @unique
   razorpayPaymentId String?  @unique
   razorpaySignature String?
@@ -45,6 +249,7 @@ model Donation {
   program           Program  @relation(fields: [programId], references: [id])
   displayName       Boolean  @default(true)
   receiptNumber     String?  @unique
+  referralCode      String? // Track which referral link was used
   createdAt         DateTime @default(now())
   updatedAt         DateTime @updatedAt
 }
@@ -81,39 +286,39 @@ model ImpactMetrics {
 }
 
 model AdvisoryApplication {
-  id                    String   @id @default(cuid())
-  firstName             String
-  lastName              String
-  mobile                String
-  email                 String
-  state                 String
-  city                  String
-  linkedInUrl           String?
-  designation           String
-  organization          String
-  
-  primaryDomains        String[]
-  secondaryDomains      String[]
-  customDomain          String?
-  
-  experienceYears       String
-  qualification         String
-  expertiseSummary      String
-  majorAchievements     String
-  
+  id           String  @id @default(cuid())
+  firstName    String
+  lastName     String
+  mobile       String
+  email        String
+  state        String
+  city         String
+  linkedInUrl  String?
+  designation  String
+  organization String
+
+  primaryDomains   String[]
+  secondaryDomains String[]
+  customDomain     String?
+
+  experienceYears   String
+  qualification     String
+  expertiseSummary  String
+  majorAchievements String
+
   photoUrl              String
   cvUrl                 String
   bioUrl                String
   idProofUrl            String
   qualificationProofUrl String
   registrationUrl       String
-  
-  whyJoin               String
-  valueProposition      String
-  expectations          String
-  
-  status                String   @default("PENDING") // Enum: PENDING, APPROVED, REJECTED
-  
-  createdAt             DateTime @default(now())
-  updatedAt             DateTime @updatedAt
+
+  whyJoin          String
+  valueProposition String
+  expectations     String
+
+  status String @default("PENDING") // PENDING, APPROVED, REJECTED
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 }

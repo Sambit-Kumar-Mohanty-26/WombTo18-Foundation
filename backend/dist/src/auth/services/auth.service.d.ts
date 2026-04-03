@@ -2,12 +2,33 @@ import { JwtService } from '@nestjs/jwt';
 import { PrismaService } from '../../prisma/services/prisma.service';
 import { MailerService } from './mailer.service';
 import { ConfigService } from '@nestjs/config';
+import { VerificationService } from '../../verification/verification.service';
 export declare class AuthService {
     private readonly prisma;
     private readonly jwtService;
     private readonly mailerService;
+    private readonly verificationService;
     private readonly configService;
-    constructor(prisma: PrismaService, jwtService: JwtService, mailerService: MailerService, configService: ConfigService);
+    constructor(prisma: PrismaService, jwtService: JwtService, mailerService: MailerService, verificationService: VerificationService, configService: ConfigService);
+    private generateIdentityId;
+    private checkLoginRateLimit;
+    private checkOtpRateLimit;
+    private resetOtpRateLimit;
+    private validateEmail;
+    private validateMobile;
+    private validatePasswordStrength;
+    private sanitizeInput;
+    private generateOtp;
+    private hashOtp;
+    private verifyOtpHash;
+    adminLogin(email: string, password: string): Promise<{
+        success: boolean;
+        token: string;
+        name: string;
+        role: string;
+        redirect: string;
+        otpSent: boolean;
+    }>;
     donorLogin(identifier: string, flags?: {
         isVolunteer?: boolean;
         isNonDonor?: boolean;
@@ -16,42 +37,71 @@ export declare class AuthService {
         password?: string;
         referredById?: string;
     }): Promise<{
-        authenticated: boolean;
-        eligible: boolean;
+        success: boolean;
         token: string;
         name: string | null;
         donorId: string;
+        volunteerId: string | undefined;
+        eligible: boolean;
+        isVolunteer: boolean;
         role: string;
-        message: string;
-    } | {
-        devOtp?: string | undefined;
-        eligible: boolean;
-        otpSent: boolean;
-        message: string;
         redirect: string;
-        authenticated?: undefined;
-        token?: undefined;
-        name?: undefined;
-        donorId?: undefined;
-        role?: undefined;
-    } | {
-        devOtp?: string | undefined;
-        eligible: boolean;
         otpSent: boolean;
-        donorId: string;
-        authenticated?: undefined;
-        token?: undefined;
-        name?: undefined;
-        role?: undefined;
-        message?: undefined;
-    }>;
-    verifyOtp(identifier: string, otp: string): Promise<{
+    } | {
         success: boolean;
         token: string;
         name: string | null;
         donorId: string;
         eligible: boolean;
         isVolunteer: boolean;
+        role: string;
         redirect: string;
+        otpSent: boolean;
+        volunteerId?: undefined;
+    }>;
+    donorRegister(data: {
+        email: string;
+        password: string;
+        name: string;
+        mobile?: string;
+        isVolunteer?: boolean;
+        isNonDonor?: boolean;
+        referredById?: string;
+    }): Promise<{
+        devOtp?: string | undefined;
+        devMobileOtp?: string | null | undefined;
+        success: boolean;
+        otpSent: boolean;
+        donorId: any;
+        requiresMobileOtp: boolean;
+        message: string;
+    }>;
+    resendOtp(identifier: string): Promise<{
+        devOtp?: string | undefined;
+        devMobileOtp?: string | null | undefined;
+        success: boolean;
+        requiresMobileOtp: boolean;
+        message: string;
+    }>;
+    verifyOtp(identifier: string, otp: string): Promise<{
+        success: boolean;
+        token: string;
+        name: string | null;
+        donorId: string;
+        volunteerId: string | undefined;
+        eligible: boolean;
+        isVolunteer: boolean;
+        role: string;
+        redirect: string;
+    }>;
+    verifyDualOtp(identifier: string, emailOtp: string, mobileOtp?: string): Promise<{
+        success: boolean;
+        token: string;
+        name: any;
+        donorId: any;
+        volunteerId: any;
+        partnerId: any;
+        eligible: boolean;
+        role: "VOLUNTEER" | "DONOR" | "PARTNER";
     }>;
 }

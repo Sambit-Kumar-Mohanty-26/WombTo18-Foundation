@@ -4,11 +4,11 @@ export declare class ProgramService {
     constructor(prisma: PrismaService);
     findAll(): Promise<{
         id: string;
+        createdAt: Date;
+        updatedAt: Date;
         name: string;
         description: string;
         targetAmount: number;
         raisedAmount: number;
-        createdAt: Date;
-        updatedAt: Date;
     }[]>;
 }

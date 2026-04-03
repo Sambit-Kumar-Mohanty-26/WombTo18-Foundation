@@ -1,5 +1,6 @@
 import { useState, useEffect } from "react";
 import { motion } from "motion/react";
+import { Link } from "react-router";
 import { TrendingUp, Users as UsersIcon } from "lucide-react";
 import { WHY_SUPPORT_ITEMS } from "./donateData";
 
@@ -192,34 +193,41 @@ export function DonateSidebar({ activeColor = "#1D6E3F" }: { activeColor?: strin
            </div>
         ) : (
           <div className="space-y-2.5">
-            {(stats.recentDonors || []).slice(0, 4).map((donor, i) => {
-              const initial = donor.name.charAt(0).toUpperCase();
-              const tagColor = ['#1D6E3F', '#F59E0B', '#3B82F6', '#8B5CF6'][i % 4];
-              
-              return (
-                <motion.div
-                  key={i}
-                  initial={{ opacity: 0, x: -12 }}
-                  animate={{ opacity: 1, x: 0 }}
-                  transition={{ duration: 0.35, delay: 0.4 + i * 0.08 }}
-                  className="flex items-center gap-3 p-2 rounded-xl hover:bg-gray-50 transition-colors duration-200 cursor-default"
-                >
-                  <div className="w-8 h-8 rounded-full flex items-center justify-center text-white text-xs font-bold shrink-0 shadow-sm" style={{ background: tagColor }}>
-                    {initial}
-                  </div>
-                  <div className="flex-1 min-w-0">
-                    <p className="text-[13px] font-semibold text-gray-800 truncate">{donor.name}</p>
-                    <p className="text-[10px] text-gray-400">{getTimeAgo(donor.createdAt)}</p>
-                  </div>
-                  <span className="text-[13px] font-black" style={{ color: tagColor }}>{formatAmount(donor.amount)}</span>
-                </motion.div>
-              );
-            })}
+            {(stats.recentDonors || []).length === 0 ? (
+              <div className="text-center py-4 bg-gray-50/50 rounded-xl border border-dashed border-gray-200">
+                <p className="text-[12px] font-semibold text-gray-500">No recent donations yet today.</p>
+                <p className="text-[10px] text-gray-400 mt-0.5">Be the first to make an impact!</p>
+              </div>
+            ) : (
+              (stats.recentDonors || []).slice(0, 4).map((donor, i) => {
+                const initial = donor.name.charAt(0).toUpperCase();
+                const tagColor = ['#1D6E3F', '#F59E0B', '#3B82F6', '#8B5CF6'][i % 4];
+                
+                return (
+                  <motion.div
+                    key={i}
+                    initial={{ opacity: 0, x: -12 }}
+                    animate={{ opacity: 1, x: 0 }}
+                    transition={{ duration: 0.35, delay: 0.4 + i * 0.08 }}
+                    className="flex items-center gap-3 p-2 rounded-xl hover:bg-gray-50 transition-colors duration-200 cursor-default"
+                  >
+                    <div className="w-8 h-8 rounded-full flex items-center justify-center text-white text-xs font-bold shrink-0 shadow-sm" style={{ background: tagColor }}>
+                      {initial}
+                    </div>
+                    <div className="flex-1 min-w-0">
+                      <p className="text-[13px] font-semibold text-gray-800 truncate">{donor.name}</p>
+                      <p className="text-[10px] text-gray-400">{getTimeAgo(donor.createdAt)}</p>
+                    </div>
+                    <span className="text-[13px] font-black" style={{ color: tagColor }}>{formatAmount(donor.amount)}</span>
+                  </motion.div>
+                );
+              })
+            )}
           </div>
         )}
-        <button className="w-full mt-3 pt-3 border-t border-gray-100 text-center text-[12px] font-bold text-[var(--womb-forest)] hover:text-[var(--journey-saffron)] transition-colors flex items-center justify-center gap-1 group">
+        <Link to="/wall-of-fame" className="w-full mt-3 pt-3 border-t border-gray-100 text-center text-[12px] font-bold text-[var(--womb-forest)] hover:text-[var(--journey-saffron)] transition-colors flex items-center justify-center gap-1 group">
           View All Donors <span className="group-hover:translate-x-1 transition-transform duration-200">→</span>
-        </button>
+        </Link>
       </motion.div>
 
       <motion.div

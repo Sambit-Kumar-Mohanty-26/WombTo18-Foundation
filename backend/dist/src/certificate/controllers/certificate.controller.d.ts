@@ -3,6 +3,42 @@ import type { Response } from 'express';
 export declare class CertificateController {
     private readonly certificateService;
     constructor(certificateService: CertificateService);
-    download80G(id: string, res: Response): Promise<void>;
-    downloadReceipt(id: string, res: Response): Promise<void>;
+    receipt(donationId: string, res: Response): Promise<void>;
+    tax80g(donationId: string, res: Response): Promise<void>;
+    downloadCert(certId: string, res: Response): Promise<void>;
+    volunteerCert(volunteerId: string, res: Response): Promise<void>;
+    campCert(volunteerId: string, campId: string, res: Response): Promise<void>;
+    partnerCert(partnerId: string, res: Response): Promise<void>;
+    list(recipientType: string, userId: string): Promise<{
+        id: string;
+        type: string;
+        title: string;
+        recipientName: string;
+        recipientType: string;
+        donorId: string | null;
+        volunteerId: string | null;
+        partnerId: string | null;
+        fileUrl: string | null;
+        shareText: string | null;
+        metadata: string | null;
+        createdAt: Date;
+    }[]>;
+    getByDonor(donorId: string): Promise<{
+        id: string;
+        type: string;
+        title: string;
+        recipientName: string;
+        recipientType: string;
+        donorId: string | null;
+        volunteerId: string | null;
+        partnerId: string | null;
+        fileUrl: string | null;
+        shareText: string | null;
+        metadata: string | null;
+        createdAt: Date;
+    }[]>;
+    verify(certId: string): Promise<{
+        success: boolean;
+        data: any;
+    }>;
 }

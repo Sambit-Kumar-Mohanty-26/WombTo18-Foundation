@@ -23,6 +23,12 @@ const demo_module_1 = require("./demo/demo.module");
 const bhashini_module_1 = require("./bhashini/bhashini.module");
 const verification_module_1 = require("./verification/verification.module");
 const advisory_module_1 = require("./advisory/advisory.module");
+const volunteer_module_1 = require("./volunteer/volunteer.module");
+const partner_module_1 = require("./partner/partner.module");
+const coin_module_1 = require("./coin/coin.module");
+const referral_module_1 = require("./referral/referral.module");
+const leaderboard_module_1 = require("./leaderboard/leaderboard.module");
+const camp_module_1 = require("./camp/camp.module");
 let AppModule = class AppModule {
 };
 exports.AppModule = AppModule;
@@ -42,6 +48,12 @@ exports.AppModule = AppModule = __decorate([
             bhashini_module_1.BhashiniModule,
             verification_module_1.VerificationModule,
             advisory_module_1.AdvisoryModule,
+            volunteer_module_1.VolunteerModule,
+            partner_module_1.PartnerMgmtModule,
+            coin_module_1.CoinModule,
+            referral_module_1.ReferralModule,
+            leaderboard_module_1.LeaderboardModule,
+            camp_module_1.CampModule,
         ],
         controllers: [app_controller_1.AppController],
         providers: [app_service_1.AppService],

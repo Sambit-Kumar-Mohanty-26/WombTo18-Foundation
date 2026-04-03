@@ -1063,11 +1063,11 @@ export function AdvisoryBoardApplyPage() {
 
                 <h2 className="text-3xl sm:text-4xl font-black text-gray-900 mb-4" style={{ fontFamily: "Georgia" }}>Application Received</h2>
                 <p className="text-gray-500 font-medium max-w-md mx-auto mb-8">
-                  Thank you, Dr. {formData.firstName}. Your estimated score is <strong className="text-[var(--womb-forest)] text-lg">{currentScore}/100</strong>. Our screening committee will review your profile and get back to you within 10-14 working days.
+                  Thank you, {formData.firstName}. Your estimated score is <strong className="text-[var(--womb-forest)] text-lg">{currentScore}/100</strong>. Our screening committee will review your profile and get back to you within 10-14 working days.
                 </p>
 
                 <div className="p-4 bg-orange-50 rounded-xl border border-orange-100 text-orange-800 text-xs font-bold max-w-sm mx-auto mb-10 flex items-center justify-center gap-2">
-                  <AlertCircle className="w-4 h-4" /> This is a frontend demo of the premium UX.
+                  <AlertCircle className="w-4 h-4" /> This is a frontend demo of the UX.
                 </div>
 
                 <Link to="/" className="inline-flex items-center justify-center h-12 px-8 rounded-xl bg-gray-900 text-white font-bold hover:bg-black transition-colors">

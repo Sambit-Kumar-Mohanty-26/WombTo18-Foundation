@@ -6,6 +6,7 @@ import { Input } from "../../components/ui/input";
 import { Card, CardContent } from "../../components/ui/card";
 import { toast } from "sonner";
 import { useAuth } from "../../context/AuthContext";
+import { auth } from "../../lib/auth";
 
 export function AdminLoginPage() {
   const [email, setEmail] = useState("");
@@ -19,25 +20,28 @@ export function AdminLoginPage() {
     setIsLoading(true);
 
     try {
-      // Mock logic for demo/presentation 
-      // In real app, this would call backend /staff/login
-      await new Promise(resolve => setTimeout(resolve, 1500));
-
-      if (email.includes("admin") && password === "admin123") {
-        login(email, true, "Super Admin", "ADMIN");
-        const session = { identifier: email, eligible: true, name: "Super Admin", role: "ADMIN", token: "mock-admin-token" };
-        localStorage.setItem("donor_session", JSON.stringify(session));
-        toast.success("Welcome back, Administrator");
-        navigate("/admin");
-      } else if (email.includes("partner") && password === "partner123") {
+      if (email.includes("partner")) {
+        // Mock partner login for now
+        await new Promise(resolve => setTimeout(resolve, 1000));
         login(email, true, "NGO Partner", "PARTNER");
         const session = { identifier: email, eligible: true, name: "NGO Partner", role: "PARTNER", token: "mock-partner-token" };
         localStorage.setItem("donor_session", JSON.stringify(session));
         toast.success("Partner Dashboard Loaded");
         navigate("/partner");
-      } else {
-        toast.error("Invalid corporate credentials");
+        return;
       }
+
+      // Real Admin Login Flow
+      const res = await auth.adminLogin(email, password);
+      if (res.token) {
+        login(email, true, "Super Admin", "ADMIN");
+        toast.success("Welcome back, Administrator");
+        navigate("/admin");
+      } else {
+        toast.error(res.message || "Invalid corporate credentials");
+      }
+    } catch (err: any) {
+      toast.error(err.message || "Authentication failed.");
     } finally {
       setIsLoading(false);
     }
@@ -119,14 +123,20 @@ export function AdminLoginPage() {
           </CardContent>
         </Card>
 
-        <p className="text-center mt-8">
+        <div className="flex items-center justify-between mt-8 text-xs font-medium px-2">
           <button 
             onClick={() => navigate("/")}
-            className="text-white/30 hover:text-emerald-400 transition-colors text-xs font-medium"
+            className="text-white/30 hover:text-emerald-400 transition-colors"
           >
             ← Application Homepage
           </button>
-        </p>
+          <button 
+            onClick={() => navigate("/volunteer/login")}
+            className="text-white/30 hover:text-emerald-400 transition-colors"
+          >
+            Volunteer Access
+          </button>
+        </div>
       </div>
     </div>
   );

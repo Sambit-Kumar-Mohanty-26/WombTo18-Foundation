@@ -14,8 +14,8 @@ var __param = (this && this.__param) || function (paramIndex, decorator) {
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.DonorController = void 0;
 const common_1 = require("@nestjs/common");
-const donor_service_1 = require("../services/donor.service");
 const swagger_1 = require("@nestjs/swagger");
+const donor_service_1 = require("../services/donor.service");
 let DonorController = class DonorController {
     donorService;
     constructor(donorService) {
@@ -30,11 +30,20 @@ let DonorController = class DonorController {
     async getLeaderboard() {
         return this.donorService.getLeaderboard();
     }
-    async getRecruits(id) {
-        return this.donorService.getRecruits(id);
+    async getRecruits(donorId) {
+        return this.donorService.getRecruits(donorId);
     }
     async becomeVolunteer(donorId) {
         return this.donorService.becomeVolunteer(donorId);
+    }
+    async toggleLeaderboard(donorId, show) {
+        return this.donorService.toggleLeaderboard(donorId, show);
+    }
+    async getProfile(donorId) {
+        return this.donorService.getProfile(donorId);
+    }
+    async lookup(email) {
+        return this.donorService.lookupByEmail(email);
     }
 };
 exports.DonorController = DonorController;
@@ -56,29 +65,54 @@ __decorate([
 ], DonorController.prototype, "getDonations", null);
 __decorate([
     (0, common_1.Get)('leaderboard'),
-    (0, swagger_1.ApiOperation)({ summary: 'Get top donors leaderboard' }),
+    (0, swagger_1.ApiOperation)({ summary: 'Get global donor leaderboard' }),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", []),
     __metadata("design:returntype", Promise)
 ], DonorController.prototype, "getLeaderboard", null);
 __decorate([
-    (0, common_1.Get)('recruits/:id'),
-    (0, swagger_1.ApiOperation)({ summary: 'Get recruited supporters for a volunteer' }),
-    __param(0, (0, common_1.Param)('id')),
+    (0, common_1.Get)('recruits/:donorId'),
+    (0, swagger_1.ApiOperation)({ summary: 'Get recruits for volunteer donor' }),
+    __param(0, (0, common_1.Param)('donorId')),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [String]),
     __metadata("design:returntype", Promise)
 ], DonorController.prototype, "getRecruits", null);
 __decorate([
     (0, common_1.Post)('apply-volunteer'),
-    (0, swagger_1.ApiOperation)({ summary: 'Promote donor to volunteer' }),
+    (0, swagger_1.ApiOperation)({ summary: 'Mark donor as volunteer' }),
     __param(0, (0, common_1.Query)('donorId')),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [String]),
     __metadata("design:returntype", Promise)
 ], DonorController.prototype, "becomeVolunteer", null);
+__decorate([
+    (0, common_1.Post)('toggle-leaderboard'),
+    (0, swagger_1.ApiOperation)({ summary: 'Toggle leaderboard visibility' }),
+    __param(0, (0, common_1.Body)('donorId')),
+    __param(1, (0, common_1.Body)('show')),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [String, Boolean]),
+    __metadata("design:returntype", Promise)
+], DonorController.prototype, "toggleLeaderboard", null);
+__decorate([
+    (0, common_1.Get)('profile'),
+    (0, swagger_1.ApiOperation)({ summary: 'Get donor profile' }),
+    __param(0, (0, common_1.Query)('donorId')),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [String]),
+    __metadata("design:returntype", Promise)
+], DonorController.prototype, "getProfile", null);
+__decorate([
+    (0, common_1.Get)('lookup'),
+    (0, swagger_1.ApiOperation)({ summary: 'Look up donor by email (for guest flow)' }),
+    __param(0, (0, common_1.Query)('email')),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [String]),
+    __metadata("design:returntype", Promise)
+], DonorController.prototype, "lookup", null);
 exports.DonorController = DonorController = __decorate([
-    (0, swagger_1.ApiTags)('Donor Dashboard'),
+    (0, swagger_1.ApiTags)('Donors'),
     (0, common_1.Controller)('donors'),
     __metadata("design:paramtypes", [donor_service_1.DonorService])
 ], DonorController);

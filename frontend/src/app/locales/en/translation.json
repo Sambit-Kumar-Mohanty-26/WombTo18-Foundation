@@ -19,8 +19,19 @@
     "auditCertificate": "Audit Certificate"
   },
   "home": {
-    "heroTitle": "Ensuring Every Child Reaches 18",
-    "heroSubtitle": "We are on a mission to provide healthcare, education, and equal opportunities to underprivileged children across India."
+    "heroBadge": "The Child Who Grows Healthy Changes the World",
+    "heroEveryChild": "Every Child, From ",
+    "heroPregnancy": "Pregnancy ",
+    "heroTo": "To ",
+    "hero18": "18",
+    "heroHealthy": "— Healthy & Counted.",
+    "heroDesc": "Touching 25 million lives from pregnancy to 18 years by 2030. Support the journey of a mother and child today and track your impact live on our verified donor dashboard.",
+    "btnDonate": "DONATE NOW",
+    "btnDonateSub": "Tax Benefit • Instant Cert",
+    "btnDashboard": "DASHBOARD",
+    "btnDashboardSub": "See funds working live",
+    "btnPartner": "PARTNER",
+    "btnPartnerSub": "CSR • ESG • Institutional"
   },
   "about": {
     "title": "Our Story",

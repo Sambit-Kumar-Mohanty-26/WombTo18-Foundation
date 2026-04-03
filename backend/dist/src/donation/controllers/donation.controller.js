@@ -30,6 +30,9 @@ let DonationController = class DonationController {
     async getStats() {
         return this.donationService.getSidebarStats();
     }
+    async getWallOfFame(filter) {
+        return this.donationService.getWallOfFame(filter || 'recent');
+    }
 };
 exports.DonationController = DonationController;
 __decorate([
@@ -55,6 +58,14 @@ __decorate([
     __metadata("design:paramtypes", []),
     __metadata("design:returntype", Promise)
 ], DonationController.prototype, "getStats", null);
+__decorate([
+    (0, common_1.Get)('wall-of-fame'),
+    (0, swagger_1.ApiOperation)({ summary: 'Get ranked wall of fame donors' }),
+    __param(0, (0, common_1.Query)('filter')),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [String]),
+    __metadata("design:returntype", Promise)
+], DonationController.prototype, "getWallOfFame", null);
 exports.DonationController = DonationController = __decorate([
     (0, swagger_1.ApiTags)('Donations'),
     (0, common_1.Controller)('donations'),

@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { Link, Outlet, useLocation, useNavigate } from "react-router";
-import { LayoutDashboard, Users, FolderOpen, FileBarChart, LogOut, Menu, X, ChevronLeft, Newspaper, BookOpen } from "lucide-react";
+import { LayoutDashboard, Users, FolderOpen, FileBarChart, LogOut, Menu, X, ChevronLeft, Newspaper, BookOpen, Tent } from "lucide-react";
 import { Avatar, AvatarFallback } from "../ui/avatar";
 import { Badge } from "../ui/badge";
 import { useAuth } from "../../context/AuthContext";
@@ -12,6 +12,7 @@ const adminLinks = [
   { href: "/admin/reports", label: "Reports", icon: FileBarChart },
   { href: "/admin/blog", label: "Blog Posts", icon: Newspaper },
   { href: "/admin/case-studies", label: "Case Studies", icon: BookOpen },
+  { href: "/admin/camps", label: "Camp Management", icon: Tent },
 ];
 
 export function AdminLayout() {

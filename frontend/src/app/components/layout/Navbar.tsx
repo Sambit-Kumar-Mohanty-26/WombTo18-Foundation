@@ -44,6 +44,17 @@ export function Navbar() {
     toast.success("Signed out successfully");
   };
 
+  const getDashboardLink = () => {
+    if (!state.user) return "/donor/login";
+    const id = state.user.volunteerId || state.user.donorId || 'admin';
+    switch (state.user.role) {
+      case "VOLUNTEER": return `/volunteer/${id}/dashboard`;
+      case "PARTNER": return `/partner/${id}/dashboard`;
+      case "ADMIN": return `/admin/dashboard`;
+      default: return `/donor/${id}/dashboard`;
+    }
+  };
+
   return (
     <header 
       className={`sticky top-0 z-50 transition-all duration-300 ${
@@ -90,9 +101,11 @@ export function Navbar() {
 
           {/* CTA Buttons */}
           <div className="hidden lg:flex items-center gap-2">
+            <LanguageSwitcher />
+            
             {isLoggedIn ? (
               <>
-                <Link to="/dashboard">
+                <Link to={getDashboardLink()}>
                   <Button variant="ghost" size="sm" className="text-gray-600 hover:text-primary hover:bg-primary/5 font-medium transition-all">
                     <LayoutDashboard className="h-4 w-4 mr-1.5" />{t('nav.dashboard')}
                   </Button>
@@ -134,6 +147,10 @@ export function Navbar() {
       {mobileOpen && (
         <div className="lg:hidden border-t border-gray-200 bg-white/98 backdrop-blur-lg">
           <div className="px-4 py-3 space-y-1">
+            <div className="pb-3 mb-2 border-b border-gray-100 flex items-center justify-between">
+              <span className="text-sm font-medium text-gray-500">Language</span>
+              <LanguageSwitcher />
+            </div>
             {navLinks.map((link) => (
               <Link
                 key={link.href}
@@ -151,7 +168,7 @@ export function Navbar() {
             <div className="pt-3 border-t border-gray-100 flex flex-col gap-2">
               {isLoggedIn ? (
                 <>
-                  <Link to="/dashboard" onClick={() => setMobileOpen(false)}>
+                  <Link to={getDashboardLink()} onClick={() => setMobileOpen(false)}>
                     <Button variant="ghost" size="sm" className="w-full text-gray-600 hover:text-primary hover:bg-primary/5 font-medium justify-start transition-all">
                       <LayoutDashboard className="h-4 w-4 mr-1.5" />{t('nav.dashboard')}
                     </Button>

@@ -4,6 +4,8 @@ import { Heart, CreditCard, Lock, CheckCircle2, X } from "lucide-react";
 import { PROGRAMS, SCHOOLS } from "./donateData";
 import { ProgramSelector } from "./ProgramSelector";
 import { toast } from "sonner";
+import { useAuth } from "../../context/AuthContext";
+import { useEffect } from "react";
 
 const API = import.meta.env.VITE_API_URL || "http://localhost:6001";
 const RAZORPAY_KEY = import.meta.env.VITE_RAZORPAY_KEY || "rzp_test_SNjaYRsZlPUZpp";
@@ -27,12 +29,25 @@ function PremiumInput({ id, label, required, ...props }: any) {
 }
 
 export function DonorForm() {
+  const { state } = useAuth();
   const [form, setForm] = useState<DonorFormData>({
-    name: "", email: "", mobile: "", pan: "",
+    name: state.user?.name || "", 
+    email: state.user?.identifier || "", 
+    mobile: "", pan: "",
     displayName: true, wantVolunteer: false, volunteerInfo: "",
   });
   const [selectedPrograms, setSelectedPrograms] = useState<Record<string, { quantity: number; school?: string }>>({});
   const [loading, setLoading] = useState(false);
+
+  useEffect(() => {
+    if (state.user) {
+      setForm(prev => ({
+        ...prev,
+        name: prev.name || state.user?.name || "",
+        email: prev.email || state.user?.identifier || "",
+      }));
+    }
+  }, [state.user]);
 
   const totalAmount = useMemo(() => {
     let total = 0;
@@ -73,6 +88,7 @@ export function DonorForm() {
     if (Object.keys(selectedPrograms).length === 0 && totalAmount < 100) { toast.error("Please select at least one program"); return; }
     if (totalAmount < 100) { toast.error("Minimum donation is ₹100"); return; }
     setLoading(true);
+    const refParam = new URLSearchParams(window.location.search).get("ref");
     try {
       const res = await fetch(`${API}/api/donations/create`, {
         method: "POST", headers: { "Content-Type": "application/json" },
@@ -83,6 +99,7 @@ export function DonorForm() {
           schoolName: Object.values(selectedPrograms).find(p => p.school)?.school || "", 
           displayName: form.displayName,
           notes: form.wantVolunteer ? `Volunteer Interest: ${form.volunteerInfo}` : "",
+          referralCode: refParam || undefined,
         }),
       });
       const data = await res.json();
@@ -104,7 +121,14 @@ export function DonorForm() {
               const volunteerParam = form.wantVolunteer 
                 ? `&volunteer=true&name=${encodeURIComponent(form.name)}&email=${encodeURIComponent(form.email)}&mobile=${encodeURIComponent(form.mobile)}` 
                 : "";
-              window.location.href = `/donation-success?amount=${totalAmount}&paymentId=${response.razorpay_payment_id}${volunteerParam}`;
+              const certParams = [
+                result.certId ? `&certId=${encodeURIComponent(result.certId)}` : "",
+                result.donationId ? `&donationId=${encodeURIComponent(result.donationId)}` : "",
+                result.donorId ? `&donorId=${encodeURIComponent(result.donorId)}` : "",
+                result.certificateUrl ? `&certificateUrl=${encodeURIComponent(result.certificateUrl)}` : "",
+                form.email ? `&email=${encodeURIComponent(form.email)}` : "",
+              ].join("");
+              window.location.href = `/donation-success?amount=${totalAmount}&paymentId=${response.razorpay_payment_id}${volunteerParam}${certParams}`;
             }
           } catch { toast.error("Verification failed. Please contact support."); }
         },
@@ -120,15 +144,22 @@ export function DonorForm() {
 
       <motion.div initial={{ opacity: 0, y: 16 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.5 }}
         className="rounded-2xl border border-gray-100 bg-white p-5 sm:p-6 shadow-[0_1px_3px_rgba(0,0,0,0.04)]">
-        <div className="flex items-center gap-2.5 mb-5">
-          <div className="w-8 h-8 rounded-lg bg-[var(--journey-saffron)]/10 flex items-center justify-center">
-            <Heart className="w-4 h-4 text-[var(--journey-saffron)]" />
+        <div className="flex items-center justify-between mb-5">
+          <div className="flex items-center gap-2.5">
+            <div className="w-8 h-8 rounded-lg bg-[var(--journey-saffron)]/10 flex items-center justify-center">
+              <Heart className="w-4 h-4 text-[var(--journey-saffron)]" />
+            </div>
+            <h3 className="text-sm font-black text-gray-900 tracking-tight">Personal Details</h3>
           </div>
-          <h3 className="text-sm font-black text-gray-900 tracking-tight">Personal Details</h3>
+          {state.user && (
+            <div className="px-2.5 py-1 rounded-md bg-emerald-50 border border-emerald-100/50 text-[10px] font-black tracking-widest text-emerald-700 uppercase">
+              ID: {state.user.volunteerId || state.user.donorId || state.user.identifier}
+            </div>
+          )}
         </div>
         <div className="grid sm:grid-cols-2 gap-4">
           <PremiumInput id="donor-name" label="Full Name" required value={form.name} onChange={(e: any) => set("name", e.target.value)} placeholder="Rahul Sharma" />
-          <PremiumInput id="donor-email" label="Email Address" required type="email" value={form.email} onChange={(e: any) => set("email", e.target.value)} placeholder="rahul@email.com" />
+          <PremiumInput id="donor-email" label="Email Address" required type="email" value={form.email} onChange={(e: any) => set("email", e.target.value)} placeholder="rahul@email.com" readOnly={!!state.user} className={state.user ? "opacity-70 bg-gray-50 cursor-not-allowed w-full px-4 py-2.5 rounded-xl border border-gray-200 text-sm text-gray-800 outline-none" : undefined} />
           <PremiumInput id="donor-mobile" label="Mobile Number" value={form.mobile} onChange={(e: any) => set("mobile", e.target.value)} placeholder="+91 98765 43210" />
           <PremiumInput id="donor-pan" label="PAN (for 80G)" value={form.pan} onChange={(e: any) => set("pan", e.target.value.toUpperCase())} maxLength={10} placeholder="ABCDE1234F" style={{ textTransform: "uppercase" }} />
         </div>

@@ -14,6 +14,7 @@ const mailer_service_1 = require("./services/mailer.service");
 const jwt_1 = require("@nestjs/jwt");
 const passport_1 = require("@nestjs/passport");
 const config_1 = require("@nestjs/config");
+const verification_module_1 = require("../verification/verification.module");
 let AuthModule = class AuthModule {
 };
 exports.AuthModule = AuthModule;
@@ -28,10 +29,11 @@ exports.AuthModule = AuthModule = __decorate([
                     signOptions: { expiresIn: '1d' },
                 }),
             }),
+            verification_module_1.VerificationModule,
         ],
         controllers: [auth_controller_1.AuthController],
         providers: [auth_service_1.AuthService, mailer_service_1.MailerService],
-        exports: [auth_service_1.AuthService],
+        exports: [auth_service_1.AuthService, mailer_service_1.MailerService],
     })
 ], AuthModule);
 //# sourceMappingURL=auth.module.js.map
