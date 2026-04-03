@@ -125,21 +125,10 @@ export class DonationService {
           receipt: `receipt_${Date.now()}`,
         });
       }
-    } catch (error) {
-      let errorMessage = 'Unknown error';
-      if (error instanceof Error) {
-        errorMessage = error.message;
-      } else if (typeof error === 'object' && error !== null) {
-        const err = error as Record<string, unknown>;
-        if ('error' in err && typeof err.error === 'object' && err.error !== null && 'description' in err.error) {
-          errorMessage = String(err.error.description);
-        } else if ('message' in err) {
-          errorMessage = String(err.message);
-        }
-      }
-      console.error('Razorpay order creation error:', errorMessage);
+    } catch (error: any) {
+      console.error('Razorpay order creation error:', error?.error?.description || error?.message || error);
       throw new BadRequestException(
-        `Razorpay order creation failed: ${errorMessage}`,
+        `Razorpay order creation failed: ${error?.error?.description || error?.message || 'Unknown error'}`,
       );
     }
 
@@ -173,7 +162,7 @@ export class DonationService {
     const { razorpay_order_id, razorpay_payment_id, razorpay_signature } = data;
     const key_secret = process.env.RAZORPAY_KEY_SECRET || 'secret_placeholder';
 
-    // Prevent duplicate verification — check if already SUCCESS
+    // Prevent duplicate verification - check if already SUCCESS
     const existingDonation = await this.prisma.donation.findUnique({
       where: { razorpayOrderId: razorpay_order_id },
     });
@@ -181,7 +170,7 @@ export class DonationService {
       throw new BadRequestException('Donation order not found');
     }
     if (existingDonation.status === 'SUCCESS') {
-      // Already verified — return existing data without re-processing
+      // Already verified - return existing data without re-processing
       const donor = await this.prisma.donor.findUnique({ where: { id: existingDonation.donorId } });
       const cert = await this.prisma.certificate.findFirst({
         where: { donorId: existingDonation.donorId, type: '80G' },
@@ -261,7 +250,7 @@ export class DonationService {
       },
     });
 
-    // ──── REFERRAL SYSTEM ────
+    // REFERRAL SYSTEM
     // Only process if a referralCode was provided and this donation hasn't already been rewarded
     if (donation.referralCode) {
       const volunteer = await this.prisma.volunteer.findUnique({
@@ -269,8 +258,8 @@ export class DonationService {
       });
 
       // GUARD 1: Volunteer exists
-      // GUARD 2: No self-referral — compare emails since donorId (cuid) vs volunteerId (VOL1001) differ
-      // GUARD 3: No duplicate — check if a referral already exists for this specific donation
+      // GUARD 2: No self-referral - compare emails since donorId (cuid) vs volunteerId (VOL1001) differ
+      // GUARD 3: No duplicate - check if a referral already exists for this specific donation
       if (volunteer && volunteer.email !== donor.email) {
         const existingReferral = await this.prisma.coinTransaction.findFirst({
           where: {
@@ -293,12 +282,12 @@ export class DonationService {
           const coinsEarned = matchedTier ? matchedTier.coins : (tiers.length > 0 ? tiers[tiers.length - 1].coins : 50);
 
           await this.prisma.$transaction([
-            // 1. Credit coins to volunteer
+            // Credit coins to volunteer
             this.prisma.volunteer.update({
               where: { id: volunteer.id },
               data: { totalCoins: { increment: coinsEarned } },
             }),
-            // 2. Create coin transaction ledger entry
+            // Create coin transaction ledger entry
             this.prisma.coinTransaction.create({
               data: {
                 volunteerId: volunteer.id,
@@ -308,7 +297,7 @@ export class DonationService {
                 metadata: JSON.stringify({ donationId: donation.id, donorEmail: donor.email }),
               },
             }),
-            // 3. Create referral tracking record
+            // Create referral tracking record
             this.prisma.referral.create({
               data: {
                 referrerType: 'VOLUNTEER',
@@ -327,7 +316,7 @@ export class DonationService {
       }
     }
 
-    // ──── 80G CERTIFICATE GENERATION ────
+    // 80G CERTIFICATE GENERATION
     let fileUrl: string | null = null;
     let certId: string | null = null;
     try {

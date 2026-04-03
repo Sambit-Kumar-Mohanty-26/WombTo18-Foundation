@@ -142,21 +142,8 @@ let DonationService = class DonationService {
             }
         }
         catch (error) {
-            let errorMessage = 'Unknown error';
-            if (error instanceof Error) {
-                errorMessage = error.message;
-            }
-            else if (typeof error === 'object' && error !== null) {
-                const err = error;
-                if ('error' in err && typeof err.error === 'object' && err.error !== null && 'description' in err.error) {
-                    errorMessage = String(err.error.description);
-                }
-                else if ('message' in err) {
-                    errorMessage = String(err.message);
-                }
-            }
-            console.error('Razorpay order creation error:', errorMessage);
-            throw new common_1.BadRequestException(`Razorpay order creation failed: ${errorMessage}`);
+            console.error('Razorpay order creation error:', error?.error?.description || error?.message || error);
+            throw new common_1.BadRequestException(`Razorpay order creation failed: ${error?.error?.description || error?.message || 'Unknown error'}`);
         }
         const donation = await this.prisma.donation.create({
             data: {
