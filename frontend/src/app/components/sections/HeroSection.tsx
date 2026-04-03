@@ -4,9 +4,16 @@ import { Heart, LayoutDashboard, Handshake } from "lucide-react";
 import { motion, useScroll, useTransform, AnimatePresence } from "motion/react";
 import { useRef, useState, useEffect } from "react";
 import { useTranslation } from "react-i18next";
+import dashboard1 from "../../../../dist/images/dashboard/657ae878-799e-44e7-a0e6-759a9b0420dc.jpeg"
+import dashboard2 from "../../../../dist/images/dashboard/WhatsApp Image 2025-11-14 at 12.30.17.jpeg"
+import dashboard3 from "../../../../dist/images/dashboard/ec9e78d6-4820-48e0-abfa-f6af927c9682.jpeg"
+
 
 
 const HERO_IMAGES = [
+  dashboard1,
+  dashboard2,
+  dashboard3,
   "https://images.unsplash.com/photo-1488521787991-ed7bbaae773c?q=80&w=1920&auto=format&fit=crop", // Children learning
   "https://images.unsplash.com/photo-1509062522246-3755977927d7?q=80&w=1920&auto=format&fit=crop", // Education
   "https://images.unsplash.com/photo-1594708767771-a7502209ff51?q=80&w=1920&auto=format&fit=crop", // Healthcare
