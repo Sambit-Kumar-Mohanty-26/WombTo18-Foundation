@@ -11,6 +11,7 @@ import { toast } from "sonner";
 import { useNavigate, useSearchParams } from "react-router";
 import { useAuth } from "../../context/AuthContext";
 import { motion, AnimatePresence } from "motion/react";
+import { Card, CardHeader, CardTitle, CardDescription, CardContent } from "../ui/card";
 
 // --- Schemas ---
 const loginSchema = z.object({
@@ -113,10 +114,14 @@ function LoginTab({ onSuccess }: DonorLoginFormProps) {
         {errors.password && <p className="text-xs text-red-500 font-bold">{errors.password.message}</p>}
       </div>
 
-      <Button type="submit" disabled={isSubmitting} className="w-full bg-emerald-600 hover:bg-emerald-500 text-white font-black h-12 mt-2 rounded-xl shadow-lg shadow-emerald-100">
+      <Button 
+        type="submit" 
+        disabled={isSubmitting} 
+        className="w-full bg-emerald-600 hover:bg-emerald-500 text-white font-black h-12 mt-2 rounded-xl shadow-lg shadow-emerald-100 transition-all active:scale-[0.98]"
+      >
         {isSubmitting ? <><Loader2 className="mr-2 h-4 w-4 animate-spin" />Signing In...</> : "Authorize Access"}
       </Button>
-    </motion.form>
+    </form>
   );
 }
 
@@ -220,7 +225,11 @@ function RegisterTab({ onSuccess }: DonorLoginFormProps) {
         </label>
       </div>
 
-      <Button type="submit" disabled={isSubmitting} className="w-full bg-emerald-600 hover:bg-emerald-500 text-white font-black h-12 mt-1 rounded-xl shadow-lg shadow-emerald-100">
+      <Button 
+        type="submit" 
+        disabled={isSubmitting} 
+        className="w-full bg-emerald-600 hover:bg-emerald-500 text-white font-black h-12 mt-1 rounded-xl shadow-lg shadow-emerald-100 transition-all active:scale-[0.98]"
+      >
         {isSubmitting ? <><Loader2 className="mr-2 h-4 w-4 animate-spin" />Registering...</> : "Create Identity"}
       </Button>
       <p className="text-[10px] text-center text-gray-400 font-medium leading-tight">Verification OTP will be dispatched to your email endpoint.</p>
@@ -234,47 +243,65 @@ export function DonorLoginForm({ onSuccess }: DonorLoginFormProps) {
   const navigate = useNavigate();
 
   return (
-    <Card className="w-full max-w-md mx-auto bg-white/90 border-emerald-100 text-gray-900 backdrop-blur-md shadow-2xl rounded-[2.5rem] overflow-hidden">
-      <CardHeader className="space-y-1 pb-4 text-center">
-        <div className="flex justify-start mb-2">
-          <Button variant="ghost" size="sm" onClick={() => navigate("/login")} className="text-emerald-800/40 hover:text-emerald-600 hover:bg-emerald-50 -ml-2">
-            <ArrowLeft className="h-4 w-4 mr-1" /> Return
-          </Button>
-          <div className="w-10 h-10 rounded-full bg-emerald-50 border border-emerald-100 flex items-center justify-center">
-            <Sparkles className="h-5 w-5 text-[var(--womb-forest)]" />
+    <motion.div
+      initial={{ opacity: 0, y: 20 }}
+      animate={{ opacity: 1, y: 0 }}
+      transition={{ duration: 0.5 }}
+      className="w-full flex justify-center py-6"
+    >
+      <Card className="w-full max-w-md bg-white/90 border-emerald-100 text-gray-900 backdrop-blur-md shadow-2xl rounded-[2.5rem] overflow-hidden">
+      <CardHeader className="space-y-4 pb-6 text-center relative overflow-hidden">
+        {/* Decorative Background Element */}
+        <div className="absolute top-0 right-0 -mr-16 -mt-16 w-32 h-32 bg-emerald-500/5 rounded-full blur-3xl pointer-events-none" />
+        
+        <div className="flex flex-col items-center gap-4">
+          <div className="flex justify-between items-center w-full px-2">
+            <Button 
+              variant="ghost" 
+              size="sm" 
+              onClick={() => navigate("/login")} 
+              className="text-emerald-800/40 hover:text-emerald-600 hover:bg-emerald-50 transition-all active:scale-95"
+            >
+              <ArrowLeft className="h-4 w-4 mr-1" /> Return
+            </Button>
+            <motion.div 
+              whileHover={{ rotate: 180 }}
+              transition={{ duration: 0.5 }}
+              className="w-12 h-12 rounded-2xl bg-gradient-to-br from-emerald-50 to-emerald-100/50 border border-emerald-100 flex items-center justify-center shadow-sm shadow-emerald-100"
+            >
+              <Sparkles className="h-6 w-6 text-emerald-600" />
+            </motion.div>
+            <div className="w-16" /> {/* Spacer */}
+          </div>
+
+          <div className="space-y-1.5">
+            <CardTitle className="text-3xl font-black tracking-tight bg-gradient-to-r from-gray-900 to-gray-500 bg-clip-text text-transparent">
+              {isRegistering ? "Supporter Entry" : "Portal Access"}
+            </CardTitle>
+            <CardDescription className="text-gray-500 font-medium px-4">
+              {isRegistering 
+                ? "Join our mission-driven network to start making an impact." 
+                : "Secure entry to your mission dashboard via institutional credentials."
+              }
+            </CardDescription>
           </div>
         </div>
-
-        <div className="mb-8">
-          <h2 className="text-2xl font-black text-gray-900 tracking-tight" style={{ fontFamily: "'Poppins', sans-serif" }}>
-            {isRegistering ? "Join the Mission" : "Welcome Back"}
-          </h2>
-          <p className="text-sm text-gray-500 font-medium mt-1.5">
-            {isRegistering ? "Register to start making an impact." : "Sign in to your mission dashboard."}
-          </p>
-        </div>
-        <CardTitle className="text-3xl font-black tracking-tighter text-gray-900">
-          {isRegistering ? "Supporter Entry" : "Portal Access"}
-        </CardTitle>
-        <CardDescription className="text-gray-500 font-medium">
-          {isRegistering ? "Join our mission-driven network." : "Secure entry via institutional credentials."}
-        </CardDescription>
       </CardHeader>
 
       <CardContent>
         {/* Tab Toggle */}
-        <div className="flex p-1 bg-gray-50 rounded-2xl border border-gray-100 mb-6">
+        <div className="flex p-1 bg-gray-50/80 rounded-2xl border border-gray-100/50 mb-6 backdrop-blur-sm">
           <button
             type="button"
             onClick={() => setIsRegistering(false)}
-            className={`flex-1 py-2 text-xs font-black uppercase tracking-widest rounded-xl transition-all ${!isRegistering ? "bg-white text-emerald-600 shadow-sm border border-emerald-50" : "text-gray-400 hover:text-gray-900"}`}
+            className={`flex-1 py-3 text-xs font-black uppercase tracking-widest rounded-xl transition-all duration-300 ${!isRegistering ? "bg-white text-emerald-600 shadow-sm border border-emerald-50 scale-100" : "text-gray-400 hover:text-gray-600 scale-95"}`}
           >
             Sign In
           </button>
           <button
             type="button"
             onClick={() => setIsRegistering(true)}
-            className={`flex-1 py-2 text-xs font-black uppercase tracking-widest rounded-xl transition-all ${isRegistering ? "bg-white text-emerald-600 shadow-sm border border-emerald-50" : "text-gray-400 hover:text-gray-900"}`}
+            className={`flex-1 py-3 text-xs font-black uppercase tracking-widest rounded-xl transition-all duration-300 ${isRegistering ? "bg-white text-emerald-600 shadow-sm border border-emerald-50 scale-100" : "text-gray-400 hover:text-gray-600 scale-95"}`}
           >
             Register
           </button>
@@ -289,9 +316,9 @@ export function DonorLoginForm({ onSuccess }: DonorLoginFormProps) {
             }
           </AnimatePresence>
         </div>
-
-      </div>
-    </motion.div>
+      </CardContent>
+    </Card>
+  </motion.div>
   );
 }
 
