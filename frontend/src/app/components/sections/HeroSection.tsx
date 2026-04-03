@@ -4,9 +4,9 @@ import { Heart, LayoutDashboard, Handshake } from "lucide-react";
 import { motion, useScroll, useTransform, AnimatePresence } from "motion/react";
 import { useRef, useState, useEffect } from "react";
 import { useTranslation } from "react-i18next";
-import dashboard1 from "../../../../dist/images/dashboard/657ae878-799e-44e7-a0e6-759a9b0420dc.jpeg"
-import dashboard2 from "../../../../dist/images/dashboard/WhatsApp Image 2025-11-14 at 12.30.17.jpeg"
-import dashboard3 from "../../../../dist/images/dashboard/ec9e78d6-4820-48e0-abfa-f6af927c9682.jpeg"
+import dashboard1 from "../../../../public/dashboard/657ae878-799e-44e7-a0e6-759a9b0420dc.jpeg"
+import dashboard2 from "../../../../public/dashboard/WhatsApp Image 2025-11-14 at 12.30.17.jpeg"
+import dashboard3 from "../../../../public/dashboard/ec9e78d6-4820-48e0-abfa-f6af927c9682.jpeg"
 
 
 
