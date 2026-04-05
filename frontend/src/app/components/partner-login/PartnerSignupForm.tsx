@@ -161,14 +161,37 @@ export function PartnerSignupForm() {
             </div>
 
             <div className="flex justify-center gap-3">
-              <input
-                type="text"
-                maxLength={4}
-                value={otps.email}
-                onChange={(e) => handleOtpChange("email", e.target.value)}
-                className="w-40 text-center text-3xl font-black tracking-[1em] py-3 rounded-2xl border-2 border-sky-100 bg-white focus:border-sky-500 outline-none transition-all"
-                autoFocus
-              />
+              {[0, 1, 2, 3].map((index) => (
+                <input
+                  key={index}
+                  id={`email-otp-${index}`}
+                  type="text"
+                  maxLength={1}
+                  value={otps.email[index] || ""}
+                  autoFocus={index === 0}
+                  onChange={(e) => {
+                    const val = e.target.value.replace(/[^0-9]/g, "");
+                    const newOtp = otps.email.split("");
+                    newOtp[index] = val;
+                    const combined = newOtp.join("").slice(0, 4);
+                    handleOtpChange("email", combined);
+                    if (val && index < 3) {
+                      document.getElementById(`email-otp-${index + 1}`)?.focus();
+                    }
+                  }}
+                  onKeyDown={(e) => {
+                    if (e.key === "Backspace" && !otps.email[index] && index > 0) {
+                      document.getElementById(`email-otp-${index - 1}`)?.focus();
+                    }
+                  }}
+                  onPaste={(e) => {
+                    e.preventDefault();
+                    const pasteData = e.clipboardData.getData("text").replace(/[^0-9]/g, "").slice(0, 4);
+                    handleOtpChange("email", pasteData);
+                  }}
+                  className="w-12 h-14 text-center text-2xl font-black rounded-2xl border-2 border-sky-100 bg-white focus:border-sky-500 outline-none transition-all shadow-sm"
+                />
+              ))}
             </div>
 
             <div className="flex flex-col gap-3">
@@ -201,14 +224,37 @@ export function PartnerSignupForm() {
             </div>
 
             <div className="flex justify-center gap-3">
-              <input
-                type="text"
-                maxLength={4}
-                value={otps.mobile}
-                onChange={(e) => handleOtpChange("mobile", e.target.value)}
-                className="w-40 text-center text-3xl font-black tracking-[1em] py-3 rounded-2xl border-2 border-sky-100 bg-white focus:border-sky-500 outline-none transition-all"
-                autoFocus
-              />
+              {[0, 1, 2, 3].map((index) => (
+                <input
+                  key={index}
+                  id={`mobile-otp-${index}`}
+                  type="text"
+                  maxLength={1}
+                  value={otps.mobile[index] || ""}
+                  autoFocus={index === 0}
+                  onChange={(e) => {
+                    const val = e.target.value.replace(/[^0-9]/g, "");
+                    const newOtp = otps.mobile.split("");
+                    newOtp[index] = val;
+                    const combined = newOtp.join("").slice(0, 4);
+                    handleOtpChange("mobile", combined);
+                    if (val && index < 3) {
+                      document.getElementById(`mobile-otp-${index + 1}`)?.focus();
+                    }
+                  }}
+                  onKeyDown={(e) => {
+                    if (e.key === "Backspace" && !otps.mobile[index] && index > 0) {
+                      document.getElementById(`mobile-otp-${index - 1}`)?.focus();
+                    }
+                  }}
+                  onPaste={(e) => {
+                    e.preventDefault();
+                    const pasteData = e.clipboardData.getData("text").replace(/[^0-9]/g, "").slice(0, 4);
+                    handleOtpChange("mobile", pasteData);
+                  }}
+                  className="w-12 h-14 text-center text-2xl font-black rounded-2xl border-2 border-sky-100 bg-white focus:border-sky-500 outline-none transition-all shadow-sm"
+                />
+              ))}
             </div>
 
             <div className="flex flex-col gap-3">
