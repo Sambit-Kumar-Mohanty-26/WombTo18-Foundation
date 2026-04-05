@@ -1,35 +1,50 @@
 import { Injectable } from '@nestjs/common';
-import * as nodemailer from 'nodemailer';
 import { ConfigService } from '@nestjs/config';
+import * as https from 'https';
 
 @Injectable()
 export class MailerService {
-  private transporter: nodemailer.Transporter | null = null;
   private readonly isEmailDisabled: boolean;
-  private readonly smtpUser: string;
-  private readonly smtpFrom: string;
 
   constructor(private readonly configService: ConfigService) {
     this.isEmailDisabled = this.configService.get<string>('DISABLE_EMAIL') === 'true';
-    this.smtpUser = this.configService.get<string>('SMTP_USER') || '';
-    this.smtpFrom = this.configService.get<string>('SMTP_FROM') || `WombTo18 Team <${this.smtpUser}>`;
+  }
 
-    const host = this.configService.get<string>('SMTP_HOST');
-    const pass = this.configService.get<string>('SMTP_PASS');
-    const port = parseInt(this.configService.get<string>('SMTP_PORT') || '587');
-    const secure = this.configService.get<string>('SMTP_SECURE') === 'true';
+  private makeHttpsRequest(
+    url: string,
+    method: string,
+    headers: any,
+    body?: any,
+  ): Promise<{ status: number; data: string }> {
+    return new Promise((resolve, reject) => {
+      const parsedUrl = new URL(url);
+      const options = {
+        hostname: parsedUrl.hostname,
+        port: parsedUrl.port || 443,
+        path: parsedUrl.pathname + (parsedUrl.search || ''),
+        method: method,
+        headers: headers,
+      };
 
-    if (host && this.smtpUser && pass) {
-      this.transporter = nodemailer.createTransport({
-        host,
-        port,
-        secure,
-        auth: {
-          user: this.smtpUser,
-          pass,
-        },
+      const req = https.request(options, (res) => {
+        let rawData = '';
+        res.on('data', (chunk) => {
+          rawData += chunk;
+        });
+        res.on('end', () => {
+          resolve({ status: res.statusCode || 500, data: rawData });
+        });
       });
-    }
+
+      req.on('error', (e) => {
+        reject(e);
+      });
+
+      if (body) {
+        req.write(typeof body === 'string' ? body : JSON.stringify(body));
+      }
+      req.end();
+    });
   }
 
   async sendEmail(to: string, subject: string, html: string, text: string): Promise<void> {
@@ -38,25 +53,50 @@ export class MailerService {
       return;
     }
 
-    if (!this.transporter) {
+    const serviceId = this.configService.get<string>('EMAILJS_SERVICE_ID');
+    const templateId = this.configService.get<string>('EMAILJS_TEMPLATE_ID');
+    const publicKey = this.configService.get<string>('EMAILJS_PUBLIC_KEY');
+    const privateKey = this.configService.get<string>('EMAILJS_PRIVATE_KEY');
+
+    if (!serviceId || !templateId || !publicKey) {
       if (this.configService.get<string>('NODE_ENV') !== 'production') {
-        console.log(`[EMAIL DEV LOG] To: ${to} | Subject: ${subject}`);
-        console.log(`Text: ${text}`);
+        console.log(`[EMAIL DEV LOG] (Missing config) To: ${to} | Subject: ${subject}`);
+        console.log(`Text preview: ${text.substring(0, 50)}...`);
       } else {
-        throw new Error('Email transporter not configured. Set SMTP_HOST, SMTP_USER, and SMTP_PASS');
+        throw new Error('Email configuration missing (EMAILJS_SERVICE_ID, etc.)');
       }
       return;
     }
 
     try {
-      await this.transporter.sendMail({
-        from: this.smtpFrom,
-        to,
-        subject,
-        text,
-        html,
-      });
-      console.log(`[EMAIL SENT SUCCESS] To: ${to} | Subject: ${subject}`);
+      const response = await this.makeHttpsRequest(
+        'https://api.emailjs.com/api/v1.0/email/send',
+        'POST',
+        {
+          'Content-Type': 'application/json',
+          'Accept': 'application/json',
+        },
+        {
+          service_id: serviceId,
+          template_id: templateId,
+          user_id: publicKey,
+          accessToken: privateKey,
+          template_params: {
+            to_email: to,
+            to_name: 'WombTo18 User',
+            from_name: 'WombTo18 Foundation',
+            subject: subject,
+            message: html, // Pass our premium HTML structure as the "message" variable
+            reply_to: 'no-reply@wombto18.org',
+          },
+        },
+      );
+
+      if (response.status === 200 || response.status === 201) {
+        console.log(`[EMAIL SENT SUCCESS] To: ${to} | Subject: ${subject}`);
+      } else {
+        throw new Error(`EmailJS Error (${response.status}): ${response.data}`);
+      }
     } catch (error) {
       const errorMessage = error instanceof Error ? error.message : 'Unknown error';
       console.error('[EMAIL ERROR] Failed to send email.', {
@@ -65,8 +105,6 @@ export class MailerService {
         error: errorMessage
       });
       
-      // In development, we don't want to crash the whole process if email fails
-      // This allows the login flow to proceed with the devOtp or mock OTP
       if (this.configService.get<string>('NODE_ENV') === 'production') {
         throw error;
       }

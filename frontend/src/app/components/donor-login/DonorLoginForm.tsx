@@ -37,8 +37,6 @@ const registerSchema = z.object({
       (val) => !val || /^(\+91[\s-]?)?[6-9]\d{9}$/.test(val.replace(/[\s-]/g, "")),
       { message: "Enter a valid Indian mobile number (e.g. +91 9876543210)" }
     ),
-  isVolunteer: z.boolean().optional(),
-  isNonDonor: z.boolean().optional(),
 }).refine((data) => data.password === data.confirmPassword, {
   message: "Passwords do not match",
   path: ["confirmPassword"],
@@ -297,8 +295,6 @@ function RegisterTab({ onSuccess }: DonorLoginFormProps) {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
-  const [isVolunteer, setIsVolunteer] = useState(false);
-  const [isNonDonor, setIsNonDonor] = useState(false);
   const [searchParams] = useSearchParams();
   const refCode = searchParams.get("ref");
 
@@ -322,8 +318,8 @@ function RegisterTab({ onSuccess }: DonorLoginFormProps) {
         password: data.password,
         name: data.name,
         mobile: data.mobile || undefined,
-        isVolunteer,
-        isNonDonor,
+        isVolunteer: false,
+        isNonDonor: false,
         referredById: refCode || undefined,
       });
 
@@ -485,69 +481,8 @@ function RegisterTab({ onSuccess }: DonorLoginFormProps) {
         )}
       </motion.div>
 
-      {/* Role checkboxes */}
-      <motion.div custom={5} variants={inputWrapperVariants} className="grid grid-cols-2 gap-3 pt-1 pb-1">
-        <label
-          className={`flex items-center gap-2.5 p-3 rounded-2xl border text-[12px] font-bold cursor-pointer transition-all duration-300 ${
-            isVolunteer
-              ? "bg-emerald-50/80 border-emerald-300 text-emerald-700 shadow-[0_2px_10px_-4px_rgba(16,185,129,0.3)]"
-              : "bg-white/60 border-gray-200/80 hover:border-gray-300 hover:bg-white text-gray-500"
-          }`}
-        >
-          <div
-            className={`flex items-center justify-center w-4 h-4 rounded border ${
-              isVolunteer ? "bg-emerald-500 border-emerald-500" : "border-gray-300 bg-white"
-            }`}
-          >
-            {isVolunteer && (
-              <motion.div
-                initial={{ scale: 0 }}
-                animate={{ scale: 1 }}
-                className="w-2 h-2 bg-white rounded-sm"
-              />
-            )}
-          </div>
-          <input
-            type="checkbox"
-            checked={isVolunteer}
-            onChange={(e) => setIsVolunteer(e.target.checked)}
-            className="hidden"
-          />
-          Volunteer
-        </label>
-
-        <label
-          className={`flex items-center gap-2.5 p-3 rounded-2xl border text-[12px] font-bold cursor-pointer transition-all duration-300 ${
-            isNonDonor
-              ? "bg-orange-50/80 border-orange-300 text-orange-700 shadow-[0_2px_10px_-4px_rgba(249,115,22,0.3)]"
-              : "bg-white/60 border-gray-200/80 hover:border-gray-300 hover:bg-white text-gray-500"
-          }`}
-        >
-          <div
-            className={`flex items-center justify-center w-4 h-4 rounded border ${
-              isNonDonor ? "bg-orange-500 border-orange-500" : "border-gray-300 bg-white"
-            }`}
-          >
-            {isNonDonor && (
-              <motion.div
-                initial={{ scale: 0 }}
-                animate={{ scale: 1 }}
-                className="w-2 h-2 bg-white rounded-sm"
-              />
-            )}
-          </div>
-          <input
-            type="checkbox"
-            checked={isNonDonor}
-            onChange={(e) => setIsNonDonor(e.target.checked)}
-            className="hidden"
-          />
-          Non-Donor
-        </label>
-      </motion.div>
-
       {/* Submit */}
-      <motion.div custom={6} variants={inputWrapperVariants}>
+      <motion.div custom={5} variants={inputWrapperVariants}>
         <Button
           type="submit"
           disabled={isSubmitting}
