@@ -44,25 +44,29 @@ export function AdminDashboard() {
     totalDonations: 0,
     totalDonors: 0,
     totalPrograms: 0,
-    recentDonations: [] as any[]
+    recentDonations: [] as any[],
+    chartData: [] as any[]
   });
   const [isLoading, setIsLoading] = useState(true);
+  const [range, setRange] = useState<'7D' | '30D' | '1Y'>('30D');
 
   useEffect(() => {
-    client.get<any>('/admin/stats')
+    setIsLoading(true);
+    client.get<any>(`/admin/stats?range=${range}`)
       .then(data => {
         if (data) {
           setStats({
             totalDonations: data.totalDonations || 0,
             totalDonors: data.totalDonors || 0,
             totalPrograms: data.totalPrograms || 0,
-            recentDonations: data.recentDonations || []
+            recentDonations: data.recentDonations || [],
+            chartData: data.chartData || []
           });
         }
       })
       .catch(err => console.error("Error fetching admin stats:", err))
       .finally(() => setIsLoading(false));
-  }, []);
+  }, [range]);
 
   const containerVariants = {
     hidden: { opacity: 0 },
@@ -140,18 +144,27 @@ export function AdminDashboard() {
           <div className="flex flex-col sm:flex-row sm:items-center justify-between mb-10 gap-4">
             <div>
               <h3 className="text-lg font-black text-black tracking-tighter uppercase mb-1">Collection Trends</h3>
-              <p className="text-[11px] font-bold text-slate-400 uppercase tracking-widest">Monthly donation aggregation (Sample Data)</p>
+              <p className="text-[11px] font-bold text-slate-400 uppercase tracking-widest">{range === '1Y' ? 'Last 12 Months' : `Last ${range === '7D' ? '7 Days' : '30 Days'} Collection`}</p>
             </div>
             <div className="flex gap-2">
-              <span className="px-4 py-2 rounded-xl bg-slate-100 text-[10px] font-bold text-slate-600 uppercase tracking-wider cursor-pointer hover:bg-slate-200 transition-colors">7D</span>
-              <span className="px-4 py-2 rounded-xl bg-black text-[10px] font-bold text-white uppercase tracking-wider cursor-pointer shadow-sm">30D</span>
-              <span className="px-4 py-2 rounded-xl bg-slate-100 text-[10px] font-bold text-slate-600 uppercase tracking-wider cursor-pointer hover:bg-slate-200 transition-colors">1Y</span>
+              <span 
+                onClick={() => setRange('7D')}
+                className={`px-4 py-2 rounded-xl text-[10px] font-bold uppercase tracking-wider cursor-pointer transition-all ${range === '7D' ? 'bg-black text-white shadow-sm' : 'bg-slate-100 text-slate-600 hover:bg-slate-200'}`}
+              >7D</span>
+              <span 
+                onClick={() => setRange('30D')}
+                className={`px-4 py-2 rounded-xl text-[10px] font-bold uppercase tracking-wider cursor-pointer transition-all ${range === '30D' ? 'bg-black text-white shadow-sm' : 'bg-slate-100 text-slate-600 hover:bg-slate-200'}`}
+              >30D</span>
+              <span 
+                onClick={() => setRange('1Y')}
+                className={`px-4 py-2 rounded-xl text-[10px] font-bold uppercase tracking-wider cursor-pointer transition-all ${range === '1Y' ? 'bg-black text-white shadow-sm' : 'bg-slate-100 text-slate-600 hover:bg-slate-200'}`}
+              >1Y</span>
             </div>
           </div>
           
           <div className="h-[320px] w-full">
             <ResponsiveContainer width="100%" height="100%">
-              <AreaChart data={monthlyRevenue} margin={{ top: 10, right: 0, left: -20, bottom: 0 }}>
+              <AreaChart data={stats.chartData} margin={{ top: 10, right: 0, left: -20, bottom: 0 }}>
                 <defs>
                   <linearGradient id="colorAmountModern" x1="0" y1="0" x2="0" y2="1">
                     <stop offset="5%" stopColor="#0f172a" stopOpacity={0.08}/>

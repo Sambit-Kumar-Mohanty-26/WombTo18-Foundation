@@ -189,10 +189,12 @@ export function DashboardLayout() {
               </div>
             </div>
             <div className="h-8 w-px bg-gray-200" />
-            <Button size="lg" className="bg-gradient-to-r from-[#1D6E3F] to-emerald-600 hover:from-emerald-600 hover:to-emerald-500 text-white font-black shadow-[0_10px_20px_-10px_rgba(29,110,63,0.5)] hover:shadow-[0_15px_25px_-10px_rgba(29,110,63,0.6)] rounded-xl px-5 h-10 transition-all duration-300 hover:-translate-y-0.5 border border-emerald-500/20">
-              <Heart className="h-4 w-4 mr-2 fill-emerald-400/50" />
-              Quick Donate
-            </Button>
+            <Link to="/donate">
+              <Button size="lg" className="bg-gradient-to-r from-[#1D6E3F] to-emerald-600 hover:from-emerald-600 hover:to-emerald-500 text-white font-black shadow-[0_10px_20px_-10px_rgba(29,110,63,0.5)] hover:shadow-[0_15px_25px_-10px_rgba(29,110,63,0.6)] rounded-xl px-5 h-10 transition-all duration-300 hover:-translate-y-0.5 border border-emerald-500/20">
+                <Heart className="h-4 w-4 mr-2 fill-emerald-400/50" />
+                Quick Donate
+              </Button>
+            </Link>
           </div>
         </header>
 
