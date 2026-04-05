@@ -7,14 +7,21 @@ const path_1 = require("path");
 const cookieParser = require("cookie-parser");
 async function bootstrap() {
     const app = await core_1.NestFactory.create(app_module_1.AppModule);
+    const allowedOrigins = [
+        process.env.FRONTEND_URL,
+        'http://localhost:5173',
+        'http://localhost:5174',
+        'http://localhost:5175',
+        'http://localhost:5176',
+    ].filter(Boolean);
     app.enableCors({
-        origin: ['http://localhost:5173', 'http://localhost:5174', 'http://localhost:5175', 'http://localhost:5176'],
+        origin: allowedOrigins,
         credentials: true,
     });
     app.useStaticAssets((0, path_1.join)(process.cwd(), 'public'), {
         prefix: '/public',
         setHeaders: (res) => {
-            res.set('Access-Control-Allow-Origin', 'http://localhost:5173');
+            res.set('Access-Control-Allow-Origin', process.env.FRONTEND_URL || 'http://localhost:5173');
             res.set('Access-Control-Allow-Methods', 'GET, OPTIONS');
             res.set('Access-Control-Allow-Headers', 'Origin, X-Requested-With, Content-Type, Accept');
         },

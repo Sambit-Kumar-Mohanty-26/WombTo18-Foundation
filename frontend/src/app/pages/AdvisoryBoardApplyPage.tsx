@@ -10,6 +10,8 @@ import { calculateAdvisoryScore, type DomainCategory } from "../lib/advisoryScor
 import { INDIAN_STATES } from "../lib/indianStates";
 import { useToast } from "../context/ToastContext";
 
+const API = import.meta.env.VITE_API_URL || "http://localhost:6001";
+
 interface DomainItem {
   icon: any;
   title: string;
@@ -264,7 +266,7 @@ export function AdvisoryBoardApplyPage() {
     if (formData.mobile.length < 10) return;
     try {
       setOtpStep("waiting");
-      const res = await fetch('/api/verify/send-otp', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ mobile: formData.mobile }) });
+      const res = await fetch(`${API}/api/verify/send-otp`, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ mobile: formData.mobile }) });
       const data = await res.json().catch(() => ({}));
       if (res.ok && data.success) {
          success(data.message || "OTP Sent successfully!");
@@ -290,7 +292,7 @@ export function AdvisoryBoardApplyPage() {
     if (!formData.email) return;
     try {
       const verifyUrl = `${window.location.origin}/verify-email?email=${encodeURIComponent(formData.email)}`;
-      const res = await fetch('/api/verify/send-email', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ email: formData.email, verifyUrl }) });
+      const res = await fetch(`${API}/api/verify/send-email`, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ email: formData.email, verifyUrl }) });
       const data = await res.json().catch(() => ({}));
       if (res.ok && data.success) {
         success(`Verification link dispatched to ${formData.email}`);
@@ -332,7 +334,7 @@ export function AdvisoryBoardApplyPage() {
         if (docs[docKey]) submitData.append(docKey, docs[docKey] as Blob);
       });
 
-      const res = await fetch('/api/advisory-applications', {
+      const res = await fetch(`${API}/api/advisory-applications`, {
         method: 'POST',
         body: submitData
       });

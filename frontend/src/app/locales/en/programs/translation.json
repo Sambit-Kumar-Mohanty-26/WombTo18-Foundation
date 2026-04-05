@@ -1,0 +1,305 @@
+{
+  "mobilePdf": {
+    "title": "Go Green Certificate",
+    "ready": "Tap to open the full PDF certificate.",
+    "generating": "Generating certificate preview..."
+  },
+  "programsData": [
+    {
+      "title": "Prenatal & Maternal Care",
+      "age": "Pre-birth",
+      "status": "Active",
+      "description": "Comprehensive healthcare for expectant mothers including regular check-ups, nutrition counseling, birth preparedness, and postpartum support.",
+      "target2026": "Updating soon",
+      "features": ["Regular health check-ups", "Nutrition supplements", "Birth preparedness classes", "Postpartum counseling"],
+      "category": "Health"
+    },
+    {
+      "title": "Early Childhood Development",
+      "age": "0-5 years",
+      "status": "Active",
+      "description": "Immunization drives, developmental screenings, growth monitoring, and early stimulation programs for infants and toddlers.",
+      "target2026": "Updating soon",
+      "features": ["Immunization tracking", "Developmental milestones", "Growth monitoring", "Parent education"],
+      "category": "Health"
+    },
+    {
+      "title": "Nutrition Programs",
+      "age": "0-18 years",
+      "status": "Active",
+      "description": "Mid-day meal programs, nutrition supplements, awareness campaigns, and kitchen gardens to combat malnutrition at every stage.",
+      "target2026": "Updating soon",
+      "features": ["Mid-day meals", "Micronutrient supplements", "Community kitchens", "Nutrition awareness"],
+      "category": "Nutrition"
+    },
+    {
+      "title": "Education Support",
+      "age": "6-18 years",
+      "status": "Active",
+      "description": "Scholarships, school supplies, after-school tutoring, digital literacy, and career guidance for school-age children.",
+      "target2026": "Updating soon",
+      "features": ["Scholarships", "Digital literacy", "After-school tutoring", "Career guidance"],
+      "category": "Education"
+    },
+    {
+      "title": "Youth Empowerment",
+      "age": "14-18 years",
+      "status": "Active",
+      "description": "Skill development, mentorship, leadership training, and career counseling to prepare teenagers for independent adult life.",
+      "target2026": "Updating soon",
+      "features": ["Skill development", "Mentorship", "Leadership programs", "Internship placements"],
+      "category": "Community"
+    },
+    {
+      "title": "Child Protection",
+      "age": "0-18 years",
+      "status": "Active",
+      "description": "Advocacy, community awareness, helplines, and support systems to protect children from abuse, exploitation, and trafficking.",
+      "target2026": "Updating soon",
+      "features": ["Helpline services", "Community awareness", "Legal support", "Rehabilitation"],
+      "category": "Community"
+    }
+  ],
+  "carePillarsData": [
+    {
+      "title": "Maternal & Early Care",
+      "points": ["Prenatal support", "Safe delivery prep", "Early nutrition"]
+    },
+    {
+      "title": "Preventive Healthcare",
+      "points": ["Vaccination", "Screenings", "Growth tracking"]
+    },
+    {
+      "title": "Mental Wellness",
+      "points": ["Emotional development", "Counselling", "School readiness"]
+    },
+    {
+      "title": "School Health Systems",
+      "points": ["Health programmes", "WASH", "Emergency readiness"]
+    },
+    {
+      "title": "Green Cohort",
+      "points": ["Tree per child", "Climate awareness", "Carbon-neutral future"]
+    }
+  ],
+  "fivePillars": {
+    "badge": "Our Five Pillars",
+    "title1": "One Platform.",
+    "title2": "Five Dimensions of Care.",
+    "desc1": "WOMBTO18 Foundation operates as India's first integrated child health non-profit platform - uniting ",
+    "descStrong1": "32 programmes",
+    "desc2": " across five pillars, delivered through schools, hospitals, and communities. Serving ",
+    "descStrong2": "25 schools today",
+    "desc3": ".",
+    "pillarLabel": "Pillar",
+    "stat1": "Schools active",
+    "stat2": "Programmes",
+    "stat3": "Full lifecycle",
+    "bottomDesc1": "India's first integrated child health platform",
+    "bottomDesc2": " - from the moment of conception through adolescence, designed as connected infrastructure rather than isolated interventions."
+  },
+  "upcomingCamps": {
+    "badge": "Impact Opportunities",
+    "title1": "Join the",
+    "title1Span": "Mission.",
+    "title2": "Earn",
+    "title2Span": "Impact Rewards.",
+    "desc": "Our upcoming camps offer a chance to serve the community while earning rewards through our dynamic coin pool system.",
+    "goodCamp": "Good Camp",
+    "campSuffix": "Camp",
+    "defaultDesc": "Free health check-ups, basic consultations and essential health awareness for a stronger community.",
+    "where": "Where",
+    "when": "When",
+    "volunteers": "volunteers",
+    "joinCamp": "Join Camp"
+  },
+  "hero": {
+    "badge": "Our Programs",
+    "title1": "Comprehensive Care at Every ",
+    "title2": "Stage of Childhood.",
+    "desc": "From prenatal care to preparing young adults for life, our programs ensure no child is left behind. Choose a program to support and track your impact in real time."
+  },
+  "programsSection": {
+    "categoriesLabel": "Categories:",
+    "categories": {
+      "All Programs": "All Programs",
+      "Health": "Health",
+      "Education": "Education",
+      "Nutrition": "Nutrition",
+      "Community": "Community"
+    },
+    "donateNow": "Donate Now"
+  },
+  "careContinuum": {
+    "badge": "Care Continuum",
+    "title": "The Lifelong Health Journey",
+    "desc1": "From the very first day to young adulthood, we ensure no critical health milestone is missed through our ",
+    "descStrong": "integrated multi-stage approach",
+    "desc2": ".",
+    
+    "stage1": {
+      "badge": "0 - 18 Months",
+      "title": "Foundation of Life",
+      "desc": "Critical early protection with BCG, Polio, DPT, Hepatitis B, and Measles vaccines. A robust start for a healthy life."
+    },
+    "stage2": {
+      "badge": "5 - 16 Years",
+      "title": "School-Age Immunity",
+      "desc": "DPT Boosters, Typhoid, HPV, and Tdap. Protecting children as they enter school and preparing adolescents for adulthood safely."
+    },
+    "stage3": {
+      "badge": "0 - 18 Years",
+      "title": "Mental Wellness",
+      "prenatalBadge": "Prenatal",
+      "prenatalTitle": "Maternal mental health, bonding, stress reduction",
+      "prenatalDesc": "Parent handbooks, antenatal class integration, WhatsApp module",
+      "age05Badge": "0 - 5 yrs",
+      "age05Title": "Early attachment, emotional security, sensory play",
+      "age05Desc": "Parent workshops, anganwadi tie-ups, illustrated booklets",
+      "age612Badge": "6 - 12 yrs",
+      "age612Title": "SEL, classroom emotional regulation, peer relationships",
+      "age612Desc": "School-based modules, teacher training, interactive group sessions",
+      "age1318Badge": "13 - 18 yrs",
+      "age1318Title": "Identity formation, digital wellness, career anxiety",
+      "age1318Desc": "School counsellor training, peer mentor programme, parent sessions"
+    }
+  },
+  "flagship": {
+    "badge": "Flagship Initiatives",
+    "title1": "Transforming ",
+    "title2": "Health & Immunity.",
+    "desc": "Our award-winning programs designed to deliver comprehensive healthcare inside schools and ensure zero missed vaccinations across communities.",
+    "integratedSchoolHealth": {
+      "title1": "Integrated ",
+      "title2": "School Health",
+      "badge": "Flagship Programme",
+      "desc": "India's first integrated school health delivery model, designed for phased expansion across partner schools. Covering physical, mental, dental, nutritional, and environmental wellness across the entire school year.",
+      "items": [
+        "School Health Coordinator",
+        "Live Wellness Dashboard",
+        "Annual Health Report"
+      ],
+      "col1Title": "On-Campus Health",
+      "col1Items": [
+        "Annual screenings: vision, dental, BMI, hearing, posture",
+        "Doctor-led health camps: paediatrics, dermatology, orthopaedics",
+        "WASH education: water, sanitation and hygiene awareness",
+        "Nutritional assessment & healthy eating campaigns",
+        "First aid and CPR training for staff and senior students",
+        "Daily health monitoring via Student Wellness App"
+      ],
+      "col2Title": "Wellness & Sustainability",
+      "col2Items": [
+        "Mental wellness and Social Emotional Learning (SEL)",
+        "Green Cohort: every student plants a geo-tagged tree",
+        "Emergency preparedness — NDRF, fire, earthquake drills",
+        "Adolescent health and menstrual hygiene workshops",
+        "Parent engagement sessions — quarterly health briefings",
+        "Annual School Health Report & Compliance Certificate"
+      ]
+    },
+    "vaccineReminder": {
+      "title1": "Vaccine Reminder",
+      "title2": " Programme",
+      "desc1": "For every scheduled vaccine in a child's immunisation calendar (National Immunisation Schedule + IAP + ACVIP guidelines), parents receive ",
+      "descStrong": "9 reminders across 3 channels",
+      "desc2": " ensuring no critical dose is missed.",
+      "remindersCount": "3 Reminders",
+      "timeline": {
+        "before": "2 days before due date",
+        "beforeDesc": "Plan your visit",
+        "due": "On the due date",
+        "dueDesc": "Act today",
+        "after": "2 days after",
+        "afterDesc": "Follow-up if missed"
+      }
+    }
+  },
+  "emergency": {
+    "badge": "FEATURED PROGRAM",
+    "title1": "Emergency Preparedness & ",
+    "title2": "Resilience",
+    "desc1": "We prepare children, schools, and families to respond confidently to natural disasters, health emergencies, and unforeseen crises. Aligned with ",
+    "descStrong1": "NDMA guidelines",
+    "descStrong2": "UN DRR goals",
+    "desc2": ", and India's national school safety protocols.",
+    "cards": [
+      {
+        "title": "First Aid & Emergency Response",
+        "desc": "First aid and emergency response training for students and school staff."
+      },
+      {
+        "title": "Evacuation Drills",
+        "desc": "School-wide drills for fire, flood, earthquake, and pandemic scenarios."
+      },
+      {
+        "title": "Post-Crisis Mental Health",
+        "desc": "Mental health support modules for post-crisis trauma and stress management."
+      },
+      {
+        "title": "Media Literacy & Digital Safety",
+        "desc": "Responsible digital behaviour and media literacy training during emergencies."
+      }
+    ],
+    "heroes": {
+      "title": "Delivered by Real Heroes",
+      "badge": "On Campus Training",
+      "partners": [
+        { "name": "NDRF Teams", "role": "National Disaster Response Force" },
+        { "name": "Ex-Armed Forces Officers", "role": "Defence & Strategic Operations" },
+        { "name": "Fire Officers", "role": "Fire Safety & Evacuation" },
+        { "name": "Civil Authorities", "role": "District Administration" }
+      ],
+      "stats": [
+        { "title": "Scalable", "label": "Architecture" },
+        { "title": "NDMA", "label": "Aligned" },
+        { "title": "Holistic", "label": "Safety" }
+      ]
+    }
+  },
+  "goGreen": {
+    "badge": "SDG 13: CLIMATE ACTION",
+    "title1": "Green Cohort & ",
+    "title2": "Emergency Safe-Zones",
+    "desc1": "Health and climate are inextricably linked. Our Go Green Initiative trains rural communities in disaster preparedness while planting trees to offset carbon footprints, creating India's first ",
+    "descStrong": "Carbon-Neutral Child Cohort",
+    "desc2": ".",
+    "features": [
+      {
+        "title": "Disaster Ready",
+        "desc": "First-aid training and emergency protocol drills for community leaders."
+      },
+      {
+        "title": "Carbon Offset",
+        "desc": "1 tree planted for every Rs. 5000 donated. Receive your official Go Green Certificate."
+      }
+    ],
+    "certificate": "Official Go Green Certificate",
+    "certificateSub": "Awarded to major donors & partners",
+    "viewPdf": "View Full PDF"
+  },
+  "vision": {
+    "badge": "Future Readiness",
+    "title": "Vision for Impact",
+    "desc": "Laying the groundwork for scalable, transformative change across our core focus areas.",
+    "cards": [
+      {
+        "title": "Comprehensive Reach",
+        "desc": "Designed to scale across multiple underserved districts, targeting 4 key focus areas for complete child development."
+      },
+      {
+        "title": "Sustainable Model",
+        "desc": "Building a transparent, milestone-driven financial framework ensuring long-term operational stability."
+      },
+      {
+        "title": "Measurable Outcomes",
+        "desc": "Setting up rigorous data-driven frameworks to track, verify, and report every life changed along the journey."
+      }
+    ]
+  },
+  "cta": {
+    "title": "Want to Support a Program?",
+    "desc": "Choose a program close to your heart and make a targeted donation that creates lasting impact. Donations are eligible for tax benefits under Section 80G, as per applicable rules.",
+    "btn": "Donate to a Program"
+  }
+}

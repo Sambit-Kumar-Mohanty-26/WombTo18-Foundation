@@ -1,33 +1,10 @@
 import { useRef } from "react";
 import { motion, useScroll, useTransform, useInView } from "motion/react";
-import { ShieldCheck, Download, Lock, CheckCircle2, Shield, ArrowUpRight, Quote, CalendarDays, LineChart, FileText, Activity, BookOpen, Award, Target, Users } from "lucide-react";
-import { Badge } from "../components/ui/badge";
-
-const pledges = [
-  "We will never spend more than 30% of total donations on administrative, technology, and overhead costs combined.",
-  "We will publish audited accounts within 90 days of each financial year end.",
-  "We will publish every Board resolution summary within 30 days of each meeting.",
-  "We will issue 80G certificates automatically within 2 minutes — no requests, no delays, no exceptions.",
-  "We will respond to every donor query within 48 working hours.",
-  "We will publicly acknowledge, in writing, when we fail to meet any programme target — along with an explanation and a corrective plan.",
-  "We will never redirect designated programme funds to general operations without donor notification."
-];
-
-const disclosureItems = [
-  { doc: "Quarterly Impact Report", freq: "April / July / October / January", access: "Free download — no login required" },
-  { doc: "Annual Audited Accounts", freq: "Every July (for prior FY)", access: "Free download — no login required" },
-  { doc: "Fund Utilisation Breakdown", freq: "Monthly update", access: "Public dashboard + donor portal" },
-  { doc: "Board Meeting Summaries", freq: "Within 30 days of each meeting", access: "PDF download — public page" },
-  { doc: "80G Registration Certificate", freq: "Permanent (updated if reissued)", access: "Transparency Centre download" },
-  { doc: "12A Certificate", freq: "Permanent", access: "Transparency Centre download" },
-  { doc: "DPIIT / TechSoup Certificates", freq: "Permanent", access: "Transparency Centre download" },
-  { doc: "Programme Targets vs Actuals", freq: "Quarterly", access: "Live public dashboard" },
-  { doc: "Donor Honour Board", freq: "Monthly refresh", access: "Public dashboard" }
-];
-
-
+import { ShieldCheck, ArrowUpRight, Lock, Activity, Quote } from "lucide-react";
+import { useTranslation } from "react-i18next";
 
 export function TransparencyPage() {
+  const { t } = useTranslation('transparency');
   const containerRef = useRef<HTMLDivElement>(null);
   const { scrollYProgress } = useScroll({ target: containerRef, offset: ["start start", "end end"] });
   const heroY = useTransform(scrollYProgress, [0, 0.2], [0, 150]);
@@ -39,6 +16,9 @@ export function TransparencyPage() {
 
   const q1q2 = useTransform(scrollYProgress, [0, 1], ["0%", "50%"]);
   const q3q4 = useTransform(scrollYProgress, [0, 1], ["0%", "-50%"]);
+
+  const disclosureItems = t('schedule.items', { returnObjects: true }) as any[];
+  const pledges = t('pledges.items', { returnObjects: true }) as string[];
 
   return (
     <div className="min-h-screen text-slate-800 font-sans selection:bg-[#1D6E3F]/20" ref={containerRef}>
@@ -52,14 +32,19 @@ export function TransparencyPage() {
         <motion.div style={{ y: heroY, opacity: heroOpacity }} className="relative z-10 flex flex-col items-center text-center w-full max-w-4xl mx-auto px-4 mt-8">
           <motion.div initial={{ opacity: 0, y: 30, scale: 0.95 }} animate={{ opacity: 1, y: 0, scale: 1 }} transition={{ duration: 0.8, ease: "easeOut" }}>
             <p className="inline-flex items-center gap-2 bg-violet-500/10 text-violet-700 px-5 py-2.5 rounded-full text-[10px] sm:text-xs font-bold tracking-widest uppercase border border-violet-500/20 mb-4 sm:mb-6 shadow-sm">
-              <ShieldCheck className="w-3.5 h-3.5" /> Transparency Centre
+              <ShieldCheck className="w-3.5 h-3.5" /> {t('hero.badge')}
             </p>
             <h1 className="text-5xl sm:text-6xl md:text-[4.5rem] text-gray-900 mb-6" style={{ fontWeight: 900, lineHeight: 1.05, letterSpacing: "-0.01em" }}>
-              Nothing Hidden.<br className="hidden sm:block" />
-              <span className="text-transparent bg-clip-text bg-gradient-to-r from-violet-600 to-fuchsia-500 drop-shadow-sm">Nothing Assumed.</span>
+              {t('hero.titlePrefix')}<br className="hidden sm:block" />
+              <span className="text-transparent bg-clip-text bg-gradient-to-r from-violet-600 to-fuchsia-500 drop-shadow-sm">{t('hero.titleAccent')}</span>
             </h1>
             <p className="text-lg md:text-xl text-gray-600 max-w-3xl leading-relaxed mx-auto">
-              Public disclosure schedule, ring-fenced wallets, <br className="hidden md:block" /> pledge of accountability.
+              {(t('hero.subtitle', { returnObjects: true }) as string[]).map((line, i) => (
+                <span key={i}>
+                  {line}
+                  {i === 0 && <br className="hidden md:block" />}
+                </span>
+              ))}
             </p>
           </motion.div>
         </motion.div>
@@ -80,11 +65,11 @@ export function TransparencyPage() {
             className="mb-16 md:mb-28 text-center"
           >
             <div className="inline-flex items-center gap-2 bg-emerald-50 text-emerald-700 px-5 py-2 rounded-full text-[10px] font-black tracking-[0.2em] uppercase border border-emerald-100 mb-8 shadow-sm">
-              <Activity className="w-4 h-4" /> 100% Visibility
+              <Activity className="w-4 h-4" /> {t('schedule.badge')}
             </div>
             <h2 className="text-4xl md:text-5xl lg:text-[4rem] font-black text-gray-900 tracking-tight leading-[1.05]">
-              Public Disclosure <br className="hidden md:block" />
-              <span className="text-transparent bg-clip-text bg-gradient-to-r from-[#1D6E3F] to-emerald-500">Schedule</span>
+              {t('schedule.titlePrefix')} <br className="hidden md:block" />
+              <span className="text-transparent bg-clip-text bg-gradient-to-r from-[#1D6E3F] to-emerald-500">{t('schedule.titleAccent')}</span>
             </h2>
           </motion.div>
 
@@ -110,11 +95,11 @@ export function TransparencyPage() {
 
                 <div className="grid gap-3 rounded-2xl bg-[#fafaf8] p-4">
                   <div>
-                    <p className="mb-1 text-[10px] font-black uppercase tracking-[0.18em] text-gray-400">Frequency</p>
+                    <p className="mb-1 text-[10px] font-black uppercase tracking-[0.18em] text-gray-400">{t('schedule.frequency')}</p>
                     <p className="text-sm font-bold leading-6 text-gray-700">{item.freq}</p>
                   </div>
                   <div>
-                    <p className="mb-1 text-[10px] font-black uppercase tracking-[0.18em] text-gray-400">Access</p>
+                    <p className="mb-1 text-[10px] font-black uppercase tracking-[0.18em] text-gray-400">{t('schedule.access')}</p>
                     <p className="text-sm font-bold leading-6 text-gray-700">{item.access}</p>
                   </div>
                 </div>
@@ -148,12 +133,12 @@ export function TransparencyPage() {
                 {/* Right side: Meta info */}
                 <div className="mt-4 md:mt-0 px-6 py-2 md:py-0 flex flex-col sm:flex-row sm:items-center gap-6 sm:gap-12 w-full md:w-1/2 justify-end">
                   <div className="flex flex-col flex-1 sm:max-w-[200px]">
-                    <span className="text-[10px] font-black text-gray-400 group-hover:text-emerald-300/80 tracking-widest uppercase mb-1 transition-colors duration-500">Frequency</span>
+                    <span className="text-[10px] font-black text-gray-400 group-hover:text-emerald-300/80 tracking-widest uppercase mb-1 transition-colors duration-500">{t('schedule.frequency')}</span>
                     <span className="text-sm md:text-[0.95rem] font-bold text-gray-600 group-hover:text-white leading-tight transition-colors duration-500">{item.freq}</span>
                   </div>
                   
                   <div className="flex flex-col flex-1 sm:max-w-[220px]">
-                    <span className="text-[10px] font-black text-gray-400 group-hover:text-emerald-300/80 tracking-widest uppercase mb-1 transition-colors duration-500">Access</span>
+                    <span className="text-[10px] font-black text-gray-400 group-hover:text-emerald-300/80 tracking-widest uppercase mb-1 transition-colors duration-500">{t('schedule.access')}</span>
                     <div className="flex items-center gap-2 group/btn">
                       <span className="text-sm md:text-[0.95rem] font-bold text-gray-600 group-hover:text-white leading-tight transition-colors duration-500">{item.access}</span>
                       <ArrowUpRight className="w-5 h-5 text-gray-300 group-hover:text-emerald-400 group-hover:translate-x-1 group-hover:-translate-y-1 transition-transform duration-500" />
@@ -189,28 +174,32 @@ export function TransparencyPage() {
             {/* Text Content (Left) */}
             <motion.div initial={{ opacity: 0, x: -40 }} whileInView={{ opacity: 1, x: 0 }} viewport={{ once: true }} transition={{ duration: 0.8 }}>
               <div className="inline-flex items-center gap-2 bg-[#1D6E3F]/10 text-[#1D6E3F] px-4 py-1.5 rounded-full text-[10px] font-bold tracking-[0.2em] uppercase border border-[#1D6E3F]/20 mb-6">
-                <Lock className="w-3.5 h-3.5" /> How Donor Funds Are Protected
+                <Lock className="w-3.5 h-3.5" /> {t('wallets.badge')}
               </div>
               <h2 className="text-4xl md:text-5xl font-black text-gray-900 mb-6 tracking-tight leading-[1.1]">
-                Ring-Fenced <br />
+                {t('wallets.titlePrefix')} <br />
                 <span className="text-transparent bg-clip-text bg-gradient-to-r from-[#1D6E3F] to-emerald-500">
-                  Wallet Architecture.
+                  {t('wallets.titleAccent')}
                 </span>
               </h2>
 
               <div className="space-y-6 text-gray-600 font-medium leading-relaxed text-lg">
                 <p>
-                  All donations are received into programme-specific sub-accounts <strong className="text-gray-900 font-bold bg-gray-100 py-0.5 px-2 rounded border border-gray-200">(ring-fenced wallets)</strong> maintained at the Foundation’s bank. Funds donated for a specific programme — for example, ‘Vaccine Reminders’ — are legally and operationally separated from the general corpus and can only be released for that designated purpose.
+                  {(t('wallets.p1', { returnObjects: true }) as string[])[0]}
+                  <strong className="text-gray-900 font-bold bg-gray-100 py-0.5 px-2 rounded border border-gray-200">{(t('wallets.p1', { returnObjects: true }) as string[])[1]}</strong>
+                  {(t('wallets.p1', { returnObjects: true }) as string[])[2]}
                 </p>
 
                 <p>
-                  This architecture is disclosed to donors at the point of giving, published in our quarterly reports, and verified annually by our statutory auditor.
+                  {t('wallets.p2')}
                 </p>
 
                 <div className="p-6 rounded-2xl bg-gradient-to-br from-emerald-50 to-transparent border border-emerald-100 relative overflow-hidden group">
                   <div className="absolute top-0 left-0 w-1 h-full bg-gradient-to-b from-emerald-500 to-transparent group-hover:h-[120%] transition-all duration-700" />
                   <p className="text-[0.95rem] text-gray-800 leading-snug m-0">
-                    Undisbursed programme funds at year-end are carried forward and ring-fenced for the following year. <strong className="text-gray-900 font-extrabold pb-0.5 border-b border-rose-500/50">No surplus is absorbed into administration</strong> without Board resolution and public disclosure.
+                    {(t('wallets.p3', { returnObjects: true }) as string[])[0]}
+                    <strong className="text-gray-900 font-extrabold pb-0.5 border-b border-rose-500/50">{(t('wallets.p3', { returnObjects: true }) as string[])[1]}</strong>
+                    {(t('wallets.p3', { returnObjects: true }) as string[])[2]}
                   </p>
                 </div>
               </div>
@@ -269,8 +258,8 @@ export function TransparencyPage() {
       <section className="py-32 relative z-20 bg-[#FAFAF8]">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <motion.div initial={{ opacity: 0, y: 30 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} className="text-center mb-24">
-            <h2 className="text-4xl lg:text-5xl font-black text-gray-900 mb-6 tracking-tight drop-shadow-sm">The Accountability Pledge</h2>
-            <p className="text-xl text-gray-500 font-medium">Seven binding commitments we make to every donor.</p>
+            <h2 className="text-4xl lg:text-5xl font-black text-gray-900 mb-6 tracking-tight drop-shadow-sm">{t('pledges.title')}</h2>
+            <p className="text-xl text-gray-500 font-medium">{t('pledges.subtitle')}</p>
           </motion.div>
 
           <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6 lg:gap-8">
@@ -295,7 +284,7 @@ export function TransparencyPage() {
                     “{pledge}”
                   </p>
                   <div className="flex items-center justify-between">
-                    <span className="text-sm font-bold text-gray-400 tracking-widest uppercase">Pledge 0{i + 1}</span>
+                    <span className="text-sm font-bold text-gray-400 tracking-widest uppercase">{t('pledges.pledgeLabel')} 0{i + 1}</span>
                     <div className="w-10 h-10 rounded-full bg-gray-50 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity transform group-hover:scale-110">
                       <ShieldCheck className="w-5 h-5 text-[#1D6E3F]" />
                     </div>
@@ -347,18 +336,18 @@ export function TransparencyPage() {
             className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-serif text-gray-900 leading-tight md:leading-tight lg:leading-[1.15] tracking-tight relative"
           >
             <span className="text-transparent bg-clip-text bg-gradient-to-r from-gray-900 via-gray-800 to-gray-600">
-              "Transparency is not a report we file once a year.{" "}
+              {t('quote.line1')}
             </span>
             <br className="hidden md:block" />
             <span className="text-transparent bg-clip-text bg-gradient-to-r from-[var(--womb-forest)] to-[#155e33] font-bold drop-shadow-sm">
-              It is a culture we practise every day
+              {t('quote.line2')}
             </span>
             <span className="text-transparent bg-clip-text bg-gradient-to-r from-gray-600 to-gray-500">
-              {", "}in every transaction,
+              {t('quote.line3')}
             </span>
             <br className="hidden lg:block mt-4" />
             <span className="block mt-6 md:mt-8 text-2xl sm:text-3xl md:text-4xl text-[var(--journey-saffron)] font-medium italic drop-shadow-sm">
-              with every person who trusts us."
+              {t('quote.line4')}
             </span>
           </motion.blockquote>
 
@@ -369,7 +358,7 @@ export function TransparencyPage() {
             className="mt-12 md:mt-16 flex items-center justify-center gap-4"
           >
             <div className="h-[1px] w-12 bg-gradient-to-r from-transparent to-[var(--womb-forest)]"></div>
-            <span className="text-sm md:text-base text-gray-500 font-bold tracking-[0.2em] uppercase">Sowjanya, Founder</span>
+            <span className="text-sm md:text-base text-gray-500 font-bold tracking-[0.2em] uppercase">{t('quote.author')}</span>
             <div className="h-[1px] w-12 bg-gradient-to-l from-transparent to-[var(--womb-forest)]"></div>
           </motion.div>
         </div>

@@ -20,6 +20,8 @@ import { CoinModule } from './coin/coin.module';
 import { ReferralModule } from './referral/referral.module';
 import { LeaderboardModule } from './leaderboard/leaderboard.module';
 import { CampModule } from './camp/camp.module';
+import { RedisModule } from './redis/redis.module';
+import { StorageModule } from './storage/storage.module';
 
 @Module({
   imports: [
@@ -42,6 +44,8 @@ import { CampModule } from './camp/camp.module';
     ReferralModule,
     LeaderboardModule,
     CampModule,
+    RedisModule,
+    StorageModule,
   ],
   controllers: [AppController],
   providers: [AppService],

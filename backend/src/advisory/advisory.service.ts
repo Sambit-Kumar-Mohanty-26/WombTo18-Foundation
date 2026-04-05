@@ -1,10 +1,23 @@
 import { Injectable, BadRequestException } from '@nestjs/common';
-import { PrismaClient } from '@prisma/client';
-
-const prisma = new PrismaClient();
+import { PrismaService } from '../prisma/services/prisma.service';
+import { StorageService } from '../storage/storage.service';
+import { extname } from 'path';
 
 @Injectable()
 export class AdvisoryService {
+  constructor(
+    private readonly prisma: PrismaService,
+    private readonly storage: StorageService,
+  ) {}
+
+  private async uploadFile(file: Express.Multer.File | undefined, folder: string): Promise<string> {
+    if (!file) return '';
+    const ext = extname(file.originalname);
+    const uniqueName = `${Date.now()}-${Math.round(Math.random() * 1e9)}${ext}`;
+    const remotePath = `advisory/${folder}/${uniqueName}`;
+    return this.storage.upload(file.buffer, remotePath, file.mimetype);
+  }
+
   async createApplication(body: any, files: any) {
     const parseArray = (field: any) => {
       if (!field) return [];
@@ -18,18 +31,21 @@ export class AdvisoryService {
     const primaryDomains = parseArray(body.primaryDomains);
     const secondaryDomains = parseArray(body.secondaryDomains);
 
-    const photoUrl = files.photo?.[0]?.filename ? `/uploads/advisory/${files.photo[0].filename}` : '';
-    const cvUrl = files.cv?.[0]?.filename ? `/uploads/advisory/${files.cv[0].filename}` : '';
-    const bioUrl = files.bio?.[0]?.filename ? `/uploads/advisory/${files.bio[0].filename}` : '';
-    const idProofUrl = files.idProof?.[0]?.filename ? `/uploads/advisory/${files.idProof[0].filename}` : '';
-    const qualificationProofUrl = files.qualificationProof?.[0]?.filename ? `/uploads/advisory/${files.qualificationProof[0].filename}` : '';
-    const registrationUrl = files.registration?.[0]?.filename ? `/uploads/advisory/${files.registration[0].filename}` : '';
+    // Upload all documents via StorageService (Supabase in prod, local in dev)
+    const [photoUrl, cvUrl, bioUrl, idProofUrl, qualificationProofUrl, registrationUrl] = await Promise.all([
+      this.uploadFile(files.photo?.[0], 'photos'),
+      this.uploadFile(files.cv?.[0], 'cv'),
+      this.uploadFile(files.bio?.[0], 'bio'),
+      this.uploadFile(files.idProof?.[0], 'id-proof'),
+      this.uploadFile(files.qualificationProof?.[0], 'qualification'),
+      this.uploadFile(files.registration?.[0], 'registration'),
+    ]);
 
     if (!photoUrl || !cvUrl || !bioUrl || !idProofUrl || !qualificationProofUrl || !registrationUrl) {
       throw new BadRequestException('All 6 documents (Photo, CV, Bio, ID, Qualification & Registration) are mandatory for submission.');
     }
 
-    const application = await prisma.advisoryApplication.create({
+    const application = await this.prisma.advisoryApplication.create({
       data: {
         firstName: body.firstName,
         lastName: body.lastName,
@@ -66,3 +82,4 @@ export class AdvisoryService {
     return { success: true, applicationId: application.id };
   }
 }
+

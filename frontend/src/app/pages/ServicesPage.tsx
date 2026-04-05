@@ -1,5 +1,5 @@
 import React, { useState, useRef, useEffect } from "react";
-import { Baby, GraduationCap, HeartPulse, Apple, Users, Shield, ArrowRight, Heart, CheckCircle, Leaf, Target, Activity, Syringe, Smartphone, MessageSquare, Mail, Stethoscope, AlertTriangle, ShieldAlert, Brain, Radio, Flame, Coins, MapPin, Calendar, Tent } from "lucide-react";
+import { Baby, GraduationCap, HeartPulse, Apple, Users, Shield, ArrowRight, Heart, CheckCircle, Leaf, Target, Activity, Syringe, Smartphone, MessageSquare, Mail, Stethoscope, AlertTriangle, ShieldAlert, Brain, Radio, Flame, Coins, MapPin, Calendar, Tent, TreePine, Siren, ShieldCheck } from "lucide-react";
 import { Card, CardContent } from "../components/ui/card";
 import { Button } from "../components/ui/button";
 import { Progress } from "../components/ui/progress";
@@ -8,6 +8,7 @@ import { Link } from "react-router";
 import { client } from "../lib/api/client";
 import { motion, AnimatePresence, useInView, animate } from "motion/react";
 import { getDocument, GlobalWorkerOptions } from "pdfjs-dist";
+import { useTranslation } from "react-i18next";
 
 GlobalWorkerOptions.workerSrc = new URL("pdfjs-dist/build/pdf.worker.min.mjs", import.meta.url).toString();
 
@@ -34,6 +35,7 @@ function Counter({ from = 0, to, duration = 2, prefix = "", suffix = "", decimal
 }
 
 function MobilePdfPreview({ pdfUrl, title }: { pdfUrl: string; title: string }) {
+  const { t } = useTranslation('programs');
   const [previewSrc, setPreviewSrc] = useState<string | null>(null);
   const [hasError, setHasError] = useState(false);
 
@@ -98,138 +100,89 @@ function MobilePdfPreview({ pdfUrl, title }: { pdfUrl: string; title: string }) 
       <div className="mb-4 flex h-16 w-16 items-center justify-center rounded-full border-4 border-[#e7d9a2] bg-white shadow-md">
         <Leaf className="h-8 w-8 text-[#1D6E3F]" />
       </div>
-      <p className="text-[0.72rem] font-black uppercase tracking-[0.22em] text-[#1D6E3F]">Go Green Certificate</p>
+      <p className="text-[0.72rem] font-black uppercase tracking-[0.22em] text-[#1D6E3F]">
+        {t('mobilePdf.title')}
+      </p>
       <p className="mt-3 max-w-[16rem] text-sm leading-relaxed text-[#5e5a4f]">
-        {hasError ? "Tap to open the full PDF certificate." : "Generating certificate preview..."}
+        {hasError ? t('mobilePdf.ready') : t('mobilePdf.generating')}
       </p>
     </div>
   );
 }
 
 
-const programs = [
-  {
-    icon: Baby,
-    title: "Prenatal & Maternal Care",
-    age: "Pre-birth",
-    status: "Active",
-    description: "Comprehensive healthcare for expectant mothers including regular check-ups, nutrition counseling, birth preparedness, and postpartum support.",
-    target2026: "Updating soon",
-    features: ["Regular health check-ups", "Nutrition supplements", "Birth preparedness classes", "Postpartum counseling"],
-    image: "/images/site-assets/program_prenatal.png",
-    category: "Health",
-  },
-  {
-    icon: HeartPulse,
-    title: "Early Childhood Development",
-    age: "0-5 years",
-    status: "Active",
-    description: "Immunization drives, developmental screenings, growth monitoring, and early stimulation programs for infants and toddlers.",
-    target2026: "Updating soon",
-    features: ["Immunization tracking", "Developmental milestones", "Growth monitoring", "Parent education"],
-    image: "/images/site-assets/program_childhood.png",
-    category: "Health",
-  },
-  {
-    icon: Apple,
-    title: "Nutrition Programs",
-    age: "0-18 years",
-    status: "Active",
-    description: "Mid-day meal programs, nutrition supplements, awareness campaigns, and kitchen gardens to combat malnutrition at every stage.",
-    target2026: "Updating soon",
-    features: ["Mid-day meals", "Micronutrient supplements", "Community kitchens", "Nutrition awareness"],
-    image: "/images/site-assets/Mid-Day-meal-3.jpg",
-    category: "Nutrition",
-  },
-  {
-    icon: GraduationCap,
-    title: "Education Support",
-    age: "6-18 years",
-    status: "Active",
-    description: "Scholarships, school supplies, after-school tutoring, digital literacy, and career guidance for school-age children.",
-    target2026: "Updating soon",
-    features: ["Scholarships", "Digital literacy", "After-school tutoring", "Career guidance"],
-    image: "/images/site-assets/Education-Support-01.jpg",
-    category: "Education",
-  },
-  {
-    icon: Users,
-    title: "Youth Empowerment",
-    age: "14-18 years",
-    status: "Active",
-    description: "Skill development, mentorship, leadership training, and career counseling to prepare teenagers for independent adult life.",
-    target2026: "Updating soon",
-    features: ["Skill development", "Mentorship", "Leadership programs", "Internship placements"],
-    image: "/images/site-assets/National-Youth-Policy_Featured-Image-1.jpg",
-    category: "Community",
-  },
-  {
-    icon: Shield,
-    title: "Child Protection",
-    age: "0-18 years",
-    status: "Active",
-    description: "Advocacy, community awareness, helplines, and support systems to protect children from abuse, exploitation, and trafficking.",
-    target2026: "Updating soon",
-    features: ["Helpline services", "Community awareness", "Legal support", "Rehabilitation"],
-    image: "https://images.unsplash.com/photo-1488521787991-ed7bbaae773c?q=80&w=800&auto=format&fit=crop",
-    category: "Community",
-  },
-];
+const getPrograms = (t: any) => {
+  const programsData = t('programsData', { returnObjects: true }) as any[];
+  return [
+    { ...programsData[0], icon: Baby, image: "/images/site-assets/program_prenatal.png" },
+    { ...programsData[1], icon: HeartPulse, image: "/images/site-assets/program_childhood.png" },
+    { ...programsData[2], icon: Apple, image: "/images/site-assets/Mid-Day-meal-3.jpg" },
+    { ...programsData[3], icon: GraduationCap, image: "/images/site-assets/Education-Support-01.jpg" },
+    { ...programsData[4], icon: Users, image: "/images/site-assets/National-Youth-Policy_Featured-Image-1.jpg" },
+    { ...programsData[5], icon: Shield, image: "https://images.unsplash.com/photo-1488521787991-ed7bbaae773c?q=80&w=800&auto=format&fit=crop" }
+  ];
+};
 
-const carePillars = [
-  {
-    id: "01",
-    title: "Maternal & Early Care",
-    color: "var(--journey-saffron)",
-    bg: "from-[#fff5e8] to-white",
-    border: "border-[#f4d6a3]",
-    iconBg: "bg-[#fff2df]",
-    Icon: Baby,
-    points: ["Prenatal support", "Safe delivery prep", "Early nutrition"],
-  },
-  {
-    id: "02",
-    title: "Preventive Healthcare",
-    color: "#2ca86e",
-    bg: "from-[#ecfbf3] to-white",
-    border: "border-[#bfead2]",
-    iconBg: "bg-[#e6f8ee]",
-    Icon: HeartPulse,
-    points: ["Vaccination", "Screenings", "Growth tracking"],
-  },
-  {
-    id: "03",
-    title: "Mental Wellness",
-    color: "#6d63ff",
-    bg: "from-[#f1efff] to-white",
-    border: "border-[#d9d2ff]",
-    iconBg: "bg-[#eeebff]",
-    Icon: Brain,
-    points: ["Emotional development", "Counselling", "School readiness"],
-  },
-  {
-    id: "04",
-    title: "School Health Systems",
-    color: "#3b82f6",
-    bg: "from-[#eef5ff] to-white",
-    border: "border-[#c9dcff]",
-    iconBg: "bg-[#e9f2ff]",
-    Icon: Shield,
-    points: ["Health programmes", "WASH", "Emergency readiness"],
-  },
-  {
-    id: "05",
-    title: "Green Cohort",
-    color: "#6b9f2f",
-    bg: "from-[#f3fae8] to-white",
-    border: "border-[#d7e8b7]",
-    iconBg: "bg-[#edf7dd]",
-    Icon: Leaf,
-    points: ["Tree per child", "Climate awareness", "Carbon-neutral future"],
-  },
-];
+const getCarePillars = (t: any) => {
+  const data = t('carePillarsData', { returnObjects: true }) as any[];
+  return [
+    {
+      id: "01",
+      title: data[0].title,
+      color: "var(--journey-saffron)",
+      bg: "from-[#fff5e8] to-white",
+      border: "border-[#f4d6a3]",
+      iconBg: "bg-[#fff2df]",
+      Icon: Baby,
+      points: data[0].points,
+    },
+    {
+      id: "02",
+      title: data[1].title,
+      color: "#2ca86e",
+      bg: "from-[#ecfbf3] to-white",
+      border: "border-[#bfead2]",
+      iconBg: "bg-[#e6f8ee]",
+      Icon: HeartPulse,
+      points: data[1].points,
+    },
+    {
+      id: "03",
+      title: data[2].title,
+      color: "#6d63ff",
+      bg: "from-[#f1efff] to-white",
+      border: "border-[#d9d2ff]",
+      iconBg: "bg-[#eeebff]",
+      Icon: Brain,
+      points: data[2].points,
+    },
+    {
+      id: "04",
+      title: data[3].title,
+      color: "#3b82f6",
+      bg: "from-[#eef5ff] to-white",
+      border: "border-[#c9dcff]",
+      iconBg: "bg-[#e9f2ff]",
+      Icon: Shield,
+      points: data[3].points,
+    },
+    {
+      id: "05",
+      title: data[4].title,
+      color: "#6b9f2f",
+      bg: "from-[#f3fae8] to-white",
+      border: "border-[#d7e8b7]",
+      iconBg: "bg-[#edf7dd]",
+      Icon: Leaf,
+      points: data[4].points,
+    },
+  ];
+};
 
 function FivePillarsSection() {
+  const { t } = useTranslation('programs');
+  const carePillars = getCarePillars(t);
+
   return (
     <section className="relative overflow-hidden bg-[#fbf8f1] py-20 sm:py-24 lg:py-28 border-y border-[#efe8da]">
       <div className="absolute inset-0 pointer-events-none">
@@ -255,15 +208,15 @@ function FivePillarsSection() {
           className="max-w-4xl"
         >
           <p className="inline-flex items-center gap-2 rounded-full border border-[var(--womb-forest)]/15 bg-white/80 px-4 py-2 text-[10px] font-black uppercase tracking-[0.24em] text-[var(--womb-forest)] shadow-sm backdrop-blur-sm">
-            Our Five Pillars
+            {t('fivePillars.badge')}
           </p>
           <h2 className="mt-5 text-4xl font-black tracking-tight text-gray-900 sm:text-5xl lg:text-[4rem]" style={{ lineHeight: 1.02 }}>
-            One Platform.
+            {t('fivePillars.title1')}
             <br />
-            <span className="text-transparent bg-clip-text bg-gradient-to-r from-[var(--womb-forest)] via-[#29ae79] to-[#67c79f] italic">Five Dimensions of Care.</span>
+            <span className="text-transparent bg-clip-text bg-gradient-to-r from-[var(--womb-forest)] via-[#29ae79] to-[#67c79f] italic">{t('fivePillars.title2')}</span>
           </h2>
           <p className="mt-6 max-w-3xl text-lg leading-relaxed text-gray-600 sm:text-xl">
-            WOMBTO18 Foundation operates as India's first integrated child health non-profit platform - uniting <strong className="font-black text-gray-900">32 programmes</strong> across five pillars, delivered through schools, hospitals, and communities. Serving <strong className="font-black text-gray-900">25 schools today</strong>.
+            {t('fivePillars.desc1')}<strong className="font-black text-gray-900">{t('fivePillars.descStrong1')}</strong>{t('fivePillars.desc2')}<strong className="font-black text-gray-900">{t('fivePillars.descStrong2')}</strong>{t('fivePillars.desc3')}
           </p>
         </motion.div>
 
@@ -317,7 +270,7 @@ function FivePillarsSection() {
                   <div className="relative z-10 flex min-h-[220px] flex-col">
                     <div className="flex items-start justify-between">
                       <p className="text-[11px] font-black uppercase tracking-[0.18em]" style={{ color: pillar.color }}>
-                        Pillar {pillar.id}
+                        {t('fivePillars.pillarLabel')} {pillar.id}
                       </p>
                       <motion.div
                         className={`flex h-14 w-14 items-center justify-center rounded-2xl ${pillar.iconBg} shadow-inner ring-1 ring-black/5`}
@@ -335,7 +288,7 @@ function FivePillarsSection() {
                     <div className="mt-4 h-1.5 w-16 rounded-full transition-all duration-500 group-hover:w-24" style={{ backgroundColor: pillar.color }} />
 
                     <ul className="mt-5 space-y-2.5">
-                      {pillar.points.map((point, pointIndex) => (
+                      {pillar.points.map((point: string, pointIndex: number) => (
                         <motion.li
                           key={point}
                           initial={{ opacity: 0, x: -10 }}
@@ -366,9 +319,9 @@ function FivePillarsSection() {
         >
           <div className="grid gap-6 md:grid-cols-3 md:items-center">
             {[
-              { value: "25", label: "Schools active" },
-              { value: "32", label: "Programmes" },
-              { value: "Preg-18", label: "Full lifecycle" },
+              { value: "25", label: t('fivePillars.stat1') },
+              { value: "32", label: t('fivePillars.stat2') },
+              { value: "Preg-18", label: t('fivePillars.stat3') },
             ].map((stat, index) => (
               <div key={stat.label} className="relative">
                 <p className="text-4xl font-black tracking-tight text-gray-900">{stat.value}</p>
@@ -379,7 +332,7 @@ function FivePillarsSection() {
           </div>
           <div className="mt-6 border-t border-[#ece5d8] pt-6">
             <p className="max-w-3xl text-lg leading-relaxed text-gray-600">
-              <span className="font-black text-[var(--womb-forest)]">India's first integrated child health platform</span> - from the moment of conception through adolescence, designed as connected infrastructure rather than isolated interventions.
+              <span className="font-black text-[var(--womb-forest)]">{t('fivePillars.bottomDesc1')}</span>{t('fivePillars.bottomDesc2')}
             </p>
           </div>
         </motion.div>
@@ -396,6 +349,7 @@ function formatINR(amount: number) {
 }
 
 function UpcomingCampsSection() {
+  const { t } = useTranslation('programs');
   const [camps, setCamps] = useState<any[]>([]);
 
   useEffect(() => {
@@ -436,14 +390,14 @@ function UpcomingCampsSection() {
           className="text-center mb-16 lg:mb-20"
         >
           <Badge className="bg-emerald-50 text-emerald-700 hover:bg-emerald-100 border-none px-5 py-2 rounded-full text-[10px] font-black uppercase tracking-[0.2em] shadow-sm mb-6">
-            <Tent className="w-4 h-4 mr-2" /> Impact Opportunities
+            <Tent className="w-4 h-4 mr-2" /> {t('upcomingCamps.badge')}
           </Badge>
           <h2 className="text-4xl md:text-5xl lg:text-6xl font-black text-slate-900 tracking-tighter mb-6">
-            Join the <span className="text-emerald-500">Mission.</span> <br />
-            Earn <span className="text-amber-500 italic">Impact Rewards.</span>
+            {t('upcomingCamps.title1')} <span className="text-emerald-500">{t('upcomingCamps.title1Span')}</span> <br />
+            {t('upcomingCamps.title2')} <span className="text-amber-500 italic">{t('upcomingCamps.title2Span')}</span>
           </h2>
           <p className="text-lg text-slate-500 max-w-2xl mx-auto font-medium leading-relaxed">
-            Our upcoming camps offer a chance to serve the community while earning rewards through our dynamic coin pool system.
+            {t('upcomingCamps.desc')}
           </p>
         </motion.div>
 
@@ -463,26 +417,26 @@ function UpcomingCampsSection() {
                 className="group relative flex justify-center w-full"
               >
                 <Card className="border border-[#e8dfce] bg-[#fcfbf9] shadow-[0_15px_40px_-15px_rgba(160,140,110,0.15)] rounded-[28px] hover:shadow-[0_25px_50px_-15px_rgba(160,140,110,0.25)] hover:-translate-y-1 transition-all duration-500 w-full max-w-[400px] flex flex-col p-6 mx-auto relative z-10 box-border h-full">
-                  
+
                   {/* Top Layer: Header + Image */}
                   <div className="flex gap-4 mb-4">
-                    
+
                     {/* Illustration Area */}
                     <div className={`relative w-[84px] h-[84px] flex-shrink-0 ${purpose.color || 'bg-emerald-50'} rounded-[20px] flex items-center justify-center group-hover:rotate-2 transition-transform duration-500 border border-white/50 shadow-inner`}>
                       <img src={purpose.img} alt={camp.purpose} className="w-[110%] h-[110%] object-contain relative z-10 -mt-1 drop-shadow-md" />
-                      
+
                       {/* Coins overlapping the image container */}
                       <div className="absolute -bottom-2 -right-3 bg-gradient-to-br from-amber-400 to-orange-500 text-white px-2.5 py-0.5 rounded-full shadow-lg shadow-orange-500/30 text-[10px] font-black flex items-center gap-1.5 border-[2px] border-white z-20">
                         <Coins size={12} strokeWidth={2.5} />
-                        {camp.totalCoinPool >= 1000 ? (camp.totalCoinPool/1000).toFixed(1).replace(/\.0$/, '') + 'k' : camp.totalCoinPool}
+                        {camp.totalCoinPool >= 1000 ? (camp.totalCoinPool / 1000).toFixed(1).replace(/\.0$/, '') + 'k' : camp.totalCoinPool}
                       </div>
                     </div>
-                    
+
                     {/* Header Info */}
                     <div className="flex flex-col flex-1 justify-center pt-1">
                       <div className="flex items-center flex-wrap gap-2 mb-1.5">
                         <span className={`text-[10px] font-black uppercase tracking-[0.15em] ${purpose.text || 'text-emerald-700'}`}>
-                          {camp.purpose === "HEALTH" ? "Good Camp" : `${camp.purpose} Camp`}
+                          {camp.purpose === "HEALTH" ? t('upcomingCamps.goodCamp') : `${camp.purpose} ${t('upcomingCamps.campSuffix')}`}
                         </span>
                         <span className="w-1 h-1 rounded-full bg-[#d6cfb8]" />
                         <span className="flex items-center text-[9px] font-bold text-emerald-700 bg-emerald-50 px-1.5 py-0.5 rounded uppercase tracking-wider border border-emerald-100 shadow-sm shadow-emerald-100/50">
@@ -499,35 +453,35 @@ function UpcomingCampsSection() {
 
                   {/* Description (Absorbs space naturally) */}
                   <div className="text-[13px] text-[#7a7161] font-medium leading-[1.6] line-clamp-2 mb-6 px-1 flex-1">
-                    {camp.description && camp.description.length > 15 ? camp.description : "Free health check-ups, basic consultations and essential health awareness for a stronger community."}
+                    {camp.description && camp.description.length > 15 ? camp.description : t('upcomingCamps.defaultDesc')}
                   </div>
 
                   {/* Wrapper for Stats & Footer to stick to bottom neatly */}
                   <div className="mt-auto flex flex-col gap-5">
                     {/* Compact Stats Row */}
                     <div className="flex justify-between items-center bg-white/60 backdrop-blur-sm rounded-[18px] border border-[#efe9dc] shadow-[0_2px_10px_-2px_rgba(160,140,110,0.06)] p-3.5">
-                      
+
                       {/* Location slice */}
                       <div className="flex items-center gap-3 pr-1 w-1/2">
                         <div className="w-8 h-8 rounded-[12px] bg-white flex items-center justify-center text-emerald-600 shadow-sm border border-[#efe9dc] flex-shrink-0 group-hover:text-emerald-500 transition-colors">
-                           <MapPin size={16} strokeWidth={2.5} />
+                          <MapPin size={16} strokeWidth={2.5} />
                         </div>
                         <div className="flex flex-col overflow-hidden w-full">
-                          <span className="text-[9px] font-bold text-stone-400 uppercase tracking-widest leading-none mb-1">Where</span>
+                          <span className="text-[9px] font-bold text-stone-400 uppercase tracking-widest leading-none mb-1">{t('upcomingCamps.where')}</span>
                           <span className="text-[12px] font-black text-stone-800 leading-none truncate w-full" title={camp.location}>{camp.location}</span>
                         </div>
                       </div>
-                      
+
                       {/* Separator line */}
                       <div className="w-[1px] h-8 bg-[#e8dfce]/60" />
-                      
+
                       {/* Date slice */}
                       <div className="flex items-center gap-3 pl-3 w-1/2">
                         <div className="w-8 h-8 rounded-[12px] bg-white flex items-center justify-center text-blue-600 shadow-sm border border-[#efe9dc] flex-shrink-0 group-hover:text-blue-500 transition-colors">
-                           <Calendar size={16} strokeWidth={2.5} />
+                          <Calendar size={16} strokeWidth={2.5} />
                         </div>
                         <div className="flex flex-col">
-                          <span className="text-[9px] font-bold text-stone-400 uppercase tracking-widest leading-none mb-1">When</span>
+                          <span className="text-[9px] font-bold text-stone-400 uppercase tracking-widest leading-none mb-1">{t('upcomingCamps.when')}</span>
                           <span className="text-[12px] font-black text-stone-800 leading-none">{campDate.toLocaleDateString('en-GB', { day: 'numeric', month: 'short' })}</span>
                         </div>
                       </div>
@@ -536,14 +490,14 @@ function UpcomingCampsSection() {
 
                     {/* Footer Group */}
                     <div className="flex items-center justify-between px-1">
-                       <div className="flex items-center gap-2 bg-purple-50/60 text-purple-700 px-3 py-2 rounded-[14px] border border-purple-100/40">
-                         <Users size={14} strokeWidth={2.5} className="text-purple-600" />
-                         <span className="text-[12px] font-bold">{participants} volunteers</span>
-                       </div>
+                      <div className="flex items-center gap-2 bg-purple-50/60 text-purple-700 px-3 py-2 rounded-[14px] border border-purple-100/40">
+                        <Users size={14} strokeWidth={2.5} className="text-purple-600" />
+                        <span className="text-[12px] font-bold">{participants} {t('upcomingCamps.volunteers')}</span>
+                      </div>
 
                       <Link to="/volunteer/login">
                         <Button className="rounded-xl bg-[#2d2926] hover:bg-[#1a1714] text-white font-bold text-[13px] h-10 px-5 transition-all shadow-lg group-hover:scale-105 active:scale-95 border border-transparent hover:border-[#423c37] flex items-center gap-2">
-                          Join Camp <ArrowRight size={14} strokeWidth={3} />
+                          {t('upcomingCamps.joinCamp')} <ArrowRight size={14} strokeWidth={3} />
                         </Button>
                       </Link>
                     </div>
@@ -560,11 +514,13 @@ function UpcomingCampsSection() {
 }
 
 export function ServicesPage() {
+  const { t } = useTranslation('programs');
+  const programs = getPrograms(t);
   const [activeCategory, setActiveCategory] = useState("All Programs");
 
   const filteredPrograms = activeCategory === "All Programs"
     ? programs
-    : programs.filter(p => p.category === activeCategory);
+    : programs.filter((p: any) => p.category === activeCategory);
 
   return (
     <>
@@ -582,14 +538,14 @@ export function ServicesPage() {
             className="flex flex-col items-center text-center w-full max-w-4xl mx-auto"
           >
             <p className="inline-flex items-center gap-2 bg-[var(--womb-forest)]/10 text-[var(--womb-forest)] px-5 py-2.5 rounded-full text-[10px] sm:text-xs font-bold tracking-widest uppercase border border-[var(--womb-forest)]/20 mb-4 sm:mb-6 shadow-sm">
-              Our Programs
+              {t('hero.badge')}
             </p>
             <h1 className="text-5xl sm:text-6xl md:text-[4.5rem] text-gray-900 mb-6" style={{ fontWeight: 900, lineHeight: 1.05, letterSpacing: "-0.01em" }}>
-              Comprehensive Care at Every <br className="hidden sm:block" />
-              <span className="text-transparent bg-clip-text bg-gradient-to-r from-[var(--womb-forest)] to-[#36c276] drop-shadow-sm">Stage of Childhood.</span>
+              {t('hero.title1')}<br className="hidden sm:block" />
+              <span className="text-transparent bg-clip-text bg-gradient-to-r from-[var(--womb-forest)] to-[#36c276] drop-shadow-sm">{t('hero.title2')}</span>
             </h1>
             <p className="text-lg md:text-xl text-gray-600 max-w-3xl leading-relaxed">
-              From prenatal care to preparing young adults for life, our programs ensure no child is left behind. Choose a program to support and track your impact in real time.
+              {t('hero.desc')}
             </p>
           </motion.div>
         </div>
@@ -603,17 +559,17 @@ export function ServicesPage() {
 
           {/* Category Filters */}
           <div className="flex items-center justify-center sm:justify-start gap-3 sm:gap-4 flex-wrap mb-10">
-            <span className="text-sm text-gray-400 font-bold uppercase tracking-wider hidden sm:block mr-2">Categories:</span>
+            <span className="text-sm text-gray-400 font-bold uppercase tracking-wider hidden sm:block mr-2">{t('programsSection.categoriesLabel')}</span>
             {["All Programs", "Health", "Education", "Nutrition", "Community"].map((cat) => (
               <Badge
                 key={cat}
                 onClick={() => setActiveCategory(cat)}
                 className={`cursor-pointer px-4 py-2 transition-all duration-300 font-semibold shadow-sm hover:shadow-md ${activeCategory === cat
-                    ? "bg-[var(--womb-forest)] text-white hover:bg-[var(--womb-forest)]/90 scale-105"
-                    : "bg-white text-gray-600 border border-gray-200 hover:border-[var(--womb-forest)]/30 hover:text-[var(--womb-forest)]"
+                  ? "bg-[var(--womb-forest)] text-white hover:bg-[var(--womb-forest)]/90 scale-105"
+                  : "bg-white text-gray-600 border border-gray-200 hover:border-[var(--womb-forest)]/30 hover:text-[var(--womb-forest)]"
                   }`}
               >
-                {cat}
+                {t(`programsSection.categories.${cat}`) as string}
               </Badge>
             ))}
           </div>
@@ -677,7 +633,7 @@ export function ServicesPage() {
 
                         {/* Features */}
                         <div className="grid grid-cols-2 gap-1 mb-4 bg-gray-50/50 p-2.5 rounded-xl border border-gray-100 group-hover:bg-white group-hover:border-[var(--womb-forest)]/10 transition-colors">
-                          {program.features.map((f) => (
+                          {program.features.map((f: string) => (
                             <div key={f} className="flex items-start gap-1.5 text-[11px] text-gray-600 font-medium">
                               <div className="h-1.5 w-1.5 rounded-full bg-[var(--womb-forest)]/40 group-hover:bg-[var(--womb-forest)] shrink-0 mt-1 transition-colors" />
                               <span className="leading-tight">{f}</span>
@@ -690,7 +646,7 @@ export function ServicesPage() {
                           <span className="text-[10px] text-[var(--journey-saffron)] font-bold bg-[var(--journey-saffron)]/10 px-2.5 py-1 rounded-md leading-none uppercase tracking-wider">🎯 {program.target2026}</span>
                           <Link to="/donate">
                             <Button size="sm" className="bg-[var(--womb-forest)] hover:bg-[#155e33] h-8 px-4 text-[11px] font-bold rounded-lg shadow hover:shadow-md transition-all group-hover:scale-105">
-                              <Heart className="h-3 w-3 mr-1.5" /> Donate Now
+                              <Heart className="h-3 w-3 mr-1.5" /> {t('programsSection.donateNow')}
                             </Button>
                           </Link>
                         </div>
@@ -719,11 +675,11 @@ export function ServicesPage() {
             className="text-center mb-12 sm:mb-24"
           >
             <p className="inline-flex items-center gap-2 bg-indigo-500/10 text-indigo-600 px-5 py-2.5 rounded-full text-[10px] sm:text-xs font-bold tracking-widest uppercase border border-indigo-500/20 mb-4 sm:mb-6 shadow-sm">
-              Care Continuum
+              {t('careContinuum.badge')}
             </p>
-            <h2 className="text-[2.2rem] sm:text-4xl md:text-5xl font-extrabold text-gray-900 mb-4 sm:mb-6 drop-shadow-sm tracking-tight leading-[0.95]">The Lifelong Health Journey</h2>
+            <h2 className="text-[2.2rem] sm:text-4xl md:text-5xl font-extrabold text-gray-900 mb-4 sm:mb-6 drop-shadow-sm tracking-tight leading-[0.95]">{t('careContinuum.title')}</h2>
             <p className="text-base sm:text-lg md:text-xl text-gray-600 max-w-3xl mx-auto leading-relaxed">
-              From the very first day to young adulthood, we ensure no critical health milestone is missed through our <strong className="text-gray-900 font-bold bg-indigo-50 px-1 rounded">integrated multi-stage approach</strong>.
+              {t('careContinuum.desc1')}<strong className="text-gray-900 font-bold bg-indigo-50 px-1 rounded">{t('careContinuum.descStrong')}</strong>{t('careContinuum.desc2')}
             </p>
           </motion.div>
 
@@ -734,10 +690,10 @@ export function ServicesPage() {
                   <div className="flex h-11 w-11 items-center justify-center rounded-2xl bg-[var(--womb-forest)]/10 text-[var(--womb-forest)]">
                     <Baby className="h-5 w-5" />
                   </div>
-                  <Badge className="bg-[var(--womb-forest)] text-white hover:bg-[var(--womb-forest)]/90 border-none shadow-sm font-bold px-3 py-1">0 - 18 Months</Badge>
+                  <Badge className="bg-[var(--womb-forest)] text-white hover:bg-[var(--womb-forest)]/90 border-none shadow-sm font-bold px-3 py-1">{t('careContinuum.stage1.badge')}</Badge>
                 </div>
-                <h3 className="text-[1.75rem] font-extrabold text-gray-900 tracking-tight leading-none">Foundation of Life</h3>
-                <p className="mt-3 text-[0.98rem] text-gray-600 leading-7 font-medium">Critical early protection with BCG, Polio, DPT, Hepatitis B, and Measles vaccines. A robust start for a healthy life.</p>
+                <h3 className="text-[1.75rem] font-extrabold text-gray-900 tracking-tight leading-none">{t('careContinuum.stage1.title')}</h3>
+                <p className="mt-3 text-[0.98rem] text-gray-600 leading-7 font-medium">{t('careContinuum.stage1.desc')}</p>
               </div>
 
               <div className="rounded-[1.75rem] border border-blue-100 bg-gradient-to-br from-white to-blue-50/40 p-5 shadow-[0_12px_35px_-20px_rgba(59,130,246,0.25)]">
@@ -745,10 +701,10 @@ export function ServicesPage() {
                   <div className="flex h-11 w-11 items-center justify-center rounded-2xl bg-blue-50 text-blue-600">
                     <Shield className="h-5 w-5" />
                   </div>
-                  <Badge className="bg-blue-600 text-white hover:bg-blue-700 border-none shadow-sm font-bold px-3 py-1">5 - 16 Years</Badge>
+                  <Badge className="bg-blue-600 text-white hover:bg-blue-700 border-none shadow-sm font-bold px-3 py-1">{t('careContinuum.stage2.badge')}</Badge>
                 </div>
-                <h3 className="text-[1.75rem] font-extrabold text-gray-900 tracking-tight leading-none">School-Age Immunity</h3>
-                <p className="mt-3 text-[0.98rem] text-gray-600 leading-7 font-medium">DPT Boosters, Typhoid, HPV, and Tdap. Protecting children as they enter school and preparing adolescents for adulthood safely.</p>
+                <h3 className="text-[1.75rem] font-extrabold text-gray-900 tracking-tight leading-none">{t('careContinuum.stage2.title')}</h3>
+                <p className="mt-3 text-[0.98rem] text-gray-600 leading-7 font-medium">{t('careContinuum.stage2.desc')}</p>
               </div>
 
               <div className="rounded-[1.75rem] border border-indigo-100 bg-gradient-to-br from-white to-indigo-50/40 p-5 shadow-[0_12px_35px_-20px_rgba(99,102,241,0.25)]">
@@ -756,33 +712,33 @@ export function ServicesPage() {
                   <div className="flex h-11 w-11 items-center justify-center rounded-2xl bg-indigo-50 text-indigo-600">
                     <Heart className="h-5 w-5" />
                   </div>
-                  <Badge className="bg-indigo-600 text-white hover:bg-indigo-700 border-none shadow-sm font-bold px-3 py-1">0 - 18 Years</Badge>
+                  <Badge className="bg-indigo-600 text-white hover:bg-indigo-700 border-none shadow-sm font-bold px-3 py-1">{t('careContinuum.stage3.badge')}</Badge>
                 </div>
-                <h3 className="text-[1.7rem] font-extrabold text-gray-900 tracking-tight leading-none">Mental Wellness</h3>
+                <h3 className="text-[1.7rem] font-extrabold text-gray-900 tracking-tight leading-none">{t('careContinuum.stage3.title')}</h3>
 
                 <div className="mt-5 space-y-3.5">
                   <div className="rounded-[1.25rem] border border-indigo-100 bg-indigo-50/70 p-4">
-                    <div className="mb-3 inline-flex rounded-full bg-white px-3 py-1 text-[11px] font-bold text-indigo-600 shadow-sm">Prenatal</div>
-                    <p className="text-[0.95rem] font-bold leading-snug text-gray-900">Maternal mental health, bonding, stress reduction</p>
-                    <p className="mt-2 text-xs leading-6 text-gray-600">Parent handbooks, antenatal class integration, WhatsApp module</p>
+                    <div className="mb-3 inline-flex rounded-full bg-white px-3 py-1 text-[11px] font-bold text-indigo-600 shadow-sm">{t('careContinuum.stage3.prenatalBadge')}</div>
+                    <p className="text-[0.95rem] font-bold leading-snug text-gray-900">{t('careContinuum.stage3.prenatalTitle')}</p>
+                    <p className="mt-2 text-xs leading-6 text-gray-600">{t('careContinuum.stage3.prenatalDesc')}</p>
                   </div>
 
                   <div className="rounded-[1.25rem] border border-[#dbeadf] bg-[#f0faf4]/80 p-4">
-                    <div className="mb-3 inline-flex rounded-full bg-white px-3 py-1 text-[11px] font-bold text-[var(--womb-forest)] shadow-sm">0 - 5 yrs</div>
-                    <p className="text-[0.95rem] font-bold leading-snug text-gray-900">Early attachment, emotional security, sensory play</p>
-                    <p className="mt-2 text-xs leading-6 text-gray-600">Parent workshops, anganwadi tie-ups, illustrated booklets</p>
+                    <div className="mb-3 inline-flex rounded-full bg-white px-3 py-1 text-[11px] font-bold text-[var(--womb-forest)] shadow-sm">{t('careContinuum.stage3.age05Badge')}</div>
+                    <p className="text-[0.95rem] font-bold leading-snug text-gray-900">{t('careContinuum.stage3.age05Title')}</p>
+                    <p className="mt-2 text-xs leading-6 text-gray-600">{t('careContinuum.stage3.age05Desc')}</p>
                   </div>
 
                   <div className="rounded-[1.25rem] border border-blue-100 bg-blue-50/70 p-4">
-                    <div className="mb-3 inline-flex rounded-full bg-white px-3 py-1 text-[11px] font-bold text-blue-600 shadow-sm">6 - 12 yrs</div>
-                    <p className="text-[0.95rem] font-bold leading-snug text-gray-900">SEL, classroom emotional regulation, peer relationships</p>
-                    <p className="mt-2 text-xs leading-6 text-gray-600">School-based modules, teacher training, interactive group sessions</p>
+                    <div className="mb-3 inline-flex rounded-full bg-white px-3 py-1 text-[11px] font-bold text-blue-600 shadow-sm">{t('careContinuum.stage3.age612Badge')}</div>
+                    <p className="text-[0.95rem] font-bold leading-snug text-gray-900">{t('careContinuum.stage3.age612Title')}</p>
+                    <p className="mt-2 text-xs leading-6 text-gray-600">{t('careContinuum.stage3.age612Desc')}</p>
                   </div>
 
                   <div className="rounded-[1.25rem] border border-amber-100 bg-amber-50/70 p-4">
-                    <div className="mb-3 inline-flex rounded-full bg-white px-3 py-1 text-[11px] font-bold text-amber-600 shadow-sm">13 - 18 yrs</div>
-                    <p className="text-[0.95rem] font-bold leading-snug text-gray-900">Identity formation, digital wellness, career anxiety</p>
-                    <p className="mt-2 text-xs leading-6 text-gray-600">School counsellor training, peer mentor programme, parent sessions</p>
+                    <div className="mb-3 inline-flex rounded-full bg-white px-3 py-1 text-[11px] font-bold text-amber-600 shadow-sm">{t('careContinuum.stage3.age1318Badge')}</div>
+                    <p className="text-[0.95rem] font-bold leading-snug text-gray-900">{t('careContinuum.stage3.age1318Title')}</p>
+                    <p className="mt-2 text-xs leading-6 text-gray-600">{t('careContinuum.stage3.age1318Desc')}</p>
                   </div>
                 </div>
               </div>
@@ -826,9 +782,9 @@ export function ServicesPage() {
                   <div className="bg-white p-8 rounded-[2rem] shadow-[0_15px_40px_-15px_rgba(0,0,0,0.08)] border border-gray-100 hover:shadow-[0_30px_60px_-15px_rgba(29,110,63,0.15)] hover:border-[var(--womb-forest)]/30 transition-all duration-500 relative overflow-hidden group">
                     <div className="absolute -inset-0.5 rounded-[2rem] bg-gradient-to-br from-[var(--womb-forest)]/10 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-700 pointer-events-none blur-xl" />
                     <div className="relative z-10">
-                      <Badge className="bg-[var(--womb-forest)] text-white hover:bg-[var(--womb-forest)]/90 mb-5 border-none shadow-sm font-bold px-3 py-1">0 - 18 Months</Badge>
-                      <h3 className="text-2xl font-extrabold text-gray-900 mb-3 hover:text-[var(--womb-forest)] transition-colors tracking-tight">Foundation of Life</h3>
-                      <p className="text-gray-600 leading-relaxed font-medium">Critical early protection with BCG, Polio, DPT, Hepatitis B, and Measles vaccines. A robust start for a healthy life.</p>
+                      <Badge className="bg-[var(--womb-forest)] text-white hover:bg-[var(--womb-forest)]/90 mb-5 border-none shadow-sm font-bold px-3 py-1">{t('careContinuum.stage1.badge')}</Badge>
+                      <h3 className="text-2xl font-extrabold text-gray-900 mb-3 hover:text-[var(--womb-forest)] transition-colors tracking-tight">{t('careContinuum.stage1.title')}</h3>
+                      <p className="text-gray-600 leading-relaxed font-medium">{t('careContinuum.stage1.desc')}</p>
                     </div>
                   </div>
                 </motion.div>
@@ -846,9 +802,9 @@ export function ServicesPage() {
                   <div className="bg-white p-8 rounded-[2rem] shadow-[0_15px_40px_-15px_rgba(0,0,0,0.08)] border border-gray-100 hover:shadow-[0_30px_60px_-15px_rgba(59,130,246,0.15)] hover:border-blue-500/30 transition-all duration-500 relative overflow-hidden group md:text-right">
                     <div className="absolute -inset-0.5 rounded-[2rem] bg-gradient-to-br from-blue-500/10 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-700 pointer-events-none blur-xl" />
                     <div className="relative z-10 flex flex-col items-start md:items-end">
-                      <Badge className="bg-blue-600 text-white hover:bg-blue-700 mb-5 border-none shadow-sm font-bold px-3 py-1">5 - 16 Years</Badge>
-                      <h3 className="text-2xl font-extrabold text-gray-900 mb-3 hover:text-blue-600 transition-colors tracking-tight">School-Age Immunity</h3>
-                      <p className="text-gray-600 leading-relaxed font-medium text-left md:text-right">DPT Boosters, Typhoid, HPV, and Tdap. Protecting children as they enter schools and preparing adolescents for adulthood safely.</p>
+                      <Badge className="bg-blue-600 text-white hover:bg-blue-700 mb-5 border-none shadow-sm font-bold px-3 py-1">{t('careContinuum.stage2.badge')}</Badge>
+                      <h3 className="text-2xl font-extrabold text-gray-900 mb-3 hover:text-blue-600 transition-colors tracking-tight">{t('careContinuum.stage2.title')}</h3>
+                      <p className="text-gray-600 leading-relaxed font-medium text-left md:text-right">{t('careContinuum.stage2.desc')}</p>
                     </div>
                   </div>
                 </motion.div>
@@ -892,39 +848,39 @@ export function ServicesPage() {
                   <div className="bg-white p-8 rounded-[2rem] shadow-[0_15px_40px_-15px_rgba(0,0,0,0.08)] border border-gray-100 hover:shadow-[0_30px_60px_-15px_rgba(99,102,241,0.15)] hover:border-indigo-500/30 transition-all duration-500 relative overflow-hidden group">
                     <div className="absolute -inset-0.5 rounded-[2rem] bg-gradient-to-br from-indigo-500/10 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-700 pointer-events-none blur-xl" />
                     <div className="relative z-10">
-                      <Badge className="bg-indigo-600 text-white hover:bg-indigo-700 mb-5 border-none shadow-sm font-bold px-3 py-1">0 - 18 Years</Badge>
-                      <h3 className="text-2xl font-extrabold text-gray-900 mb-5 hover:text-indigo-600 transition-colors tracking-tight">Mental Wellness</h3>
+                      <Badge className="bg-indigo-600 text-white hover:bg-indigo-700 mb-5 border-none shadow-sm font-bold px-3 py-1">{t('careContinuum.stage3.badge')}</Badge>
+                      <h3 className="text-2xl font-extrabold text-gray-900 mb-5 hover:text-indigo-600 transition-colors tracking-tight">{t('careContinuum.stage3.title')}</h3>
 
                       <div className="space-y-4">
                         <div className="bg-indigo-50/70 p-4 rounded-xl border border-indigo-100/50 hover:bg-indigo-100/50 transition-colors flex gap-4 items-center">
-                          <div className="h-10 px-3 rounded-full bg-white shadow-sm flex items-center justify-center text-indigo-600 font-bold text-xs shrink-0 whitespace-nowrap">Prenatal</div>
+                          <div className="h-10 px-3 rounded-full bg-white shadow-sm flex items-center justify-center text-indigo-600 font-bold text-xs shrink-0 whitespace-nowrap">{t('careContinuum.stage3.prenatalBadge')}</div>
                           <div>
-                            <p className="font-bold text-gray-900 text-[0.9rem] leading-tight mb-1">Maternal mental health, bonding, stress reduction</p>
-                            <p className="text-xs text-gray-600 leading-relaxed">Parent handbooks, antenatal class integration, WhatsApp module</p>
+                            <p className="font-bold text-gray-900 text-[0.9rem] leading-tight mb-1">{t('careContinuum.stage3.prenatalTitle')}</p>
+                            <p className="text-xs text-gray-600 leading-relaxed">{t('careContinuum.stage3.prenatalDesc')}</p>
                           </div>
                         </div>
 
-                        <div className="bg-[#f0faf4]/70 p-4 rounded-xl border border-[#a7e8c3]/30 hover:bg-[#e4fc/70] transition-colors flex gap-4 items-center">
-                          <div className="h-10 px-3 rounded-full bg-white shadow-sm flex items-center justify-center text-[var(--womb-forest)] font-bold text-xs shrink-0 whitespace-nowrap">0–5 yrs</div>
+                        <div className="bg-[#f0faf4]/70 p-4 rounded-xl border border-[#a7e8c3]/30 hover:bg-[#f0faf4]/80 transition-colors flex gap-4 items-center">
+                          <div className="h-10 px-3 rounded-full bg-white shadow-sm flex items-center justify-center text-[var(--womb-forest)] font-bold text-xs shrink-0 whitespace-nowrap">{t('careContinuum.stage3.age05Badge')}</div>
                           <div>
-                            <p className="font-bold text-gray-900 text-[0.9rem] leading-tight mb-1">Early attachment, emotional security, sensory play</p>
-                            <p className="text-xs text-gray-600 leading-relaxed">Parent workshops, anganwadi tie-ups, illustrated booklets</p>
+                            <p className="font-bold text-gray-900 text-[0.9rem] leading-tight mb-1">{t('careContinuum.stage3.age05Title')}</p>
+                            <p className="text-xs text-gray-600 leading-relaxed">{t('careContinuum.stage3.age05Desc')}</p>
                           </div>
                         </div>
 
                         <div className="bg-blue-50/70 p-4 rounded-xl border border-blue-100/50 hover:bg-blue-100/50 transition-colors flex gap-4 items-center">
-                          <div className="h-10 px-3 rounded-full bg-white shadow-sm flex items-center justify-center text-blue-600 font-bold text-xs shrink-0 whitespace-nowrap">6–12 yrs</div>
+                          <div className="h-10 px-3 rounded-full bg-white shadow-sm flex items-center justify-center text-blue-600 font-bold text-xs shrink-0 whitespace-nowrap">{t('careContinuum.stage3.age612Badge')}</div>
                           <div>
-                            <p className="font-bold text-gray-900 text-[0.9rem] leading-tight mb-1">SEL, classroom emotional regulation, peer relationships</p>
-                            <p className="text-xs text-gray-600 leading-relaxed">School-based modules, teacher training, interactive group sessions</p>
+                            <p className="font-bold text-gray-900 text-[0.9rem] leading-tight mb-1">{t('careContinuum.stage3.age612Title')}</p>
+                            <p className="text-xs text-gray-600 leading-relaxed">{t('careContinuum.stage3.age612Desc')}</p>
                           </div>
                         </div>
 
                         <div className="bg-amber-50/70 p-4 rounded-xl border border-amber-100/50 hover:bg-amber-100/50 transition-colors flex gap-4 items-center">
-                          <div className="h-10 px-3 rounded-full bg-white shadow-sm flex items-center justify-center text-amber-600 font-bold text-xs shrink-0 whitespace-nowrap">13–18 yrs</div>
+                          <div className="h-10 px-3 rounded-full bg-white shadow-sm flex items-center justify-center text-amber-600 font-bold text-xs shrink-0 whitespace-nowrap">{t('careContinuum.stage3.age1318Badge')}</div>
                           <div>
-                            <p className="font-bold text-gray-900 text-[0.9rem] leading-tight mb-1">Identity formation, digital wellness, career anxiety</p>
-                            <p className="text-xs text-gray-600 leading-relaxed">School counsellor training, peer mentor programme, parent sessions</p>
+                            <p className="font-bold text-gray-900 text-[0.9rem] leading-tight mb-1">{t('careContinuum.stage3.age1318Title')}</p>
+                            <p className="text-xs text-gray-600 leading-relaxed">{t('careContinuum.stage3.age1318Desc')}</p>
                           </div>
                         </div>
                       </div>
@@ -952,13 +908,13 @@ export function ServicesPage() {
             className="text-center mb-16 lg:mb-24"
           >
             <p className="inline-flex items-center gap-2 bg-[var(--womb-forest)]/10 text-[var(--womb-forest)] px-5 py-2.5 rounded-full text-[10px] sm:text-xs font-bold tracking-widest uppercase border border-[var(--womb-forest)]/20 mb-6 shadow-sm">
-              Flagship Initiatives
+              {t('flagship.badge')}
             </p>
             <h2 className="text-4xl md:text-5xl lg:text-[3.5rem] font-black text-gray-900 mb-6 tracking-tight drop-shadow-sm leading-tight">
-              Transforming <span className="text-transparent bg-clip-text bg-gradient-to-r from-[var(--womb-forest)] to-[#36c276]">Health & Immunity.</span>
+              {t('flagship.title1')}<span className="text-transparent bg-clip-text bg-gradient-to-r from-[var(--womb-forest)] to-[#36c276]">{t('flagship.title2')}</span>
             </h2>
             <p className="text-lg md:text-xl text-gray-600 max-w-3xl mx-auto leading-relaxed">
-              Our award-winning programs designed to deliver comprehensive healthcare inside schools and ensure zero missed vaccinations across communities.
+              {t('flagship.desc')}
             </p>
           </motion.div>
 
@@ -978,25 +934,25 @@ export function ServicesPage() {
                   <div className="absolute inset-0 bg-[var(--womb-forest)]/20 blur-xl rounded-full" />
                   <Stethoscope className="w-8 h-8 text-[var(--womb-forest)] relative z-10" />
                 </div>
-                <h3 className="text-3xl md:text-4xl font-extrabold text-gray-900 mb-4 tracking-tight leading-tight">Integrated <br className="hidden lg:block" />School Health</h3>
-                <Badge className="w-max bg-[var(--journey-saffron)]/10 text-[var(--journey-saffron)] border-none px-4 py-1.5 font-bold mb-6 text-xs uppercase tracking-wider">Flagship Programme</Badge>
+                <h3 className="text-3xl md:text-4xl font-extrabold text-gray-900 mb-4 tracking-tight leading-tight">{t('flagship.integratedSchoolHealth.title1')}<br className="hidden lg:block" />{t('flagship.integratedSchoolHealth.title2')}</h3>
+                <Badge className="w-max bg-[var(--journey-saffron)]/10 text-[var(--journey-saffron)] border-none px-4 py-1.5 font-bold mb-6 text-xs uppercase tracking-wider">{t('flagship.integratedSchoolHealth.badge')}</Badge>
 
                 <p className="text-gray-600 leading-relaxed mb-8">
-                  India's first integrated school health delivery model, designed for phased expansion across partner schools. Covering physical, mental, dental, nutritional, and environmental wellness across the entire school year.
+                  {t('flagship.integratedSchoolHealth.desc')}
                 </p>
 
                 <div className="bg-gray-50/80 rounded-2xl p-5 border border-gray-100 space-y-3 shadow-sm hover:shadow-md transition-shadow">
                   <div className="flex items-center gap-3 group/item">
                     <div className="w-8 h-8 rounded-full bg-blue-100 text-blue-600 flex items-center justify-center shrink-0 group-hover/item:scale-110 group-hover/item:bg-blue-600 group-hover/item:text-white transition-all"><Users className="w-4 h-4" /></div>
-                    <span className="text-sm font-semibold text-gray-800">School Health Coordinator</span>
+                    <span className="text-sm font-semibold text-gray-800">{(t('flagship.integratedSchoolHealth.items', { returnObjects: true }) as string[])[0]}</span>
                   </div>
                   <div className="flex items-center gap-3 group/item">
                     <div className="w-8 h-8 rounded-full bg-green-100 text-[var(--womb-forest)] flex items-center justify-center shrink-0 group-hover/item:scale-110 group-hover/item:bg-[var(--womb-forest)] group-hover/item:text-white transition-all"><Activity className="w-4 h-4" /></div>
-                    <span className="text-sm font-semibold text-gray-800">Live Wellness Dashboard</span>
+                    <span className="text-sm font-semibold text-gray-800">{(t('flagship.integratedSchoolHealth.items', { returnObjects: true }) as string[])[1]}</span>
                   </div>
                   <div className="flex items-center gap-3 group/item">
                     <div className="w-8 h-8 rounded-full bg-purple-100 text-purple-600 flex items-center justify-center shrink-0 group-hover/item:scale-110 group-hover/item:bg-purple-600 group-hover/item:text-white transition-all"><CheckCircle className="w-4 h-4" /></div>
-                    <span className="text-sm font-semibold text-gray-800">Annual Health Report</span>
+                    <span className="text-sm font-semibold text-gray-800">{(t('flagship.integratedSchoolHealth.items', { returnObjects: true }) as string[])[2]}</span>
                   </div>
                 </div>
               </div>
@@ -1006,17 +962,10 @@ export function ServicesPage() {
                 <div className="bg-gradient-to-b from-[#f0faf4]/50 to-white rounded-3xl p-6 md:p-8 border border-[#a7e8c3]/40 shadow-sm hover:shadow-md transition-all hover:-translate-y-1">
                   <div className="flex items-center gap-3 mb-6">
                     <div className="bg-white p-2.5 rounded-xl shadow-sm border border-gray-100 text-[var(--womb-forest)]"><Activity className="w-5 h-5" /></div>
-                    <h4 className="font-extrabold text-gray-900 text-lg">On-Campus Health</h4>
+                    <h4 className="font-extrabold text-gray-900 text-lg">{t('flagship.integratedSchoolHealth.col1Title')}</h4>
                   </div>
                   <ul className="space-y-4">
-                    {[
-                      "Annual screenings: vision, dental, BMI, hearing, posture",
-                      "Doctor-led health camps: paediatrics, dermatology, orthopaedics",
-                      "WASH education: water, sanitation and hygiene awareness",
-                      "Nutritional assessment & healthy eating campaigns",
-                      "First aid and CPR training for staff and senior students",
-                      "Daily health monitoring via Student Wellness App"
-                    ].map((item, i) => (
+                    {(t('flagship.integratedSchoolHealth.col1Items', { returnObjects: true }) as string[]).map((item, i) => (
                       <li key={i} className="flex items-start gap-3 group/li">
                         <div className="mt-1 w-5 h-5 rounded-full bg-green-100 flex items-center justify-center shrink-0 group-hover/li:bg-[var(--womb-forest)] transition-colors"><CheckCircle className="w-3 h-3 text-[var(--womb-forest)] group-hover/li:text-white transition-colors" /></div>
                         <span className="text-[0.9rem] text-gray-700 font-medium leading-snug group-hover/li:text-gray-900 transition-colors">{item}</span>
@@ -1029,17 +978,10 @@ export function ServicesPage() {
                 <div className="bg-gradient-to-b from-[#f4f7fe]/50 to-white rounded-3xl p-6 md:p-8 border border-blue-200/50 shadow-sm hover:shadow-md transition-all hover:-translate-y-1 mt-6 md:mt-12">
                   <div className="flex items-center gap-3 mb-6">
                     <div className="bg-white p-2.5 rounded-xl shadow-sm border border-gray-100 text-blue-600"><Leaf className="w-5 h-5" /></div>
-                    <h4 className="font-extrabold text-gray-900 text-lg">Wellness & Sustainability</h4>
+                    <h4 className="font-extrabold text-gray-900 text-lg">{t('flagship.integratedSchoolHealth.col2Title')}</h4>
                   </div>
                   <ul className="space-y-4">
-                    {[
-                      "Mental wellness and Social Emotional Learning (SEL)",
-                      "Green Cohort: every student plants a geo-tagged tree",
-                      "Emergency preparedness — NDRF, fire, earthquake drills",
-                      "Adolescent health and menstrual hygiene workshops",
-                      "Parent engagement sessions — quarterly health briefings",
-                      "Annual School Health Report & Compliance Certificate"
-                    ].map((item, i) => (
+                    {(t('flagship.integratedSchoolHealth.col2Items', { returnObjects: true }) as string[]).map((item, i) => (
                       <li key={i} className="flex items-start gap-3 group/li">
                         <div className="mt-1 w-5 h-5 rounded-full bg-blue-100 flex items-center justify-center shrink-0 group-hover/li:bg-blue-600 transition-colors"><CheckCircle className="w-3 h-3 text-blue-600 group-hover/li:text-white transition-colors" /></div>
                         <span className="text-[0.9rem] text-gray-700 font-medium leading-snug group-hover/li:text-gray-900 transition-colors">{item}</span>
@@ -1064,9 +1006,9 @@ export function ServicesPage() {
                 <div className="absolute inset-0 bg-indigo-500/20 blur-xl rounded-full" />
                 <Syringe className="w-8 h-8 text-indigo-600 relative z-10" />
               </div>
-              <h3 className="text-3xl md:text-4xl font-extrabold text-gray-900 mb-4 tracking-tight"><span className="text-transparent bg-clip-text bg-gradient-to-r from-indigo-600 to-purple-600">Vaccine Reminder</span> Programme</h3>
+              <h3 className="text-3xl md:text-4xl font-extrabold text-gray-900 mb-4 tracking-tight"><span className="text-transparent bg-clip-text bg-gradient-to-r from-indigo-600 to-purple-600">{t('flagship.vaccineReminder.title1')}</span>{t('flagship.vaccineReminder.title2')}</h3>
               <p className="text-lg text-gray-600 max-w-3xl mx-auto font-medium leading-relaxed">
-                For every scheduled vaccine in a child's immunisation calendar (National Immunisation Schedule + IAP + ACVIP guidelines), parents receive <strong className="text-indigo-600 bg-indigo-50 px-2 py-0.5 rounded-md font-bold text-[0.95em]">9 reminders across 3 channels</strong> ensuring no critical dose is missed.
+                {t('flagship.vaccineReminder.desc1')}<strong className="text-indigo-600 bg-indigo-50 px-2 py-0.5 rounded-md font-bold text-[0.95em]">{t('flagship.vaccineReminder.descStrong')}</strong>{t('flagship.vaccineReminder.desc2')}
               </p>
             </motion.div>
 
@@ -1084,7 +1026,7 @@ export function ServicesPage() {
                 <div className="flex items-center justify-between mb-8 relative z-10">
                   <div className="flex flex-col">
                     <span className="text-purple-600 font-black text-2xl tracking-tight">SMS</span>
-                    <span className="text-[10px] font-bold text-purple-400 uppercase tracking-widest bg-purple-50 w-max px-2 py-0.5 rounded-md mt-1">3 Reminders</span>
+                    <span className="text-[10px] font-bold text-purple-400 uppercase tracking-widest bg-purple-50 w-max px-2 py-0.5 rounded-md mt-1">{t('flagship.vaccineReminder.remindersCount')}</span>
                   </div>
                   <div className="w-12 h-12 rounded-xl bg-purple-50 text-purple-600 flex items-center justify-center shadow-sm group-hover:bg-purple-600 group-hover:text-white transition-colors duration-300">
                     <MessageSquare className="w-6 h-6" />
@@ -1094,18 +1036,18 @@ export function ServicesPage() {
                 <div className="space-y-6 relative z-10 before:absolute before:left-[11px] before:top-2 before:bottom-2 before:w-[2px] before:bg-gradient-to-b before:from-purple-100 before:via-purple-200 before:to-purple-100 mt-2">
                   <div className="relative pl-8 group/item">
                     <div className="absolute left-0 top-1 w-6 h-6 rounded-full bg-white border-4 border-purple-200 z-10 group-hover/item:border-purple-400 transition-colors" />
-                    <p className="font-extrabold text-gray-900 text-[0.95rem] mb-0.5">2 days before due date</p>
-                    <p className="text-gray-500 text-sm font-medium">Plan your visit</p>
+                    <p className="font-extrabold text-gray-900 text-[0.95rem] mb-0.5">{t('flagship.vaccineReminder.timeline.before')}</p>
+                    <p className="text-gray-500 text-sm font-medium">{t('flagship.vaccineReminder.timeline.beforeDesc')}</p>
                   </div>
                   <div className="relative pl-8 group/item">
                     <div className="absolute left-0 top-1 w-6 h-6 rounded-full bg-purple-500 shadow-[0_0_10px_rgba(168,85,247,0.4)] border-4 border-white z-10 group-hover/item:scale-110 transition-transform" />
-                    <p className="font-extrabold text-purple-700 text-[0.95rem] mb-0.5">On the due date</p>
-                    <p className="text-gray-500 text-sm font-medium">Act today</p>
+                    <p className="font-extrabold text-purple-700 text-[0.95rem] mb-0.5">{t('flagship.vaccineReminder.timeline.due')}</p>
+                    <p className="text-gray-500 text-sm font-medium">{t('flagship.vaccineReminder.timeline.dueDesc')}</p>
                   </div>
                   <div className="relative pl-8 group/item">
                     <div className="absolute left-0 top-1 w-6 h-6 rounded-full bg-white border-4 border-purple-200 z-10 group-hover/item:border-purple-400 transition-colors" />
-                    <p className="font-extrabold text-gray-900 text-[0.95rem] mb-0.5">2 days after</p>
-                    <p className="text-gray-500 text-sm font-medium">Follow-up if missed</p>
+                    <p className="font-extrabold text-gray-900 text-[0.95rem] mb-0.5">{t('flagship.vaccineReminder.timeline.after')}</p>
+                    <p className="text-gray-500 text-sm font-medium">{t('flagship.vaccineReminder.timeline.afterDesc')}</p>
                   </div>
                 </div>
               </motion.div>
@@ -1123,7 +1065,7 @@ export function ServicesPage() {
                 <div className="flex items-center justify-between mb-8 relative z-10">
                   <div className="flex flex-col">
                     <span className="text-emerald-600 font-black text-2xl tracking-tight">WhatsApp</span>
-                    <span className="text-[10px] font-bold text-emerald-500 uppercase tracking-widest bg-emerald-50 w-max px-2 py-0.5 rounded-md mt-1">3 Reminders</span>
+                    <span className="text-[10px] font-bold text-emerald-500 uppercase tracking-widest bg-emerald-50 w-max px-2 py-0.5 rounded-md mt-1">{t('flagship.vaccineReminder.remindersCount')}</span>
                   </div>
                   <div className="w-12 h-12 rounded-xl bg-emerald-50 text-emerald-600 flex items-center justify-center shadow-sm group-hover:bg-emerald-600 group-hover:text-white transition-colors duration-300">
                     <Smartphone className="w-6 h-6" />
@@ -1133,18 +1075,18 @@ export function ServicesPage() {
                 <div className="space-y-6 relative z-10 before:absolute before:left-[11px] before:top-2 before:bottom-2 before:w-[2px] before:bg-gradient-to-b before:from-emerald-100 before:via-emerald-200 before:to-emerald-100 mt-2">
                   <div className="relative pl-8 group/item">
                     <div className="absolute left-0 top-1 w-6 h-6 rounded-full bg-white border-4 border-emerald-200 z-10 group-hover/item:border-emerald-400 transition-colors" />
-                    <p className="font-extrabold text-gray-900 text-[0.95rem] mb-0.5">2 days before due date</p>
-                    <p className="text-gray-500 text-sm font-medium">Plan your visit</p>
+                    <p className="font-extrabold text-gray-900 text-[0.95rem] mb-0.5">{t('flagship.vaccineReminder.timeline.before')}</p>
+                    <p className="text-gray-500 text-sm font-medium">{t('flagship.vaccineReminder.timeline.beforeDesc')}</p>
                   </div>
                   <div className="relative pl-8 group/item">
                     <div className="absolute left-0 top-1 w-6 h-6 rounded-full bg-emerald-500 shadow-[0_0_10px_rgba(16,185,129,0.4)] border-4 border-white z-10 group-hover/item:scale-110 transition-transform" />
-                    <p className="font-extrabold text-emerald-700 text-[0.95rem] mb-0.5">On the due date</p>
-                    <p className="text-gray-500 text-sm font-medium">Act today</p>
+                    <p className="font-extrabold text-emerald-700 text-[0.95rem] mb-0.5">{t('flagship.vaccineReminder.timeline.due')}</p>
+                    <p className="text-gray-500 text-sm font-medium">{t('flagship.vaccineReminder.timeline.dueDesc')}</p>
                   </div>
                   <div className="relative pl-8 group/item">
                     <div className="absolute left-0 top-1 w-6 h-6 rounded-full bg-white border-4 border-emerald-200 z-10 group-hover/item:border-emerald-400 transition-colors" />
-                    <p className="font-extrabold text-gray-900 text-[0.95rem] mb-0.5">2 days after</p>
-                    <p className="text-gray-500 text-sm font-medium">Follow-up if missed</p>
+                    <p className="font-extrabold text-gray-900 text-[0.95rem] mb-0.5">{t('flagship.vaccineReminder.timeline.after')}</p>
+                    <p className="text-gray-500 text-sm font-medium">{t('flagship.vaccineReminder.timeline.afterDesc')}</p>
                   </div>
                 </div>
               </motion.div>
@@ -1162,7 +1104,7 @@ export function ServicesPage() {
                 <div className="flex items-center justify-between mb-8 relative z-10">
                   <div className="flex flex-col">
                     <span className="text-amber-600 font-black text-2xl tracking-tight">Email</span>
-                    <span className="text-[10px] font-bold text-amber-500 uppercase tracking-widest bg-amber-50 w-max px-2 py-0.5 rounded-md mt-1">3 Reminders</span>
+                    <span className="text-[10px] font-bold text-amber-500 uppercase tracking-widest bg-amber-50 w-max px-2 py-0.5 rounded-md mt-1">{t('flagship.vaccineReminder.remindersCount')}</span>
                   </div>
                   <div className="w-12 h-12 rounded-xl bg-amber-50 text-amber-600 flex items-center justify-center shadow-sm group-hover:bg-amber-500 group-hover:text-white transition-colors duration-300">
                     <Mail className="w-6 h-6" />
@@ -1172,18 +1114,18 @@ export function ServicesPage() {
                 <div className="space-y-6 relative z-10 before:absolute before:left-[11px] before:top-2 before:bottom-2 before:w-[2px] before:bg-gradient-to-b before:from-amber-100 before:via-amber-200 before:to-amber-100 mt-2">
                   <div className="relative pl-8 group/item">
                     <div className="absolute left-0 top-1 w-6 h-6 rounded-full bg-white border-4 border-amber-200 z-10 group-hover/item:border-amber-400 transition-colors" />
-                    <p className="font-extrabold text-gray-900 text-[0.95rem] mb-0.5">2 days before due date</p>
-                    <p className="text-gray-500 text-sm font-medium">Plan your visit</p>
+                    <p className="font-extrabold text-gray-900 text-[0.95rem] mb-0.5">{t('flagship.vaccineReminder.timeline.before')}</p>
+                    <p className="text-gray-500 text-sm font-medium">{t('flagship.vaccineReminder.timeline.beforeDesc')}</p>
                   </div>
                   <div className="relative pl-8 group/item">
                     <div className="absolute left-0 top-1 w-6 h-6 rounded-full bg-amber-500 shadow-[0_0_10px_rgba(245,158,11,0.4)] border-4 border-white z-10 group-hover/item:scale-110 transition-transform" />
-                    <p className="font-extrabold text-amber-700 text-[0.95rem] mb-0.5">On the due date</p>
-                    <p className="text-gray-500 text-sm font-medium">Act today</p>
+                    <p className="font-extrabold text-amber-700 text-[0.95rem] mb-0.5">{t('flagship.vaccineReminder.timeline.due')}</p>
+                    <p className="text-gray-500 text-sm font-medium">{t('flagship.vaccineReminder.timeline.dueDesc')}</p>
                   </div>
                   <div className="relative pl-8 group/item">
                     <div className="absolute left-0 top-1 w-6 h-6 rounded-full bg-white border-4 border-amber-200 z-10 group-hover/item:border-amber-400 transition-colors" />
-                    <p className="font-extrabold text-gray-900 text-[0.95rem] mb-0.5">2 days after</p>
-                    <p className="text-gray-500 text-sm font-medium">Follow-up if missed</p>
+                    <p className="font-extrabold text-gray-900 text-[0.95rem] mb-0.5">{t('flagship.vaccineReminder.timeline.after')}</p>
+                    <p className="text-gray-500 text-sm font-medium">{t('flagship.vaccineReminder.timeline.afterDesc')}</p>
                   </div>
                 </div>
               </motion.div>
@@ -1192,6 +1134,7 @@ export function ServicesPage() {
         </div>
       </section>
 
+      {/* ==================== EMERGENCY PREPAREDNESS & RESILIENCE ==================== */}
       {/* ==================== EMERGENCY PREPAREDNESS & RESILIENCE ==================== */}
       <section className="py-16 lg:py-20 bg-gradient-to-br from-white via-orange-50/30 to-rose-50/40 relative overflow-hidden">
         {/* Light background accents */}
@@ -1209,14 +1152,14 @@ export function ServicesPage() {
             className="text-center mb-12"
           >
             <Badge variant="outline" className="border-orange-300 text-orange-600 mb-5 bg-orange-50 px-4 py-1.5 tracking-widest font-bold text-[10px] uppercase shadow-sm inline-flex items-center gap-2">
-              <AlertTriangle className="w-3.5 h-3.5" /> FEATURED PROGRAM
+              <AlertTriangle className="w-3.5 h-3.5" /> {t('emergency.badge')}
             </Badge>
             <h2 className="text-3xl lg:text-[2.75rem] text-gray-900 mb-4 font-black leading-[1.1] tracking-tight">
-              Emergency Preparedness &{" "}
-              <span className="text-transparent bg-clip-text bg-gradient-to-r from-orange-500 via-red-500 to-rose-500">Resilience</span>
+              {t('emergency.title1')}{" "}
+              <span className="text-transparent bg-clip-text bg-gradient-to-r from-orange-500 via-red-500 to-rose-500">{t('emergency.title2')}</span>
             </h2>
             <p className="text-base text-gray-600 max-w-2xl mx-auto leading-relaxed">
-              We prepare children, schools, and families to respond confidently to natural disasters, health emergencies, and unforeseen crises. Aligned with <strong className="text-gray-900 font-semibold">NDMA guidelines</strong>, <strong className="text-gray-900 font-semibold">UN DRR goals</strong>, and India's national school safety protocols.
+              {t('emergency.desc1')}<strong className="text-gray-900 font-semibold">{t('emergency.descStrong1')}</strong>, <strong className="text-gray-900 font-semibold">{t('emergency.descStrong2')}</strong>{t('emergency.desc2')}
             </p>
           </motion.div>
 
@@ -1233,12 +1176,16 @@ export function ServicesPage() {
               }}
               className="lg:col-span-3 grid sm:grid-cols-2 gap-4"
             >
-              {[
-                { icon: ShieldAlert, title: "First Aid & Emergency Response", desc: "First aid and emergency response training for students and school staff.", color: "bg-red-50", border: "border-red-100", iconBg: "bg-red-100", iconColor: "text-red-500", hoverBorder: "hover:border-red-300" },
-                { icon: Flame, title: "Evacuation Drills", desc: "School-wide drills for fire, flood, earthquake, and pandemic scenarios.", color: "bg-orange-50", border: "border-orange-100", iconBg: "bg-orange-100", iconColor: "text-orange-500", hoverBorder: "hover:border-orange-300" },
-                { icon: Brain, title: "Post-Crisis Mental Health", desc: "Mental health support modules for post-crisis trauma and stress management.", color: "bg-purple-50", border: "border-purple-100", iconBg: "bg-purple-100", iconColor: "text-purple-500", hoverBorder: "hover:border-purple-300" },
-                { icon: Radio, title: "Media Literacy & Digital Safety", desc: "Responsible digital behaviour and media literacy training during emergencies.", color: "bg-blue-50", border: "border-blue-100", iconBg: "bg-blue-100", iconColor: "text-blue-500", hoverBorder: "hover:border-blue-300" },
-              ].map((item, i) => (
+              {(t('emergency.cards', { returnObjects: true }) as any[]).map((cardItem, idx) => {
+                const arr = [
+                  { icon: ShieldAlert, color: "bg-red-50", border: "border-red-100", iconBg: "bg-red-100", iconColor: "text-red-500", hoverBorder: "hover:border-red-300" },
+                  { icon: Flame, color: "bg-orange-50", border: "border-orange-100", iconBg: "bg-orange-100", iconColor: "text-orange-500", hoverBorder: "hover:border-orange-300" },
+                  { icon: Brain, color: "bg-purple-50", border: "border-purple-100", iconBg: "bg-purple-100", iconColor: "text-purple-500", hoverBorder: "hover:border-purple-300" },
+                  { icon: Radio, priorityColor: "bg-blue-50", color: "bg-blue-50", border: "border-blue-100", iconBg: "bg-blue-100", iconColor: "text-blue-500", hoverBorder: "hover:border-blue-300" },
+                ];
+                const item = { ...arr[idx], title: cardItem.title, desc: cardItem.desc };
+                return item;
+              }).map((item, i) => (
                 <motion.div
                   key={item.title}
                   variants={{ hidden: { opacity: 0, y: 30, scale: 0.95 }, visible: { opacity: 1, y: 0, scale: 1 } }}
@@ -1279,19 +1226,14 @@ export function ServicesPage() {
                     <Shield className="w-6 h-6 text-orange-600" />
                   </motion.div>
                   <div>
-                    <h3 className="text-gray-900 font-extrabold text-lg tracking-tight leading-tight">Delivered by Real Heroes</h3>
-                    <p className="text-orange-500 text-[10px] font-bold uppercase tracking-widest">On Campus Training</p>
+                    <h3 className="text-gray-900 font-extrabold text-lg tracking-tight leading-tight">{t('emergency.heroes.title')}</h3>
+                    <p className="text-orange-500 text-[10px] font-bold uppercase tracking-widest">{t('emergency.heroes.badge')}</p>
                   </div>
                 </div>
 
                 {/* Partners */}
                 <div className="space-y-3 flex-1">
-                  {[
-                    { name: "NDRF Teams", role: "National Disaster Response Force" },
-                    { name: "Ex-Armed Forces Officers", role: "Defence & Strategic Operations" },
-                    { name: "Fire Officers", role: "Fire Safety & Evacuation" },
-                    { name: "Civil Authorities", role: "District Administration" },
-                  ].map((partner, i) => (
+                  {(t('emergency.heroes.partners', { returnObjects: true }) as any[]).map((partner, i) => (
                     <motion.div
                       key={partner.name}
                       initial={{ opacity: 0, x: 15 }}
@@ -1311,11 +1253,7 @@ export function ServicesPage() {
 
                 {/* Bottom Future Readiness */}
                 <div className="grid grid-cols-3 gap-2 mt-5 pt-5 border-t border-gray-100">
-                  {[
-                    { title: "Scalable", label: "Architecture" },
-                    { title: "NDMA", label: "Aligned" },
-                    { title: "Holistic", label: "Safety" },
-                  ].map((stat) => (
+                  {(t('emergency.heroes.stats', { returnObjects: true }) as any[]).map((stat) => (
                     <div key={stat.title} className="text-center bg-orange-50/50 rounded-lg py-2.5 border border-orange-100/50 hover:bg-orange-100/50 transition-colors">
                       <p className="text-gray-900 font-black text-[0.85rem] leading-none mb-1">{stat.title}</p>
                       <p className="text-orange-500 text-[8px] font-bold uppercase tracking-wider">{stat.label}</p>
@@ -1349,7 +1287,7 @@ export function ServicesPage() {
             >
               <motion.div variants={{ hidden: { opacity: 0, y: 30 }, visible: { opacity: 1, y: 0 } }}>
                 <Badge variant="outline" className="border-[#36c276]/30 text-[#36c276] mb-5 bg-[#36c276]/10 px-4 py-1.5 backdrop-blur-sm tracking-widest font-bold text-[10px] uppercase shadow-[0_0_15px_rgba(54,194,118,0.15)] inline-flex items-center gap-2">
-                  <Leaf className="w-3.5 h-3.5" /> SDG 13: CLIMATE ACTION
+                  <Leaf className="w-3.5 h-3.5" /> {t('goGreen.badge')}
                 </Badge>
               </motion.div>
 
@@ -1357,21 +1295,18 @@ export function ServicesPage() {
                 variants={{ hidden: { opacity: 0, y: 30 }, visible: { opacity: 1, y: 0 } }}
                 className="text-[2rem] sm:text-4xl lg:text-5xl text-white mb-5 font-extrabold leading-[1.1] tracking-tight drop-shadow-md"
               >
-                Green Cohort & <span className="text-transparent bg-clip-text bg-gradient-to-r from-[#36c276] to-[var(--womb-forest)]">Emergency Safe-Zones</span>
+                {t('goGreen.title1')}<br className="hidden sm:block" /><span className="text-transparent bg-clip-text bg-gradient-to-r from-[#36c276] to-[var(--womb-forest)]">{t('goGreen.title2')}</span>
               </motion.h2>
 
               <motion.p
                 variants={{ hidden: { opacity: 0, y: 20 }, visible: { opacity: 1, y: 0 } }}
                 className="text-[1.05rem] text-gray-300 mb-8 leading-relaxed font-light max-w-xl"
               >
-                Health and climate are inextricably linked. Our Go Green Initiative trains rural communities in disaster preparedness while planting trees to offset carbon footprints, creating India's first <strong className="text-white font-bold bg-[#36c276]/20 px-2 py-0.5 rounded-md border border-[#36c276]/30">Carbon-Neutral Child Cohort</strong>.
+                {t('goGreen.desc1')} <strong className="text-white font-bold bg-[#36c276]/20 px-2 py-0.5 rounded-md border border-[#36c276]/30">{t('goGreen.descStrong')}</strong>.
               </motion.p>
 
               <div className="space-y-4 mb-8">
-                {[
-                  { title: "Disaster Ready", desc: "First-aid training and emergency protocol drills for community leaders.", icon: CheckCircle },
-                  { title: "Carbon Offset", desc: "1 tree planted for every Rs. 5000 donated. Receive your official Go Green Certificate.", icon: Leaf }
-                ].map((item, i) => (
+                {((t('goGreen.features', { returnObjects: true }) as any[]) || []).map((feature, i) => { const item = { title: feature.title, desc: feature.desc, icon: i === 0 ? CheckCircle : Leaf }; return item; }).map((item, i) => (
                   <motion.div
                     key={item.title}
                     variants={{ hidden: { opacity: 0, x: -30 }, visible: { opacity: 1, x: 0 } }}
@@ -1407,7 +1342,7 @@ export function ServicesPage() {
                   <iframe
                     src="/Go%20Green%20Certificate.pdf#view=FitH&toolbar=0&navpanes=0&scrollbar=0"
                     className="hidden sm:block w-full h-[420px] lg:h-[500px] border-none pointer-events-auto mix-blend-multiply scale-100 lg:scale-[1.05]"
-                    title="Go Green Official Certificate"
+                    title={t('goGreen.certificate')}
                   />
                   <a
                     href="/Go%20Green%20Certificate.pdf"
@@ -1418,13 +1353,13 @@ export function ServicesPage() {
                     <div className="absolute inset-x-0 top-0 bottom-[68px] overflow-hidden">
                       <MobilePdfPreview
                         pdfUrl="/Go%20Green%20Certificate.pdf"
-                        title="Go Green Official Certificate mobile preview"
+                        title={t('goGreen.certificate')}
                       />
                     </div>
                     <div className="absolute inset-x-0 bottom-0 flex items-center justify-between gap-3 border-t border-gray-200 bg-[#184f34] px-4 py-3">
                       <div>
-                        <p className="text-white font-bold text-[1.02rem] leading-tight">Official Go Green Certificate</p>
-                        <p className="text-[#7ce0a6] text-xs font-medium">Awarded to major donors & partners</p>
+                        <p className="text-white font-bold text-[1.02rem] leading-tight">{t('goGreen.certificate')}</p>
+                        <p className="text-[#7ce0a6] text-xs font-medium">{t('goGreen.certificateSub')}</p>
                       </div>
                       <span className="flex h-10 w-10 items-center justify-center rounded-xl bg-white/10 border border-white/10 text-white shadow-sm">
                         <ArrowRight className="h-4 w-4 -rotate-45" />
@@ -1437,14 +1372,14 @@ export function ServicesPage() {
                     <div className="w-14 h-14 rounded-full bg-[#36c276]/90 shadow-[0_0_30px_rgba(54,194,118,0.6)] flex items-center justify-center mb-4 transform translate-y-6 group-hover:translate-y-0 transition-transform duration-500 ease-out border border-[#36c276]/50">
                       <ArrowRight className="w-6 h-6 text-white transform -rotate-45" />
                     </div>
-                    <p className="text-white font-bold tracking-widest uppercase text-xs transform translate-y-6 group-hover:translate-y-0 transition-transform duration-500 delay-75 ease-out shadow-black">View Full PDF</p>
+                    <p className="text-white font-bold tracking-widest uppercase text-xs transform translate-y-6 group-hover:translate-y-0 transition-transform duration-500 delay-75 ease-out shadow-black">{t('goGreen.viewPdf')}</p>
                   </a>
                 </div>
 
                 <div className="mt-5 hidden sm:flex items-start justify-between px-2 gap-3">
                   <div>
-                    <p className="text-white font-bold text-[1.05rem] leading-tight mb-1">Official Go Green Certificate</p>
-                    <p className="text-[#36c276] text-xs font-medium">Awarded to major donors & partners</p>
+                    <p className="text-white font-bold text-[1.05rem] leading-tight mb-1">{t('goGreen.certificate')}</p>
+                    <p className="text-[#36c276] text-xs font-medium">{t('goGreen.certificateSub')}</p>
                   </div>
                   <a href="/Go%20Green%20Certificate.pdf" download="WombTo18_Go_Green_Certificate.pdf" className="h-10 w-10 rounded-xl bg-white/10 hover:bg-[#36c276] flex items-center justify-center transition-all duration-300 border border-white/10 backdrop-blur-md shrink-0 focus:ring-2 ring-[#36c276]/50 outline-none">
                     <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="text-white"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="7 10 12 15 17 10"></polyline><line x1="12" y1="15" x2="12" y2="3"></line></svg>
@@ -1472,21 +1407,17 @@ export function ServicesPage() {
             className="text-center mb-20"
           >
             <p className="inline-flex items-center gap-2 bg-[var(--journey-saffron)]/10 text-[var(--journey-saffron)] px-5 py-2.5 rounded-full text-[10px] sm:text-xs font-bold tracking-widest uppercase border border-[var(--journey-saffron)]/20 mb-6 shadow-sm">
-              Future Readiness
+              {t('vision.badge')}
             </p>
-            <h2 className="text-4xl md:text-5xl font-black text-gray-900 mb-5 tracking-tight drop-shadow-sm">Vision for Impact</h2>
-            <p className="text-lg md:text-xl text-gray-600 max-w-2xl mx-auto leading-relaxed">Laying the groundwork for scalable, transformative change across our core focus areas.</p>
+            <h2 className="text-4xl md:text-5xl font-black text-gray-900 mb-5 tracking-tight drop-shadow-sm">{t('vision.title')}</h2>
+            <p className="text-lg md:text-xl text-gray-600 max-w-2xl mx-auto leading-relaxed">{t('vision.desc')}</p>
           </motion.div>
 
           <div className="grid sm:grid-cols-3 gap-8 lg:gap-12 relative">
             {/* Connecting subtle line behind cards */}
             <div className="hidden md:block absolute top-[40%] left-[10%] right-[10%] h-[1px] bg-gradient-to-r from-transparent via-gray-200 to-transparent z-0" />
 
-            {[
-              { title: "Comprehensive Reach", desc: "Designed to scale across multiple underserved districts, targeting 4 key focus areas for complete child development.", icon: Shield },
-              { title: "Sustainable Model", desc: "Building a transparent, milestone-driven financial framework ensuring long-term operational stability.", icon: Target },
-              { title: "Measurable Outcomes", desc: "Setting up rigorous data-driven frameworks to track, verify, and report every life changed along the journey.", icon: HeartPulse },
-            ].map((item, i) => (
+            {((t('vision.cards', { returnObjects: true }) as any[]) || []).map((card, idx) => { const item = { title: card.title, desc: card.desc, icon: idx === 0 ? Shield : idx === 1 ? Target : HeartPulse }; return item; }).map((item, i) => (
               <motion.div
                 key={item.title}
                 initial={{ opacity: 0, y: 50, scale: 0.95 }}
@@ -1543,13 +1474,13 @@ export function ServicesPage() {
           >
             <div className="absolute inset-0 bg-[url('https://www.transparenttextures.com/patterns/carbon-fibre.png')] opacity-10 mix-blend-overlay"></div>
             <div className="relative z-10">
-              <h2 className="text-4xl md:text-5xl text-white mb-6 font-extrabold tracking-tight">Want to Support a Program?</h2>
+              <h2 className="text-4xl md:text-5xl text-white mb-6 font-extrabold tracking-tight">{t('cta.title')}</h2>
               <p className="text-xl text-green-50 mb-10 max-w-2xl mx-auto leading-relaxed">
-                Choose a program close to your heart and make a targeted donation that creates lasting impact. Donations are eligible for tax benefits under Section 80G, as per applicable rules.
+                {t('cta.desc')}
               </p>
               <Link to="/donate">
                 <Button size="lg" className="bg-white hover:bg-green-50 text-[var(--womb-forest)] h-14 px-8 rounded-xl shadow-xl hover:shadow-2xl hover:-translate-y-1 transition-all text-base font-extrabold group">
-                  Donate to a Program <ArrowRight className="h-5 w-5 ml-2 group-hover:translate-x-1 transition-transform" />
+                  {t('cta.btn')} <ArrowRight className="h-5 w-5 ml-2 group-hover:translate-x-1 transition-transform" />
                 </Button>
               </Link>
             </div>

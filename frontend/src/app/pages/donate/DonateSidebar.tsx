@@ -2,7 +2,7 @@ import { useState, useEffect } from "react";
 import { motion } from "motion/react";
 import { Link } from "react-router";
 import { TrendingUp, Users as UsersIcon } from "lucide-react";
-import { WHY_SUPPORT_ITEMS } from "./donateData";
+import { useTranslation } from "react-i18next";
 
 const API = import.meta.env.VITE_API_URL || "http://localhost:6001";
 
@@ -23,6 +23,7 @@ interface WebStats {
 }
 
 export function DonateSidebar({ activeColor = "#1D6E3F" }: { activeColor?: string }) {
+  const { t } = useTranslation('donate');
   const [stats, setStats] = useState<WebStats | null>(null);
   const [loading, setLoading] = useState(true);
 
@@ -48,11 +49,11 @@ export function DonateSidebar({ activeColor = "#1D6E3F" }: { activeColor?: strin
     const diffHours = Math.floor(diffMs / (1000 * 60 * 60));
     const diffDays = Math.floor(diffMs / (1000 * 60 * 60 * 24));
     if (diffDays === 0) {
-      if (diffHours === 0) return 'Just now';
-      return `${diffHours} hours ago`;
+      if (diffHours === 0) return t('sidebar.time.justNow');
+      return `${diffHours} ${t('sidebar.time.hoursAgo')}`;
     }
-    if (diffDays === 1) return 'Yesterday';
-    return `${diffDays} days ago`;
+    if (diffDays === 1) return t('sidebar.time.yesterday');
+    return `${diffDays} ${t('sidebar.time.daysAgo')}`;
   }
 
   function formatAmount(amount: number) {
@@ -60,6 +61,8 @@ export function DonateSidebar({ activeColor = "#1D6E3F" }: { activeColor?: strin
     if (amount >= 1000) return `₹${(amount / 1000).toFixed(1)}K`;
     return `₹${amount}`;
   }
+
+  const whySupportIcons = ["💚", "🌳", "🤝"];
 
   return (
     <div className="h-full">
@@ -74,10 +77,10 @@ export function DonateSidebar({ activeColor = "#1D6E3F" }: { activeColor?: strin
         <div className="h-1 w-full bg-gradient-to-r from-[var(--womb-forest)] via-[var(--journey-saffron)] to-[var(--future-sky)]" />
         <div className="p-5">
           <h3 className="text-sm font-black text-gray-900 mb-4 flex items-center gap-2">
-            💚 Why Your Support Matters ✨
+            {t('sidebar.whySupport.title')}
           </h3>
           <div className="space-y-3">
-            {WHY_SUPPORT_ITEMS.map((item, i) => (
+            {(t('sidebar.whySupport.items', { returnObjects: true }) as string[]).map((item, i) => (
               <motion.div
                 key={i}
                 initial={{ opacity: 0, x: -12 }}
@@ -86,9 +89,9 @@ export function DonateSidebar({ activeColor = "#1D6E3F" }: { activeColor?: strin
                 className="flex items-start gap-3 group cursor-default"
               >
                 <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-[var(--womb-forest)]/8 to-emerald-50 flex items-center justify-center shrink-0 group-hover:scale-110 transition-transform duration-300">
-                  <span className="text-sm">{item.icon}</span>
+                  <span className="text-sm">{whySupportIcons[i] || "✨"}</span>
                 </div>
-                <p className="text-[13px] text-gray-600 leading-relaxed pt-0.5 group-hover:text-gray-800 transition-colors">{item.text}</p>
+                <p className="text-[13px] text-gray-600 leading-relaxed pt-0.5 group-hover:text-gray-800 transition-colors">{item}</p>
               </motion.div>
             ))}
           </div>
@@ -103,10 +106,10 @@ export function DonateSidebar({ activeColor = "#1D6E3F" }: { activeColor?: strin
       >
         <div className="flex items-center justify-between mb-4">
           <h3 className="text-sm font-black text-gray-900 flex items-center gap-2">
-            <TrendingUp className="w-4 h-4 text-[var(--womb-forest)]" /> Real Impact So Far
+            <TrendingUp className="w-4 h-4 text-[var(--womb-forest)]" /> {t('sidebar.impact.title')}
           </h3>
           <span className="flex items-center gap-1.5 text-[9px] font-bold text-[var(--womb-forest)] bg-[var(--womb-forest)]/8 px-2 py-0.5 rounded-full">
-            <span className="w-1.5 h-1.5 rounded-full bg-[var(--womb-forest)] animate-pulse" /> Live
+            <span className="w-1.5 h-1.5 rounded-full bg-[var(--womb-forest)] animate-pulse" /> {t('sidebar.impact.live')}
           </span>
         </div>
         
@@ -116,10 +119,10 @@ export function DonateSidebar({ activeColor = "#1D6E3F" }: { activeColor?: strin
           </div>
         ) : (
           <div className="grid grid-cols-2 gap-2">
-            <StatsCard icon="👶" value={`${(stats.childrenRegistered || 0).toLocaleString()}+`} label="Children Registered" color="#F59E0B" />
-            <StatsCard icon="🌲" value={`${(stats.treesPlanted || 0).toLocaleString()}+`} label="Trees Planted" color="#10B981" />
-            <StatsCard icon="🏫" value={`${stats.schoolsOnboarded || 0}+`} label="Schools Onboarded" color="#3B82F6" />
-            <StatsCard icon="💰" value={`₹${formatAmount(stats.monthlyRaised || 0).replace('₹', '')}`} label="Raised This Month" color="#f97316" />
+            <StatsCard icon="👶" value={`${(stats.childrenRegistered || 0).toLocaleString()}+`} label={t('sidebar.impact.labels.registered')} color="#F59E0B" />
+            <StatsCard icon="🌲" value={`${(stats.treesPlanted || 0).toLocaleString()}+`} label={t('sidebar.impact.labels.planted')} color="#10B981" />
+            <StatsCard icon="🏫" value={`${stats.schoolsOnboarded || 0}+`} label={t('sidebar.impact.labels.onboarded')} color="#3B82F6" />
+            <StatsCard icon="💰" value={`₹${formatAmount(stats.monthlyRaised || 0).replace('₹', '')}`} label={t('sidebar.impact.labels.raised')} color="#f97316" />
           </div>
         )}
       </motion.div>
@@ -130,7 +133,7 @@ export function DonateSidebar({ activeColor = "#1D6E3F" }: { activeColor?: strin
         transition={{ duration: 0.6, delay: 0.2, ease: [0.22, 1, 0.36, 1] }}
         className="rounded-2xl border border-gray-100 bg-white p-5 shadow-[0_1px_3px_rgba(0,0,0,0.04)]"
       >
-        <h3 className="text-sm font-black text-gray-900 mb-3.5 flex items-center gap-2">🎯 Monthly Goal</h3>
+        <h3 className="text-sm font-black text-gray-900 mb-3.5 flex items-center gap-2">🎯 {t('sidebar.goal.title')}</h3>
         
         {loading || !stats ? (
            <div className="space-y-2">
@@ -161,7 +164,7 @@ export function DonateSidebar({ activeColor = "#1D6E3F" }: { activeColor?: strin
             </div>
             <div className="flex items-baseline justify-between mt-1.5">
               <span className="text-xs font-black" style={{ color: activeColor }}>{goalPercent}%</span>
-              <span className="text-[10px] text-gray-400">of monthly goal reached</span>
+              <span className="text-[10px] text-gray-400">{t('sidebar.goal.reached')}</span>
             </div>
           </>
         )}
@@ -175,10 +178,10 @@ export function DonateSidebar({ activeColor = "#1D6E3F" }: { activeColor?: strin
       >
         <div className="flex items-center justify-between mb-4">
           <h3 className="text-sm font-black text-gray-900 flex items-center gap-2">
-            <UsersIcon className="w-4 h-4 text-[var(--journey-saffron)]" /> Recent Donors
+            <UsersIcon className="w-4 h-4 text-[var(--journey-saffron)]" /> {t('sidebar.donors.title')}
           </h3>
           <span className="flex items-center gap-1.5 text-[9px] font-bold text-[var(--womb-forest)] bg-[var(--womb-forest)]/8 px-2 py-0.5 rounded-full">
-            <span className="w-1.5 h-1.5 rounded-full bg-[var(--womb-forest)] animate-pulse" /> Live
+            <span className="w-1.5 h-1.5 rounded-full bg-[var(--womb-forest)] animate-pulse" /> {t('sidebar.donors.live')}
           </span>
         </div>
         
@@ -195,8 +198,8 @@ export function DonateSidebar({ activeColor = "#1D6E3F" }: { activeColor?: strin
           <div className="space-y-2.5">
             {(stats.recentDonors || []).length === 0 ? (
               <div className="text-center py-4 bg-gray-50/50 rounded-xl border border-dashed border-gray-200">
-                <p className="text-[12px] font-semibold text-gray-500">No recent donations yet today.</p>
-                <p className="text-[10px] text-gray-400 mt-0.5">Be the first to make an impact!</p>
+                <p className="text-[12px] font-semibold text-gray-500">{t('sidebar.donors.empty')}</p>
+                <p className="text-[10px] text-gray-400 mt-0.5">{t('sidebar.donors.emptySub')}</p>
               </div>
             ) : (
               (stats.recentDonors || []).slice(0, 4).map((donor, i) => {
@@ -226,7 +229,7 @@ export function DonateSidebar({ activeColor = "#1D6E3F" }: { activeColor?: strin
           </div>
         )}
         <Link to="/wall-of-fame" className="w-full mt-3 pt-3 border-t border-gray-100 text-center text-[12px] font-bold text-[var(--womb-forest)] hover:text-[var(--journey-saffron)] transition-colors flex items-center justify-center gap-1 group">
-          View All Donors <span className="group-hover:translate-x-1 transition-transform duration-200">→</span>
+          {t('sidebar.donors.viewAll')} <span className="group-hover:translate-x-1 transition-transform duration-200">→</span>
         </Link>
       </motion.div>
 
@@ -236,7 +239,7 @@ export function DonateSidebar({ activeColor = "#1D6E3F" }: { activeColor?: strin
         transition={{ duration: 0.6, delay: 0.4 }}
         className="flex items-center justify-center gap-3 py-3"
       >
-        {["🔒 Razorpay Secured", "📄 80G Available", "🏅 Registered NGO"].map((badge, i) => (
+        {[t('sidebar.trust.razorpay'), t('sidebar.trust.eightyG'), t('sidebar.trust.registered')].map((badge, i) => (
           <span key={i} className="text-[9px] font-bold text-gray-400 bg-gray-50 px-2.5 py-1 rounded-full border border-gray-100">
             {badge}
           </span>

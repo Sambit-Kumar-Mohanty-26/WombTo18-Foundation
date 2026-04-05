@@ -1,4 +1,4 @@
-const rawApiUrl = import.meta.env.VITE_API_URL || 'http://localhost:3000';
+const rawApiUrl = import.meta.env.VITE_API_URL || 'http://localhost:6001';
 const API_URL = rawApiUrl.endsWith('/api')
   ? rawApiUrl
   : `${rawApiUrl.replace(/\/$/, '')}/api`;

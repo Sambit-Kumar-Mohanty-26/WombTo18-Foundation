@@ -1,16 +1,8 @@
 import { Controller, Post, Body, UseInterceptors, UploadedFiles, HttpException, HttpStatus } from '@nestjs/common';
 import { AdvisoryService } from './advisory.service';
 import { FileFieldsInterceptor } from '@nestjs/platform-express';
-import { diskStorage } from 'multer';
+import { memoryStorage } from 'multer';
 import { extname } from 'path';
-import * as fs from 'fs';
-
-import { join } from 'path';
-
-const uploadPath = join(process.cwd(), '..', 'uploads', 'advisory');
-if (!fs.existsSync(uploadPath)) {
-  fs.mkdirSync(uploadPath, { recursive: true });
-}
 
 @Controller('advisory-applications')
 export class AdvisoryController {
@@ -26,13 +18,7 @@ export class AdvisoryController {
       { name: 'qualificationProof', maxCount: 1 },
       { name: 'registration', maxCount: 1 },
     ], {
-      storage: diskStorage({
-        destination: uploadPath,
-        filename: (req, file, cb) => {
-          const uniqueSuffix = Date.now() + '-' + Math.round(Math.random() * 1E9);
-          cb(null, `${uniqueSuffix}${extname(file.originalname)}`);
-        }
-      })
+      storage: memoryStorage(),
     })
   )
   async createApplication(
@@ -53,3 +39,4 @@ export class AdvisoryController {
     }
   }
 }
+

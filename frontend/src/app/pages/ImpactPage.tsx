@@ -4,7 +4,6 @@ import { Card, CardContent, CardHeader, CardTitle } from "../components/ui/card"
 import { Progress } from "../components/ui/progress";
 import { Badge } from "../components/ui/badge";
 import { useTranslation } from "react-i18next";
-import { useBhashiniRuntimeTranslation } from "../hooks/useBhashiniRuntimeTranslation";
 import { impactPageContent } from "./impactPageContent";
 
 function Counter({ from = 0, to, duration = 2.5, prefix = "", suffix = "", decimals = 0 }: { from?: number, to: number, duration?: number, prefix?: string, suffix?: string, decimals?: number }) {
@@ -210,12 +209,43 @@ const AnimatedOutcomeCard = ({ o, index }: any) => {
 };
 
 export function ImpactPage() {
-  const { i18n } = useTranslation();
+  const { t, i18n } = useTranslation('impact');
   const currentLanguage = (i18n.resolvedLanguage || i18n.language || "en").split("-")[0];
-  const { content, isLoading: isTranslating, error: translationError } = useBhashiniRuntimeTranslation(
-    impactPageContent,
-    currentLanguage,
-  );
+  
+  // Base raw text
+  const rawText: any = {
+    hero: t('hero', { returnObjects: true }),
+    sdg: t('sdg', { returnObjects: true }),
+    reporting: t('reporting', { returnObjects: true }),
+    metrics: t('metrics', { returnObjects: true }),
+    charts: t('charts', { returnObjects: true }),
+    programProgress: t('programProgress', { returnObjects: true }),
+    outcomes: t('outcomes', { returnObjects: true }),
+    trust: t('trust', { returnObjects: true }),
+  };
+
+  // Merge static design tokens (colors, images, sides) into translated text
+  const content = {
+    ...rawText,
+    sdg: {
+      ...rawText.sdg,
+      cards: rawText.sdg?.cards?.map((card: any, i: number) => ({
+        ...card,
+        id: impactPageContent.sdg.cards[i]?.id || card.id,
+        color: impactPageContent.sdg.cards[i]?.color,
+        image: impactPageContent.sdg.cards[i]?.image,
+      })) || [],
+    },
+    reporting: {
+      ...rawText.reporting,
+      items: rawText.reporting?.items?.map((item: any, i: number) => ({
+        ...item,
+        color: impactPageContent.reporting.items[i]?.color,
+        lightBg: impactPageContent.reporting.items[i]?.lightBg,
+        side: impactPageContent.reporting.items[i]?.side,
+      })) || [],
+    }
+  };
   const fundUtilizationData = fundUtilization.map((item, index) => ({
     ...item,
     name: content.charts.fundUtilization[index] || item.name,
@@ -271,11 +301,7 @@ export function ImpactPage() {
             </div>
             {currentLanguage !== "en" && (
               <p className="mt-4 text-sm font-medium text-slate-500">
-                {isTranslating
-                  ? "Translating this page with Bhashini..."
-                  : translationError
-                    ? "Bhashini translation is unavailable right now, so this page is showing the default copy."
-                    : `Live translation active: ${currentLanguage.toUpperCase()}`}
+                Live translation active: {currentLanguage.toUpperCase()}
               </p>
             )}
           </motion.div>
@@ -400,59 +426,7 @@ export function ImpactPage() {
             <div className="hidden lg:block absolute left-1/2 top-0 bottom-0 w-px bg-gradient-to-b from-transparent via-gray-300 to-transparent -translate-x-1/2" />
 
             <div className="space-y-8 lg:space-y-0">
-              {[
-                {
-                  quarter: "Q1",
-                  report: "Q1 Impact Report",
-                  month: "APR",
-                  day: "30",
-                  color: "#1D6E3F",
-                  lightBg: "rgba(29,110,63,0.07)",
-                  contents: "Programme delivery, fund utilisation, children reached, schools served, trees planted — January to March.",
-                  side: "left" as const,
-                },
-                {
-                  quarter: "Q2",
-                  report: "Q2 Impact Report",
-                  month: "JUL",
-                  day: "31",
-                  color: "#F29F05",
-                  lightBg: "rgba(242,159,5,0.07)",
-                  contents: "Same metrics for April to June. Annual Report also published in July.",
-                  side: "right" as const,
-                },
-                {
-                  quarter: "Q3",
-                  report: "Q3 Impact Report",
-                  month: "OCT",
-                  day: "31",
-                  color: "#0284c7",
-                  lightBg: "rgba(2,132,199,0.07)",
-                  contents: "July to September metrics. Mid-year programme performance review.",
-                  side: "left" as const,
-                },
-                {
-                  quarter: "Q4",
-                  report: "Q4 Impact Report",
-                  month: "JAN",
-                  day: "31",
-                  color: "#8b5cf6",
-                  lightBg: "rgba(139,92,246,0.07)",
-                  contents: "October to December. Full-year preview ahead of Annual Report.",
-                  side: "right" as const,
-                },
-                {
-                  quarter: "Annual",
-                  report: "Annual Report",
-                  month: "JUL",
-                  day: "31",
-                  color: "#1D6E3F",
-                  lightBg: "rgba(29,110,63,0.07)",
-                  contents: "Audited accounts (Income & Expenditure + Balance Sheet), programme outcomes vs targets, governance report, donor acknowledgements, and next-year plan.",
-                  side: "left" as const,
-                  extraLabel: "For prior FY"
-                },
-              ].map((item, i) => (
+              {content.reporting.items.map((item: any, i: number) => (
                 <div key={item.quarter} className={`lg:grid lg:grid-cols-2 lg:gap-16 relative ${i > 0 ? 'lg:mt-8' : ''}`}>
                   {/* Timeline dot */}
                   <motion.div
