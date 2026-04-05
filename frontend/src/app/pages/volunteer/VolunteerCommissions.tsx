@@ -55,11 +55,25 @@ export function VolunteerCommissions() {
   };
 
   const handleWithdraw = async () => {
-    if (!window.confirm(`Are you sure you want to request a withdrawal of ₹${data.eligibleAmountInr}?`)) return;
+    // Check if bank details are updated
+    if (!bankData.bankName || !bankData.accountNumber || !bankData.ifscCode || !bankData.accountName) {
+      toast.error("Please update your bank details before requesting a withdrawal.", {
+        description: "We need your account information to process the bank transfer.",
+        duration: 5000,
+      });
+      return;
+    }
+
     try {
       setWithdrawSubmitting(true);
+      const loadingToast = toast.loading(`Requesting withdrawal of ₹${data.eligibleAmountInr.toLocaleString()}...`);
+      
       await client.post(`/volunteers/withdraw/${id}`);
-      toast.success("Withdrawal request submitted successfully! Our team will process it soon.");
+      
+      toast.dismiss(loadingToast);
+      toast.success("Withdrawal request submitted successfully!", {
+        description: "Our team will verify and process your transfer shortly."
+      });
       fetchData();
     } catch (err: any) {
       toast.error(err.response?.data?.message || "Failed to request withdrawal");
@@ -174,6 +188,12 @@ export function VolunteerCommissions() {
                 {withdrawSubmitting ? "Processing..." : "Withdraw Funds"}
                 <ArrowRight className="h-4 w-4 ml-2" />
               </Button>
+
+              {(!bankData.bankName || !bankData.accountNumber || !bankData.ifscCode) && (
+                <p className="text-[10px] text-amber-600 font-bold uppercase tracking-widest flex items-center justify-center gap-1">
+                  ⚠️ Incomplete Bank Details
+                </p>
+              )}
             </div>
           </CardContent>
         </Card>
