@@ -1,4 +1,4 @@
-import { Controller, Get, Post, Body, Res } from '@nestjs/common';
+import { Controller, Get, Post, Body, Res, Query } from '@nestjs/common';
 import { AdminService } from '../services/admin.service';
 import { ApiTags, ApiOperation } from '@nestjs/swagger';
 import * as path from 'path';
@@ -26,8 +26,8 @@ export class AdminController {
 
   @Get('stats')
   @ApiOperation({ summary: 'Get administrative metrics' })
-  async getStats() {
-    return this.adminService.getStats();
+  async getStats(@Query('range') range: string) {
+    return this.adminService.getStats(range);
   }
 
   @Get('programs')

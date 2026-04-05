@@ -60,8 +60,23 @@ export class CampService {
   }
 
   private isCampDay(campDate: Date) {
-    const todayStr = new Date().toDateString();
-    return todayStr === campDate.toDateString();
+    const timeZone = 'Asia/Kolkata';
+    const formatter = new Intl.DateTimeFormat('en-CA', { 
+      timeZone, 
+      year: 'numeric', 
+      month: '2-digit', 
+      day: '2-digit' 
+    });
+    
+    const todayIST = formatter.format(new Date());
+    const campIST = formatter.format(new Date(campDate));
+    
+    // If dates match in IST, it's definitely camp day
+    if (todayIST === campIST) return true;
+
+    // Leniency: Allow activation if within 24 hours of scheduled time
+    const diffHours = (new Date().getTime() - new Date(campDate).getTime()) / (3600000);
+    return diffHours >= -5 && diffHours <= 24; // 5 hours before (near midnight) to 24 hours after
   }
 
   private getFrontendUrl() {
@@ -421,7 +436,9 @@ export class CampService {
   async activateAttendance(campId: string) {
     const camp = await this.loadCamp(campId);
     if (!this.isCampDay(camp.date)) {
-      throw new BadRequestException('The attendance QR can only be activated on the camp day.');
+      const timeZone = 'Asia/Kolkata';
+      const formatter = new Intl.DateTimeFormat('en-IN', { timeZone, dateStyle: 'medium', timeStyle: 'short' });
+      throw new BadRequestException(`Camp activation is restricted to the scheduled day. Scheduled: ${formatter.format(new Date(camp.date))} IST. Current: ${formatter.format(new Date())} IST.`);
     }
 
     const selectedCount = await (this.prisma as any).campParticipation.count({
@@ -433,7 +450,7 @@ export class CampService {
     });
 
     if (selectedCount === 0) {
-      throw new BadRequestException('Select at least one approved volunteer before activating the attendance QR.');
+      throw new BadRequestException('Attendance cannot be activated without selecting at least one APPROVED volunteer.');
     }
 
     const token = `attendance-${randomUUID()}`;

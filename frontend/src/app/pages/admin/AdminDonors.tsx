@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { 
   Users, 
   Search, 
@@ -11,15 +11,14 @@ import {
   Sparkles
 } from "lucide-react";
 import { motion } from "motion/react";
-
-const donors = [
-  { id: 1, name: "Vikram Seth", email: "vikram@example.com", totalAmount: "1,45,000", category: "PLATINUM", lastDonation: "2 days ago" },
-  { id: 2, name: "Priya Sharma", email: "priya@example.com", totalAmount: "85,000", category: "GOLD", lastDonation: "1 week ago" },
-  { id: 3, name: "Anita Desai", email: "anita@example.com", totalAmount: "2,10,000", category: "DIAMOND", lastDonation: "5 hours ago" },
-  { id: 4, name: "Rahul Bajaj", email: "rahul@example.com", totalAmount: "12,000", category: "SILVER", lastDonation: "1 month ago" },
-];
+import { client } from "../../lib/api/client";
 
 export function AdminDonors() {
+  const [donors, setDonors] = useState<any[]>([]);
+  const [mappingStats, setMappingStats] = useState({ oneTime: 0, recurring: 0 });
+  const [isLoading, setIsLoading] = useState(true);
+  const [searchQuery, setSearchQuery] = useState("");
+
   const containerVariants = {
     hidden: { opacity: 0 },
     visible: { opacity: 1, transition: { staggerChildren: 0.1 } }
@@ -29,6 +28,26 @@ export function AdminDonors() {
     hidden: { opacity: 0, y: 15 },
     visible: { opacity: 1, y: 0, transition: { type: "spring", stiffness: 300, damping: 24 } }
   };
+
+  useEffect(() => {
+    setIsLoading(true);
+    Promise.all([
+      client.get<any[]>('/admin/donors'),
+      client.get<any>('/admin/stats?range=30D')
+    ]).then(([donorsData, statsData]) => {
+      setDonors(donorsData || []);
+      if (statsData?.mappingStats) {
+        setMappingStats(statsData.mappingStats);
+      }
+    })
+    .catch(err => console.error("Error loading donors:", err))
+    .finally(() => setIsLoading(false));
+  }, []);
+
+  const filteredDonors = donors.filter(d => 
+    d.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
+    d.email.toLowerCase().includes(searchQuery.toLowerCase())
+  );
 
   return (
     <motion.div 
@@ -51,6 +70,8 @@ export function AdminDonors() {
                 <Search size={14} className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400 group-focus-within:text-black transition-colors" />
                 <input 
                     placeholder="Search by name or email..." 
+                    value={searchQuery}
+                    onChange={(e) => setSearchQuery(e.target.value)}
                     className="h-12 pl-11 pr-6 rounded-2xl bg-white border border-slate-200 outline-none focus:border-black text-xs font-bold text-slate-700 shadow-sm w-[280px] transition-all placeholder:text-slate-400"
                 />
             </div>
@@ -82,14 +103,14 @@ export function AdminDonors() {
             </div>
             <div className="relative z-10 flex gap-12 sm:gap-16">
                 {[
-                    { label: "One-time Data", count: "842", icon: Coins },
-                    { label: "Recurring Data", count: "442", icon: Heart }
+                    { label: "One-time Data", count: mappingStats.oneTime.toString(), icon: Coins },
+                    { label: "Recurring Data", count: mappingStats.recurring.toString(), icon: Heart }
                 ].map((m, i) => (
                     <div key={i} className="text-center group">
                         <div className="w-12 h-12 rounded-2xl bg-white/10 flex items-center justify-center mx-auto mb-4 group-hover:bg-white/20 transition-colors">
                             <m.icon size={20} className="text-white" />
                         </div>
-                        <p className="text-3xl font-black text-white leading-none mb-2">{m.count}</p>
+                        <p className="text-3xl font-black text-white leading-none mb-2">{isLoading ? "..." : m.count}</p>
                         <p className="text-[10px] font-bold text-slate-400 uppercase tracking-[0.2em]">{m.label}</p>
                     </div>
                 ))}
@@ -110,43 +131,53 @@ export function AdminDonors() {
               </tr>
             </thead>
             <tbody className="divide-y divide-slate-100">
-              {donors.map((donor, i) => (
-                <tr key={i} className="hover:bg-slate-50/50 transition-colors group">
-                  <td className="px-8 py-6">
-                     <div className="flex items-center gap-4">
-                        <div className="w-12 h-12 rounded-2xl bg-slate-100 border border-slate-200 flex items-center justify-center font-black text-slate-600 text-sm">
-                           {donor.name.split(' ').map(n => n[0]).join('')}
-                        </div>
-                        <div>
-                           <p className="font-black text-black tracking-tight text-[15px] mb-0.5">{donor.name}</p>
-                           <p className="text-[11px] font-bold text-slate-400">{donor.email}</p>
-                        </div>
-                     </div>
-                  </td>
-                  <td className="px-8 py-6 text-center">
-                     <div className="inline-flex items-center px-3 py-1.5 bg-slate-100 border border-slate-200 rounded-lg text-slate-600 font-bold text-[9px] uppercase tracking-widest">
-                        {donor.category}
-                     </div>
-                  </td>
-                  <td className="px-8 py-6 text-center">
-                     <div className="flex items-center justify-center gap-2">
-                        <div className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse" />
-                        <span className="text-[10px] font-bold uppercase text-slate-500 tracking-widest">Active</span>
-                     </div>
-                  </td>
-                  <td className="px-8 py-6 text-right">
-                     <p className="font-black text-black text-lg tracking-tighter">₹{donor.totalAmount}</p>
-                     <p className="text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-1 flex items-center justify-end gap-1"><Activity size={10} /> Verified</p>
-                  </td>
-                  <td className="px-8 py-6">
-                     <div className="flex items-center justify-center">
-                        <button className="w-10 h-10 rounded-xl hover:bg-black hover:text-white text-slate-400 transition-all flex items-center justify-center group-hover:scale-110">
-                           <ArrowRight size={16} />
-                        </button>
-                     </div>
-                  </td>
+              {isLoading ? (
+                <tr>
+                  <td colSpan={5} className="px-8 py-12 text-center text-slate-400 font-bold uppercase tracking-widest">Loading Ledger...</td>
                 </tr>
-              ))}
+              ) : filteredDonors.length > 0 ? (
+                filteredDonors.map((donor) => (
+                  <tr key={donor.id} className="hover:bg-slate-50/50 transition-colors group">
+                    <td className="px-8 py-6">
+                       <div className="flex items-center gap-4">
+                          <div className="w-12 h-12 rounded-2xl bg-slate-100 border border-slate-200 flex items-center justify-center font-black text-slate-600 text-sm">
+                             {donor.name.split(' ').map((n: string) => n[0]).join('').slice(0, 2)}
+                          </div>
+                          <div>
+                             <p className="font-black text-black tracking-tight text-[15px] mb-0.5">{donor.name}</p>
+                             <p className="text-[11px] font-bold text-slate-400">{donor.email}</p>
+                          </div>
+                       </div>
+                    </td>
+                    <td className="px-8 py-6 text-center">
+                       <div className="inline-flex items-center px-3 py-1.5 bg-slate-100 border border-slate-200 rounded-lg text-slate-600 font-bold text-[9px] uppercase tracking-widest">
+                          {donor.category}
+                       </div>
+                    </td>
+                    <td className="px-8 py-6 text-center">
+                       <div className="flex items-center justify-center gap-2">
+                          <div className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse" />
+                          <span className="text-[10px] font-bold uppercase text-slate-500 tracking-widest">Active</span>
+                       </div>
+                    </td>
+                    <td className="px-8 py-6 text-right">
+                       <p className="font-black text-black text-lg tracking-tighter">₹{donor.totalAmount}</p>
+                       <p className="text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-1 flex items-center justify-end gap-1"><Activity size={10} /> {donor.lastDonation}</p>
+                    </td>
+                    <td className="px-8 py-6">
+                       <div className="flex items-center justify-center">
+                          <button className="w-10 h-10 rounded-xl hover:bg-black hover:text-white text-slate-400 transition-all flex items-center justify-center group-hover:scale-110">
+                             <ArrowRight size={16} />
+                          </button>
+                       </div>
+                    </td>
+                  </tr>
+                ))
+              ) : (
+                <tr>
+                  <td colSpan={5} className="px-8 py-12 text-center text-slate-400 font-bold uppercase tracking-widest">No donors found</td>
+                </tr>
+              )}
             </tbody>
           </table>
         </div>
