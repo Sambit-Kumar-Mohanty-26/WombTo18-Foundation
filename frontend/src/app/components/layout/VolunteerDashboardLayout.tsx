@@ -48,6 +48,7 @@ export function VolunteerDashboardLayout() {
     { href: `/volunteer/${volId}/camps`, label: "Camps", icon: Tent },
     { href: `/volunteer/${volId}/leaderboard`, label: "Leaderboard", icon: Trophy },
     { href: `/volunteer/${volId}/certificates`, label: "Certificates", icon: Award },
+    { href: `/volunteer/${volId}/commissions`, label: "Commissions", icon: Zap },
     { href: `/volunteer/${volId}/stats`, label: "Stats", icon: BarChart3 },
     { href: `/volunteer/${volId}/profile`, label: "Profile", icon: User },
   ];
@@ -59,7 +60,7 @@ export function VolunteerDashboardLayout() {
   return (
     <div className="min-h-screen flex bg-[#FFFAF0]">
       {/* Sidebar */}
-      <aside className={`fixed inset-y-0 left-0 z-50 w-[260px] bg-gradient-to-b from-[#1a0e00] to-[#2d1800] text-white transform transition-transform duration-300 lg:translate-x-0 lg:static ${sidebarOpen ? "translate-x-0" : "-translate-x-full"}`}>
+      <aside className={`fixed inset-y-0 left-0 z-50 w-[260px] bg-gradient-to-b from-[#1a0e00] to-[#2d1800] text-white transform transition-transform duration-300 lg:translate-x-0 lg:sticky lg:top-0 lg:h-screen lg:shrink-0 ${sidebarOpen ? "translate-x-0" : "-translate-x-full"}`}>
         <div className="flex flex-col h-full">
           {/* Logo */}
           <div className="p-5 flex items-center justify-between border-b border-white/5">

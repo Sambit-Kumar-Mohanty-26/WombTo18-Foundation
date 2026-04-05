@@ -1,10 +1,11 @@
 import React, { useState, useRef, useEffect } from "react";
-import { Baby, GraduationCap, HeartPulse, Apple, Users, Shield, ArrowRight, Heart, CheckCircle, Leaf, Target, Activity, Syringe, Smartphone, MessageSquare, Mail, Stethoscope, AlertTriangle, ShieldAlert, Brain, Radio, Flame } from "lucide-react";
+import { Baby, GraduationCap, HeartPulse, Apple, Users, Shield, ArrowRight, Heart, CheckCircle, Leaf, Target, Activity, Syringe, Smartphone, MessageSquare, Mail, Stethoscope, AlertTriangle, ShieldAlert, Brain, Radio, Flame, Coins, MapPin, Calendar, Tent } from "lucide-react";
 import { Card, CardContent } from "../components/ui/card";
 import { Button } from "../components/ui/button";
 import { Progress } from "../components/ui/progress";
 import { Badge } from "../components/ui/badge";
 import { Link } from "react-router";
+import { client } from "../lib/api/client";
 import { motion, AnimatePresence, useInView, animate } from "motion/react";
 import { getDocument, GlobalWorkerOptions } from "pdfjs-dist";
 
@@ -392,6 +393,170 @@ function formatINR(amount: number) {
     return `₹${(amount / 100000).toFixed(1)}L`;
   }
   return `₹${amount.toLocaleString("en-IN")}`;
+}
+
+function UpcomingCampsSection() {
+  const [camps, setCamps] = useState<any[]>([]);
+
+  useEffect(() => {
+    client.get<any[]>('/camps/upcoming')
+      .then(data => {
+        const sorted = (data || [])
+          .filter((c: any) => c.totalCoinPool > 0)
+          .sort((a: any, b: any) => (b.totalCoinPool || 0) - (a.totalCoinPool || 0))
+          .slice(0, 3);
+        setCamps(sorted);
+      })
+      .catch(() => setCamps([]));
+  }, []);
+
+  const purposeMap: any = {
+    HEALTH: { img: "/images/camps/camp_health.png", color: "bg-emerald-50", text: "text-emerald-600" },
+    EDUCATION: { img: "/images/camps/camp_education.png", color: "bg-blue-50", text: "text-blue-600" },
+    ENVIRONMENT: { img: "/images/camps/camp_environment.png", color: "bg-green-50", text: "text-green-600" },
+    COMMUNITY: { img: "/images/camps/camp_community.png", color: "bg-indigo-50", text: "text-indigo-600" },
+    YOUTH: { img: "/images/camps/camp_youth.png", color: "bg-amber-50", text: "text-amber-600" },
+  };
+
+  if (camps.length === 0) return null;
+
+  return (
+    <section className="py-24 sm:py-32 bg-[#FBFCFA] border-t border-gray-100 relative overflow-hidden">
+      <div className="absolute top-0 left-0 w-full h-full pointer-events-none opacity-40">
+        <div className="absolute top-[10%] right-[-5%] w-[500px] h-[500px] bg-[radial-gradient(circle,_rgba(29,110,63,0.05)_0%,_transparent_70%)] blur-3xl" />
+        <div className="absolute bottom-[5%] left-[-5%] w-[400px] h-[400px] bg-[radial-gradient(circle,_rgba(245,158,11,0.04)_0%,_transparent_70%)] blur-3xl" />
+      </div>
+
+      <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 relative z-10">
+        <motion.div
+          initial={{ opacity: 0, y: 30 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true }}
+          transition={{ duration: 0.8, ease: [0.22, 1, 0.36, 1] }}
+          className="text-center mb-16 lg:mb-20"
+        >
+          <Badge className="bg-emerald-50 text-emerald-700 hover:bg-emerald-100 border-none px-5 py-2 rounded-full text-[10px] font-black uppercase tracking-[0.2em] shadow-sm mb-6">
+            <Tent className="w-4 h-4 mr-2" /> Impact Opportunities
+          </Badge>
+          <h2 className="text-4xl md:text-5xl lg:text-6xl font-black text-slate-900 tracking-tighter mb-6">
+            Join the <span className="text-emerald-500">Mission.</span> <br />
+            Earn <span className="text-amber-500 italic">Impact Rewards.</span>
+          </h2>
+          <p className="text-lg text-slate-500 max-w-2xl mx-auto font-medium leading-relaxed">
+            Our upcoming camps offer a chance to serve the community while earning rewards through our dynamic coin pool system.
+          </p>
+        </motion.div>
+
+        <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-10">
+          {camps.map((camp, i) => {
+            const purpose = purposeMap[camp.purpose] || purposeMap.HEALTH;
+            const campDate = new Date(camp.date);
+            const participants = camp._count?.participations || 0;
+
+            return (
+              <motion.div
+                key={camp.id}
+                initial={{ opacity: 0, y: 40 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true }}
+                transition={{ duration: 0.7, delay: i * 0.15, ease: [0.22, 1, 0.36, 1] }}
+                className="group relative flex justify-center w-full"
+              >
+                <Card className="border border-[#e8dfce] bg-[#fcfbf9] shadow-[0_15px_40px_-15px_rgba(160,140,110,0.15)] rounded-[28px] hover:shadow-[0_25px_50px_-15px_rgba(160,140,110,0.25)] hover:-translate-y-1 transition-all duration-500 w-full max-w-[400px] flex flex-col p-6 mx-auto relative z-10 box-border h-full">
+                  
+                  {/* Top Layer: Header + Image */}
+                  <div className="flex gap-4 mb-4">
+                    
+                    {/* Illustration Area */}
+                    <div className={`relative w-[84px] h-[84px] flex-shrink-0 ${purpose.color || 'bg-emerald-50'} rounded-[20px] flex items-center justify-center group-hover:rotate-2 transition-transform duration-500 border border-white/50 shadow-inner`}>
+                      <img src={purpose.img} alt={camp.purpose} className="w-[110%] h-[110%] object-contain relative z-10 -mt-1 drop-shadow-md" />
+                      
+                      {/* Coins overlapping the image container */}
+                      <div className="absolute -bottom-2 -right-3 bg-gradient-to-br from-amber-400 to-orange-500 text-white px-2.5 py-0.5 rounded-full shadow-lg shadow-orange-500/30 text-[10px] font-black flex items-center gap-1.5 border-[2px] border-white z-20">
+                        <Coins size={12} strokeWidth={2.5} />
+                        {camp.totalCoinPool >= 1000 ? (camp.totalCoinPool/1000).toFixed(1).replace(/\.0$/, '') + 'k' : camp.totalCoinPool}
+                      </div>
+                    </div>
+                    
+                    {/* Header Info */}
+                    <div className="flex flex-col flex-1 justify-center pt-1">
+                      <div className="flex items-center flex-wrap gap-2 mb-1.5">
+                        <span className={`text-[10px] font-black uppercase tracking-[0.15em] ${purpose.text || 'text-emerald-700'}`}>
+                          {camp.purpose === "HEALTH" ? "Good Camp" : `${camp.purpose} Camp`}
+                        </span>
+                        <span className="w-1 h-1 rounded-full bg-[#d6cfb8]" />
+                        <span className="flex items-center text-[9px] font-bold text-emerald-700 bg-emerald-50 px-1.5 py-0.5 rounded uppercase tracking-wider border border-emerald-100 shadow-sm shadow-emerald-100/50">
+                          <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 mr-1.5 animate-pulse" />
+                          {camp.status}
+                        </span>
+                      </div>
+                      <h3 className="text-[19px] font-black text-[#2d2926] leading-[1.2] line-clamp-2 group-hover:text-amber-700 transition-colors">
+                        {camp.name}
+                      </h3>
+                    </div>
+
+                  </div>
+
+                  {/* Description (Absorbs space naturally) */}
+                  <div className="text-[13px] text-[#7a7161] font-medium leading-[1.6] line-clamp-2 mb-6 px-1 flex-1">
+                    {camp.description && camp.description.length > 15 ? camp.description : "Free health check-ups, basic consultations and essential health awareness for a stronger community."}
+                  </div>
+
+                  {/* Wrapper for Stats & Footer to stick to bottom neatly */}
+                  <div className="mt-auto flex flex-col gap-5">
+                    {/* Compact Stats Row */}
+                    <div className="flex justify-between items-center bg-white/60 backdrop-blur-sm rounded-[18px] border border-[#efe9dc] shadow-[0_2px_10px_-2px_rgba(160,140,110,0.06)] p-3.5">
+                      
+                      {/* Location slice */}
+                      <div className="flex items-center gap-3 pr-1 w-1/2">
+                        <div className="w-8 h-8 rounded-[12px] bg-white flex items-center justify-center text-emerald-600 shadow-sm border border-[#efe9dc] flex-shrink-0 group-hover:text-emerald-500 transition-colors">
+                           <MapPin size={16} strokeWidth={2.5} />
+                        </div>
+                        <div className="flex flex-col overflow-hidden w-full">
+                          <span className="text-[9px] font-bold text-stone-400 uppercase tracking-widest leading-none mb-1">Where</span>
+                          <span className="text-[12px] font-black text-stone-800 leading-none truncate w-full" title={camp.location}>{camp.location}</span>
+                        </div>
+                      </div>
+                      
+                      {/* Separator line */}
+                      <div className="w-[1px] h-8 bg-[#e8dfce]/60" />
+                      
+                      {/* Date slice */}
+                      <div className="flex items-center gap-3 pl-3 w-1/2">
+                        <div className="w-8 h-8 rounded-[12px] bg-white flex items-center justify-center text-blue-600 shadow-sm border border-[#efe9dc] flex-shrink-0 group-hover:text-blue-500 transition-colors">
+                           <Calendar size={16} strokeWidth={2.5} />
+                        </div>
+                        <div className="flex flex-col">
+                          <span className="text-[9px] font-bold text-stone-400 uppercase tracking-widest leading-none mb-1">When</span>
+                          <span className="text-[12px] font-black text-stone-800 leading-none">{campDate.toLocaleDateString('en-GB', { day: 'numeric', month: 'short' })}</span>
+                        </div>
+                      </div>
+
+                    </div>
+
+                    {/* Footer Group */}
+                    <div className="flex items-center justify-between px-1">
+                       <div className="flex items-center gap-2 bg-purple-50/60 text-purple-700 px-3 py-2 rounded-[14px] border border-purple-100/40">
+                         <Users size={14} strokeWidth={2.5} className="text-purple-600" />
+                         <span className="text-[12px] font-bold">{participants} volunteers</span>
+                       </div>
+
+                      <Link to="/volunteer/login">
+                        <Button className="rounded-xl bg-[#2d2926] hover:bg-[#1a1714] text-white font-bold text-[13px] h-10 px-5 transition-all shadow-lg group-hover:scale-105 active:scale-95 border border-transparent hover:border-[#423c37] flex items-center gap-2">
+                          Join Camp <ArrowRight size={14} strokeWidth={3} />
+                        </Button>
+                      </Link>
+                    </div>
+                  </div>
+
+                </Card>
+              </motion.div>
+            )
+          })}
+        </div>
+      </div>
+    </section>
+  );
 }
 
 export function ServicesPage() {
@@ -1362,6 +1527,7 @@ export function ServicesPage() {
         </div>
       </section>
 
+      <UpcomingCampsSection />
       {/* CTA */}
       <section className="py-24 bg-white border-t border-gray-100 relative overflow-hidden">
         {/* Decorative elements */}

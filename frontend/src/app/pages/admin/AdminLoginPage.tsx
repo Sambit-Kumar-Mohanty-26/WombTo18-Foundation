@@ -1,12 +1,10 @@
 import { useState } from "react";
 import { useNavigate } from "react-router";
-import { ShieldCheck, Lock, Mail, ArrowRight, Loader2, Building2 } from "lucide-react";
-import { Button } from "../../components/ui/button";
-import { Input } from "../../components/ui/input";
-import { Card, CardContent } from "../../components/ui/card";
+import { ShieldCheck, Lock, Mail, ArrowRight, Loader2, Building2, Sparkles, Zap, ShieldAlert } from "lucide-react";
 import { toast } from "sonner";
 import { useAuth } from "../../context/AuthContext";
 import { auth } from "../../lib/auth";
+import { motion } from "motion/react";
 
 export function AdminLoginPage() {
   const [email, setEmail] = useState("");
@@ -21,123 +19,130 @@ export function AdminLoginPage() {
 
     try {
       if (email.includes("partner")) {
-        // Mock partner login for now
         await new Promise(resolve => setTimeout(resolve, 1000));
         login(email, true, "NGO Partner", "PARTNER");
         const session = { identifier: email, eligible: true, name: "NGO Partner", role: "PARTNER", token: "mock-partner-token" };
         localStorage.setItem("donor_session", JSON.stringify(session));
-        toast.success("Partner Dashboard Loaded");
+        toast.success("Login Successful: Partner Access Granted");
         navigate("/partner");
         return;
       }
 
-      // Real Admin Login Flow
       const res = await auth.adminLogin(email, password);
       if (res.token) {
         login(email, true, "Super Admin", "ADMIN");
-        toast.success("Welcome back, Administrator");
+        toast.success("Login Successful: Administrator Active");
         navigate("/admin");
       } else {
-        toast.error(res.message || "Invalid corporate credentials");
+        toast.error(res.message || "Invalid credentials");
       }
     } catch (err: any) {
-      toast.error(err.message || "Authentication failed.");
+      toast.error(err.message || "Login failed.");
     } finally {
       setIsLoading(false);
     }
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-[#0a3a1e] relative overflow-hidden px-4">
-      {/* Premium Background Elements */}
-      <div className="absolute top-0 left-0 w-full h-full opacity-20 pointer-events-none">
-        <div className="absolute top-[-10%] right-[-10%] w-[50%] h-[50%] rounded-full bg-emerald-500 blur-[120px]" />
-        <div className="absolute bottom-[-10%] left-[-10%] w-[50%] h-[50%] rounded-full bg-orange-500/30 blur-[120px]" />
+    <div className="min-h-screen flex items-center justify-center bg-slate-50 relative overflow-hidden px-4 font-sans">
+      <div className="absolute inset-0 pointer-events-none">
+         <div className="absolute top-[-20%] left-[-10%] w-[60%] h-[60%] rounded-full bg-sky-100/50 blur-[120px]" />
+         <div className="absolute bottom-[-20%] right-[-10%] w-[60%] h-[60%] rounded-full bg-emerald-50/50 blur-[120px]" />
+         <div className="absolute top-[30%] left-[40%] w-[40%] h-[40%] rounded-full bg-purple-50/30 blur-[120px]" />
       </div>
 
-      <div className="w-full max-w-md z-10 animate-in fade-in slide-in-from-bottom-4 duration-700">
-        <div className="text-center mb-8">
-          <div className="inline-flex items-center justify-center w-16 h-16 rounded-2xl bg-white/10 backdrop-blur-xl border border-white/20 mb-4 shadow-2xl">
-            <ShieldCheck className="h-8 w-8 text-emerald-400" />
-          </div>
-          <h1 className="text-3xl font-bold text-white tracking-tight">Management Portal</h1>
-          <p className="text-emerald-400/60 text-sm mt-2 font-medium tracking-wide">Staff & Partner Authentication</p>
+      <motion.div 
+        initial={{ opacity: 0, y: 30 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.8, type: "spring" }}
+        className="w-full max-w-lg z-10"
+      >
+        <div className="text-center mb-12">
+           <motion.div 
+             initial={{ scale: 0.8 }}
+             animate={{ scale: 1 }}
+             className="inline-flex items-center justify-center w-20 h-20 rounded-[2.5rem] bg-white border border-sky-100 shadow-2xl shadow-sky-900/[0.05] mb-6"
+           >
+             <ShieldCheck className="h-10 w-10 text-sky-500" />
+           </motion.div>
+           <h1 className="text-4xl font-black text-slate-900 tracking-tighter uppercase">Admin <span className="text-sky-500">Login</span></h1>
+           <p className="text-slate-400 font-bold text-xs mt-3 uppercase tracking-[0.4em]">Foundation Portal Access</p>
         </div>
 
-        <Card className="bg-white/5 backdrop-blur-2xl border-white/10 shadow-2xl overflow-hidden rounded-3xl">
-          <CardContent className="pt-8 px-8 pb-10">
-            <form onSubmit={handleLogin} className="space-y-6">
+        <div className="bg-white/80 backdrop-blur-2xl border border-white shadow-2xl shadow-sky-900/[0.05] rounded-[3.5rem] overflow-hidden p-12">
+            <form onSubmit={handleLogin} className="space-y-8">
               <div className="space-y-2">
-                <label className="text-xs font-bold text-emerald-400 uppercase tracking-widest ml-1">Corporate Email</label>
+                <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest ml-4">Email Address *</p>
                 <div className="relative group">
-                  <Mail className="absolute left-4 top-1/2 -translate-y-1/2 h-5 w-5 text-emerald-500/50 group-focus-within:text-emerald-400 transition-colors" />
-                  <Input 
+                  <Mail className="absolute left-6 top-1/2 -translate-y-1/2 h-5 w-5 text-slate-300 group-focus-within:text-sky-400 transition-colors" />
+                  <input 
                     type="email" 
-                    placeholder="name@foundation.org" 
+                    placeholder="admin@foundation.org" 
                     value={email}
                     onChange={(e) => setEmail(e.target.value)}
                     required
-                    className="bg-white/5 border-white/10 text-white placeholder:text-white/20 pl-12 h-14 rounded-2xl focus:ring-emerald-500/50 focus:border-emerald-500/50 transition-all"
+                    className="w-full bg-slate-50 border border-slate-100 text-slate-800 placeholder:text-slate-300 pl-14 pr-8 h-16 rounded-3xl outline-none focus:border-sky-200 focus:bg-white transition-all shadow-inner font-black text-sm"
                   />
                 </div>
               </div>
 
               <div className="space-y-2">
-                <div className="flex justify-between items-center ml-1">
-                  <label className="text-xs font-bold text-emerald-400 uppercase tracking-widest">Security Password</label>
-                  <button type="button" className="text-[10px] text-white/40 hover:text-white transition-colors">Forgot?</button>
+                <div className="flex justify-between items-center ml-4">
+                  <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest">Password *</p>
+                  <button type="button" className="text-[10px] font-black text-sky-500 hover:text-sky-600 uppercase tracking-widest underline decoration-sky-100">Reset</button>
                 </div>
                 <div className="relative group">
-                  <Lock className="absolute left-4 top-1/2 -translate-y-1/2 h-5 w-5 text-emerald-500/50 group-focus-within:text-emerald-400 transition-colors" />
-                  <Input 
+                  <Lock className="absolute left-6 top-1/2 -translate-y-1/2 h-5 w-5 text-slate-300 group-focus-within:text-sky-400 transition-colors" />
+                  <input 
                     type="password" 
                     placeholder="••••••••" 
                     value={password}
                     onChange={(e) => setPassword(e.target.value)}
                     required
-                    className="bg-white/5 border-white/10 text-white placeholder:text-white/20 pl-12 h-14 rounded-2xl focus:ring-emerald-500/50 focus:border-emerald-500/50 transition-all"
+                    className="w-full bg-slate-50 border border-slate-100 text-slate-800 placeholder:text-slate-300 pl-14 pr-8 h-16 rounded-3xl outline-none focus:border-sky-200 focus:bg-white transition-all shadow-inner font-black text-sm"
                   />
                 </div>
               </div>
 
-              <Button 
-                type="submit" 
-                disabled={isLoading}
-                className="w-full h-14 bg-emerald-600 hover:bg-emerald-500 text-white font-bold rounded-2xl shadow-xl shadow-emerald-900/40 transition-all active:scale-95 group"
-              >
-                {isLoading ? (
-                  <Loader2 className="h-5 w-5 animate-spin" />
-                ) : (
-                  <>
-                    Authorize Access
-                    <ArrowRight className="ml-2 h-5 w-5 group-hover:translate-x-1 transition-transform" />
-                  </>
-                )}
-              </Button>
+              <div className="pt-4">
+                <button 
+                  type="submit" 
+                  disabled={isLoading}
+                  className="w-full h-16 bg-sky-500 hover:bg-sky-600 text-white font-black text-[12px] uppercase tracking-[0.2em] rounded-3xl shadow-2xl shadow-sky-500/20 transition-all active:scale-95 flex items-center justify-center group"
+                >
+                  {isLoading ? (
+                    <Loader2 className="h-6 w-6 animate-spin" />
+                  ) : (
+                    <span className="flex items-center gap-2">
+                      Sign In to Dashboard
+                      <ArrowRight className="h-5 w-5 group-hover:translate-x-1 transition-transform" />
+                    </span>
+                  )}
+                </button>
+              </div>
             </form>
 
-            <div className="mt-8 pt-6 border-t border-white/5 flex items-center justify-between text-[11px] text-white/30">
-              <span className="flex items-center gap-1.5"><Building2 className="h-3 w-3" /> Partner Protocol v2.4</span>
-              <span>Secure Shell v3</span>
+            <div className="mt-12 pt-8 border-t border-slate-50 flex items-center justify-between text-[9px] font-black text-slate-300 uppercase tracking-widest">
+              <span className="flex items-center gap-2"> Foundation Admin v1.0</span>
+              <span className="flex items-center gap-2"><ShieldAlert className="h-3 w-3 text-emerald-400" /> Secure Connection</span>
             </div>
-          </CardContent>
-        </Card>
+        </div>
 
-        <div className="flex items-center justify-between mt-8 text-xs font-medium px-2">
+        <div className="flex items-center justify-between mt-10 px-6">
           <button 
             onClick={() => navigate("/")}
-            className="text-white/30 hover:text-emerald-400 transition-colors"
+            className="text-[10px] font-black text-slate-400 hover:text-sky-500 uppercase tracking-widest transition-colors flex items-center gap-2 group"
           >
-            ← Application Homepage
+            ← Back to Home
           </button>
           <button 
             onClick={() => navigate("/volunteer/login")}
-            className="text-white/30 hover:text-emerald-400 transition-colors"
+            className="text-[10px] font-black text-slate-400 hover:text-sky-500 uppercase tracking-widest transition-colors"
           >
-            Volunteer Access
+            Volunteer Login
           </button>
         </div>
-      </div>
+      </motion.div>
     </div>
   );
 }

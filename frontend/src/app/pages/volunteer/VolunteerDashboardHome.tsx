@@ -96,7 +96,7 @@ export function VolunteerDashboardHome() {
             </Badge>
           </p>
         </div>
-        <Link to="/volunteer/leaderboard">
+        <Link to={`/volunteer/${volId}/leaderboard`}>
           <Button className="bg-gradient-to-r from-amber-500 to-orange-500 text-white font-black shadow-lg shadow-amber-500/20 rounded-xl">
             <Trophy className="h-4 w-4 mr-2" /> View Leaderboard
           </Button>
@@ -145,7 +145,7 @@ export function VolunteerDashboardHome() {
               <p className="text-[10px] uppercase tracking-widest font-black text-amber-800/40 mb-2 text-center">Recent Referrals</p>
               {(data?.recentReferrals || []).length > 0 ? (
                 <div className="space-y-1.5">
-                  {data!.recentReferrals.slice(0, 3).map((r: any, i: number) => (
+                  {data!.recentReferrals.slice(0, 2).map((r: any, i: number) => (
                     <div key={i} className="flex items-center justify-between bg-white p-2 rounded-xl text-[11px] border border-amber-100">
                       <span className="font-bold text-gray-700 truncate max-w-[90px]">{r.referredName || r.referredEmail}</span>
                       <Badge className={`text-[9px] border-none shadow-none ${r.status === 'DONATED' ? 'bg-emerald-50 text-emerald-700' : 'bg-amber-50 text-amber-700'}`}>
@@ -171,7 +171,7 @@ export function VolunteerDashboardHome() {
                 </CardTitle>
                 <CardDescription>Your recent coin transactions</CardDescription>
               </div>
-              <Link to="/volunteer/coins">
+              <Link to={`/volunteer/${volId}/coins`}>
                 <Button variant="ghost" size="sm" className="text-amber-600 text-xs font-bold">
                   View All <ArrowRight className="h-3 w-3 ml-1" />
                 </Button>
@@ -181,7 +181,7 @@ export function VolunteerDashboardHome() {
           <CardContent className="p-0">
             <div className="divide-y divide-gray-50">
               {(data?.recentTransactions || []).length > 0 ? (
-                data!.recentTransactions.slice(0, 6).map((tx: any, i: number) => {
+                data!.recentTransactions.slice(0, 5).map((tx: any, i: number) => {
                   const typeConfig: Record<string, { icon: any; color: string; bg: string }> = {
                     FIRST_LOGIN: { icon: Gift, color: "text-purple-600", bg: "bg-purple-50" },
                     REFERRAL: { icon: Users, color: "text-blue-600", bg: "bg-blue-50" },
@@ -230,7 +230,7 @@ export function VolunteerDashboardHome() {
             <CardTitle className="text-gray-900 font-black flex items-center gap-2">
               <Tent className="h-5 w-5 text-emerald-500" /> Recent Camp Activity
             </CardTitle>
-            <Link to="/volunteer/camps">
+            <Link to={`/volunteer/${volId}/camps`}>
               <Button variant="ghost" size="sm" className="text-emerald-600 text-xs font-bold">
                 View All <ArrowRight className="h-3 w-3 ml-1" />
               </Button>
@@ -246,7 +246,13 @@ export function VolunteerDashboardHome() {
                       <p className="text-[10px] text-gray-400">{cp.camp?.location} • {new Date(cp.camp?.date).toLocaleDateString()}</p>
                     </div>
                     <Badge className={`text-[9px] font-bold ${cp.participationType === 'ACTIVE' ? 'bg-amber-100 text-amber-700' : 'bg-emerald-50 text-emerald-700'}`}>
-                      {cp.shareSelected ? 'Shared' : 'Waiting'} • +{cp.coinsAwarded}
+                      {cp.volunteerResponse === 'NOT_JOINING'
+                        ? 'Not joining'
+                        : cp.volunteerResponse === 'JOINING'
+                          ? 'Joining'
+                          : cp.shareSelected
+                            ? 'Shared'
+                            : 'Waiting'} • +{cp.coinsAwarded}
                     </Badge>
                   </div>
                 ))}
@@ -284,7 +290,7 @@ export function VolunteerDashboardHome() {
                 <p className="text-[10px] text-white/40 font-bold uppercase tracking-widest">Raised via Referrals</p>
               </div>
             </div>
-            <Link to="/volunteer/certificates">
+            <Link to={`/volunteer/${volId}/certificates`}>
               <Button className="w-full bg-white/10 hover:bg-white/20 border border-white/10 text-white font-black h-12 rounded-xl backdrop-blur-sm">
                 <Award className="h-4 w-4 mr-2" /> Download Certificates
               </Button>

@@ -58,12 +58,15 @@ import { VolunteerCamps } from "./pages/volunteer/VolunteerCamps";
 import { VolunteerLeaderboard } from "./pages/volunteer/VolunteerLeaderboard";
 import { VolunteerCertificates } from "./pages/volunteer/VolunteerCertificates";
 import { VolunteerStats } from "./pages/volunteer/VolunteerStats";
+import { VolunteerProfile } from "./pages/volunteer/VolunteerProfile";
+import { VolunteerCommissions } from "./pages/volunteer/VolunteerCommissions";
 
 // Partner Dashboard
 import { PartnerDashboard } from "./pages/partner/PartnerDashboard";
 import { PartnerReferrals } from "./pages/partner/PartnerReferrals";
 import { PartnerCertificates } from "./pages/partner/PartnerCertificates";
 import { PartnerStats } from "./pages/partner/PartnerStats";
+import { PartnerSignup } from "./pages/partner/PartnerSignup";
 
 // Admin Dashboard
 import { AdminDashboard } from "./pages/admin/AdminDashboard";
@@ -123,6 +126,10 @@ export const router = createBrowserRouter([
     Component: PartnerLogin,
   },
   {
+    path: "/partner/signup",
+    Component: PartnerSignup,
+  },
+  {
     path: "/donor/:id",
     Component: DashboardLayout,
     children: [
@@ -146,7 +153,9 @@ export const router = createBrowserRouter([
       { path: "camps", Component: VolunteerCamps },
       { path: "leaderboard", Component: VolunteerLeaderboard },
       { path: "certificates", Component: VolunteerCertificates },
+      { path: "commissions", Component: VolunteerCommissions },
       { path: "stats", Component: VolunteerStats },
+      { path: "profile", Component: VolunteerProfile },
       { index: true, Component: VolunteerDashboardHome },
     ],
   },

@@ -4,12 +4,23 @@ import { Badge } from "../../components/ui/badge";
 import { Coins, Gift, Users, Tent, Star, Zap, Loader2, TrendingUp } from "lucide-react";
 import { useAuth } from "../../context/AuthContext";
 import { client } from "../../lib/api/client";
+import { 
+  Pagination, 
+  PaginationContent, 
+  PaginationItem, 
+  PaginationLink, 
+  PaginationNext, 
+  PaginationPrevious 
+} from "../../components/ui/pagination";
+
+const ITEMS_PER_PAGE = 4;
 
 export function VolunteerCoins() {
   const { state } = useAuth();
   const [transactions, setTransactions] = useState<any[]>([]);
   const [balance, setBalance] = useState<any>(null);
   const [loading, setLoading] = useState(true);
+  const [currentPage, setCurrentPage] = useState(1);
   const volId = state.user?.volunteerId || state.user?.identifier || "";
 
   useEffect(() => {
@@ -32,6 +43,12 @@ export function VolunteerCoins() {
     CAMP_ACTIVE: { icon: Star, label: "Active Participation", color: "text-amber-600", bg: "bg-amber-50" },
     BONUS: { icon: Zap, label: "Bonus", color: "text-orange-600", bg: "bg-orange-50" },
   };
+
+  const totalPages = Math.ceil(transactions.length / ITEMS_PER_PAGE);
+  const paginatedTransactions = transactions.slice(
+    (currentPage - 1) * ITEMS_PER_PAGE,
+    currentPage * ITEMS_PER_PAGE
+  );
 
   return (
     <div className="space-y-6 animate-in fade-in duration-700">
@@ -72,7 +89,7 @@ export function VolunteerCoins() {
         </CardHeader>
         <CardContent className="p-0">
           <div className="divide-y divide-gray-50">
-            {transactions.length > 0 ? transactions.map((tx: any, i: number) => {
+            {paginatedTransactions.length > 0 ? paginatedTransactions.map((tx: any, i: number) => {
               const cfg = typeIcons[tx.type] || typeIcons.BONUS;
               const Icon = cfg.icon;
               return (
@@ -99,8 +116,35 @@ export function VolunteerCoins() {
               </div>
             )}
           </div>
+          
+          {totalPages > 1 && (
+            <div className="p-4 border-t border-gray-50">
+              <Pagination>
+                <PaginationContent>
+                  <PaginationItem>
+                    <PaginationPrevious 
+                      onClick={() => setCurrentPage(p => Math.max(1, p - 1))}
+                      className={`cursor-pointer ${currentPage === 1 ? "opacity-50 pointer-events-none" : ""}`}
+                    />
+                  </PaginationItem>
+                  <PaginationItem>
+                    <span className="text-xs font-bold text-gray-400 px-4">
+                      Page {currentPage} of {totalPages}
+                    </span>
+                  </PaginationItem>
+                  <PaginationItem>
+                    <PaginationNext 
+                      onClick={() => setCurrentPage(p => Math.min(totalPages, p + 1))}
+                      className={`cursor-pointer ${currentPage === totalPages ? "opacity-50 pointer-events-none" : ""}`}
+                    />
+                  </PaginationItem>
+                </PaginationContent>
+              </Pagination>
+            </div>
+          )}
         </CardContent>
       </Card>
     </div>
   );
 }
+

@@ -7,6 +7,8 @@ import { Avatar, AvatarFallback } from "../ui/avatar";
 import { auth, DonorSession } from "../../lib/auth";
 import { useAuth } from "../../context/AuthContext";
 
+import { useDonorData } from "../../lib/useDonorData";
+
 export function DashboardLayout() {
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const [session, setSession] = useState<DonorSession | null>(null);
@@ -14,6 +16,9 @@ export function DashboardLayout() {
   const location = useLocation();
   const navigate = useNavigate();
   const { id } = useParams();
+
+  // Fetch dynamic donor data (cached across components)
+  const { impactScore } = useDonorData();
 
   useEffect(() => {
     const currentSession = auth.getSession();
@@ -56,7 +61,7 @@ export function DashboardLayout() {
   };
 
   return (
-    <div className="min-h-screen flex text-slate-800 font-sans selection:bg-[#1D6E3F]/20 relative bg-[#FAFAF8] overflow-hidden">
+    <div className="min-h-screen flex text-slate-800 font-sans selection:bg-[#1D6E3F]/20 relative bg-[#FAFAF8]">
       {/* Background Cinematic Glows */}
       <div className="absolute inset-0 pointer-events-none overflow-hidden fixed z-0">
         <div className="absolute -top-[10%] -right-[5%] w-[600px] h-[600px] bg-[radial-gradient(ellipse_at_center,_rgba(29,110,63,0.06)_0%,_transparent_70%)] rounded-full blur-[80px]" />
@@ -66,7 +71,7 @@ export function DashboardLayout() {
 
       {/* Sidebar */}
       <aside
-        className={`fixed inset-y-0 left-0 z-50 w-72 bg-white/70 backdrop-blur-3xl border-r border-white shadow-[10px_0_40px_-20px_rgba(0,0,0,0.05)] transform transition-transform duration-500 ease-[cubic-bezier(0.16,1,0.3,1)] lg:translate-x-0 lg:static ${
+        className={`fixed inset-y-0 left-0 z-50 w-72 bg-white/70 backdrop-blur-3xl border-r border-white shadow-[10px_0_40px_-20px_rgba(0,0,0,0.05)] transform transition-transform duration-500 ease-[cubic-bezier(0.16,1,0.3,1)] lg:translate-x-0 lg:sticky lg:top-0 lg:h-screen lg:shrink-0 ${
           sidebarOpen ? "translate-x-0" : "-translate-x-full"
         }`}
       >
@@ -180,7 +185,7 @@ export function DashboardLayout() {
               <span className="text-[10px] font-black tracking-[0.2em] uppercase text-[#F29F05]">Impact Score</span>
               <div className="flex items-center gap-1.5 mt-0.5">
                 <Award className="h-3.5 w-3.5 text-[#F29F05] fill-[#F29F05]/20" />
-                <span className="text-base text-gray-900 font-extrabold tracking-tight">1,240 <span className="text-xs text-gray-400 font-bold ml-0.5">pts</span></span>
+                <span className="text-base text-gray-900 font-extrabold tracking-tight">{impactScore.toLocaleString()} <span className="text-xs text-gray-400 font-bold ml-0.5">pts</span></span>
               </div>
             </div>
             <div className="h-8 w-px bg-gray-200" />

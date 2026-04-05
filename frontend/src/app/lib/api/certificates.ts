@@ -45,6 +45,24 @@ export const certificateApi = {
   list: async (recipientType: string, userId: string) => {
     return client.get<any[]>(`/certificates/list?recipientType=${recipientType}&userId=${userId}`);
   },
+
+  /** Download volunteer appreciation certificate */
+  downloadVolunteerCert: async (volunteerId: string) => {
+    const blob = await client.get<Blob>(`/certificates/volunteer/${volunteerId}`);
+    triggerDownload(blob, `volunteer-cert-${volunteerId}.pdf`);
+  },
+
+  /** Download camp participation certificate */
+  downloadCampCert: async (volunteerId: string, campId: string) => {
+    const blob = await client.get<Blob>(`/certificates/camp/${volunteerId}/${campId}`);
+    triggerDownload(blob, `camp-cert-${campId}.pdf`);
+  },
+
+  /** Download partner certificate */
+  downloadPartnerCert: async (partnerId: string) => {
+    const blob = await client.get<Blob>(`/certificates/partner/${partnerId}`);
+    triggerDownload(blob, `partner-cert-${partnerId}.pdf`);
+  },
 };
 
 function triggerDownload(blob: Blob, filename: string) {

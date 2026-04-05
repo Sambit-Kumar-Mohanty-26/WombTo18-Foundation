@@ -1,18 +1,18 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Link, Outlet, useLocation, useNavigate } from "react-router";
-import { LayoutDashboard, Users, FolderOpen, FileBarChart, LogOut, Menu, X, ChevronLeft, Newspaper, BookOpen, Tent } from "lucide-react";
+import { LayoutDashboard, Users, FolderOpen, FileBarChart, LogOut, Menu, X, ChevronLeft, Newspaper, BookOpen, Tent, Bell, Search, Command } from "lucide-react";
 import { Avatar, AvatarFallback } from "../ui/avatar";
-import { Badge } from "../ui/badge";
 import { useAuth } from "../../context/AuthContext";
+import { motion, AnimatePresence } from "motion/react";
 
 const adminLinks = [
-  { href: "/admin", label: "Dashboard", icon: LayoutDashboard },
-  { href: "/admin/donors", label: "Manage Donors", icon: Users },
-  { href: "/admin/programs", label: "Programs", icon: FolderOpen },
-  { href: "/admin/reports", label: "Reports", icon: FileBarChart },
-  { href: "/admin/blog", label: "Blog Posts", icon: Newspaper },
-  { href: "/admin/case-studies", label: "Case Studies", icon: BookOpen },
-  { href: "/admin/camps", label: "Camp Management", icon: Tent },
+  { href: "/admin/dashboard", label: "Overview", icon: LayoutDashboard },
+  { href: "/admin/donors", label: "Supporters", icon: Users },
+  { href: "/admin/programs", label: "Initiatives", icon: FolderOpen },
+  { href: "/admin/camps", label: "Health Camps", icon: Tent },
+  { href: "/admin/reports", label: "Analytics", icon: FileBarChart },
+  { href: "/admin/blog", label: "Journal", icon: Newspaper },
+  { href: "/admin/case-studies", label: "Impact Stories", icon: BookOpen },
 ];
 
 export function AdminLayout() {
@@ -22,99 +22,151 @@ export function AdminLayout() {
   const { logout } = useAuth();
 
   return (
-    <div className="min-h-screen flex bg-[#f8fafc]">
-      {/* Premium Admin Sidebar */}
-      <aside
-        className={`fixed inset-y-0 left-0 z-50 w-72 bg-[#0a3a1e] text-white shadow-2xl transition-all duration-500 lg:translate-x-0 lg:static ${
-          sidebarOpen ? "translate-x-0" : "-translate-x-full"
+    <div className="min-h-screen flex bg-slate-50 font-sans selection:bg-black selection:text-white">
+      {/* Sidebar */}
+      <motion.aside
+        initial={false}
+        animate={{ x: sidebarOpen ? 0 : 0 }}
+        className={`fixed inset-y-0 left-0 z-50 w-[280px] bg-white transform transition-transform duration-500 cubic-bezier(0.16, 1, 0.3, 1) lg:translate-x-0 lg:sticky lg:top-0 lg:h-screen lg:shrink-0 flex flex-col border-r border-slate-200/60 ${
+          sidebarOpen ? "translate-x-0" : "-translate-x-full shadow-2xl"
         }`}
       >
-        <div className="flex flex-col h-full">
-          {/* Logo Section */}
-          <div className="p-8 border-b border-white/5">
-            <Link to="/" className="flex items-center gap-3">
-              <div className="w-10 h-10 rounded-xl bg-white/10 flex items-center justify-center border border-white/10 shadow-inner">
-                <img src="/Wombto18 foundation logo icon only.svg" alt="Admin" className="h-6 w-auto" />
-              </div>
-              <div>
-                <h1 className="text-sm font-bold text-white uppercase tracking-widest">Staff Portal</h1>
-                <p className="text-[10px] text-emerald-400/70 font-bold tracking-widest uppercase">Admin System v2.0</p>
-              </div>
-            </Link>
-          </div>
+        {/* Brand Header */}
+        <div className="h-24 px-8 flex items-center justify-between">
+          <Link to="/" className="flex items-center gap-3">
+            <div className="w-10 h-10 bg-black rounded-lg flex items-center justify-center">
+              <span className="text-white font-black text-xl leading-none tracking-tighter">W.</span>
+            </div>
+            <div>
+              <h1 className="text-sm font-bold text-slate-900 tracking-tight leading-none mb-1">Foundation</h1>
+              <p className="text-[10px] font-bold text-slate-400 uppercase tracking-widest">Workspace</p>
+            </div>
+          </Link>
+          <button className="lg:hidden text-slate-400 hover:text-black transition-colors" onClick={() => setSidebarOpen(false)}>
+            <X className="h-5 w-5" />
+          </button>
+        </div>
 
-          <nav className="flex-1 px-4 py-8 space-y-2 overflow-y-auto">
-            {adminLinks.map((link) => (
+        {/* Global Search */}
+        <div className="px-6 mb-6">
+          <div className="relative group">
+            <Search size={14} className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400 group-focus-within:text-black transition-colors" />
+            <input 
+              type="text" 
+              placeholder="Search anything..." 
+              className="w-full bg-slate-100/50 hover:bg-slate-100 border border-transparent rounded-xl py-3 pl-11 pr-4 text-xs font-medium text-slate-700 outline-none focus:bg-white focus:border-slate-300 focus:ring-4 focus:ring-slate-100 transition-all placeholder:text-slate-400"
+            />
+            <div className="absolute right-3 top-1/2 -translate-y-1/2 flex items-center gap-1 opacity-40">
+              <Command size={10} />
+              <span className="text-[10px] font-bold">K</span>
+            </div>
+          </div>
+        </div>
+
+        {/* Navigation */}
+        <nav className="flex-1 px-4 py-2 space-y-1 overflow-y-auto">
+          <div className="px-4 mb-3">
+             <p className="text-[10px] font-bold text-slate-400 uppercase tracking-[0.15em]">Menu</p>
+          </div>
+          {adminLinks.map((link) => {
+            const isActive = location.pathname === link.href || (link.href === "/admin/dashboard" && location.pathname === "/admin");
+            return (
               <Link
                 key={link.href}
                 to={link.href}
                 onClick={() => setSidebarOpen(false)}
-                className={`flex items-center gap-3.5 px-5 py-4 rounded-2xl text-sm font-bold transition-all duration-300 ${
-                  location.pathname === link.href
-                    ? "bg-emerald-600 text-white shadow-xl shadow-emerald-900/50 scale-[1.02]"
-                    : "text-white/40 hover:text-white hover:bg-white/5"
+                className={`group relative flex items-center gap-3.5 px-4 py-3 rounded-xl text-[13px] font-semibold transition-all duration-300 ${
+                  isActive
+                    ? "text-black"
+                    : "text-slate-500 hover:text-slate-900 hover:bg-slate-50"
                 }`}
               >
-                <link.icon className={`h-5 w-5 ${location.pathname === link.href ? "text-white" : "text-emerald-500/50"}`} />
-                {link.label}
+                {isActive && (
+                   <motion.div 
+                     layoutId="activePillAdminModern" 
+                     className="absolute inset-0 bg-slate-100/80 rounded-xl mix-blend-multiply" 
+                     transition={{ type: "spring", stiffness: 300, damping: 30 }}
+                   />
+                )}
+                <link.icon className={`h-4 w-4 relative z-10 ${isActive ? "text-black" : "text-slate-400 group-hover:text-slate-600"}`} />
+                <span className="relative z-10">{link.label}</span>
               </Link>
-            ))}
-          </nav>
+            );
+          })}
+        </nav>
 
-          {/* Footer of Sidebar */}
-          <div className="p-6 border-t border-white/5 space-y-2">
-            <Link
-              to="/"
-              className="flex items-center gap-3 px-5 py-3.5 rounded-xl text-xs font-bold text-white/40 hover:text-white hover:bg-white/5 transition-colors"
-            >
-              <ChevronLeft className="h-4 w-4" /> Exit to Homepage
-            </Link>
-            <button 
-              onClick={() => { logout(); navigate("/"); }}
-              className="flex items-center gap-3 px-5 py-3.5 rounded-xl text-xs font-bold text-white/30 hover:text-rose-400 hover:bg-rose-500/10 transition-colors w-full"
-            >
-              <LogOut className="h-4 w-4" /> End Session
-            </button>
+        {/* User Block Footer */}
+        <div className="p-4 mx-4 mb-4 border border-slate-200 rounded-2xl bg-white relative overflow-hidden group hover:border-slate-300 transition-colors">
+          <div className="relative z-10 flex items-center justify-between">
+            <div className="flex items-center gap-3">
+              <Avatar className="h-9 w-9 bg-black rounded-lg">
+                <AvatarFallback className="bg-black text-white text-[11px] font-bold">AD</AvatarFallback>
+              </Avatar>
+              <div>
+                <p className="text-xs font-bold text-slate-900 leading-tight">Admin User</p>
+                <p className="text-[10px] text-slate-500 font-medium mt-0.5">admin@womb18.org</p>
+              </div>
+            </div>
+          </div>
+          <div className="mt-4 pt-3 border-t border-slate-100 flex items-center px-1">
+             <Link to="/" className="text-[11px] font-semibold text-slate-500 hover:text-black flex-1 flex items-center gap-1.5 transition-colors">
+               <ChevronLeft className="h-3 w-3" /> Back
+             </Link>
+             <button 
+               onClick={() => { logout(); navigate("/"); }}
+               className="text-[11px] font-semibold text-rose-500 hover:text-rose-600 flex items-center gap-1.5 transition-colors"
+             >
+               Sign out
+             </button>
           </div>
         </div>
-      </aside>
+      </motion.aside>
 
-      {/* Main Panel Content */}
-      <div className="flex-1 flex flex-col min-w-0 min-h-screen">
-        <header className="sticky top-0 z-30 bg-white/70 backdrop-blur-2xl border-b border-slate-200/50 px-8 py-5 flex items-center gap-4">
-          <button className="lg:hidden p-2.5 -ml-2 text-slate-500 hover:bg-slate-100 rounded-xl" onClick={() => setSidebarOpen(true)}>
-            <Menu className="h-6 w-6" />
+      {/* Main Container */}
+      <div className="flex-1 flex flex-col min-w-0">
+        <header className="sticky top-0 z-30 bg-white border-b border-slate-200 h-20 px-8 flex items-center justify-between">
+          <button className="lg:hidden p-2 -ml-2 text-slate-600 hover:text-black transition-colors" onClick={() => setSidebarOpen(true)}>
+            <Menu className="h-5 w-5" />
           </button>
           
-          <div className="flex-1 flex items-center justify-between">
-            <div className="flex items-center gap-4">
-              <Badge variant="outline" className="hidden sm:inline-flex bg-emerald-50 text-emerald-700 border-emerald-100 font-bold text-[10px] tracking-widest uppercase">
-                Secure Authentication: OK
-              </Badge>
-            </div>
+          <div className="hidden lg:flex items-center gap-2">
+            <div className="h-2 w-2 bg-emerald-500 rounded-full animate-pulse" />
+            <span className="text-[11px] font-bold text-slate-500 uppercase tracking-widest">Platform Operational</span>
+          </div>
 
-            <div className="flex items-center gap-5">
-              <div className="hidden md:block text-right">
-                <p className="text-xs font-bold text-slate-900 leading-none">Super Administrator</p>
-                <p className="text-[10px] text-emerald-600 font-bold uppercase tracking-widest mt-1">Full System Control</p>
-              </div>
-              <Avatar className="h-10 w-10 border-2 border-white shadow-sm ring-2 ring-emerald-500/10">
-                <AvatarFallback className="bg-emerald-600 text-white text-xs font-extrabold uppercase tracking-wider">AD</AvatarFallback>
-              </Avatar>
-            </div>
+          <div className="flex items-center gap-5 ml-auto">
+            <button className="relative p-2 text-slate-400 hover:text-black transition-colors">
+              <Bell className="h-5 w-5" />
+              <span className="absolute top-1.5 right-2 w-2 h-2 bg-rose-500 border-2 border-white rounded-full"></span>
+            </button>
+            <div className="h-5 w-px bg-slate-200" />
+            <button 
+              onClick={() => navigate("/admin/camps/create")}
+              className="bg-black hover:bg-slate-800 text-white text-[13px] font-bold px-5 py-2.5 rounded-full transition-all active:scale-95 shadow-md shadow-black/10"
+            >
+              Create Campaign
+            </button>
           </div>
         </header>
 
-        <main className="flex-1 p-8 lg:p-12 overflow-auto bg-slate-50/50">
-          <div className="max-w-7xl mx-auto min-h-full">
+        <main className="flex-1 overflow-auto bg-slate-50">
+          <div className="p-8 lg:p-12 max-w-[1600px] mx-auto min-h-full">
             <Outlet />
           </div>
         </main>
       </div>
 
-      {sidebarOpen && (
-        <div className="fixed inset-0 bg-[#0a3a1e]/60 backdrop-blur-sm z-40 lg:hidden transition-all duration-300" onClick={() => setSidebarOpen(false)} />
-      )}
+      <AnimatePresence>
+        {sidebarOpen && (
+          <motion.div 
+            initial={{ opacity: 0 }} 
+            animate={{ opacity: 1 }} 
+            exit={{ opacity: 0 }}
+            className="fixed inset-0 bg-slate-900/20 z-40 lg:hidden" 
+            onClick={() => setSidebarOpen(false)} 
+          />
+        )}
+      </AnimatePresence>
     </div>
   );
 }

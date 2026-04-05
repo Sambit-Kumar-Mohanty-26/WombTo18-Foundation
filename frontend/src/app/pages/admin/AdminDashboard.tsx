@@ -1,157 +1,245 @@
-import { Card, CardContent, CardHeader, CardTitle } from "../../components/ui/card";
-import { Badge } from "../../components/ui/badge";
-import { Users, IndianRupee, TrendingUp, Heart, ArrowUp, ArrowDown, Tent } from "lucide-react";
-import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, LineChart, Line, PieChart, Pie, Cell, Legend } from "recharts";
+import { useState, useEffect } from "react";
+import { 
+  Users, 
+  Target, 
+  Coins, 
+  Sparkles, 
+  Activity, 
+  ArrowRight,
+  Heart,
+  TrendingUp
+} from "lucide-react";
+import { 
+  AreaChart, 
+  Area, 
+  XAxis, 
+  YAxis, 
+  CartesianGrid, 
+  Tooltip, 
+  ResponsiveContainer
+} from "recharts";
+import { motion } from "motion/react";
 
+// Placeholder data for the chart, since the backend doesn't aggregate donations by month in stats yet.
 const monthlyRevenue = [
-  { month: "Oct", revenue: 850000, donors: 45 },
-  { month: "Nov", revenue: 920000, donors: 52 },
-  { month: "Dec", revenue: 1450000, donors: 78 },
-  { month: "Jan", revenue: 980000, donors: 55 },
-  { month: "Feb", revenue: 1120000, donors: 63 },
-  { month: "Mar", revenue: 860000, donors: 48 },
+  { month: "Jan", amount: 45 },
+  { month: "Feb", amount: 52 },
+  { month: "Mar", amount: 48 },
+  { month: "Apr", amount: 61 },
+  { month: "May", amount: 55 },
+  { month: "Jun", amount: 67 },
+  { month: "Jul", amount: 72 },
 ];
 
-const programDistribution = [
-  { name: "Education", value: 35, color: "#3b82f6" },
-  { name: "Prenatal", value: 25, color: "#10b981" },
-  { name: "Nutrition", value: 20, color: "#1D6E3F" },
-  { name: "Youth", value: 12, color: "#8b5cf6" },
-  { name: "Protection", value: 8, color: "#ec4899" },
-];
-
-const recentActivity = [
-  { action: "New donation received", detail: "₹25,000 from Vikram Singh", time: "2 hours ago", type: "donation" },
-  { action: "Donor onboarded", detail: "Meera Enterprises (CSR)", time: "5 hours ago", type: "donor" },
-  { action: "Report published", detail: "Q4 2025 Impact Report", time: "1 day ago", type: "report" },
-  { action: "Program milestone", detail: "Education: 8,000 students reached", time: "2 days ago", type: "milestone" },
-  { action: "New donation received", detail: "₹50,000 from Patel Foundation", time: "3 days ago", type: "donation" },
-];
-
-const activityColors: Record<string, string> = {
-  donation: "bg-green-50 text-green-700",
-  donor: "bg-blue-50 text-blue-700",
-  report: "bg-purple-50 text-purple-700",
-  milestone: "bg-amber-50 text-amber-700",
+const activityStyles: any = {
+  Donation: { bg: "bg-emerald-50", text: "text-emerald-500", icon: Coins },
+  Program: { bg: "bg-blue-50", text: "text-blue-500", icon: Target },
+  System: { bg: "bg-slate-100", text: "text-slate-500", icon: Activity },
 };
 
 export function AdminDashboard() {
+  const [stats, setStats] = useState({
+    totalDonations: 0,
+    totalDonors: 0,
+    totalPrograms: 0,
+    recentDonations: [] as any[]
+  });
+  const [isLoading, setIsLoading] = useState(true);
+
+  useEffect(() => {
+    // Fetch real data from the built-in API
+    fetch('http://localhost:3000/admin/stats')
+      .then(res => res.json())
+      .then(data => {
+        if (data) {
+          setStats({
+            totalDonations: data.totalDonations || 0,
+            totalDonors: data.totalDonors || 0,
+            totalPrograms: data.totalPrograms || 0,
+            recentDonations: data.recentDonations || []
+          });
+        }
+      })
+      .catch(err => console.error("Error fetching admin stats:", err))
+      .finally(() => setIsLoading(false));
+  }, []);
+
+  const containerVariants = {
+    hidden: { opacity: 0 },
+    visible: { opacity: 1, transition: { staggerChildren: 0.1 } }
+  };
+
+  const itemVariants: any = {
+    hidden: { opacity: 0, y: 15 },
+    visible: { opacity: 1, y: 0, transition: { type: "spring", stiffness: 300, damping: 24 } }
+  };
+
   return (
-    <div className="bg-gray-50 space-y-6">
-      <div className="animate-in fade-in duration-500">
-        <h1 className="text-2xl text-gray-900 font-bold">Admin Dashboard</h1>
-        <p className="text-gray-600">Overview of foundation operations and financials.</p>
+    <motion.div 
+      variants={containerVariants}
+      initial="hidden"
+      animate="visible"
+      className="space-y-10 pb-10 font-sans"
+    >
+      <div className="flex flex-col md:flex-row md:items-end justify-between gap-6">
+        <div>
+           <div className="mb-4 inline-flex items-center gap-2 px-3 py-1 bg-slate-200/50 text-slate-600 rounded-lg text-[10px] font-bold uppercase tracking-widest">
+             <Sparkles className="w-3 h-3 text-slate-500" /> Platform Overview
+           </div>
+           <h1 className="text-4xl lg:text-5xl font-black text-black tracking-tighter">
+             Command <span className="text-slate-400">Center</span>
+           </h1>
+        </div>
+        <div className="flex items-center gap-4">
+           <div className="p-4 bg-white rounded-2xl border border-slate-200 flex items-center gap-4 shadow-sm">
+              <div className="w-10 h-10 rounded-xl bg-emerald-50 border border-emerald-100 flex items-center justify-center">
+                 <Target className="text-emerald-500" size={18} />
+              </div>
+              <div>
+                 <p className="text-[10px] font-bold text-slate-400 uppercase tracking-widest">Status</p>
+                 <p className="text-sm font-black text-black uppercase">All Systems Normal</p>
+              </div>
+           </div>
+        </div>
       </div>
 
-      {/* KPIs / Stat Cards */}
-      <div className="grid grid-cols-2 lg:grid-cols-5 gap-6">
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
         {[
-          { icon: IndianRupee, label: "Total Revenue", value: "₹13.8 Cr", change: "+24%", up: true },
-          { icon: Users, label: "Active Donors", value: "1,245", change: "+12%", up: true },
-          { icon: Heart, label: "Children Served", value: "15,234", change: "+15%", up: true },
-          { icon: TrendingUp, label: "Fund Utilization", value: "98%", change: "+2%", up: true },
-          { icon: Tent, label: "Active Camps", value: "8", change: "+3 this week", up: true },
-        ].map((kpi) => (
-          <Card key={kpi.label} className="bg-white border-gray-200 shadow-sm hover:shadow-md transition-all duration-300 rounded-lg">
-            <CardContent className="pt-6">
-              <div className="flex items-center justify-between mb-2">
-                <kpi.icon className="h-5 w-5 text-gray-500" />
-                <span className={`text-xs font-semibold flex items-center gap-0.5 ${kpi.up ? "text-green-600" : "text-red-600"}`}>
-                  {kpi.up ? <ArrowUp className="h-3 w-3" /> : <ArrowDown className="h-3 w-3" />}
-                  {kpi.change}
-                </span>
+          { label: "Total Contributors", value: stats.totalDonors, icon: Users, color: "blue", suffix: "" },
+          { label: "Active Programs", value: stats.totalPrograms, icon: Target, color: "rose", suffix: "" },
+          { label: "Total Capital", value: stats.totalDonations, icon: Coins, color: "emerald", prefix: "₹", format: (v: number) => v.toLocaleString() },
+          { label: "System Uptime", value: "99.9%", icon: Activity, color: "slate", suffix: "" }
+        ].map((stat, i) => (
+          <motion.div key={i} variants={itemVariants}>
+            <div className="bg-white border border-slate-200 rounded-3xl p-6 relative overflow-hidden group hover:border-black transition-colors duration-300 shadow-sm">
+              <div className="flex items-center justify-between mb-8 relative z-10">
+                <div className={`w-12 h-12 rounded-2xl bg-slate-50 border border-slate-100 flex items-center justify-center group-hover:scale-110 group-hover:-rotate-3 transition-transform duration-300`}>
+                  <stat.icon size={20} className={`text-slate-700`} />
+                </div>
               </div>
-              <p className="text-2xl text-gray-900 font-extrabold">{kpi.value}</p>
-              <p className="text-xs text-gray-600 mt-1 uppercase tracking-wider font-medium">{kpi.label}</p>
-            </CardContent>
-          </Card>
+              <div className="relative z-10">
+                <h4 className="text-3xl font-black text-black tracking-tighter mb-1">
+                  {isLoading ? "..." : (
+                    <>
+                      {stat.prefix}{stat.format ? stat.format(stat.value as number) : stat.value}{stat.suffix}
+                    </>
+                  )}
+                </h4>
+                <p className="text-[11px] font-bold text-slate-400 uppercase tracking-widest">{stat.label}</p>
+              </div>
+              <div className="absolute -bottom-4 -right-4 text-slate-50 opacity-[0.35] pointer-events-none group-hover:scale-110 transition-transform duration-500">
+                <stat.icon size={120} strokeWidth={1} />
+              </div>
+            </div>
+          </motion.div>
         ))}
       </div>
 
-      <div className="grid lg:grid-cols-3 gap-8">
-        {/* Revenue Chart Card */}
-        <Card className="lg:col-span-2 bg-white border border-gray-200 shadow-sm rounded-lg">
-          <CardHeader className="pb-2">
-            <CardTitle className="text-gray-900 text-lg">Monthly Revenue & Donors</CardTitle>
-          </CardHeader>
-          <CardContent>
-            <div className="h-[300px] mt-4">
-              <ResponsiveContainer width="100%" height="100%">
-                <BarChart data={monthlyRevenue}>
-                  <CartesianGrid strokeDasharray="3 3" stroke="var(--border)" vertical={false} />
-                  <XAxis dataKey="month" stroke="var(--muted-foreground)" tick={{ fontSize: 12, fill: 'var(--muted-foreground)' }} axisLine={false} tickLine={false} />
-                  <YAxis stroke="var(--muted-foreground)" tick={{ fontSize: 12, fill: 'var(--muted-foreground)' }} axisLine={false} tickLine={false} />
-                  <Tooltip 
-                    cursor={{ fill: 'var(--muted)' }}
-                    contentStyle={{ backgroundColor: 'var(--background)', borderRadius: '8px', border: '1px solid var(--border)', boxShadow: '0 4px 6px -1px rgb(0 0 0 / 0.1)' }}
-                    labelStyle={{ color: 'var(--foreground)', fontWeight: 'bold' }}
-                    itemStyle={{ color: 'var(--foreground)' }}
-                    formatter={(value: number, name: string) =>
-                      name === "revenue" ? `₹${(value / 100000).toFixed(1)}L` : value
-                    } 
-                  />
-                  <Bar dataKey="revenue" fill="#10b981" radius={[4, 4, 0, 0]} name="revenue" barSize={40} />
-                </BarChart>
-              </ResponsiveContainer>
+      <div className="grid lg:grid-cols-12 gap-8">
+        <motion.div variants={itemVariants} className="lg:col-span-8 bg-white border border-slate-200 rounded-[2.5rem] p-8 lg:p-10 relative shadow-sm">
+          <div className="flex flex-col sm:flex-row sm:items-center justify-between mb-10 gap-4">
+            <div>
+              <h3 className="text-lg font-black text-black tracking-tighter uppercase mb-1">Collection Trends</h3>
+              <p className="text-[11px] font-bold text-slate-400 uppercase tracking-widest">Monthly donation aggregation (Sample Data)</p>
             </div>
-          </CardContent>
-        </Card>
-
-        {/* Program Distribution Card */}
-        <Card className="bg-white border-gray-200 shadow-sm rounded-lg">
-          <CardHeader className="pb-2">
-            <CardTitle className="text-gray-900 text-lg">Fund Distribution</CardTitle>
-          </CardHeader>
-          <CardContent>
-            <div className="h-[300px] mt-4">
-              <ResponsiveContainer width="100%" height="100%">
-                <PieChart>
-                  <Pie
-                    data={programDistribution}
-                    cx="50%"
-                    cy="50%"
-                    innerRadius={60}
-                    outerRadius={90}
-                    paddingAngle={5}
-                    dataKey="value"
-                    nameKey="name"
-                  >
-                    {programDistribution.map((entry, index) => (
-                      <Cell key={`dist-${index}`} fill={entry.color} stroke="none" />
-                    ))}
-                  </Pie>
-                  <Tooltip contentStyle={{ backgroundColor: 'var(--background)', borderRadius: '8px', border: '1px solid var(--border)' }} itemStyle={{ color: 'var(--foreground)' }} formatter={(value: number) => `${value}%`} />
-                  <Legend iconType="circle" wrapperStyle={{ fontSize: 12, paddingTop: '20px', color: 'var(--foreground)' }} />
-                </PieChart>
-              </ResponsiveContainer>
+            <div className="flex gap-2">
+              <span className="px-4 py-2 rounded-xl bg-slate-100 text-[10px] font-bold text-slate-600 uppercase tracking-wider cursor-pointer hover:bg-slate-200 transition-colors">7D</span>
+              <span className="px-4 py-2 rounded-xl bg-black text-[10px] font-bold text-white uppercase tracking-wider cursor-pointer shadow-sm">30D</span>
+              <span className="px-4 py-2 rounded-xl bg-slate-100 text-[10px] font-bold text-slate-600 uppercase tracking-wider cursor-pointer hover:bg-slate-200 transition-colors">1Y</span>
             </div>
-          </CardContent>
-        </Card>
-      </div>
-
-      {/* Recent Activity Card */}
-      <Card className="bg-white border-gray-200 shadow-sm rounded-lg overflow-hidden">
-        <CardHeader className="border-b border-gray-200 pb-4">
-          <CardTitle className="text-gray-900 text-lg">Recent Activity</CardTitle>
-        </CardHeader>
-        <CardContent className="p-0">
-          <div className="divide-y divide-gray-200">
-            {recentActivity.map((a, i) => (
-              <div key={i} className="flex items-center justify-between p-4 hover:bg-gray-50 transition-colors">
-                <div className="flex items-center gap-4">
-                  <Badge variant="secondary" className={`${activityColors[a.type]} px-2 py-0.5 rounded-md font-bold text-[10px] uppercase tracking-tighter shadow-none border-none`}>{a.type}</Badge>
-                  <div>
-                    <p className="text-sm text-gray-900 font-semibold">{a.action}</p>
-                    <p className="text-xs text-gray-600">{a.detail}</p>
-                  </div>
-                </div>
-                <span className="text-xs text-gray-500 font-medium shrink-0">{a.time}</span>
-              </div>
-            ))}
           </div>
-        </CardContent>
-      </Card>
-    </div>
+          
+          <div className="h-[320px] w-full">
+            <ResponsiveContainer width="100%" height="100%">
+              <AreaChart data={monthlyRevenue} margin={{ top: 10, right: 0, left: -20, bottom: 0 }}>
+                <defs>
+                  <linearGradient id="colorAmountModern" x1="0" y1="0" x2="0" y2="1">
+                    <stop offset="5%" stopColor="#0f172a" stopOpacity={0.08}/>
+                    <stop offset="95%" stopColor="#0f172a" stopOpacity={0}/>
+                  </linearGradient>
+                </defs>
+                <CartesianGrid strokeDasharray="4 4" vertical={false} stroke="#e2e8f0" />
+                <XAxis 
+                  dataKey="month" 
+                  axisLine={false} 
+                  tickLine={false} 
+                  tick={{fontSize: 10, fontWeight: 700, fill: '#64748b'}} 
+                  dy={10}
+                />
+                <YAxis 
+                  hide={true}
+                />
+                <Tooltip 
+                  contentStyle={{
+                    borderRadius: '16px', 
+                    border: '1px solid #e2e8f0', 
+                    boxShadow: '0 10px 25px -5px rgb(0 0 0 / 0.1)',
+                    padding: '12px 20px',
+                    fontFamily: 'inherit'
+                  }} 
+                  cursor={{stroke: '#cbd5e1', strokeWidth: 1, strokeDasharray: '4 4'}}
+                />
+                <Area 
+                  type="monotone" 
+                  dataKey="amount" 
+                  stroke="#0f172a" 
+                  strokeWidth={3} 
+                  fill="url(#colorAmountModern)" 
+                  activeDot={{ r: 6, fill: '#0f172a', stroke: '#fff', strokeWidth: 3 }}
+                />
+              </AreaChart>
+            </ResponsiveContainer>
+          </div>
+        </motion.div>
+
+        <motion.div variants={itemVariants} className="lg:col-span-4 bg-white border border-slate-200 rounded-[2.5rem] p-8 lg:p-10 flex flex-col shadow-sm">
+          <div className="flex items-center justify-between mb-8">
+            <h3 className="text-lg font-black text-black tracking-tighter uppercase">Live Activity</h3>
+            <div className="w-2 h-2 bg-emerald-500 rounded-full animate-ping" />
+          </div>
+          
+          <div className="flex-1 space-y-6 overflow-y-auto pr-2 custom-scrollbar max-h-[320px]">
+            {isLoading ? (
+              <div className="h-full flex items-center justify-center">
+                 <div className="w-6 h-6 border-2 border-slate-200 border-t-black rounded-full animate-spin" />
+              </div>
+            ) : stats.recentDonations.length > 0 ? (
+              stats.recentDonations.map((donation: any) => {
+                const donorName = donation.donor?.name || donation.donor?.email || "Anonymous";
+                const amount = donation.amount.toLocaleString();
+                const progName = donation.program?.name || "General Fund";
+                const date = new Date(donation.createdAt).toLocaleDateString(undefined, { month: 'short', day: 'numeric' });
+                
+                return (
+                  <div key={donation.id} className="flex gap-4 group">
+                    <div className="w-12 h-12 rounded-2xl bg-slate-50 border border-slate-100 flex items-center justify-center flex-shrink-0 group-hover:scale-110 transition-transform">
+                      <Heart size={16} className="text-slate-800" />
+                    </div>
+                    <div className="flex-1 border-b border-slate-100 pb-5 opacity-90 group-hover:opacity-100 transition-opacity">
+                      <div className="flex items-center justify-between mb-1">
+                        <p className="text-[13px] font-bold text-black">{donorName}</p>
+                        <p className="text-[10px] font-bold text-slate-400">{date}</p>
+                      </div>
+                      <p className="text-[11px] text-slate-500 font-medium leading-relaxed">
+                        Donated <span className="font-bold text-emerald-600">₹{amount}</span> to <span className="text-black font-bold">{progName}</span>
+                      </p>
+                    </div>
+                  </div>
+                );
+              })
+            ) : (
+              <div className="flex flex-col items-center justify-center h-full text-slate-400 space-y-3">
+                <Activity size={32} strokeWidth={1.5} />
+                <p className="text-xs font-bold uppercase tracking-widest">No recent activity</p>
+              </div>
+            )}
+          </div>
+          
+          <button className="mt-6 w-full pt-6 border-t border-slate-100 text-[11px] font-bold uppercase tracking-[0.15em] hover:text-black text-slate-400 transition-colors flex items-center justify-center gap-2 group">
+            View Ledger <ArrowRight size={14} className="group-hover:translate-x-1 transition-transform" />
+          </button>
+        </motion.div>
+      </div>
+    </motion.div>
   );
 }
-

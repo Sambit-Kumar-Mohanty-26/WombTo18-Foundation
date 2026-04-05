@@ -9,9 +9,11 @@ import { Search, Download, ChevronLeft, Loader2, Heart, ArrowRight, CheckCircle2
 import { toast } from "sonner";
 import { useDonorData } from "../../lib/useDonorData";
 import { useAuth } from "../../context/AuthContext";
+import { certificateApi } from "../../lib/api/certificates";
 
 export function DonorDonations() {
   const [search, setSearch] = useState("");
+  const [downloadingId, setDownloadingId] = useState<string | null>(null);
   const { state } = useAuth();
   const { donations, loading, totalDonated, donationCount, avgDonation } = useDonorData();
 
@@ -21,6 +23,24 @@ export function DonorDonations() {
     (d.program ?? "").toLowerCase().includes(search.toLowerCase()) ||
     (d.date ?? "").includes(search)
   );
+  
+  async function handleDownload(d: any) {
+    if (!d.id) {
+      toast.error("Donation record ID missing.");
+      return;
+    }
+    
+    setDownloadingId(d.id);
+    try {
+      await certificateApi.downloadReceipt(d.id);
+      toast.success("Download started", { description: `Retrieving donation receipt for ${d.date}` });
+    } catch (err) {
+      console.error("Failed to download cert:", err);
+      toast.error("Download failed. Please try again later.");
+    } finally {
+      setDownloadingId(null);
+    }
+  }
 
   if (loading) {
     return (
@@ -177,10 +197,15 @@ export function DonorDonations() {
                          <Button 
                            variant="ghost" 
                            size="sm" 
-                           onClick={() => toast.success("Download started", { description: `Retrieving 80G certificate for ${d.date}` })}
+                           disabled={!!downloadingId}
+                           onClick={() => handleDownload(d)}
                            className="text-gray-400 hover:text-[#1D6E3F] hover:bg-[#1D6E3F]/5 rounded-xl h-9 w-9 p-0 inline-flex items-center justify-center opacity-70 group-hover:opacity-100 transition-all outline-none"
                          >
-                           <Download className="h-4 w-4" />
+                           {downloadingId === d.id ? (
+                             <Loader2 className="h-4 w-4 animate-spin text-[#1D6E3F]" />
+                           ) : (
+                             <Download className="h-4 w-4" />
+                           )}
                          </Button>
                       </div>
                     </motion.div>

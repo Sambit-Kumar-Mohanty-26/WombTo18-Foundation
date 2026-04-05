@@ -1,7 +1,4 @@
 import { useEffect, useState } from "react";
-import { Card, CardContent } from "../../components/ui/card";
-import { Badge } from "../../components/ui/badge";
-import { Button } from "../../components/ui/button";
 import {
   Pagination,
   PaginationContent,
@@ -11,9 +8,10 @@ import {
   PaginationNext,
   PaginationPrevious,
 } from "../../components/ui/pagination";
-import { Tent, Plus, MapPin, Calendar, Users, Loader2 } from "lucide-react";
+import { Tent, Plus, MapPin, Calendar, Users, Loader2, Sparkles, ArrowRight } from "lucide-react";
 import { useNavigate } from "react-router";
 import { client } from "../../lib/api/client";
+import { motion, AnimatePresence } from "motion/react";
 
 export function AdminCamps() {
   const [camps, setCamps] = useState<any[]>([]);
@@ -37,14 +35,21 @@ export function AdminCamps() {
       .finally(() => setLoading(false));
   }, [page]);
 
-  const startCount = totalCamps === 0 ? 0 : ((page - 1) * pageSize) + 1;
-  const endCount = Math.min(page * pageSize, totalCamps);
+  const containerVariants = {
+    hidden: { opacity: 0 },
+    visible: { opacity: 1, transition: { staggerChildren: 0.1 } }
+  };
+
+  const itemVariants: any = {
+    hidden: { opacity: 0, y: 15 },
+    visible: { opacity: 1, y: 0, transition: { type: "spring", stiffness: 300, damping: 24 } }
+  };
+
   const pageNumbers = (() => {
     if (totalPages <= 7) return Array.from({ length: totalPages }, (_, index) => index + 1);
     const pages = [1];
     const left = Math.max(2, page - 1);
     const right = Math.min(totalPages - 1, page + 1);
-
     if (left > 2) pages.push(-1);
     for (let p = left; p <= right; p += 1) pages.push(p);
     if (right < totalPages - 1) pages.push(-1);
@@ -53,112 +58,127 @@ export function AdminCamps() {
   })();
 
   return (
-    <div className="space-y-6">
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+    <motion.div 
+      variants={containerVariants}
+      initial="hidden"
+      animate="visible"
+      className="space-y-10 pb-10 font-sans"
+    >
+      <div className="flex flex-col sm:flex-row sm:items-end justify-between gap-6">
         <div>
-          <h1 className="text-2xl text-gray-900 font-bold">Manage Camps</h1>
-          <p className="text-gray-600">
-            {totalCamps} active and upcoming camps
-            {totalCamps > 0 && (
-              <span className="ml-2 text-gray-500">
-                Showing {startCount}-{endCount} of {totalCamps}
-              </span>
-            )}
-          </p>
+           <div className="mb-4 inline-flex items-center gap-2 px-3 py-1 bg-slate-200/50 text-slate-600 rounded-lg text-[10px] font-bold uppercase tracking-widest">
+             <Sparkles className="w-3 h-3 text-slate-500" /> Operational Matrix
+           </div>
+           <h1 className="text-4xl lg:text-5xl font-black text-black tracking-tighter">
+             Health <span className="text-slate-400">Camps</span>
+           </h1>
+           <p className="text-slate-400 font-bold text-[11px] uppercase tracking-widest mt-3 break-words max-w-sm">
+             Total {totalCamps} field operations scheduled and managed
+           </p>
         </div>
-        <Button onClick={() => navigate("/admin/camps/create")} size="sm" className="font-bold shadow-sm bg-emerald-600 hover:bg-emerald-500 text-white">
-          <Plus className="h-4 w-4 mr-2" /> Create Camp
-        </Button>
+        <button 
+          onClick={() => navigate("/admin/camps/create")} 
+          className="h-12 px-8 rounded-2xl bg-black hover:bg-slate-800 text-white font-bold text-[11px] uppercase tracking-wider transition-all flex items-center shadow-lg shadow-black/10 active:scale-95"
+        >
+          <Plus size={16} className="mr-2" /> Schedule Deployment
+        </button>
       </div>
 
       {loading ? (
-        <div className="flex items-center justify-center py-20"><Loader2 className="h-8 w-8 animate-spin text-emerald-500" /></div>
+        <div className="flex flex-col items-center justify-center py-32 bg-white rounded-[2.5rem] border border-slate-200 shadow-sm border-dashed">
+           <Loader2 className="h-10 w-10 animate-spin text-black mb-4" />
+           <p className="text-[10px] font-bold text-slate-400 uppercase tracking-widest">Loading Operational Data...</p>
+        </div>
       ) : (
         <div className="grid gap-4">
-          {camps.map((camp) => (
-            <Card 
-              key={camp.id} 
-              className="bg-white border-gray-200 shadow-sm hover:shadow-md transition-all duration-300 rounded-lg group cursor-pointer"
-              onClick={() => navigate(`/admin/camps/${camp.id}`)}
-            >
-              <CardContent className="p-5 flex items-center justify-between">
-                <div className="flex items-center gap-4">
-                  <div className="h-12 w-12 rounded-xl bg-emerald-50 flex items-center justify-center border border-emerald-100/50">
-                    <Tent className="h-6 w-6 text-emerald-600" />
-                  </div>
-                  <div>
-                    <h3 className="text-lg font-bold text-gray-900 group-hover:text-emerald-700 transition-colors">{camp.name}</h3>
-                    <div className="flex items-center gap-4 text-xs font-semibold text-gray-500 mt-1">
-                      <span className="flex items-center gap-1.5"><MapPin className="h-3 w-3" /> {camp.location}</span>
-                      <span className="flex items-center gap-1.5"><Calendar className="h-3 w-3" /> {new Date(camp.date).toLocaleDateString()}</span>
-                      <span className="flex items-center gap-1.5"><Users className="h-3 w-3" /> {camp._count?.participations || 0} Participants</span>
+          <AnimatePresence mode="popLayout">
+            {camps.map((camp) => (
+              <motion.div key={camp.id} variants={itemVariants} layout>
+                <div 
+                  className="bg-white border border-slate-200 shadow-sm rounded-[2rem] overflow-hidden hover:border-black transition-colors cursor-pointer group p-6 md:p-8 flex flex-col md:flex-row items-center justify-between gap-6"
+                  onClick={() => navigate(`/admin/camps/${camp.id}`)}
+                >
+                    <div className="flex flex-col md:flex-row items-center gap-6">
+                      <div className="h-16 w-16 rounded-2xl bg-slate-50 border border-slate-100 flex items-center justify-center transition-transform group-hover:scale-110 duration-300">
+                        <Tent className="h-8 w-8 text-black" />
+                      </div>
+                      <div className="text-center md:text-left">
+                        <h3 className="text-xl font-black text-black tracking-tight group-hover:text-slate-600 transition-colors uppercase leading-none mb-3">{camp.name}</h3>
+                        <div className="flex flex-wrap items-center justify-center md:justify-start gap-5 text-[11px] font-bold text-slate-400 uppercase tracking-widest">
+                          <span className="flex items-center gap-2 text-slate-600"><MapPin size={12} className="text-slate-300" /> {camp.location}</span>
+                          <span className="flex items-center gap-2 text-slate-600"><Calendar size={12} className="text-slate-300" /> {new Date(camp.date).toLocaleDateString()}</span>
+                          <span className="flex items-center gap-2 text-slate-600"><Users size={12} className="text-slate-300" /> {camp._count?.participations || 0} Volunteers</span>
+                        </div>
+                      </div>
                     </div>
-                  </div>
+                    <div className="flex items-center gap-4">
+                        <div className={`px-4 py-2 text-[10px] font-bold uppercase tracking-widest rounded-xl border border-slate-200 ${camp.status === 'ACTIVE' ? 'bg-amber-50 text-amber-600 border-amber-200' : camp.status === 'COMPLETED' ? 'bg-slate-50 text-slate-500' : 'bg-emerald-50 text-emerald-600 border-emerald-200'}`}>
+                           {camp.status}
+                        </div>
+                        <button className="w-12 h-12 rounded-xl border border-slate-200 hover:border-black flex items-center justify-center text-slate-400 hover:text-black transition-all group-hover:bg-black group-hover:text-white">
+                           <ArrowRight size={18} />
+                        </button>
+                    </div>
                 </div>
-                <Badge className={`px-2.5 py-1 text-[10px] font-black uppercase tracking-wider ${camp.status === 'ACTIVE' ? 'bg-amber-100 text-amber-700' : camp.status === 'COMPLETED' ? 'bg-gray-100 text-gray-600' : 'bg-emerald-100 text-emerald-700'}`}>
-                  {camp.status}
-                </Badge>
-              </CardContent>
-            </Card>
-          ))}
+              </motion.div>
+            ))}
+          </AnimatePresence>
+          
           {camps.length === 0 && (
-             <div className="text-center py-20 text-gray-400">
-               <Tent className="h-12 w-12 mx-auto mb-3 text-gray-200" />
-               <p className="font-bold">No camps created yet</p>
-               <p className="text-sm mt-1">Click 'Create Camp' to schedule a new event.</p>
+             <div className="text-center py-24 bg-white rounded-[2.5rem] border border-slate-200 border-dashed shadow-sm">
+               <div className="w-16 h-16 bg-slate-50 border border-slate-100 rounded-2xl flex items-center justify-center mx-auto mb-6">
+                  <Tent className="h-8 w-8 text-slate-400" />
+               </div>
+               <p className="text-lg font-black text-black tracking-tight mb-2">No Deployments Found</p>
+               <p className="text-[11px] font-bold text-slate-400 uppercase tracking-widest">No camps have been scheduled yet</p>
+               <button onClick={() => navigate("/admin/camps/create")} className="mt-8 rounded-xl h-12 px-8 border border-slate-200 text-slate-600 text-xs font-bold uppercase hover:bg-black hover:text-white hover:border-black transition-all">
+                  Initialize Operations
+               </button>
              </div>
           )}
         </div>
       )}
 
       {!loading && totalPages > 1 && (
-        <Pagination className="justify-end">
-          <PaginationContent>
-            <PaginationItem>
-              <PaginationPrevious
-                href="#"
-                onClick={(event) => {
-                  event.preventDefault();
-                  if (page > 1) setPage(current => current - 1);
-                }}
-                className={page === 1 ? "pointer-events-none opacity-50" : ""}
-              />
-            </PaginationItem>
+        <div className="flex justify-end pt-8">
+           <Pagination className="justify-end w-auto mx-0 bg-white p-2 text-slate-600 rounded-2xl shadow-sm border border-slate-200">
+             <PaginationContent>
+               <PaginationItem>
+                 <PaginationPrevious
+                   href="#"
+                   onClick={(e) => { e.preventDefault(); if (page > 1) setPage(p => p - 1); }}
+                   className={`rounded-xl border-none font-bold text-[10px] uppercase tracking-widest hover:bg-slate-100 ${page === 1 ? "opacity-30 pointer-events-none" : ""}`}
+                 />
+               </PaginationItem>
 
-            {pageNumbers.map((value, index) =>
-              value === -1 ? (
-                <PaginationItem key={`ellipsis-${index}`}>
-                  <PaginationEllipsis />
-                </PaginationItem>
-              ) : (
-                <PaginationItem key={value}>
-                  <PaginationLink
-                    href="#"
-                    isActive={value === page}
-                    onClick={(event) => {
-                      event.preventDefault();
-                      setPage(value);
-                    }}
-                  >
-                    {value}
-                  </PaginationLink>
-                </PaginationItem>
-              ),
-            )}
+               {pageNumbers.map((v, i) =>
+                 v === -1 ? (
+                   <PaginationItem key={i}><PaginationEllipsis className="text-slate-300" /></PaginationItem>
+                 ) : (
+                   <PaginationItem key={i}>
+                     <PaginationLink
+                       href="#"
+                       isActive={v === page}
+                       onClick={(e) => { e.preventDefault(); setPage(v); }}
+                       className={`w-9 h-9 rounded-xl border-none font-black text-xs ${v === page ? 'bg-black text-white' : 'text-slate-500 hover:bg-slate-100'}`}
+                     >
+                       {v}
+                     </PaginationLink>
+                   </PaginationItem>
+                 ),
+               )}
 
-            <PaginationItem>
-              <PaginationNext
-                href="#"
-                onClick={(event) => {
-                  event.preventDefault();
-                  if (page < totalPages) setPage(current => current + 1);
-                }}
-                className={page === totalPages ? "pointer-events-none opacity-50" : ""}
-              />
-            </PaginationItem>
-          </PaginationContent>
-        </Pagination>
+               <PaginationItem>
+                 <PaginationNext
+                   href="#"
+                   onClick={(e) => { e.preventDefault(); if (page < totalPages) setPage(p => p + 1); }}
+                   className={`rounded-xl border-none font-bold text-[10px] uppercase tracking-widest hover:bg-slate-100 ${page === totalPages ? "opacity-30 pointer-events-none" : ""}`}
+                 />
+               </PaginationItem>
+             </PaginationContent>
+           </Pagination>
+        </div>
       )}
-    </div>
+    </motion.div>
   );
 }

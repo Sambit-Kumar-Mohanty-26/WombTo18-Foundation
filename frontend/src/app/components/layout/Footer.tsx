@@ -104,9 +104,10 @@ export function Footer() {
         <div className="border-t border-slate-200 mt-8 sm:mt-12 pt-6 sm:pt-8 flex flex-col sm:flex-row justify-between items-start sm:items-center gap-3 sm:gap-4">
           <p className="text-sm text-slate-500 font-medium">&copy; 2026 WombTo18 Foundation. All rights reserved.</p>
           <div className="flex flex-wrap gap-x-5 gap-y-2">
-            <Link to="/privacy-policy" className="text-sm text-slate-500 hover:text-primary transition-colors font-medium">Privacy Policy</Link>
-            <Link to="/terms-of-use" className="text-sm text-slate-500 hover:text-primary transition-colors font-medium">Terms of Use</Link>
             <Link to="/get-involved" className="text-sm text-slate-500 hover:text-primary transition-colors font-medium">Get Involved</Link>
+            <Link to="/careers" className="text-sm text-slate-500 hover:text-primary transition-colors font-medium">Careers</Link>
+            <Link to="/terms-of-use" className="text-sm text-slate-500 hover:text-primary transition-colors font-medium">Terms of Use</Link>
+            <Link to="/privacy-policy" className="text-sm text-slate-500 hover:text-primary transition-colors font-medium">Privacy Policy</Link>
           </div>
         </div>
       </div>

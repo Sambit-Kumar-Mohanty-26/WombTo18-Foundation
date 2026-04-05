@@ -7,12 +7,22 @@ import { useAuth } from "../../context/AuthContext";
 import { client } from "../../lib/api/client";
 import { QRCodeCanvas } from "qrcode.react";
 import { toast } from "sonner";
+import { 
+  Pagination, 
+  PaginationContent, 
+  PaginationItem, 
+  PaginationNext, 
+  PaginationPrevious 
+} from "../../components/ui/pagination";
+
+const ITEMS_PER_PAGE = 4;
 
 export function VolunteerReferrals() {
   const { state } = useAuth();
   const [referrals, setReferrals] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
   const [copied, setCopied] = useState(false);
+  const [currentPage, setCurrentPage] = useState(1);
   const volId = state.user?.volunteerId || state.user?.identifier || "";
   const referralLink = `${window.location.origin}/donate?ref=${volId}&type=VOLUNTEER`;
 
@@ -33,6 +43,12 @@ export function VolunteerReferrals() {
 
   const totalDonated = referrals.filter(r => r.status === "DONATED").reduce((s, r) => s + (r.paymentAmount || 0), 0);
   const totalCoinsEarned = referrals.reduce((s, r) => s + (r.coinsAwarded || 0), 0);
+
+  const totalPages = Math.ceil(referrals.length / ITEMS_PER_PAGE);
+  const paginatedReferrals = referrals.slice(
+    (currentPage - 1) * ITEMS_PER_PAGE,
+    currentPage * ITEMS_PER_PAGE
+  );
 
   return (
     <div className="space-y-6 animate-in fade-in duration-700">
@@ -88,7 +104,7 @@ export function VolunteerReferrals() {
         </CardHeader>
         <CardContent className="p-0">
           <div className="divide-y divide-gray-50">
-            {referrals.length > 0 ? referrals.map((r, i) => (
+            {paginatedReferrals.length > 0 ? paginatedReferrals.map((r, i) => (
               <div key={i} className="flex items-center justify-between p-4 hover:bg-gray-50/50 transition-colors">
                 <div className="flex items-center gap-3">
                   <div className="h-10 w-10 rounded-xl bg-blue-50 flex items-center justify-center text-blue-600 text-sm font-black">
@@ -114,8 +130,35 @@ export function VolunteerReferrals() {
               </div>
             )}
           </div>
+          
+          {totalPages > 1 && (
+            <div className="p-4 border-t border-gray-50">
+              <Pagination>
+                <PaginationContent>
+                  <PaginationItem>
+                    <PaginationPrevious 
+                      onClick={() => setCurrentPage(p => Math.max(1, p - 1))}
+                      className={`cursor-pointer ${currentPage === 1 ? "opacity-50 pointer-events-none" : ""}`}
+                    />
+                  </PaginationItem>
+                  <PaginationItem>
+                    <span className="text-xs font-bold text-gray-400 px-4">
+                      Page {currentPage} of {totalPages}
+                    </span>
+                  </PaginationItem>
+                  <PaginationItem>
+                    <PaginationNext 
+                      onClick={() => setCurrentPage(p => Math.min(totalPages, p + 1))}
+                      className={`cursor-pointer ${currentPage === totalPages ? "opacity-50 pointer-events-none" : ""}`}
+                    />
+                  </PaginationItem>
+                </PaginationContent>
+              </Pagination>
+            </div>
+          )}
         </CardContent>
       </Card>
     </div>
   );
 }
+

@@ -1,11 +1,11 @@
 import { useEffect, useState } from "react";
-import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "../../components/ui/card";
+import { Card, CardContent } from "../../components/ui/card";
 import { Badge } from "../../components/ui/badge";
 import { Button } from "../../components/ui/button";
-import { Award, Download, Share2, Loader2, FileText, CheckCircle } from "lucide-react";
+import { Award, Download, Share2, Loader2, FileText } from "lucide-react";
 import { useAuth } from "../../context/AuthContext";
-import { client } from "../../lib/api/client";
 import { ShareModal } from "../../components/shared/ShareModal";
+import { certificateApi } from "../../lib/api/certificates";
 
 export function VolunteerCertificates() {
   const { state } = useAuth();
@@ -21,7 +21,7 @@ export function VolunteerCertificates() {
     // Fetch both volunteer and donor certificates if applicable
     const fetchCerts = async () => {
       try {
-        const volCerts = await client.get<any[]>(`/certificates/list?recipientType=VOLUNTEER&userId=${valId}`);
+        const volCerts = await certificateApi.list('VOLUNTEER', volId);
         setCertificates(volCerts);
       } catch (err) {
         console.error("Failed to fetch certificates", err);
@@ -32,18 +32,18 @@ export function VolunteerCertificates() {
     fetchCerts();
   }, [volId, state.user?.donorId]);
 
-  const handleDownload = (cert: any) => {
-    let endpoint = "";
-    if (cert.type === "DONATION_RECEIPT") endpoint = `/certificates/receipt/${cert.donorId}`;
-    else if (cert.type === "80G") endpoint = `/certificates/80g/${cert.donorId}`;
-    else if (cert.type === "VOLUNTEER") endpoint = `/certificates/volunteer/${cert.volunteerId}`;
-    else if (cert.type === "CAMP") {
-       const meta = JSON.parse(cert.metadata || '{}');
-       endpoint = `/certificates/camp/${cert.volunteerId}/${meta.campId}`;
+  const handleDownload = async (cert: any) => {
+    try {
+      if (cert.type === "DONATION_RECEIPT") await certificateApi.downloadReceipt(cert.donorId);
+      else if (cert.type === "80G") await certificateApi.download80G(cert.id);
+      else if (cert.type === "VOLUNTEER") await certificateApi.downloadVolunteerCert(cert.volunteerId);
+      else if (cert.type === "CAMP") {
+         const meta = JSON.parse(cert.metadata || '{}');
+         await certificateApi.downloadCampCert(cert.volunteerId, meta.campId);
+      }
+    } catch (err) {
+      console.error("Download failed", err);
     }
-    else return;
-
-    window.open(`${import.meta.env.VITE_API_URL || 'http://localhost:3000'}/api${endpoint}`, '_blank');
   };
 
   if (loading) return <div className="flex items-center justify-center py-20"><Loader2 className="h-8 w-8 animate-spin text-amber-500" /></div>;
@@ -96,6 +96,8 @@ export function VolunteerCertificates() {
           isOpen={!!shareCert} 
           onClose={() => setShareCert(null)} 
           shareText={shareCert.shareText || `I just unlocked the ${shareCert.title} at WombTo18!`} 
+          shareUrl={`${window.location.origin}/impact/${shareCert.id}`}
+          type="VOLUNTEER"
           title="Share Your Impact"
         />
       )}

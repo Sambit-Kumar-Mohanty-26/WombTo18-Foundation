@@ -81,6 +81,18 @@ export const authApi = {
   resendOtp: (email: string) =>
     client.post<ResendOtpResponse>('/donor/resend-otp', { email }),
 
+  requestPasswordChange: (email: string) =>
+    client.post<{ success: boolean; message: string; devOtp?: string }>('/donor/request-password-change', { email }),
+
+  updatePassword: (data: { email: string; otp: string; newPassword: string }) =>
+    client.post<{ success: boolean; message: string }>('/donor/update-password', data),
+
+  toggle2FA: (donorId: string, enabled: boolean) =>
+    client.post<{ success: boolean; message: string }>('/donor/toggle-2fa', { donorId, enabled }),
+
+  revokeSessions: (donorId: string) =>
+    client.post<{ success: boolean; message: string }>('/auth/revoke-sessions', { donorId }),
+
   logout: () =>
     client.post<{ success: boolean }>('/auth/logout'),
 };
