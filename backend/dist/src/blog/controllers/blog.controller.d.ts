@@ -4,20 +4,20 @@ export declare class BlogController {
     constructor(blogService: BlogService);
     findAll(): Promise<{
         id: string;
-        title: string;
-        slug: string;
-        content: string;
-        author: string;
         createdAt: Date;
         updatedAt: Date;
+        slug: string;
+        title: string;
+        content: string;
+        author: string;
     }[]>;
     findBySlug(slug: string): Promise<{
         id: string;
-        title: string;
-        slug: string;
-        content: string;
-        author: string;
         createdAt: Date;
         updatedAt: Date;
+        slug: string;
+        title: string;
+        content: string;
+        author: string;
     } | null>;
 }

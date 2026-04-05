@@ -12,17 +12,17 @@ export declare class CertificateService {
     generatePartnerCertificate(partnerId: string, res: Response): Promise<void>;
     getCertificates(recipientType: string, userId: string): Promise<{
         id: string;
-        type: string;
-        title: string;
-        recipientName: string;
-        recipientType: string;
         donorId: string | null;
+        createdAt: Date;
         volunteerId: string | null;
         partnerId: string | null;
+        title: string;
+        type: string;
+        recipientName: string;
+        recipientType: string;
         fileUrl: string | null;
         shareText: string | null;
         metadata: string | null;
-        createdAt: Date;
     }[]>;
     verifyCertificate(certId: string): Promise<{
         success: boolean;
@@ -30,31 +30,31 @@ export declare class CertificateService {
     }>;
     findCertRecord(certId: string): Promise<{
         id: string;
-        type: string;
-        title: string;
-        recipientName: string;
-        recipientType: string;
         donorId: string | null;
+        createdAt: Date;
         volunteerId: string | null;
         partnerId: string | null;
+        title: string;
+        type: string;
+        recipientName: string;
+        recipientType: string;
         fileUrl: string | null;
         shareText: string | null;
         metadata: string | null;
-        createdAt: Date;
     } | null>;
     downloadOrRegenerate(certId: string, res: Response): Promise<void>;
     getCertificatesByDonorId(donorId: string): Promise<{
         id: string;
-        type: string;
-        title: string;
-        recipientName: string;
-        recipientType: string;
         donorId: string | null;
+        createdAt: Date;
         volunteerId: string | null;
         partnerId: string | null;
+        title: string;
+        type: string;
+        recipientName: string;
+        recipientType: string;
         fileUrl: string | null;
         shareText: string | null;
         metadata: string | null;
-        createdAt: Date;
     }[]>;
 }
