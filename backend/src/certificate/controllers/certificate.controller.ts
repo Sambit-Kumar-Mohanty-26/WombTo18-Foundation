@@ -5,10 +5,15 @@ import type { Response } from 'express';
 import * as path from 'path';
 import * as fs from 'fs';
 
+import { StorageService } from '../../storage/storage.service';
+
 @ApiTags('Certificates')
 @Controller('certificates')
 export class CertificateController {
-  constructor(private readonly certificateService: CertificateService) {}
+  constructor(
+    private readonly certificateService: CertificateService,
+    private readonly storageService: StorageService,
+  ) {}
 
   @Get('receipt/:donationId')
   @ApiOperation({ summary: 'Generate donation receipt PDF' })
@@ -29,7 +34,18 @@ export class CertificateController {
     // If it starts with http, redirect to the cloud URL
     const cert = await this.certificateService.findCertRecord(certId);
     if (cert?.fileUrl && cert.fileUrl.startsWith('http')) {
-      return res.redirect(cert.fileUrl);
+      // Proxy the download from cloud storage to avoid CORS redirect issues
+      // Extract the internal path from the full public URL
+      const pathPart = cert.fileUrl.split('/public/uploads/')[1];
+      if (pathPart) {
+        const file = await this.storageService.download(pathPart);
+        if (file) {
+          res.setHeader('Content-Type', file.contentType || 'application/pdf');
+          res.setHeader('Content-Disposition', `attachment; filename=${certId}.pdf`);
+          return res.send(file.data);
+        }
+      }
+      return res.redirect(cert.fileUrl); // Fallback to redirect if proxy fails
     }
 
     // Try to serve the pre-generated PDF file from disk (local dev)
