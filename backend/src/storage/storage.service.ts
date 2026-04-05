@@ -116,6 +116,34 @@ export class StorageService {
   /**
    * Check if running in Supabase mode.
    */
+  /**
+   * Download a file buffer from storage.
+   */
+  async download(remotePath: string): Promise<{ data: Buffer; contentType: string } | null> {
+    if (this.isSupabase && this.supabase) {
+      const { data, error } = await this.supabase.storage.from(this.bucket).download(remotePath);
+      if (error || !data) return null;
+
+      const buffer = Buffer.from(await data.arrayBuffer());
+      return { data: buffer, contentType: data.type };
+    }
+
+    const localPath = path.join(process.cwd(), 'uploads', remotePath);
+    if (fs.existsSync(localPath)) {
+      const buffer = fs.readFileSync(localPath);
+      const ext = path.extname(localPath).toLowerCase();
+      const mimeTypes: { [key: string]: string } = {
+        '.pdf': 'application/pdf',
+        '.jpg': 'image/jpeg',
+        '.jpeg': 'image/jpeg',
+        '.png': 'image/png',
+      };
+      return { data: buffer, contentType: mimeTypes[ext] || 'application/octet-stream' };
+    }
+
+    return null;
+  }
+
   get isCloud(): boolean {
     return this.isSupabase;
   }
