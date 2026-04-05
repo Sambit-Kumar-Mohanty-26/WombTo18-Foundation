@@ -1,7 +1,5 @@
 import { createContext, useContext, useState, ReactNode } from "react";
 
-// ─── Types ─────────────────────────────────────────────────────────────────
-
 export interface BlogPost {
   id: string;
   title: string;
@@ -26,8 +24,6 @@ export interface CaseStudy {
   status: "published" | "draft";
 }
 
-// ─── Initial seed data ──────────────────────────────────────────────────────
-
 const initialPosts: BlogPost[] = [
   {
     id: "1",
@@ -36,7 +32,7 @@ const initialPosts: BlogPost[] = [
     category: "Health",
     date: "Mar 5, 2026",
     readTime: "5 min read",
-    image: "https://images.unsplash.com/photo-1770261430761-192b0b72e4a7?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&q=80&w=1080",
+    image: "/images/site-assets/Prenatal2.jpg",
     featured: true,
     status: "published",
   },
@@ -47,7 +43,7 @@ const initialPosts: BlogPost[] = [
     category: "Education",
     date: "Feb 28, 2026",
     readTime: "4 min read",
-    image: "https://images.unsplash.com/photo-1542810634-71277d95dcbb?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&q=80&w=1080",
+    image: "/images/site-assets/Digital.webp",
     status: "published",
   },
   {
@@ -57,7 +53,7 @@ const initialPosts: BlogPost[] = [
     category: "Stories",
     date: "Feb 20, 2026",
     readTime: "6 min read",
-    image: "https://images.unsplash.com/photo-1584376003963-e1aa9a61c0ac?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&q=80&w=1080",
+    image: "/images/site-assets/Priya.webp",
     status: "published",
   },
   {
@@ -67,7 +63,7 @@ const initialPosts: BlogPost[] = [
     category: "Reports",
     date: "Feb 10, 2026",
     readTime: "8 min read",
-    image: "https://images.unsplash.com/photo-1764072970350-2ce4f354a483?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&q=80&w=1080",
+    image: "/images/site-assets/Annual report.jpg",
     status: "published",
   },
   {
@@ -77,7 +73,7 @@ const initialPosts: BlogPost[] = [
     category: "Health",
     date: "Jan 30, 2026",
     readTime: "5 min read",
-    image: "https://images.unsplash.com/photo-1728494049079-c262d3facee0?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&q=80&w=1080",
+    image: "/images/site-assets/Early.jpg",
     status: "published",
   },
   {
@@ -87,7 +83,7 @@ const initialPosts: BlogPost[] = [
     category: "Community",
     date: "Jan 18, 2026",
     readTime: "4 min read",
-    image: "https://images.unsplash.com/photo-1586503452950-997923af27f9?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&q=80&w=1080",
+    image: "/images/site-assets/Medical Team.jpg",
     status: "published",
   },
 ];
@@ -98,7 +94,7 @@ const initialCaseStudies: CaseStudy[] = [
     title: "Transforming Maternal Health in Rural Rajasthan",
     excerpt: "A 3-year program that reduced maternal mortality by 40% through mobile health clinics and community health workers.",
     region: "Rajasthan",
-    image: "https://images.unsplash.com/photo-1584376003963-e1aa9a61c0ac?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&q=80&w=1080",
+    image: "/images/site-assets/program_prenatal.png",
     tags: ["Maternal Health", "Rural", "Healthcare"],
     date: "Dec 2025",
     impact: "40% reduction in maternal mortality",
@@ -109,7 +105,7 @@ const initialCaseStudies: CaseStudy[] = [
     title: "Digital Literacy for 10,000 Children in Bihar",
     excerpt: "How we equipped underprivileged children with digital skills that opened doors to higher education and employment.",
     region: "Bihar",
-    image: "https://images.unsplash.com/photo-1542810634-71277d95dcbb?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&q=80&w=1080",
+    image: "/images/site-assets/Education-Support-01.jpg",
     tags: ["Education", "Digital", "Empowerment"],
     date: "Oct 2025",
     impact: "10,000 children trained",
@@ -120,16 +116,13 @@ const initialCaseStudies: CaseStudy[] = [
     title: "Nutrition Intervention Program: Odisha",
     excerpt: "A 2-year intensive nutrition program that eliminated acute malnutrition in targeted villages.",
     region: "Odisha",
-    image: "https://images.unsplash.com/photo-1728494049079-c262d3facee0?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&q=80&w=1080",
+    image: "/images/site-assets/Mid-Day-meal-3.jpg",
     tags: ["Nutrition", "Child Health", "Village"],
     date: "Sep 2025",
     impact: "Zero acute malnutrition cases",
     status: "published",
   },
 ];
-
-// ─── Context ────────────────────────────────────────────────────────────────
-
 interface ContentContextValue {
   posts: BlogPost[];
   addPost: (post: Omit<BlogPost, "id">) => void;

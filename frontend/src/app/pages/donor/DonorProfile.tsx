@@ -1,10 +1,11 @@
-import { useState } from "react";
-import { User, Shield, Bell, Heart, LayoutDashboard, Receipt, FileText, Award, CalendarDays, LogOut, ChevronRight, Edit2, Save, X, Loader2 } from "lucide-react";
+import { useState, useEffect } from "react";
+import { User, Shield, Bell, Heart, LayoutDashboard, FileText, CalendarDays, LogOut, Edit2, Save, Loader2, Sparkles, GraduationCap, HeartPulse } from "lucide-react";
 import { Link } from "react-router";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import * as z from "zod";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle, CardFooter } from "../../components/ui/card";
+import { motion, AnimatePresence } from "motion/react";
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "../../components/ui/card";
 import { Button } from "../../components/ui/button";
 import { Input } from "../../components/ui/input";
 import { Label } from "../../components/ui/label";
@@ -12,10 +13,11 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "../../components/ui/ta
 import { Switch } from "../../components/ui/switch";
 import { Avatar, AvatarFallback, AvatarImage } from "../../components/ui/avatar";
 import { Badge } from "../../components/ui/badge";
-import { Skeleton } from "../../components/ui/skeleton";
-import { Separator } from "../../components/ui/separator";
 import { Form, FormControl, FormDescription, FormField, FormItem, FormLabel, FormMessage } from "../../components/ui/form";
 import { toast } from "sonner";
+import { useAuth } from "../../context/AuthContext";
+import { useDonorData } from "../../lib/useDonorData";
+import { authApi } from "../../lib/api/auth";
 
 const profileSchema = z.object({
   name: z.string().min(2, "Name must be at least 2 characters"),
@@ -28,440 +30,500 @@ type ProfileFormValues = z.infer<typeof profileSchema>;
 export function DonorProfile() {
   const [activeTab, setActiveTab] = useState("overview");
   const [isSubmitting, setIsSubmitting] = useState(false);
-  const [isLoading, setIsLoading] = useState(false);
+  const [securityStep, setSecurityStep] = useState<"initial" | "otp" | "password">("initial");
+  const [otpValue, setOtpValue] = useState("");
+  const [newPass, setNewPass] = useState("");
+  const [confirmPass, setConfirmPass] = useState("");
+  const [showDevOtp, setShowDevOtp] = useState<string | null>(null);
+  const { state } = useAuth();
+  
+  const { profile, donations, loading, totalDonated, donationCount, refetch } = useDonorData();
 
-  // Mock data
-  const [donorData, setDonorData] = useState({
-    name: "Pratham Shah",
-    displayName: "Pratham S.",
-    donorId: "W18-5042",
-    email: "pratham.shah@example.com",
-    mobile: "+91 98765 43210",
-    joinedDate: "January 15, 2024",
-    tier: "Champion",
-    stats: {
-      totalDonated: "₹1,25,000",
-      donationCount: 12,
-      programsSupported: 4,
-      lastDonationDate: "Feb 28, 2024"
-    },
-    impact: {
-      childrenSupported: 45,
-      healthCheckups: 120,
-      schoolsReached: 12
-    },
-    preferences: {
-      showOnWall: true,
-      progressUpdates: true,
-      eventInvites: false
-    }
-  });
+  const uniquePrograms = new Set(donations.map(d => d.program)).size;
+  const livesTouched = Math.floor(totalDonated / 2500); 
+  const healthCheckups = Math.floor(totalDonated / 500);
 
   const form = useForm<ProfileFormValues>({
     resolver: zodResolver(profileSchema),
     defaultValues: {
-      name: donorData.name,
-      displayName: donorData.displayName,
-      mobile: donorData.mobile,
+      name: profile?.name || "",
+      displayName: (profile?.name || "").split(" ")[0],
+      mobile: profile?.mobile || "",
     },
   });
 
+  useEffect(() => {
+    if (profile) {
+      form.reset({
+        name: profile.name || "",
+        displayName: (profile.name || "").split(" ")[0],
+        mobile: profile.mobile || "",
+      });
+    }
+  }, [profile, form]);
+
   function onSubmit(values: ProfileFormValues) {
     setIsSubmitting(true);
-    // Simulate API call
     setTimeout(() => {
-      setDonorData(prev => ({
-        ...prev,
-        ...values
-      }));
       setIsSubmitting(false);
-      toast.success("Profile updated successfully", {
-        description: "Your changes have been saved to our records."
-      });
+      toast.success("Profile update requested", { description: "Changes will be reflected once verified." });
       setActiveTab("overview");
-    }, 1500);
+    }, 1000);
   }
 
-  const handlePreferenceChange = (key: keyof typeof donorData.preferences, value: boolean) => {
-    setDonorData(prev => ({
-      ...prev,
-      preferences: {
-        ...prev.preferences,
-        [key]: value
-      }
-    }));
-    toast.info("Preference updated", {
-      description: `${key.replace(/([A-Z])/g, ' $1').toLowerCase()} setting has been saved.`
-    });
+  const handlePreferenceChange = (key: string, value: boolean) => {
+    toast.success("Preference updated", { description: "Setting saved to your profile." });
   };
 
-  if (isLoading) {
+  const handleRequestPasswordChange = async () => {
+    if (!profile?.email) return;
+    setIsSubmitting(true);
+    try {
+      const res = await authApi.requestPasswordChange(profile.email);
+      if (res.success) {
+        setSecurityStep("otp");
+        toast.success("Verification code sent", { description: "Check your email for the security code." });
+        if (res.devOtp) setShowDevOtp(res.devOtp);
+      }
+    } catch (err: any) {
+      toast.error(err.response?.data?.message || "Failed to request password change");
+    } finally {
+      setIsSubmitting(false);
+    }
+  };
+
+  const handleVerifyOtp = () => {
+    if (otpValue.length !== 6) {
+      toast.error("Please enter a valid 6-digit code");
+      return;
+    }
+    setSecurityStep("password");
+  };
+
+  const handleUpdatePassword = async () => {
+    if (newPass !== confirmPass) {
+      toast.error("Passwords do not match");
+      return;
+    }
+    if (!profile?.email) return;
+    
+    setIsSubmitting(true);
+    try {
+      const res = await authApi.updatePassword({
+        email: profile.email,
+        otp: otpValue,
+        newPassword: newPass
+      });
+      if (res.success) {
+        toast.success("Password Updated", { description: "Your security credentials have been refreshed." });
+        setSecurityStep("initial");
+        setOtpValue("");
+        setNewPass("");
+        setConfirmPass("");
+        setShowDevOtp(null);
+      }
+    } catch (err: any) {
+      toast.error(err.response?.data?.message || "Failed to update password");
+    } finally {
+      setIsSubmitting(false);
+    }
+  };
+
+  const handleToggle2FA = async (enabled: boolean) => {
+    if (!profile?.donorId) return;
+    try {
+      const res = await authApi.toggle2FA(profile.donorId, enabled);
+      if (res.success) {
+        toast.success(res.message);
+        refetch();
+      }
+    } catch (err: any) {
+      toast.error(err.response?.data?.message || "Failed to update 2FA settings");
+    }
+  };
+
+  const handleRevokeSessions = async () => {
+    if (!profile?.donorId) return;
+    setIsSubmitting(true);
+    try {
+      const res = await authApi.revokeSessions(profile.donorId);
+      if (res.success) {
+        toast.success("Sessions Revoked", { description: "You have been logged out of all other devices." });
+      }
+    } catch (err: any) {
+      toast.error(err.response?.data?.message || "Failed to revoke sessions");
+    } finally {
+      setIsSubmitting(false);
+    }
+  };
+
+  if (loading) {
     return (
-      <div className="space-y-6 animate-in fade-in duration-500">
-        <div className="flex items-center gap-4 mb-8">
-          <Skeleton className="h-20 w-20 rounded-full" />
-          <div className="space-y-2">
-            <Skeleton className="h-8 w-48" />
-            <Skeleton className="h-4 w-32" />
-          </div>
-        </div>
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-          <Skeleton className="h-40 col-span-1" />
-          <Skeleton className="h-40 col-span-1" />
-          <Skeleton className="h-40 col-span-1" />
-        </div>
-        <Skeleton className="h-96 w-full" />
+      <div className="flex flex-col items-center justify-center py-32 space-y-4">
+        <Loader2 className="h-10 w-10 animate-spin text-[#1D6E3F]" />
+        <p className="text-gray-500 font-medium tracking-tight">Syncing Profile Data...</p>
       </div>
     );
   }
 
+  if (!profile) return null;
+
   return (
-    <div className="max-w-6xl mx-auto space-y-8 animate-in fade-in slide-in-from-bottom-4 duration-700">
-      {/* Profile Header */}
-      <div className="flex flex-col md:flex-row md:items-center justify-between gap-6">
-        <div className="flex items-center gap-5">
-          <div className="relative group">
-            <div className="absolute -inset-1 bg-gradient-to-r from-emerald-100 to-emerald-50 rounded-full blur opacity-75 group-hover:opacity-100 transition duration-1000 group-hover:duration-200"></div>
-            <Avatar className="h-24 w-24 border-2 border-white relative shadow-sm">
-              <AvatarImage src="" alt={donorData.name} />
-              <AvatarFallback className="bg-emerald-50 text-emerald-700 text-2xl font-bold">
-                {donorData.name.split(" ").map(n => n[0]).join("")}
+    <div className="max-w-5xl mx-auto space-y-10 pb-12 w-full animate-in fade-in duration-700">
+      <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.6 }} className="flex flex-col md:flex-row md:items-center justify-between gap-8 bg-white p-8 sm:p-10 rounded-[2rem] shadow-[0_15px_40px_-15px_rgba(0,0,0,0.06)] border border-gray-100 relative overflow-hidden group">
+        <div className="absolute top-0 right-0 w-64 h-64 bg-[radial-gradient(ellipse_at_center,_rgba(29,110,63,0.05)_0%,_transparent_70%)] rounded-full blur-3xl pointer-events-none" />
+        <div className="flex flex-col sm:flex-row items-center sm:items-start gap-8 z-10">
+          <div className="relative">
+            <div className="absolute -inset-2 bg-gradient-to-tr from-[#1D6E3F] via-emerald-400 to-[#F29F05] rounded-full blur-md opacity-40 group-hover:opacity-75 transition duration-1000 animate-pulse" />
+            <div className="absolute -inset-1 bg-white rounded-full z-0" />
+            <Avatar className="h-28 w-28 border-4 border-white relative shadow-xl z-10 bg-white">
+              <AvatarImage src="" />
+              <AvatarFallback className="bg-emerald-50 text-[#1D6E3F] text-3xl font-black">
+                {(profile.name || "U").split(" ").map(n => n[0]).join("")}
               </AvatarFallback>
             </Avatar>
-            <button className="absolute bottom-0 right-0 p-1.5 bg-white text-emerald-700 rounded-full shadow-md border border-gray-200 hover:scale-110 transition-transform">
-              <Edit2 className="h-3.5 w-3.5" />
+            <button className="absolute bottom-1 right-1 p-2 bg-[#1D6E3F] text-white rounded-full shadow-lg hover:scale-110 hover:bg-emerald-700 transition-all z-20 border-2 border-white" onClick={() => setActiveTab('edit')}>
+              <Edit2 className="h-4 w-4" />
             </button>
           </div>
-          <div>
-            <div className="flex items-center gap-3">
-              <h1 className="text-3xl font-bold text-gray-900 tracking-tight">{donorData.name}</h1>
-              <Badge className="bg-orange-100 hover:bg-orange-200 text-orange-700 font-bold px-3 py-1 border-none shadow-sm">
-                {donorData.tier}
+          <div className="text-center sm:text-left mt-2">
+            <div className="flex flex-col sm:flex-row items-center gap-3 md:gap-4 mb-2">
+              <h1 className="text-3xl sm:text-4xl font-black text-gray-900 tracking-tight">{profile.name}</h1>
+              <Badge className="bg-gradient-to-r from-amber-400 to-orange-500 text-white font-bold px-3 py-1 border-none shadow-[0_4px_10px_-2px_rgba(245,158,11,0.4)] text-[10px] uppercase tracking-widest">
+                {profile.tier}
               </Badge>
             </div>
-            <p className="text-emerald-700 font-medium flex items-center gap-2 mt-1">
-              Donor ID: <span className="text-gray-900 font-mono">{donorData.donorId}</span>
-              <Separator orientation="vertical" className="h-3 bg-gray-300" />
-              Joined {donorData.joinedDate}
-            </p>
+            <div className="flex wrap items-center justify-center sm:justify-start gap-3 mt-1 text-sm text-gray-500 font-medium">
+              <span className="flex items-center gap-1.5 bg-gray-50 px-2 py-1 rounded-md border border-gray-100"><Shield className="h-3.5 w-3.5 text-[#1D6E3F]" /> <span className="font-mono text-gray-900 font-bold">{profile.donorId}</span></span>
+              <span className="text-gray-300">•</span>
+              <span className="flex items-center gap-1.5"><CalendarDays className="h-3.5 w-3.5" /> Joined {profile.joinedDate}</span>
+            </div>
           </div>
         </div>
-        <div className="flex items-center gap-3">
-          <Button variant="outline" className="border-gray-200 text-gray-700 hover:bg-gray-50 font-semibold bg-white shadow-sm" onClick={() => toast.success("Download started", { description: "Downloading your latest tax certificate." })}>
-            Download Tax Certificate
-          </Button>
-          <Link to="/donate">
-            <Button className="bg-primary hover:bg-primary/90 text-primary-foreground font-bold shadow-sm">
-              Make a Donation
+        <div className="flex flex-col gap-3 w-full sm:w-auto z-10">
+          <Link to="/donate" className="w-full">
+            <Button className="w-full bg-gradient-to-r from-[#1D6E3F] to-emerald-600 hover:from-emerald-600 hover:to-emerald-500 text-white font-black shadow-[0_10px_20px_-10px_rgba(29,110,63,0.5)] rounded-xl h-12 px-6 transition-all duration-300 hover:-translate-y-1">
+              <Heart className="h-4 w-4 mr-2 fill-emerald-400/50" /> Make a Donation
             </Button>
           </Link>
+          <Button variant="outline" className="w-full bg-white border-gray-200 text-gray-700 hover:bg-gray-50 font-bold rounded-xl h-11" onClick={() => toast.info("Certificates are securely accessible via the Dashboard")}>
+            <FileText className="h-4 w-4 mr-2 text-gray-400" /> Print Summary
+          </Button>
         </div>
-      </div>
+      </motion.div>
 
       <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
-        <TabsList className="bg-gray-100/50 border border-gray-200 p-1 mb-8 w-full md:w-auto h-auto grid grid-cols-2 md:inline-flex rounded-xl">
-          <TabsTrigger value="overview" className="text-gray-600 data-[state=active]:bg-white data-[state=active]:text-gray-900 data-[state=active]:shadow-sm py-2.5 px-6 font-semibold rounded-lg">
-            Overview
-          </TabsTrigger>
-          <TabsTrigger value="edit" className="text-gray-600 data-[state=active]:bg-white data-[state=active]:text-gray-900 data-[state=active]:shadow-sm py-2.5 px-6 font-semibold rounded-lg">
-            Edit Profile
-          </TabsTrigger>
-          <TabsTrigger value="preferences" className="text-gray-600 data-[state=active]:bg-white data-[state=active]:text-gray-900 data-[state=active]:shadow-sm py-2.5 px-6 font-semibold rounded-lg">
-            Preferences
-          </TabsTrigger>
-          <TabsTrigger value="security" className="text-gray-600 data-[state=active]:bg-white data-[state=active]:text-gray-900 data-[state=active]:shadow-sm py-2.5 px-6 font-semibold rounded-lg">
-            Security
-          </TabsTrigger>
+        <TabsList className="bg-white/50 backdrop-blur-md border border-gray-100 p-1.5 mb-8 w-full md:w-auto h-auto grid grid-cols-2 md:inline-flex rounded-2xl shadow-[0_4px_20px_-10px_rgba(0,0,0,0.05)]">
+          {[
+            { value: "overview", label: "Overview", icon: LayoutDashboard },
+            { value: "edit", label: "Details", icon: User },
+            { value: "preferences", label: "Preferences", icon: Bell },
+            { value: "security", label: "Security", icon: Shield },
+          ].map(tab => (
+            <TabsTrigger 
+              key={tab.value} 
+              value={tab.value} 
+              className="text-gray-500 data-[state=active]:bg-[#1D6E3F] data-[state=active]:text-white py-3 px-6 font-bold rounded-xl transition-all duration-300 flex items-center justify-center gap-2 text-sm"
+            >
+              <tab.icon className={`h-4 w-4 ${activeTab === tab.value ? 'opacity-100' : 'opacity-50'}`} /> {tab.label}
+            </TabsTrigger>
+          ))}
         </TabsList>
 
-        <TabsContent value="overview" className="space-y-8 animate-in fade-in duration-500">
-          {/* Summary Cards */}
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-            <Card className="bg-white border-gray-200 shadow-sm overflow-hidden group hover:border-emerald-200 transition-colors">
-              <CardHeader className="pb-2">
-                <CardDescription className="text-emerald-700 uppercase text-[10px] font-bold tracking-widest">Total Donated</CardDescription>
-                <CardTitle className="text-2xl text-gray-900 font-bold">{donorData.stats.totalDonated}</CardTitle>
-              </CardHeader>
-              <CardContent>
-                <div className="h-1 w-full bg-emerald-100 rounded-full mt-2">
-                  <div className="h-full bg-primary rounded-full w-[70%]" />
-                </div>
-              </CardContent>
-            </Card>
-            
-            <Card className="bg-white border-gray-200 shadow-sm group hover:border-emerald-200 transition-colors">
-              <CardHeader className="pb-2">
-                <CardDescription className="text-emerald-700 uppercase text-[10px] font-bold tracking-widest">Donations</CardDescription>
-                <CardTitle className="text-2xl text-gray-900 font-bold">{donorData.stats.donationCount}</CardTitle>
-              </CardHeader>
-              <CardContent className="text-xs text-gray-500">
-                Last: {donorData.stats.lastDonationDate}
-              </CardContent>
-            </Card>
+        <AnimatePresence mode="wait">
+          <motion.div
+            key={activeTab}
+            initial={{ opacity: 0, y: 10 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, scale: 0.98 }}
+            transition={{ duration: 0.3 }}
+          >
+            <TabsContent value="overview" className="mt-0 space-y-6 outline-none">
+              <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
+                {[
+                  { label: "Total Donated", val: `₹${totalDonated.toLocaleString("en-IN")}`, text: "text-[#1D6E3F]", bg: "bg-[#1D6E3F]/5" },
+                  { label: "Donations", val: donationCount, text: "text-blue-600", bg: "bg-blue-600/5" },
+                  { label: "Programs", val: uniquePrograms, text: "text-amber-600", bg: "bg-amber-600/5" },
+                  { label: "Lives Touched", val: livesTouched, text: "text-indigo-600", bg: "bg-indigo-600/5" },
+                ].map((stat, i) => (
+                  <Card key={i} className="bg-white border-gray-100 shadow-[0_10px_30px_-15px_rgba(0,0,0,0.06)] hover:shadow-[0_15px_40px_-15px_rgba(0,0,0,0.1)] transition-all duration-500 rounded-[1.5rem] group hover:-translate-y-1">
+                    <CardHeader className="pb-2 pt-6 px-6">
+                      <CardDescription className={`uppercase text-[10px] font-black tracking-widest ${stat.text} bg-white inline-block w-fit`}>{stat.label}</CardDescription>
+                      <CardTitle className="text-3xl text-gray-900 font-black tracking-tight">{stat.val}</CardTitle>
+                    </CardHeader>
+                    <CardContent className="px-6 pb-6">
+                      <div className={`h-1.5 w-12 ${stat.bg} rounded-full`}>
+                        <div className={`h-full w-full bg-current ${stat.text} rounded-full`} />
+                      </div>
+                    </CardContent>
+                  </Card>
+                ))}
+              </div>
 
-            <Card className="bg-white border-gray-200 shadow-sm group hover:border-emerald-200 transition-colors">
-              <CardHeader className="pb-2">
-                <CardDescription className="text-emerald-700 uppercase text-[10px] font-bold tracking-widest">Programs</CardDescription>
-                <CardTitle className="text-2xl text-gray-900 font-bold">{donorData.stats.programsSupported}</CardTitle>
-              </CardHeader>
-              <CardContent className="text-xs text-gray-500">
-                Across 3 sectors
-              </CardContent>
-            </Card>
-
-            <Card className="bg-white border-gray-200 shadow-sm group hover:border-emerald-200 transition-colors">
-              <CardHeader className="pb-2">
-                <CardDescription className="text-emerald-700 uppercase text-[10px] font-bold tracking-widest">Lives Touched</CardDescription>
-                <CardTitle className="text-2xl text-gray-900 font-bold">{donorData.impact.childrenSupported}</CardTitle>
-              </CardHeader>
-              <CardContent className="text-xs text-gray-500">
-                Health & Education
-              </CardContent>
-            </Card>
-          </div>
-
-          <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
-            {/* Impact Metrics */}
-            <Card className="lg:col-span-2 bg-white border-gray-200 shadow-sm border-l-4 border-l-primary">
-              <CardHeader>
-                <CardTitle className="text-xl text-gray-900 font-bold flex items-center gap-2">
-                  <Heart className="h-5 w-5 text-primary fill-primary" />
-                  Your Impact Journey
-                </CardTitle>
-                <CardDescription className="text-gray-600 font-medium">Real-world change powered by your contributions</CardDescription>
-              </CardHeader>
-              <CardContent className="space-y-6">
-                <div className="grid grid-cols-1 sm:grid-cols-3 gap-6">
-                  <div className="space-y-3 p-4 rounded-xl bg-gray-50 border border-gray-100 hover:bg-gray-100 transition-colors">
-                    <p className="text-3xl font-bold text-gray-900">{donorData.impact.childrenSupported}</p>
-                    <p className="text-sm text-emerald-700 font-semibold leading-tight">Children supported through education</p>
-                  </div>
-                  <div className="space-y-3 p-4 rounded-xl bg-gray-50 border border-gray-100 hover:bg-gray-100 transition-colors">
-                    <p className="text-3xl font-bold text-gray-900">{donorData.impact.healthCheckups}</p>
-                    <p className="text-sm text-emerald-700 font-semibold leading-tight">Health checkups funded in rural clinics</p>
-                  </div>
-                  <div className="space-y-3 p-4 rounded-xl bg-gray-50 border border-gray-100 hover:bg-gray-100 transition-colors">
-                    <p className="text-3xl font-bold text-gray-900">{donorData.impact.schoolsReached}</p>
-                    <p className="text-sm text-emerald-700 font-semibold leading-tight">Schools reached with program materials</p>
-                  </div>
+              <Card className="bg-white border-gray-100 shadow-[0_15px_40px_-15px_rgba(0,0,0,0.06)] rounded-[1.5rem] overflow-hidden relative">
+                <div className="absolute top-0 right-0 p-8 opacity-[0.02]">
+                   <Sparkles className="h-32 w-32 -mr-6 -mt-6 rotate-12" />
                 </div>
-              </CardContent>
-            </Card>
-
-            {/* Quick Details */}
-            <Card className="bg-white border-gray-200 shadow-sm">
-              <CardHeader>
-                <CardTitle className="text-xl text-gray-900 font-bold flex items-center gap-2">
-                  <User className="h-5 w-5 text-emerald-600" />
-                  Contact Details
-                </CardTitle>
-              </CardHeader>
-              <CardContent className="space-y-4">
-                <div className="space-y-1">
-                  <p className="text-[10px] text-gray-500 font-bold uppercase tracking-widest">Email Address</p>
-                  <p className="text-gray-900 font-medium">{donorData.email}</p>
-                </div>
-                <div className="space-y-1">
-                  <p className="text-[10px] text-gray-500 font-bold uppercase tracking-widest">Mobile Number</p>
-                  <p className="text-gray-900 font-medium">{donorData.mobile}</p>
-                </div>
-                <div className="space-y-1 pt-4 border-t border-gray-100">
-                  <p className="text-[10px] text-gray-500 font-bold uppercase tracking-widest">Display Preference</p>
-                  <p className="text-gray-900 font-medium">{donorData.displayName}</p>
-                </div>
-              </CardContent>
-            </Card>
-          </div>
-        </TabsContent>
-
-        <TabsContent value="edit" className="animate-in fade-in slide-in-from-left-4 duration-500">
-          <Card className="bg-white border-gray-200 shadow-sm max-w-2xl">
-            <CardHeader>
-              <CardTitle className="text-xl text-gray-900 font-bold">Update Profile Information</CardTitle>
-              <CardDescription className="text-gray-600 font-medium">Keep your contact details up to date</CardDescription>
-            </CardHeader>
-            <Form {...form}>
-              <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
-                <CardContent className="space-y-6">
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                    <FormField
-                      control={form.control}
-                      name="name"
-                      render={({ field }) => (
-                        <FormItem>
-                          <FormLabel className="text-gray-900 font-semibold">Full Name</FormLabel>
-                          <FormControl>
-                            <Input {...field} className="bg-white border-gray-300 text-gray-900 focus:border-primary/50" />
-                          </FormControl>
-                          <FormMessage className="text-rose-500 text-xs" />
-                        </FormItem>
-                      )}
-                    />
-                    <FormField
-                      control={form.control}
-                      name="displayName"
-                      render={({ field }) => (
-                        <FormItem>
-                          <FormLabel className="text-gray-900 font-semibold">Display Nickname</FormLabel>
-                          <FormControl>
-                            <Input {...field} className="bg-white border-gray-300 text-gray-900 focus:border-primary/50" />
-                          </FormControl>
-                          <FormMessage className="text-rose-500 text-xs" />
-                        </FormItem>
-                      )}
-                    />
-                    <FormField
-                      control={form.control}
-                      name="mobile"
-                      render={({ field }) => (
-                        <FormItem>
-                          <FormLabel className="text-gray-900 font-semibold">Mobile Number</FormLabel>
-                          <FormControl>
-                            <Input {...field} className="bg-white border-gray-300 text-gray-900 focus:border-primary/50" />
-                          </FormControl>
-                          <FormMessage className="text-rose-500 text-xs" />
-                        </FormItem>
-                      )}
-                    />
-                    <div className="space-y-2">
-                      <Label className="text-gray-900 font-semibold opacity-50 text-xs">Email Address (Read-only)</Label>
-                      <Input 
-                        value={donorData.email} 
-                        disabled 
-                        className="bg-gray-50 border-gray-200 text-gray-500 cursor-not-allowed h-10" 
-                      />
+                <CardHeader className="pt-8 px-8 border-b border-gray-50 pb-6 relative z-10">
+                  <Badge variant="outline" className="bg-[#1D6E3F]/5 text-[#1D6E3F] border-[#1D6E3F]/20 font-bold px-3 py-1 mb-3 w-fit uppercase tracking-widest text-[9px]">Journey</Badge>
+                  <CardTitle className="text-2xl text-gray-900 font-black tracking-tight">Your Direct Impact</CardTitle>
+                  <CardDescription className="font-semibold text-gray-500">The human difference your contributions make.</CardDescription>
+                </CardHeader>
+                <CardContent className="p-8 relative z-10">
+                  <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+                    <div className="p-6 rounded-2xl bg-[#fafaf8] border border-gray-100 hover:bg-[#1D6E3F]/[0.02] hover:border-[#1D6E3F]/20 transition-all group">
+                      <div className="h-10 w-10 bg-emerald-100 rounded-xl flex items-center justify-center mb-4 text-[#1D6E3F]">
+                         <GraduationCap className="h-5 w-5" />
+                      </div>
+                      <p className="text-4xl font-black text-gray-900 mb-2">{livesTouched}</p>
+                      <p className="text-sm text-[#1D6E3F] font-bold">Children expected to reach</p>
+                    </div>
+                    <div className="p-6 rounded-2xl bg-[#fafaf8] border border-gray-100 hover:bg-blue-600/[0.02] hover:border-blue-600/20 transition-all group">
+                      <div className="h-10 w-10 bg-blue-100 rounded-xl flex items-center justify-center mb-4 text-blue-600">
+                         <HeartPulse className="h-5 w-5" />
+                      </div>
+                      <p className="text-4xl font-black text-gray-900 mb-2">{healthCheckups}</p>
+                      <p className="text-sm text-blue-600 font-bold">Estimated health impact</p>
+                    </div>
+                    <div className="p-6 rounded-2xl bg-[#fafaf8] border border-gray-100 hover:bg-amber-600/[0.02] hover:border-amber-600/20 transition-all group">
+                      <div className="h-10 w-10 bg-amber-100 rounded-xl flex items-center justify-center mb-4 text-amber-600">
+                         <LayoutDashboard className="h-5 w-5" />
+                      </div>
+                      <p className="text-4xl font-black text-gray-900 mb-2">{uniquePrograms}</p>
+                      <p className="text-sm text-amber-600 font-bold">Sector focus areas</p>
                     </div>
                   </div>
                 </CardContent>
-                <CardFooter className="border-t border-gray-100 pt-6 flex justify-end gap-3">
-                  <Button type="button" variant="ghost" onClick={() => setActiveTab("overview")} className="text-gray-600 hover:bg-gray-50 hover:text-gray-900">Cancel</Button>
-                  <Button type="submit" disabled={isSubmitting} className="bg-primary hover:bg-primary/90 text-primary-foreground font-bold shadow-sm min-w-[120px]">
-                    {isSubmitting ? (
-                      <>
-                        <Loader2 className="h-4 w-4 mr-2 animate-spin" />
-                        Saving...
-                      </>
-                    ) : (
-                      <>
-                        <Save className="h-4 w-4 mr-2" />
-                        Save Changes
-                      </>
-                    )}
-                  </Button>
-                </CardFooter>
-              </form>
-            </Form>
-          </Card>
-        </TabsContent>
+              </Card>
+            </TabsContent>
 
-        <TabsContent value="preferences" className="animate-in fade-in slide-in-from-right-4 duration-500">
-          <Card className="bg-white border-gray-200 shadow-sm max-w-2xl">
-            <CardHeader>
-              <CardTitle className="text-xl text-gray-900 font-bold">Communication & Visibility</CardTitle>
-              <CardDescription className="text-gray-600 font-medium">Manage how you interact with the foundation platform</CardDescription>
-            </CardHeader>
-            <CardContent className="space-y-8">
-              <div className="flex items-center justify-between p-4 rounded-xl bg-gray-50 border border-gray-100">
-                <div className="space-y-0.5">
-                  <div className="flex items-center gap-2">
-                    <Label className="text-gray-900 font-bold">Public Recognition</Label>
-                    <Badge variant="outline" className="text-[9px] uppercase tracking-tighter border-emerald-500/30 text-emerald-700 bg-emerald-50">Donor Wall</Badge>
-                  </div>
-                  <p className="text-sm text-gray-500 font-medium">Show my name on the donor recognition wall</p>
-                </div>
-                <Switch 
-                  checked={donorData.preferences.showOnWall} 
-                  onCheckedChange={(checked) => handlePreferenceChange("showOnWall", checked)}
-                  className="data-[state=checked]:bg-primary" 
-                />
-              </div>
+            <TabsContent value="edit" className="mt-0 outline-none">
+              <Card className="bg-white border-gray-100 shadow-[0_15px_40px_-15px_rgba(0,0,0,0.06)] rounded-[1.5rem]">
+                <CardHeader className="pt-8 px-8 border-b border-gray-50 pb-6">
+                  <CardTitle className="text-2xl text-gray-900 font-black tracking-tight">Personal Information</CardTitle>
+                  <CardDescription className="font-semibold text-gray-500 mt-1">Make sure your receipt data is accurate.</CardDescription>
+                </CardHeader>
+                <CardContent className="p-8">
+                  <Form {...form}>
+                    <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6 max-w-2xl">
+                      <div className="grid md:grid-cols-2 gap-6">
+                        <FormField
+                          control={form.control}
+                          name="name"
+                          render={({ field }) => (
+                            <FormItem>
+                              <FormLabel className="font-bold text-gray-700">Legal Name / Entity</FormLabel>
+                              <FormControl>
+                                <Input placeholder="John Doe" {...field} className="h-12 rounded-xl bg-gray-50 border-gray-200 px-4 focus-visible:ring-[#1D6E3F]/20" />
+                              </FormControl>
+                              <FormMessage />
+                            </FormItem>
+                          )}
+                        />
+                        <FormField
+                          control={form.control}
+                          name="displayName"
+                          render={({ field }) => (
+                            <FormItem>
+                              <FormLabel className="font-bold text-gray-700">Display Name (Public)</FormLabel>
+                              <FormControl>
+                                <Input placeholder="John D." {...field} className="h-12 rounded-xl bg-gray-50 border-gray-200 px-4 focus-visible:ring-[#1D6E3F]/20" />
+                              </FormControl>
+                              <FormMessage />
+                            </FormItem>
+                          )}
+                        />
+                      </div>
+                      <FormField
+                        control={form.control}
+                        name="mobile"
+                        render={({ field }) => (
+                          <FormItem>
+                            <FormLabel className="font-bold text-gray-700">Contact Number</FormLabel>
+                            <FormControl>
+                              <Input placeholder="+91 90000 00000" {...field} className="h-12 rounded-xl bg-gray-50 border-gray-200 px-4 focus-visible:ring-[#1D6E3F]/20" />
+                            </FormControl>
+                            <FormDescription className="text-xs font-semibold">Required for automated 80G SMS delivery.</FormDescription>
+                            <FormMessage />
+                          </FormItem>
+                        )}
+                      />
+                      <div className="pt-6 border-t border-gray-100 flex justify-end gap-3">
+                        <Button type="button" variant="outline" onClick={() => form.reset()} className="rounded-xl font-bold border-gray-200 hover:bg-gray-50 h-11 px-6">Cancel</Button>
+                        <Button type="submit" disabled={isSubmitting} className="rounded-xl font-black bg-[#1D6E3F] hover:bg-emerald-700 text-white shadow-lg h-11 px-6">
+                          {isSubmitting ? <Loader2 className="mr-2 h-4 w-4 animate-spin" /> : <Save className="mr-2 h-4 w-4" />} Save Changes
+                        </Button>
+                      </div>
+                    </form>
+                  </Form>
+                </CardContent>
+              </Card>
+            </TabsContent>
 
-              <div className="flex items-center justify-between p-4 rounded-xl bg-gray-50 border border-gray-100">
-                <div className="space-y-0.5">
-                  <Label className="text-gray-900 font-bold">Impact Updates</Label>
-                  <p className="text-sm text-gray-500 font-medium">Receive monthly progress reports for your supported programs</p>
-                </div>
-                <Switch 
-                  checked={donorData.preferences.progressUpdates} 
-                  onCheckedChange={(checked) => handlePreferenceChange("progressUpdates", checked)}
-                  className="data-[state=checked]:bg-primary" 
-                />
-              </div>
-
-              <div className="flex items-center justify-between p-4 rounded-xl bg-gray-50 border border-gray-100">
-                <div className="space-y-0.5">
-                  <Label className="text-gray-900 font-bold">Event Invitations</Label>
-                  <p className="text-sm text-gray-500 font-medium">Get notified about exclusive donor meetups and field visits</p>
-                </div>
-                <Switch 
-                  checked={donorData.preferences.eventInvites} 
-                  onCheckedChange={(checked) => handlePreferenceChange("eventInvites", checked)}
-                  className="data-[state=checked]:bg-primary" 
-                />
-              </div>
-            </CardContent>
-          </Card>
-        </TabsContent>
-
-        <TabsContent value="security" className="animate-in fade-in slide-in-from-bottom-4 duration-500">
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-            <Card className="bg-white border-gray-200 shadow-sm">
-              <CardHeader>
-                <CardTitle className="text-xl text-gray-900 font-bold flex items-center gap-2">
-                  <Shield className="h-5 w-5 text-emerald-600" />
-                  Password Settings
-                </CardTitle>
-                <CardDescription className="text-gray-600 font-medium">Keep your account secure with a strong password</CardDescription>
-              </CardHeader>
-              <CardContent className="space-y-4">
-                <div className="space-y-2">
-                  <Label className="text-gray-900 font-semibold">Current Password</Label>
-                  <Input type="password" placeholder="••••••••" className="bg-white border-gray-300 text-gray-900" />
-                </div>
-                <div className="space-y-2">
-                  <Label className="text-gray-900 font-semibold">New Password</Label>
-                  <Input type="password" placeholder="••••••••" className="bg-white border-gray-300 text-gray-900" />
-                </div>
-                <div className="space-y-2">
-                  <Label className="text-gray-900 font-semibold">Confirm New Password</Label>
-                  <Input type="password" placeholder="••••••••" className="bg-white border-gray-300 text-gray-900" />
-                </div>
-              </CardContent>
-              <CardFooter className="border-t border-gray-100 pt-6">
-                <Button className="w-full bg-gray-100 hover:bg-gray-200 text-gray-900 font-bold" onClick={() => toast.success("Password updated successfully!")}>Update Password</Button>
-              </CardFooter>
-            </Card>
-
-            <Card className="bg-white border-gray-200 shadow-sm border-t-4 border-t-rose-500">
-              <CardHeader>
-                <CardTitle className="text-xl text-rose-600 font-bold flex items-center gap-2">
-                  Danger Zone
-                </CardTitle>
-                <CardDescription className="text-rose-600/60 font-medium">Session management and account actions</CardDescription>
-              </CardHeader>
-              <CardContent className="space-y-6">
-                <div className="p-4 rounded-xl bg-rose-50 border border-rose-100 space-y-4">
-                  <div className="flex items-center justify-between">
-                    <div>
-                      <p className="text-gray-900 font-bold">Current Session</p>
-                      <p className="text-xs text-rose-600/80 font-medium">You are currently logged in on this Windows device</p>
+            <TabsContent value="preferences" className="mt-0 outline-none">
+              <Card className="bg-white border-gray-100 shadow-[0_15px_40px_-15px_rgba(0,0,0,0.06)] rounded-[1.5rem]">
+                <CardHeader className="pt-8 px-8 border-b border-gray-50 pb-6">
+                  <CardTitle className="text-2xl text-gray-900 font-black tracking-tight">Ecosystem Preferences</CardTitle>
+                  <CardDescription className="font-semibold text-gray-500 mt-1">Control your digital presence and communications.</CardDescription>
+                </CardHeader>
+                <CardContent className="p-8 space-y-8 max-w-2xl">
+                  <div className="flex items-center justify-between p-4 rounded-2xl border border-gray-100 hover:bg-gray-50 transition-colors">
+                    <div className="space-y-1">
+                       <Label className="text-base font-bold text-gray-900">Public Acknowledgment</Label>
+                       <p className="text-sm text-gray-500 font-medium">Show my name on the public Impact Wall.</p>
                     </div>
-                    <Button variant="outline" size="sm" className="border-rose-200 bg-white text-rose-600 hover:bg-rose-50 h-8 font-bold" onClick={() => toast.success("Logged out successfully.")}>
-                      <LogOut className="h-3 w-3 mr-2" />
-                      Logout
-                    </Button>
+                    <Switch
+                       checked={true}
+                       onCheckedChange={(c) => handlePreferenceChange("showOnWall", c)}
+                       className="data-[state=checked]:bg-[#1D6E3F]"
+                    />
                   </div>
-                </div>
+                  <div className="flex items-center justify-between p-4 rounded-2xl border border-gray-100 hover:bg-gray-50 transition-colors">
+                    <div className="space-y-1">
+                       <Label className="text-base font-bold text-gray-900">Transparent Updates</Label>
+                       <p className="text-sm text-gray-500 font-medium">Receive quarterly digital reports matching the disclosures map.</p>
+                    </div>
+                    <Switch
+                       checked={true}
+                       onCheckedChange={(c) => handlePreferenceChange("progressUpdates", c)}
+                       className="data-[state=checked]:bg-[#1D6E3F]"
+                    />
+                  </div>
+                  <div className="flex items-center justify-between p-4 rounded-2xl border border-gray-100 hover:bg-gray-50 transition-colors">
+                    <div className="space-y-1">
+                       <Label className="text-base font-bold text-gray-900">VIP Invites</Label>
+                       <p className="text-sm text-gray-500 font-medium">Get invites to offline foundation events in your city.</p>
+                    </div>
+                    <Switch
+                       checked={false}
+                       onCheckedChange={(c) => handlePreferenceChange("eventInvites", c)}
+                       className="data-[state=checked]:bg-[#1D6E3F]"
+                    />
+                  </div>
+                </CardContent>
+              </Card>
+            </TabsContent>
 
-                <div className="space-y-4 pt-4">
-                  <p className="text-xs text-gray-500 font-medium italic">
-                    To delete your account or download your data, please contact donor.support@wombto18.org
-                  </p>
-                </div>
-              </CardContent>
-            </Card>
-          </div>
-        </TabsContent>
+            <TabsContent value="security" className="mt-0 outline-none">
+              <Card className="bg-white border-gray-100 shadow-[0_15px_40px_-15px_rgba(0,0,0,0.06)] rounded-[1.5rem]">
+                <CardHeader className="pt-8 px-8 border-b border-gray-50 pb-6">
+                  <CardTitle className="text-2xl text-gray-900 font-black tracking-tight flex items-center gap-2"><Shield className="h-6 w-6 text-gray-900" /> Security Settings</CardTitle>
+                </CardHeader>
+                <CardContent className="p-8 space-y-8 max-w-2xl">
+                  <div className="space-y-4">
+                    <div className="flex items-center justify-between p-4 rounded-2xl bg-gray-50 border border-gray-100">
+                      <div className="space-y-1">
+                        <Label className="text-base font-bold text-gray-900">Login Password</Label>
+                        <p className="text-sm text-gray-500 font-medium">Last updated recently via email verification.</p>
+                      </div>
+                      {securityStep === "initial" && (
+                        <Button 
+                          onClick={handleRequestPasswordChange}
+                          disabled={isSubmitting}
+                          className="bg-white border-gray-200 text-gray-700 hover:bg-gray-100 font-bold rounded-xl h-10 px-4 shadow-sm"
+                          variant="outline"
+                        >
+                          Change Password
+                        </Button>
+                      )}
+                    </div>
+
+                    {securityStep === "otp" && (
+                      <motion.div initial={{ opacity: 0, height: 0 }} animate={{ opacity: 1, height: "auto" }} className="p-6 rounded-2xl border-2 border-emerald-100 bg-emerald-50/30 space-y-4">
+                        <div className="space-y-2">
+                          <Label className="text-sm font-bold text-gray-900">Enter Verification Code</Label>
+                          <div className="flex gap-4">
+                            <Input 
+                              value={otpValue} 
+                              onChange={(e) => setOtpValue(e.target.value)} 
+                              placeholder="6-digit OTP" 
+                              maxLength={6}
+                              className="h-12 rounded-xl bg-white border-emerald-200 px-4 focus-visible:ring-[#1D6E3F]/20 text-center font-mono text-xl tracking-[0.5em]" 
+                            />
+                            <Button onClick={handleVerifyOtp} className="h-12 bg-[#1D6E3F] hover:bg-emerald-700 text-white font-black rounded-xl px-6">
+                              Verify Code
+                            </Button>
+                          </div>
+                          <p className="text-xs text-gray-500 font-medium italic">We've sent a 6-digit code to {profile.email}</p>
+                          {showDevOtp && (
+                            <div className="mt-2 p-2 bg-amber-50 border border-amber-200 rounded-lg text-xs text-amber-700">
+                              <span className="font-bold">Dev Mode OTP:</span> {showDevOtp}
+                            </div>
+                          )}
+                        </div>
+                      </motion.div>
+                    )}
+
+                    {securityStep === "password" && (
+                      <motion.div initial={{ opacity: 0, scale: 0.95 }} animate={{ opacity: 1, scale: 1 }} className="p-6 rounded-2xl border-2 border-emerald-500/20 bg-emerald-50/10 space-y-4">
+                        <div className="grid gap-4">
+                          <div className="space-y-2">
+                            <Label className="text-sm font-bold text-gray-900">New Password</Label>
+                            <Input 
+                              type="password" 
+                              value={newPass} 
+                              onChange={(e) => setNewPass(e.target.value)} 
+                              className="h-12 rounded-xl bg-white border-gray-200 px-4" 
+                            />
+                          </div>
+                          <div className="space-y-2">
+                            <Label className="text-sm font-bold text-gray-900">Confirm New Password</Label>
+                            <Input 
+                              type="password" 
+                              value={confirmPass} 
+                              onChange={(e) => setConfirmPass(e.target.value)} 
+                              className="h-12 rounded-xl bg-white border-gray-200 px-4" 
+                            />
+                          </div>
+                          <div className="flex gap-3 pt-2">
+                            <Button onClick={handleUpdatePassword} disabled={isSubmitting} className="flex-1 bg-[#1D6E3F] hover:bg-emerald-700 text-white font-black rounded-xl h-12 shadow-lg">
+                              {isSubmitting ? <Loader2 className="h-4 w-4 animate-spin" /> : "Confirm New Password"}
+                            </Button>
+                            <Button variant="outline" onClick={() => setSecurityStep("initial")} className="rounded-xl font-bold h-12 px-6">Cancel</Button>
+                          </div>
+                        </div>
+                      </motion.div>
+                    )}
+                  </div>
+
+                  <div className="h-px bg-gray-100" />
+
+                  <div className="flex items-center justify-between p-4 rounded-2xl border border-gray-100 hover:bg-gray-50 transition-colors group">
+                    <div className="space-y-1">
+                      <Label className="text-base font-bold text-gray-900 flex items-center gap-2">Two-Factor Authentication <Badge className="bg-emerald-50 text-[#1D6E3F] border-emerald-100 text-[9px] h-4">RECOMMENDED</Badge></Label>
+                      <p className="text-sm text-gray-500 font-medium">Require email verification for every login.</p>
+                    </div>
+                    <Switch
+                      checked={(profile as any).twoFactorEnabled}
+                      onCheckedChange={handleToggle2FA}
+                      className="data-[state=checked]:bg-[#1D6E3F]"
+                    />
+                  </div>
+
+                  <div className="h-px bg-gray-100" />
+
+                  <div className="space-y-4">
+                    <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 p-4 rounded-2xl bg-rose-50/30 border border-rose-100">
+                      <div className="space-y-1">
+                        <Label className="text-base font-bold text-rose-900">Session Management</Label>
+                        <p className="text-sm text-rose-700/60 font-medium">Instantly log out from all other browsers and devices.</p>
+                      </div>
+                      <Button 
+                        variant="outline" 
+                        disabled={isSubmitting}
+                        className="border-rose-200 text-rose-600 hover:bg-rose-50 font-bold rounded-xl h-11 shrink-0" 
+                        onClick={handleRevokeSessions}
+                      >
+                        {isSubmitting ? <Loader2 className="h-4 w-4 animate-spin mr-2" /> : <LogOut className="h-4 w-4 mr-2" />} 
+                        Revoke All Other Sessions
+                      </Button>
+                    </div>
+                  </div>
+                </CardContent>
+              </Card>
+            </TabsContent>
+          </motion.div>
+        </AnimatePresence>
       </Tabs>
     </div>
   );

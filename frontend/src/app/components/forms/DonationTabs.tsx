@@ -17,14 +17,14 @@ export function DonationTabs({ onTypeChange, individualForm, organizationForm }:
       <TabsList className="grid w-full grid-cols-2 mb-8 bg-gray-100 p-1 h-12">
         <TabsTrigger 
           value="individual" 
-          className="data-[state=active]:bg-emerald-600 data-[state=active]:text-white text-gray-700 font-bold gap-2"
+          className="data-[state=active]:bg-[#1D6E3F] data-[state=active]:text-white text-gray-700 font-bold gap-2"
         >
           <User className="h-4 w-4" />
           Individual
         </TabsTrigger>
         <TabsTrigger 
           value="organization" 
-          className="data-[state=active]:bg-emerald-600 data-[state=active]:text-white text-gray-700 font-bold gap-2"
+          className="data-[state=active]:bg-[#1D6E3F] data-[state=active]:text-white text-gray-700 font-bold gap-2"
         >
           <Building2 className="h-4 w-4" />
           Organization

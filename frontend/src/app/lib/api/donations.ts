@@ -4,7 +4,9 @@ export interface CreateOrderResponse {
   orderId: string;
   amount: number;
   currency: string;
-  keyId: string; // Razorpay Key ID
+  keyId: string;
+  donationId: string;
+  donorId: string;
 }
 
 export interface PaymentVerificationPayload {
@@ -15,9 +17,9 @@ export interface PaymentVerificationPayload {
 }
 
 export const donationApi = {
-  createOrder: (amount: number, programId: string, donorDetails: any) => 
-    client.post<CreateOrderResponse>('/donations/create', { amount, programId, ...donorDetails }),
-    
+  createOrder: (payload: Record<string, unknown>) =>
+    client.post<CreateOrderResponse>('/donations/create', payload),
+
   verifyPayment: (payload: PaymentVerificationPayload) => 
     client.post<{ success: boolean }>('/donations/verify', payload),
 };

@@ -1,3 +1,23 @@
 @import './fonts.css';
 @import './tailwind.css';
 @import './theme.css';
+
+body.content-protection-enabled .content-protected,
+body.content-protection-enabled .content-protected *:not(input):not(textarea):not(select):not([contenteditable="true"]):not([data-allow-copy="true"]) {
+  -webkit-touch-callout: none;
+  -webkit-user-select: none;
+  user-select: none;
+}
+
+body.content-protection-enabled .content-protected img {
+  -webkit-user-drag: none;
+}
+
+body.content-protection-enabled .content-protected input,
+body.content-protection-enabled .content-protected textarea,
+body.content-protection-enabled .content-protected select,
+body.content-protection-enabled .content-protected [contenteditable="true"],
+body.content-protection-enabled .content-protected [data-allow-copy="true"] {
+  -webkit-user-select: text;
+  user-select: text;
+}

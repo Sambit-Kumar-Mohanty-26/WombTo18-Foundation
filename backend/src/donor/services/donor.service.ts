@@ -5,37 +5,58 @@ import { PrismaService } from '../../prisma/services/prisma.service';
 export class DonorService {
   constructor(private readonly prisma: PrismaService) {}
 
-  async getDashboard(donorId: string) {
-    const donor = await this.prisma.donor.findUnique({
-      where: { donorId },
-      include: { donations: { where: { status: 'SUCCESS' } } },
+  async getDashboard(identifier: string) {
+    const donor = await this.prisma.donor.findFirst({
+      where: {
+        OR: [{ email: identifier }, { donorId: identifier }],
+      },
+      include: {
+        donations: { where: { status: 'SUCCESS' } },
+        volunteer: { select: { volunteerId: true, totalCoins: true } },
+      },
     });
 
     if (!donor) throw new NotFoundException('Donor not found');
 
-    const impact = await this.prisma.impactMetrics.findUnique({
+    const impact = (await this.prisma.impactMetrics.findUnique({
       where: { id: 'global' },
-    }) || {
+    })) || {
       childrenImpacted: 150,
       schoolsReached: 12,
       healthCheckups: 89,
       programsSupported: 3,
     };
 
+    const totalDonated = donor.totalDonated;
+    const tier = donor.tier;
+    const volunteerCoins = donor.volunteer?.totalCoins || 0;
+    const impactScore = Math.floor(totalDonated / 100) + (tier === 'CHAMPION' ? 1000 : tier === 'PATRON' ? 250 : 0) + volunteerCoins;
+
     return {
       donor: {
+        id: donor.id,
         name: donor.name || 'Anonymous Donor',
         donorId: donor.donorId,
+        email: donor.email,
         tier: donor.tier,
         totalDonated: donor.totalDonated,
+        impactScore,
+        isVolunteer: donor.isVolunteer,
+        showOnLeaderboard: donor.showOnLeaderboard,
+        volunteerId: donor.volunteer?.volunteerId || null,
+        volunteerCoins: donor.volunteer?.totalCoins || 0,
+        mobile: donor.mobile,
+        createdAt: donor.createdAt,
       },
       impact,
     };
   }
 
-  async getDonations(donorId: string) {
-    const donor = await this.prisma.donor.findUnique({
-      where: { donorId },
+  async getDonations(identifier: string) {
+    const donor = await this.prisma.donor.findFirst({
+      where: {
+        OR: [{ email: identifier }, { donorId: identifier }],
+      },
     });
     if (!donor) throw new NotFoundException('Donor not found');
 
@@ -46,10 +67,159 @@ export class DonorService {
     });
 
     return donations.map((d) => ({
+      id: d.id,
       amount: d.amount,
       program: d.program.name,
       date: d.createdAt.toISOString().split('T')[0],
       status: d.status,
+      receiptNumber: d.receiptNumber,
     }));
+  }
+
+  async getLeaderboard() {
+    return this.prisma.donor.findMany({
+      where: { totalDonated: { gt: 0 } },
+      orderBy: { totalDonated: 'desc' },
+      take: 50,
+      select: {
+        name: true,
+        donorId: true,
+        totalDonated: true,
+        tier: true,
+        showOnLeaderboard: true,
+      },
+    });
+  }
+
+  async getRecruits(donorId: string) {
+    return this.prisma.donor.findMany({
+      where: { referredById: donorId } as any,
+      select: {
+        name: true,
+        donorId: true,
+        email: true,
+        totalDonated: true,
+        createdAt: true,
+      },
+      orderBy: { createdAt: 'desc' },
+    });
+  }
+
+  async toggleLeaderboard(donorId: string, show: boolean) {
+    const donor = await this.prisma.donor.findUnique({ where: { donorId } });
+    if (!donor) throw new NotFoundException('Donor not found');
+    return this.prisma.donor.update({
+      where: { id: donor.id },
+      data: { showOnLeaderboard: show },
+    });
+  }
+
+  async becomeVolunteer(donorId: string) {
+    const donor = await this.prisma.donor.findUnique({
+      where: { donorId },
+    });
+    if (!donor) throw new NotFoundException('Donor not found');
+
+    return this.prisma.donor.update({
+      where: { id: donor.id },
+      data: { isVolunteer: true } as any,
+    });
+  }
+
+  async getProfile(identifier: string) {
+    const donor = await this.prisma.donor.findFirst({
+      where: { OR: [{ email: identifier }, { donorId: identifier }] },
+      include: {
+        volunteer: { select: { volunteerId: true, totalCoins: true, showOnLeaderboard: true } },
+        donations: {
+          where: { status: 'SUCCESS' },
+          orderBy: { createdAt: 'desc' },
+          take: 5,
+          include: { program: { select: { name: true } } },
+        },
+      },
+    });
+    if (!donor) throw new NotFoundException('Donor not found');
+
+    const totalDonated = donor.totalDonated;
+    const tier = donor.tier;
+    const volunteerCoins = donor.volunteer?.totalCoins || 0;
+    const impactScore = Math.floor(totalDonated / 100) + (tier === 'CHAMPION' ? 1000 : tier === 'PATRON' ? 250 : 0) + volunteerCoins;
+
+    return {
+      id: donor.id,
+      donorId: donor.donorId,
+      name: donor.name,
+      email: donor.email,
+      mobile: donor.mobile,
+      pan: donor.pan,
+      address: donor.address,
+      tier: donor.tier,
+      totalDonated: donor.totalDonated,
+      impactScore,
+      isVolunteer: donor.isVolunteer,
+      showOnLeaderboard: donor.showOnLeaderboard,
+      volunteerId: donor.volunteer?.volunteerId || null,
+      recentDonations: donor.donations.map(d => ({
+        id: d.id,
+        amount: d.amount,
+        program: d.program.name,
+        date: d.createdAt.toISOString().split('T')[0],
+      })),
+      createdAt: donor.createdAt,
+    };
+  }
+
+  /** Look up donor by email — used for guest donation → dashboard flow */
+  async lookupByEmail(email: string) {
+    if (!email) throw new NotFoundException('Email is required');
+    
+    const donor = await this.prisma.donor.findUnique({
+      where: { email: email.trim().toLowerCase() },
+      include: {
+        donations: {
+          where: { status: 'SUCCESS' },
+          orderBy: { createdAt: 'desc' },
+          take: 10,
+        },
+        certificates: {
+          orderBy: { createdAt: 'desc' },
+          take: 10,
+        },
+      },
+    });
+
+    if (!donor) throw new NotFoundException('No donations found for this email');
+
+    const totalDonated = donor.totalDonated;
+    const tier = donor.tier;
+    const impactScore = Math.floor(totalDonated / 100) + (tier === 'CHAMPION' ? 1000 : tier === 'PATRON' ? 250 : 0);
+
+    return {
+      donorId: donor.donorId,
+      name: donor.name,
+      email: donor.email,
+      tier: donor.tier,
+      totalDonated: donor.totalDonated,
+      impactScore,
+      isEligible: donor.isEligible,
+      emailVerified: donor.emailVerified,
+      mobileVerified: donor.mobileVerified,
+      donationCount: donor.donations.length,
+      certificateCount: donor.certificates.length,
+      donations: donor.donations.map(d => ({
+        id: d.id,
+        amount: d.amount,
+        date: d.createdAt.toISOString().split('T')[0],
+        receiptNumber: d.receiptNumber,
+      })),
+      certificates: donor.certificates.map(c => ({
+        id: c.id,
+        type: c.type,
+        title: c.title,
+        fileUrl: c.fileUrl,
+        createdAt: c.createdAt,
+      })),
+    };
   }
 }

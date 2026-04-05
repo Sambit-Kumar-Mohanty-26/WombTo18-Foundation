@@ -1,71 +1,98 @@
-import { Baby, GraduationCap, HeartPulse, Apple, Users, Shield } from "lucide-react";
-import { Card, CardHeader, CardTitle, CardDescription } from "../ui/card";
+import { ShieldPlus, Syringe, Brain, AlertTriangle, Leaf, Baby } from "lucide-react";
+import { Link } from "react-router";
 import { ScrollReveal } from "../ui/ScrollReveal";
-
-const programs = [
-  {
-    icon: Baby,
-    title: "Prenatal Care",
-    description: "Comprehensive healthcare for expectant mothers including nutrition, regular check-ups, and birth preparedness.",
-    color: "bg-pink-50 text-pink-600",
-  },
-  {
-    icon: HeartPulse,
-    title: "Early Childhood Health",
-    description: "Immunization drives, developmental screenings, and health monitoring for children aged 0-5.",
-    color: "bg-red-50 text-red-600",
-  },
-  {
-    icon: Apple,
-    title: "Nutrition Programs",
-    description: "Mid-day meals, nutrition supplements, and awareness campaigns to combat child malnutrition.",
-    color: "bg-orange-50 text-orange-600",
-  },
-  {
-    icon: GraduationCap,
-    title: "Education Support",
-    description: "Scholarships, school supplies, tutoring, and digital literacy programs for children aged 6-18.",
-    color: "bg-blue-50 text-blue-600",
-  },
-  {
-    icon: Users,
-    title: "Youth Empowerment",
-    description: "Skill development, mentorship, career counseling, and leadership programs for teenagers.",
-    color: "bg-purple-50 text-purple-600",
-  },
-  {
-    icon: Shield,
-    title: "Child Protection",
-    description: "Advocacy, awareness, and support systems to protect children from abuse and exploitation.",
-    color: "bg-green-50 text-green-600",
-  },
-];
+import { motion } from "motion/react";
+import { useTranslation } from "react-i18next";
 
 export function ServicesSection() {
+  const { t } = useTranslation('home');
+
+  const programs = [
+    {
+      icon: Baby,
+      title: t('services.prog1Title'),
+      description: t('services.prog1Desc'),
+      route: "/programmes#maternal-care",
+    },
+    {
+      icon: Leaf,
+      title: t('services.prog2Title'),
+      description: t('services.prog2Desc'),
+      route: "/programmes#green-cohort",
+    },
+    {
+      icon: Syringe,
+      title: t('services.prog3Title'),
+      description: t('services.prog3Desc'),
+      route: "/programmes#vaccines",
+    },
+    {
+      icon: ShieldPlus,
+      title: t('services.prog4Title'),
+      description: t('services.prog4Desc'),
+      route: "/programmes#school-health",
+    },
+    {
+      icon: AlertTriangle,
+      title: t('services.prog5Title'),
+      description: t('services.prog5Desc'),
+      route: "/programmes#emergency-preparedness",
+    },
+    {
+      icon: Brain,
+      title: t('services.prog6Title'),
+      description: t('services.prog6Desc'),
+      route: "/programmes#mental-wellness",
+    },
+  ];
   return (
-    <section className="py-20 bg-gray-50">
-      <ScrollReveal className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-        <div className="text-center mb-14">
-          <p className="text-primary text-sm mb-2" style={{ fontWeight: 600, textTransform: "uppercase", letterSpacing: "0.05em" }}>Our Programs</p>
-          <h2 className="text-3xl sm:text-4xl text-gray-900 mb-4" style={{ fontWeight: 700 }}>
-            Comprehensive Care at Every Stage
+    <section className="py-24 bg-gray-50 relative overflow-hidden">
+      <div className="absolute top-0 right-0 w-64 h-64 bg-[var(--womb-forest)]/5 rounded-full blur-3xl -z-0"></div>
+      
+      <ScrollReveal className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 relative z-10">
+        <div className="text-center mb-16 max-w-3xl mx-auto">
+          <p className="inline-flex items-center gap-2 bg-[var(--journey-saffron)]/10 text-[var(--journey-saffron)] px-4 py-1.5 rounded-full text-sm font-semibold border border-[var(--journey-saffron)]/20 shadow-sm mb-4">
+            {t('services.badge')}
+          </p>
+          <h2 className="text-3xl sm:text-4xl lg:text-5xl text-gray-900 mb-6" style={{ fontWeight: 800 }}>
+            {t('services.heading1')} <span style={{ color: 'var(--womb-forest)' }}>{t('services.heading2')} </span>
           </h2>
-          <p className="text-gray-600 max-w-2xl mx-auto">
-            Our programs cover the full spectrum of a child's journey, ensuring no one falls through the cracks.
+          <p className="text-lg text-gray-600">
+            {t('services.desc')}
           </p>
         </div>
 
-        <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-6">
-          {programs.map((program) => (
-            <Card key={program.title} className="group bg-white hover:shadow-md transition-all duration-300 border-gray-200">
-              <CardHeader>
-                <div className="h-12 w-12 rounded-xl bg-primary/10 flex items-center justify-center mb-3 group-hover:scale-110 transition-transform">
-                  <program.icon className="h-6 w-6 text-primary" />
+        <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-8">
+          {programs.map((program, idx) => (
+            <motion.div
+              key={program.title}
+              initial={{ opacity: 0, y: 20 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              transition={{ delay: idx * 0.1, duration: 0.5 }}
+              whileHover={{ y: -8 }}
+              className="group h-full"
+            >
+              <Link to={program.route} className="block h-full cursor-pointer">
+                <div className="h-full bg-white rounded-2xl p-8 shadow-[0_4px_20px_-4px_rgba(0,0,0,0.05)] border border-gray-100 hover:shadow-xl transition-all duration-300 relative overflow-hidden">
+                  
+                  {/* Decorative background accent inside card */}
+                  <div className="absolute -right-8 -top-8 w-32 h-32 bg-[var(--womb-forest)]/5 rounded-full group-hover:scale-150 transition-transform duration-700 ease-out"></div>
+                  
+                  <div className="relative z-10">
+                    <div className="h-14 w-14 rounded-2xl bg-[var(--womb-forest)]/10 flex items-center justify-center mb-6 group-hover:scale-110 group-hover:bg-[var(--womb-forest)] group-hover:text-white transition-all duration-300 text-[var(--womb-forest)]">
+                      <program.icon className="h-7 w-7" />
+                    </div>
+                    <h3 className="text-xl font-bold text-gray-900 mb-3 group-hover:text-[var(--journey-saffron)] transition-colors">
+                      {program.title}
+                    </h3>
+                    <p className="text-gray-600 leading-relaxed font-medium">
+                      {program.description}
+                    </p>
+                  </div>
                 </div>
-                <CardTitle className="text-lg text-gray-900">{program.title}</CardTitle>
-                <CardDescription className="text-sm text-gray-600">{program.description}</CardDescription>
-              </CardHeader>
-            </Card>
+              </Link>
+            </motion.div>
           ))}
         </div>
       </ScrollReveal>

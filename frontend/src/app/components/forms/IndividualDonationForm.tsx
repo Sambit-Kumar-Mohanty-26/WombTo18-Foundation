@@ -81,7 +81,7 @@ export function IndividualDonationForm({ onSubmit, isProcessing }: IndividualDon
                     type="button"
                     variant={field.value === "once" ? "default" : "outline"}
                     onClick={() => field.onChange("once")}
-                    className={field.value === "once" ? "bg-emerald-600 text-white font-bold" : "bg-gray-100 text-gray-700"}
+                    className={field.value === "once" ? "bg-[#1D6E3F] text-white font-bold" : "bg-gray-100 text-gray-700"}
                     size="sm"
                   >
                     One-time
@@ -90,7 +90,7 @@ export function IndividualDonationForm({ onSubmit, isProcessing }: IndividualDon
                     type="button"
                     variant={field.value === "monthly" ? "default" : "outline"}
                     onClick={() => field.onChange("monthly")}
-                    className={field.value === "monthly" ? "bg-emerald-600 text-white font-bold" : "bg-gray-100 text-gray-700"}
+                    className={field.value === "monthly" ? "bg-[#1D6E3F] text-white font-bold" : "bg-gray-100 text-gray-700"}
                     size="sm"
                   >
                     Monthly
@@ -109,7 +109,7 @@ export function IndividualDonationForm({ onSubmit, isProcessing }: IndividualDon
                   key={a}
                   type="button"
                   variant={watchAmount === a ? "default" : "outline"}
-                  className={watchAmount === a ? "bg-emerald-600 text-white font-bold" : "bg-gray-100 text-gray-700"}
+                  className={watchAmount === a ? "bg-[#1D6E3F] text-white font-bold" : "bg-gray-100 text-gray-700"}
                   onClick={() => handlePresetClick(a)}
                   size="sm"
                 >
@@ -143,7 +143,7 @@ export function IndividualDonationForm({ onSubmit, isProcessing }: IndividualDon
                       variant={field.value === p.id ? "default" : "outline"}
                       className={`cursor-pointer px-3 py-1.5 transition-all ${
                         field.value === p.id 
-                          ? "bg-emerald-600 text-white font-bold" 
+                          ? "bg-[#1D6E3F] text-white font-bold" 
                           : "bg-gray-100 text-gray-700 hover:bg-gray-200"
                       }`}
                       onClick={() => field.onChange(p.id)}
@@ -195,7 +195,7 @@ export function IndividualDonationForm({ onSubmit, isProcessing }: IndividualDon
                   id="displayOnWall"
                   checked={field.value}
                   onChange={field.onChange}
-                  className="h-4 w-4 rounded border-gray-300 text-emerald-600 focus:ring-emerald-500"
+                  className="h-4 w-4 rounded border-gray-300 text-[#1D6E3F] focus:ring-[#1D6E3F]"
                 />
               )}
             />
@@ -208,7 +208,7 @@ export function IndividualDonationForm({ onSubmit, isProcessing }: IndividualDon
           <Button
             type="submit"
             disabled={isProcessing}
-            className="w-full bg-emerald-600 hover:bg-emerald-700 text-white font-bold h-12"
+            className="w-full bg-[#1D6E3F] hover:bg-[#1D6E3F] text-white font-bold h-12"
           >
             {isProcessing ? (
               <>

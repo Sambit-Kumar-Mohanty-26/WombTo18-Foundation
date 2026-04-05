@@ -79,7 +79,7 @@ export function OrganizationDonationForm({ onSubmit, isProcessing }: Organizatio
                   key={a}
                   type="button"
                   variant={watchAmount === a ? "default" : "outline"}
-                  className={watchAmount === a ? "bg-emerald-600 text-white font-bold" : "bg-gray-100 text-gray-700"}
+                  className={watchAmount === a ? "bg-[#1D6E3F] text-white font-bold" : "bg-gray-100 text-gray-700"}
                   onClick={() => handlePresetClick(a)}
                   size="sm"
                 >
@@ -113,7 +113,7 @@ export function OrganizationDonationForm({ onSubmit, isProcessing }: Organizatio
                       variant={field.value === p.id ? "default" : "outline"}
                       className={`cursor-pointer px-3 py-1.5 transition-all ${
                         field.value === p.id 
-                          ? "bg-emerald-600 text-white font-bold" 
+                          ? "bg-[#1D6E3F] text-white font-bold" 
                           : "bg-gray-100 text-gray-700 hover:bg-gray-200"
                       }`}
                       onClick={() => field.onChange(p.id)}
@@ -166,7 +166,7 @@ export function OrganizationDonationForm({ onSubmit, isProcessing }: Organizatio
                 <textarea
                   {...register("address")}
                   placeholder="Enter full registered office address"
-                  className="w-full rounded-md border border-gray-200 bg-white px-3 py-2 text-sm text-gray-900 focus:outline-none focus:ring-1 focus:ring-emerald-500 min-h-[80px] placeholder:text-gray-400"
+                  className="w-full rounded-md border border-gray-200 bg-white px-3 py-2 text-sm text-gray-900 focus:outline-none focus:ring-1 focus:ring-[#1D6E3F] min-h-[80px] placeholder:text-gray-400"
                 />
                 {errors.address && <p className="text-xs text-red-500">{errors.address.message}</p>}
               </div>
@@ -177,7 +177,7 @@ export function OrganizationDonationForm({ onSubmit, isProcessing }: Organizatio
           <Button
             type="submit"
             disabled={isProcessing}
-            className="w-full bg-emerald-600 hover:bg-emerald-700 text-white font-bold h-12"
+            className="w-full bg-[#1D6E3F] hover:bg-[#1D6E3F] text-white font-bold h-12"
           >
             {isProcessing ? (
               <>

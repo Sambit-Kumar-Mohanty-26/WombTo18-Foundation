@@ -1,86 +1,193 @@
 import { Link } from "react-router";
 import { Button } from "../ui/button";
-import { Heart, ArrowRight } from "lucide-react";
-import { motion } from "motion/react";
+import { Heart, LayoutDashboard, Handshake } from "lucide-react";
+import { motion, useScroll, useTransform, AnimatePresence } from "motion/react";
+import { useRef, useState, useEffect } from "react";
+import { useTranslation } from "react-i18next";
+import dashboard1 from "../../../../public/dashboard/657ae878-799e-44e7-a0e6-759a9b0420dc.jpeg"
+import dashboard2 from "../../../../public/dashboard/WhatsApp Image 2025-11-14 at 12.30.17.jpeg"
+import dashboard3 from "../../../../public/dashboard/ec9e78d6-4820-48e0-abfa-f6af927c9682.jpeg"
+
+
+
+const HERO_IMAGES = [
+  dashboard1,
+  dashboard2,
+  dashboard3,
+  "https://images.unsplash.com/photo-1488521787991-ed7bbaae773c?q=80&w=1920&auto=format&fit=crop", // Children learning
+  "https://images.unsplash.com/photo-1509062522246-3755977927d7?q=80&w=1920&auto=format&fit=crop", // Education
+  "https://images.unsplash.com/photo-1594708767771-a7502209ff51?q=80&w=1920&auto=format&fit=crop", // Healthcare
+  "https://images.unsplash.com/photo-1542810634-71277d95dcbb?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwyfHxjaGlsZHJlbiUyMGhhcHB5JTIwSW5kaWF8ZW58MHx8fHwxNzczMTM0MDIxfDA&ixlib=rb-4.1.0&q=80&w=1920", // Original Happy children India
+  "/images/site-assets/hero_health.png",
+];
 
 export function HeroSection() {
-  return (
-    <section className="relative overflow-hidden bg-emerald-50 text-gray-900">
-      <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 py-16 lg:py-24">
-        <div className="grid lg:grid-cols-2 gap-12 items-center">
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.6 }}
-          >
-            <div className="inline-flex items-center gap-2 bg-primary/10 text-primary px-4 py-1.5 rounded-full text-sm mb-6">
-              <Heart className="h-3.5 w-3.5 fill-primary" />
-              <span>Every child deserves a chance</span>
-            </div>
-            <h1 className="text-4xl sm:text-5xl lg:text-6xl text-gray-900 mb-6" style={{ fontWeight: 800, lineHeight: 1.1 }}>
-              Nurturing Lives from{" "}
-              <span style={{ color: '#b48fe0' }}>Womb</span>{" "}
-              <span style={{ color: '#3d6670' }}>To</span>{" "}
-              <span style={{ color: '#4bbde8' }}>18</span>
-            </h1>
-            <p className="text-lg text-gray-600 mb-8 max-w-lg">
-              We support mothers and children with healthcare, nutrition, education, and empowerment — from prenatal care through age 18.
-            </p>
-            <div className="flex flex-wrap gap-3">
-              <Link to="/donate">
-                <Button size="lg" className="bg-primary hover:bg-primary/90 text-primary-foreground px-8 font-bold shadow-lg shadow-orange-500/20">
-                  <Heart className="h-4 w-4 mr-2 fill-current" /> Donate Now
-                </Button>
-              </Link>
-              <Link to="/about">
-                <Button size="lg" variant="outline" className="border-gray-300 bg-white hover:bg-gray-100 text-gray-700">
-                  Learn More <ArrowRight className="h-4 w-4 ml-2" />
-                </Button>
-              </Link>
-            </div>
-            <div className="mt-10 flex items-center gap-8">
-              {[
-                { value: "15K+", label: "Children Supported" },
-                { value: "200+", label: "Communities" },
-                { value: "98%", label: "Funds Utilized" },
-              ].map((stat) => (
-                <div key={stat.label}>
-                  <p className="text-2xl text-gray-900" style={{ fontWeight: 700 }}>{stat.value}</p>
-                  <p className="text-xs text-gray-600">{stat.label}</p>
-                </div>
-              ))}
-            </div>
-          </motion.div>
+  const { t } = useTranslation('home');
+  const containerRef = useRef<HTMLElement>(null);
+  const [currentImageIndex, setCurrentImageIndex] = useState(0);
+  
+  // Carousel Timer
+  useEffect(() => {
+    const timer = setInterval(() => {
+      setCurrentImageIndex((prev) => (prev + 1) % HERO_IMAGES.length);
+    }, 7000); // Change image every 7 seconds
+    return () => clearInterval(timer);
+  }, []);
 
-          <motion.div
-            initial={{ opacity: 0, scale: 0.95 }}
-            animate={{ opacity: 1, scale: 1 }}
-            transition={{ duration: 0.6, delay: 0.2 }}
-            className="relative"
-          >
-            <div className="relative rounded-2xl overflow-hidden shadow-2xl">
-              <img
-                src="https://images.unsplash.com/photo-1584376003963-e1aa9a61c0ac?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHxjaGlsZHJlbiUyMGVkdWNhdGlvbiUyMEluZGlhJTIwTkdPfGVufDF8fHx8MTc3MzEzNDAyMXww&ixlib=rb-4.1.0&q=80&w=1080&utm_source=figma&utm_medium=referral"
-                alt="Children learning together"
-                className="w-full h-[400px] lg:h-[500px] object-cover"
-              />
-              <div className="absolute inset-0 bg-gradient-to-t from-black/30 to-transparent" />
-            </div>
-            {/* Floating card */}
-            <div className="absolute -bottom-4 -left-4 bg-white backdrop-blur-md rounded-xl shadow-sm p-4 border border-gray-200">
-              <div className="flex items-center gap-3">
-                <div className="h-10 w-10 rounded-full bg-primary/20 flex items-center justify-center">
-                  <Heart className="h-5 w-5 text-primary fill-current" />
-                </div>
-                <div>
-                  <p className="text-sm text-gray-900 font-bold">12,450 Lives</p>
-                  <p className="text-xs text-gray-600 font-medium">Impacted this year</p>
-                </div>
-              </div>
+  // Parallax effect for the background
+  const { scrollYProgress } = useScroll({
+    target: containerRef,
+    offset: ["start start", "end start"]
+  });
+  const y = useTransform(scrollYProgress, [0, 1], ["0%", "20%"]);
+
+  const containerVariants = {
+    hidden: { opacity: 0 },
+    visible: { 
+      opacity: 1,
+      transition: { staggerChildren: 0.2, delayChildren: 0.3 }
+    }
+  };
+
+  const cinematicReveal = {
+    hidden: { opacity: 0, y: 30, filter: "blur(10px)", scale: 0.95 },
+    visible: { 
+      opacity: 1, 
+      y: 0, 
+      filter: "blur(0px)",
+      scale: 1,
+      transition: { duration: 1.2, ease: "easeOut" as const } 
+    }
+  };
+
+  return (
+    <section
+      ref={containerRef}
+      className="relative flex w-full min-h-[calc(100svh-64px)] items-center justify-center overflow-hidden bg-black md:min-h-[760px] xl:min-h-[calc(100vh-64px)]"
+    >
+      
+      {/* Cinematic Background Image Carousel with Slow Zoom & Parallax */}
+      <motion.div style={{ y }} className="absolute inset-0 w-full h-full bg-black">
+        {HERO_IMAGES.map((imgSrc, index) => (
+          <motion.img
+            key={imgSrc}
+            src={imgSrc}
+            alt={`Hero storytelling image ${index + 1}`}
+            className="absolute inset-0 w-full h-full object-cover object-[center_30%]"
+            initial={false}
+            animate={{ 
+              opacity: index === currentImageIndex ? 1 : 0,
+              scale: index === currentImageIndex ? 1 : 1.1,
+              zIndex: index === currentImageIndex ? 1 : 0
+            }}
+            transition={{ 
+              opacity: { duration: 1.5, ease: "easeInOut" },
+              scale: { duration: 12, ease: "linear" } 
+            }}
+          />
+        ))}
+        
+        {/* Sophisticated Dark Gradient Overlays for Readability & Drama */}
+        <div className="absolute inset-0 bg-gradient-to-b from-[#2A2A2A]/80 via-[#2A2A2A]/40 to-[#2A2A2A]/95 mix-blend-multiply z-1" />
+        <div className="absolute inset-0 bg-gradient-to-t from-[#1D6E3F]/40 via-transparent to-transparent mix-blend-overlay z-1" />
+        <div className="absolute inset-0 bg-black/30 z-1" />
+      </motion.div>
+      
+      {/* Central Content Container */}
+      <div className="relative z-10 mx-auto flex w-full max-w-5xl flex-col items-center px-4 pt-8 pb-10 text-center sm:px-6 sm:pt-14 sm:pb-24 lg:-translate-y-8 lg:px-8 lg:pt-20 lg:pb-32">
+        <motion.div
+          variants={containerVariants}
+          initial="hidden"
+          animate="visible"
+          className="flex flex-col items-center space-y-3 sm:space-y-4 lg:space-y-6"
+        >
+          {/* Top Badge */}
+          <motion.div variants={cinematicReveal}>
+            <div className="inline-flex max-w-full items-center gap-2 rounded-full border border-white/20 bg-white/10 px-3 py-1.5 text-[10px] font-semibold text-white/90 shadow-2xl backdrop-blur-md sm:px-5 sm:py-2 sm:text-sm">
+              <span className="relative flex h-2 w-2">
+                <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-[var(--journey-saffron)] opacity-75"></span>
+                <span className="relative inline-flex rounded-full h-2 w-2 bg-[var(--journey-saffron)]"></span>
+              </span>
+              {t('hero.badge')}
             </div>
           </motion.div>
-        </div>
+          
+          {/* Main Headline */}
+          <motion.h1 
+            variants={cinematicReveal} 
+            className="text-[clamp(2.45rem,12vw,5rem)] text-white tracking-tight drop-shadow-2xl"
+            style={{ fontWeight: 800, lineHeight: 1.05 }}
+          >
+            {t('hero.everyChild')}
+            <br className="hidden sm:block" />
+            <span className="text-transparent bg-clip-text bg-gradient-to-r from-green-300 to-[var(--womb-forest)] drop-shadow-[0_2px_10px_rgba(0,0,0,0.8)]">{t('hero.pregnancy')}</span>
+            {" "}
+            <span className="text-[var(--journey-saffron)] drop-shadow-[0_2px_10px_rgba(0,0,0,0.8)]">{t('hero.to')} <span className="text-[var(--future-sky)]">{t('hero.18')}</span></span>
+            <br />
+            <span className="text-white/90 font-bold">{t('hero.healthy')}</span>
+          </motion.h1>
+          
+          {/* Description */}
+          <motion.p 
+            variants={cinematicReveal} 
+            className="max-w-3xl px-2 text-base leading-relaxed font-medium text-white/80 drop-shadow-md sm:px-0 sm:text-lg md:text-2xl"
+          >
+            {t('hero.desc')} 
+          </motion.p>
+          
+          {/* CTA Buttons */}
+          <motion.div 
+            variants={cinematicReveal} 
+            className="flex w-full max-w-3xl flex-col justify-center gap-3 pt-3 sm:flex-row sm:flex-wrap sm:gap-4 sm:pt-4"
+          >
+            <Link to="/donate" className="w-full sm:min-w-[200px] sm:flex-1">
+              <Button size="lg" className="flex h-auto w-full flex-col items-center justify-center rounded-xl border border-white/10 px-4 py-3 text-white shadow-[0_0_30px_rgba(29,110,63,0.5)] backdrop-blur-sm transition-all hover:-translate-y-1 hover:shadow-[0_0_40px_rgba(29,110,63,0.8)] sm:py-3.5" style={{ backgroundColor: 'var(--womb-forest, #1D6E3F)' }}>
+                <div className="mb-1 flex items-center text-sm font-black sm:text-base lg:text-lg">
+                  <Heart className="h-5 w-5 mr-2 fill-current" /> {t('hero.btnDonate')}
+                </div>
+                <span className="text-[10px] lg:text-xs font-bold opacity-90 tracking-widest uppercase">{t('hero.btnDonateSub')}</span>
+              </Button>
+            </Link>
+            
+            <Link to="/dashboard" className="w-full sm:min-w-[200px] sm:flex-1">
+              <Button size="lg" className="flex h-auto w-full flex-col items-center justify-center rounded-xl border border-white/10 px-4 py-3 text-white shadow-[0_0_30px_rgba(255,153,0,0.3)] backdrop-blur-sm transition-all hover:-translate-y-1 hover:shadow-[0_0_40px_rgba(255,153,0,0.6)] sm:py-3.5" style={{ backgroundColor: 'var(--journey-saffron, #FF9900)' }}>
+                <div className="mb-1 flex items-center text-sm font-black sm:text-base lg:text-lg">
+                  <LayoutDashboard className="h-5 w-5 mr-2" /> {t('hero.btnDashboard')}
+                </div>
+                <span className="text-[10px] lg:text-xs font-bold opacity-90 tracking-widest uppercase">{t('hero.btnDashboardSub')}</span>
+              </Button>
+            </Link>
+            
+            <Link to="/get-involved" className="w-full sm:min-w-[200px] sm:flex-1">
+              <Button size="lg" className="flex h-auto w-full flex-col items-center justify-center rounded-xl border border-white/30 bg-white/10 px-4 py-3 text-white shadow-lg backdrop-blur-md transition-all hover:-translate-y-1 hover:bg-white/20 hover:shadow-xl sm:py-3.5">
+                <div className="mb-1 flex items-center text-sm font-black sm:text-base lg:text-lg">
+                  <Handshake className="h-5 w-5 mr-2" /> {t('hero.btnPartner')}
+                </div>
+                <span className="text-[10px] lg:text-xs font-bold opacity-90 tracking-widest uppercase">{t('hero.btnPartnerSub')}</span>
+              </Button>
+            </Link>
+          </motion.div>
+        </motion.div>
       </div>
+
+      {/* Floating Trust Indicator pinned to bottom */}
+      <motion.div 
+        initial={{ opacity: 0, y: 50 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ delay: 1.5, duration: 1 }}
+        className="absolute bottom-4 left-0 right-0 hidden sm:flex justify-center pointer-events-none"
+      >
+        <div className="flex flex-wrap justify-center gap-4 px-4 overflow-hidden mask-image:linear-gradient(to_right,transparent,black_10%,black_90%,transparent)">
+           <div className="flex items-center gap-2 text-white/50 text-xs font-bold tracking-widest uppercase bg-white/5 backdrop-blur-sm px-4 py-2 rounded-full border border-white/10">
+              <span className="w-2 h-2 rounded-full bg-[var(--future-sky)]"></span>
+              {t('hero.trust1')}
+           </div>
+           <div className="flex items-center gap-2 text-white/50 text-xs font-bold tracking-widest uppercase bg-white/5 backdrop-blur-sm px-4 py-2 rounded-full border border-white/10">
+              <span className="w-2 h-2 rounded-full bg-[var(--journey-saffron)]"></span>
+              {t('hero.trust2')}
+           </div>
+        </div>
+      </motion.div>
     </section>
   );
 }

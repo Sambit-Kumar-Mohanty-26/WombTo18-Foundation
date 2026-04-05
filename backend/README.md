@@ -51,6 +51,16 @@ JWT_SECRET="orion_super_secret_key_2025"
 RAZORPAY_KEY_ID="rzp_test_5HTu6F8qV"
 RAZORPAY_KEY_SECRET="test_secret_12345"
 
+# Bhashini Translation Proxy
+BHASHINI_USER_ID="your-bhashini-user-id"
+BHASHINI_ULCA_API_KEY="your-bhashini-ulca-api-key"
+BHASHINI_PIPELINE_ID="your-bhashini-pipeline-id"
+
+# Optional: use these only if you want to skip config lookup and pin an inference endpoint manually
+# BHASHINI_INFERENCE_URL="https://dhruva-api.bhashini.gov.in/services/inference/pipeline"
+# BHASHINI_INFERENCE_AUTH_HEADER="Authorization"
+# BHASHINI_INFERENCE_AUTH_VALUE="your-inference-api-key"
+
 # Server Execution Port
 PORT=3000
 \`\`\`

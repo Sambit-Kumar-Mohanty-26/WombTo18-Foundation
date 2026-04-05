@@ -1,0 +1,168 @@
+{
+  "hero": {
+    "badge": "Our Story",
+    "title": "We Didn't Start With a Plan.",
+    "subtitle": "We Started With a Question.",
+    "desc": "Why, in a country of 1.4 billion people — with brilliant doctors, dedicated teachers, and parents who would do anything for their children — do we still lose so many?"
+  },
+  "chapter": "Chapter",
+  "story": {
+    "ch1": {
+      "heading": "The Problem",
+      "body": "India loses over <strong>800,000 children</strong> every year to causes that are entirely preventable. Millions more fall silently through the gaps — missing vaccines by days, growing up without access to mental health support, attending schools that lack even the most basic health infrastructure.",
+      "highlight": "800,000 children lost every year"
+    },
+    "ch2": {
+      "heading": "The Gap",
+      "body": "No single platform had ever been built to hold a child's health journey together — from the moment of conception through adolescence — with full transparency to donors and families alike. <strong>WOMBTO18 Foundation was created to change that.</strong>",
+      "highlight": "A shortage of connection"
+    },
+    "ch3": {
+      "heading": "The Spark",
+      "body": "It began as a pilot in Pune under the initiative <strong>OTAAT</strong> (One Text at a Time) — a deceptively simple idea: send timely vaccine reminders to expecting mothers via SMS, WhatsApp and Email. The results were immediate and humbling. Lives changed by a single, well-timed message. That proof of concept became a movement, and that movement became a Foundation.",
+      "highlight": "One Text at a Time"
+    },
+    "ch4": {
+      "heading": "Today",
+      "body": "WOMBTO18 Foundation operates as India's first integrated child health non-profit platform — uniting <strong>32 health services</strong> across pregnancy, infancy, childhood, and adolescence. Delivered through schools, hospitals, and communities. Serving 25 schools today. Scaling to 300.",
+      "highlight": "32 health services united"
+    }
+  },
+  "strategy": {
+    "badge": "Strategic Architecture",
+    "heading1": "One vision.",
+    "heading2": "Two instruments of change.",
+    "desc": "The Foundation and the Platform were not built separately. They were built as two halves of the same answer.",
+    "highlight": "India has <strong>450 million children under 18</strong>. Most of them will pass through a school. Very few will have a health record that travels with them, a system that watches for what might go wrong, or an institution that treats their wellbeing as seriously as their academics.",
+    "impact": "WOMBTO18 was built to change all three of those facts simultaneously, at scale, and for good."
+  },
+  "instruments": {
+    "inst1": {
+      "title": "The Foundation",
+      "desc": "Drives access, equity, school partnerships, and on-ground delivery so preventive care reaches the children who need it most.",
+      "label": "Public Impact"
+    },
+    "inst2": {
+      "title": "The Platform",
+      "desc": "Builds the connected health record, reminders, dashboards, and intelligence layer that keeps every intervention visible and accountable.",
+      "label": "Systems Layer"
+    }
+  },
+  "philosophy": {
+    "quote1": "We don't just want to treat children when they fall sick. We want to build the conditions in which they <span class=\"not-italic font-black text-transparent bg-clip-text bg-gradient-to-r from-[var(--journey-saffron)] to-orange-400\">never become sick</span> in the first place.",
+    "badge": "Founding Philosophy"
+  },
+  "mission": {
+    "title": "Our Mission",
+    "desc": "To ensure that every child in India — from the moment of conception to the age of 18 — has access to integrated, evidence-based health support, quality education infrastructure, and an environmental legacy worth inheriting.",
+    "sub": "Delivered through a dual-entity model: <strong class=\"text-gray-900 font-bold\">WOMBTO18 Integrated Care Pvt Ltd</strong> drives tech innovation; <strong class=\"text-gray-900 font-bold\">WOMBTO18 Foundation</strong> drives access, equity, and community impact."
+  },
+  "vision": {
+    "title": "Our Vision — 2030",
+    "item1": "25 million children/families supported with preventive care.",
+    "item2": "300+ schools operating as WHO-standard Health Promoting Schools.",
+    "item3": "Zero preventable child deaths from vaccine-preventable diseases in partners.",
+    "item4": "India’s first Carbon-Neutral Child Cohort — 1 tree per child.",
+    "item5": "Every donor empowered with real-time tracking dashboards."
+  },
+  "wombo": {
+    "badge": "Core Values",
+    "desc": "The philosophical framework driving our operations.",
+    "w": {
+      "letter": "W",
+      "title": "Wellness",
+      "desc": "Comprehensive health — physical, mental, emotional — from pregnancy through age 18. Health is not the absence of illness; it is the fullness of a well-supported life."
+    },
+    "o1": {
+      "letter": "O",
+      "title": "Outreach",
+      "desc": "We go to communities. We do not wait for communities to come to us. Every initiative is designed with accessibility and equity at its centre."
+    },
+    "m": {
+      "letter": "M",
+      "title": "Measurable",
+      "desc": "Every programme must be measurable. If we cannot measure it, we will not claim it. Accountability is foundational, never optional."
+    },
+    "b": {
+      "letter": "B",
+      "title": "Belonging",
+      "desc": "Every child — regardless of geography, income, or background — belongs within the circle of our care. Inclusion is the mission itself."
+    },
+    "o2": {
+      "letter": "O",
+      "title": "Optimisation",
+      "desc": "We use technology, data, and the Health Promoting Schools framework to continuously improve every intervention. Good enough is never good enough."
+    }
+  },
+  "governance": {
+    "badge": "Verified & Certified",
+    "heading1": "Governance &",
+    "heading2": "Certifications",
+    "desc": "Accountable. Audited. Transparent.",
+    "cert1Title": "12A Registration",
+    "cert1Desc": "Foundation income is tax-exempt. All activities are public benefit.",
+    "cert2Title": "80G Certification",
+    "cert2Desc": "Donations are eligible for tax benefits under Section 80G of the Income Tax Act.",
+    "cert3Title": "NGO DARPAN Recognition",
+    "cert3Desc": "NITI Aayog registered for transparency & funding.",
+    "cert4Title": "TechSoup India",
+    "cert4Desc": "Verified non-profit for global tech grants.",
+    "section8Title": "Section 8 Company",
+    "section8Desc": "Incorporated under the Companies Act 2013. Annually audited & publicly accountable — the strongest legal framework for transparent non-profit governance in India."
+  },
+  "advisoryBoard": {
+    "badge": "Leadership",
+    "heading": "Board Members",
+    "desc": "Guided by clinical depth, national credibility, and global perspective.",
+    "m1": {
+      "role": "President • WOMBTO18 Foundation",
+      "point1": "Currently advising an AI SaaS startup in New Jersey",
+      "point2": "18+ years of enterprise operations leadership across India and the US",
+      "point3": "Leads the Foundation's institutional strategy",
+      "point4": "Applies scalable systems thinking to school-based health delivery"
+    },
+    "m2": {
+      "role": "Former President, Indian Academy of Pediatrics (IAP)",
+      "point1": "Chairman, India's Vaccine Advisory Committee (ACVIP)",
+      "point2": "Pioneer of 'Goodbye Polio' grassroots movement",
+      "point3": "Global contributor to GAVI and IPA",
+      "point4": "Brings 40+ years of pediatric and public health leadership"
+    },
+    "m3": {
+      "role": "Former HOD Neonatology, Wadia Maternity Hospital",
+      "point1": "Past President, IAP Mumbai",
+      "point2": "WHO and UNICEF collaborator on child health missions",
+      "point3": "35+ years of excellence in pediatrics and neonatology",
+      "point4": "Currently practising at Prime Healthcare Group, Dubai"
+    }
+  },
+  "presidentLetter": {
+    "badge": "A Letter From The President",
+    "heading1": "Systems Before Symbolism.",
+    "heading2": "Institutions Before Interventions.",
+    "coFounder": "Co-Founder & President - WOMBTO18 Foundation",
+    "location": "New Jersey, USA",
+    "closing": "With purpose,",
+    "signatureTitle": "Co-Founder & President",
+    "legalInfo": "WOMBTO18 Foundation - Section 8 Non-Profit",
+    "p1": "Equity in child health is not a charity goal. It is a systems problem - and systems problems require institutional answers, not one-time interventions.",
+    "p2": "Public health has taught us one lesson above all others: the interventions that save the most lives are rarely the most visible ones. They are the quiet, structural ones - the vaccine that arrives on time, the screening that catches something early, the health worker who is present and trained and trusted.",
+    "p3": "The WOMBTO18 Foundation was built on that lesson. We do not run health camps. We do not conduct drives. We build the permanent infrastructure of care inside schools - the institutions that hold a child's life together for thirteen of their most formative years.",
+    "p4": "In India today, a child born into a low-income household is not simply disadvantaged by poverty. They are disadvantaged by the absence of systems: no school nurse, no longitudinal health record, no structured process for detecting developmental concerns before they become crises, no connection between the school that sees the child every day and the healthcare provider who sees them once a year.",
+    "p5": {
+      "text": "The Foundation addresses this not by filling gaps one at a time, but by establishing the full continuum.",
+      "type": "highlight"
+    },
+    "p6": "From maternal health awareness before birth, through immunisation, nutrition, early childhood development, mental wellness, and specialist referral pathways - we build the structure, train the people, and hold the accountability. What remains behind us in each school is not a programme. It is a functioning system.",
+    "p7": "We are grateful to every school that has partnered with us, every donor who has understood that systemic change is slower and more durable than visible impact, and every family that has placed their trust in what we are building. We are not doing this for them. We are doing it with them.",
+    "p8": {
+      "text": "The years from womb to 18 are not a statistic. They are the entirety of a childhood. They deserve more than good intentions. They deserve a system built to protect them.",
+      "type": "emphasis"
+    }
+  },
+  "cta": {
+    "title": "Join Our Advisory Board",
+    "desc": "We are actively building our Advisory Board. If you bring subject expertise, policy expertise, or health/education credentials — without financial obligation — we welcome your interest.",
+    "btn": "Apply Now"
+  }
+}

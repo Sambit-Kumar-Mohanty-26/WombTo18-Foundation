@@ -1,22 +1,30 @@
 import { useState, useEffect } from "react";
-import { Link, useLocation } from "react-router";
+import { Link, useLocation, useNavigate } from "react-router";
 import { Button } from "../ui/button";
 import { Menu, X, Heart, LayoutDashboard } from "lucide-react";
 import { auth } from "../../lib/auth";
+import { LanguageSwitcher } from "./LanguageSwitcher";
+import { useTranslation } from "react-i18next";
 
 const navLinks = [
-  { href: "/", label: "Home" },
-  { href: "/about", label: "About" },
-  { href: "/services", label: "Programs" },
-  { href: "/impact", label: "Impact" },
-  { href: "/blog", label: "Blog" },
-  { href: "/press", label: "Press" },
+  { href: "/", label: "Home", key: "home" },
+  { href: "/about", label: "About", key: "about" },
+  { href: "/services", label: "Programs", key: "programs" },
+  { href: "/impact", label: "Impact", key: "impact" },
+  { href: "/transparency", label: "Transparency Centre", key: "transparency" },
+  { href: "/blog", label: "Blog", key: "blog" },
+  // { href: "/press", label: "Press", key: "press" },
 ];
 
+import { toast } from "sonner";
+import { useAuth } from "../../context/AuthContext";
+
 export function Navbar() {
+  const { t } = useTranslation();
+  const { state, logout } = useAuth();
+  const navigate = useNavigate();
   const [mobileOpen, setMobileOpen] = useState(false);
   const [isScrolled, setIsScrolled] = useState(false);
-  const [isLoggedIn, setIsLoggedIn] = useState(false);
   const location = useLocation();
 
   useEffect(() => {
@@ -27,40 +35,55 @@ export function Navbar() {
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
 
-  // Re-check session on every route change
-  useEffect(() => {
-    setIsLoggedIn(!!auth.getSession());
-  }, [location.pathname]);
+  const isLoggedIn = state.isAuthenticated;
+  
+  const handleSignOut = () => {
+    logout();
+    navigate("/");
+    setMobileOpen(false);
+    toast.success("Signed out successfully");
+  };
+
+  const getDashboardLink = () => {
+    if (!state.user) return "/donor/login";
+    const id = state.user.volunteerId || state.user.donorId || 'admin';
+    switch (state.user.role) {
+      case "VOLUNTEER": return `/volunteer/${id}/dashboard`;
+      case "PARTNER": return `/partner/${id}/dashboard`;
+      case "ADMIN": return `/admin/dashboard`;
+      default: return `/donor/${id}/dashboard`;
+    }
+  };
 
   return (
     <header 
       className={`sticky top-0 z-50 transition-all duration-300 ${
         isScrolled 
-          ? "bg-white/95 backdrop-blur-lg border-b border-gray-200 shadow-md py-0" 
-          : "bg-white/60 backdrop-blur-md border-b border-transparent py-2"
+          ? "bg-white/95 backdrop-blur-lg border-b border-gray-200 shadow-md py-1" 
+          : "bg-white/60 backdrop-blur-md border-b border-transparent py-1 lg:py-2"
       }`}
     >
-      <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+      <div className="mx-auto w-full px-4 sm:px-6 lg:px-10 xl:px-16">
         <div className="flex h-16 items-center justify-between">
           {/* Logo */}
           <Link to="/" className="flex items-center gap-2">
             <img 
               src="/Wombto18 foundation logo.svg" 
               alt="WombTo18 Foundation" 
-              className="h-10 w-auto object-contain"
+              className="h-12 w-auto object-contain"
             />
             <div className="flex flex-col leading-tight">
               <span className="text-xl font-extrabold tracking-tight" style={{ lineHeight: 1.2 }}>
-                <span style={{ color: '#b48fe0' }}>Womb</span>
-                <span style={{ color: '#3d6670' }}>To</span>
-                <span style={{ color: '#4bbde8' }}>18</span>
+                <span style={{ color: '#1D6E3F' }}>Womb</span>
+                <span style={{ color: '#FF9900' }}>To</span>
+                <span style={{ color: '#00AEEF' }}>18</span>
               </span>
-              <span className="text-[10px] text-emerald-600 font-bold uppercase tracking-wider" style={{ lineHeight: 1 }}>Foundation</span>
+              <span className="text-[10px] text-[#1D6E3F] font-bold uppercase tracking-wider" style={{ lineHeight: 1 }}>Foundation</span>
             </div>
           </Link>
 
           {/* Desktop Nav */}
-          <nav className="hidden md:flex items-center gap-1">
+          <nav className="hidden lg:flex items-center gap-1">
             {navLinks.map((link) => (
               <Link
                 key={link.href}
@@ -71,32 +94,48 @@ export function Navbar() {
                     : "text-gray-600 hover:text-primary hover:bg-primary/5"
                 }`}
               >
-                {link.label}
+                {t(`nav.${link.key}`)}
               </Link>
             ))}
           </nav>
 
           {/* CTA Buttons */}
-          <div className="hidden md:flex items-center gap-2">
-            <Link to={isLoggedIn ? "/dashboard" : "/donor/login"}>
-              <Button variant="ghost" size="sm" className="text-gray-600 hover:text-primary hover:bg-primary/5 font-medium transition-all">
-                {isLoggedIn ? (
-                  <><LayoutDashboard className="h-4 w-4 mr-1.5" />My Dashboard</>
-                ) : (
-                  "Donor Login"
-                )}
-              </Button>
-            </Link>
+          <div className="hidden lg:flex items-center gap-2">
+            <LanguageSwitcher />
+            
+            {isLoggedIn ? (
+              <>
+                <Link to={getDashboardLink()}>
+                  <Button variant="ghost" size="sm" className="text-gray-600 hover:text-primary hover:bg-primary/5 font-medium transition-all">
+                    <LayoutDashboard className="h-4 w-4 mr-1.5" />{t('nav.dashboard')}
+                  </Button>
+                </Link>
+                  <Button 
+                  variant="ghost" 
+                  size="sm" 
+                  onClick={handleSignOut}
+                  className="text-red-500 hover:text-red-600 hover:bg-red-50 font-medium transition-all"
+                >
+                  Sign Out
+                </Button>
+              </>
+            ) : (
+              <Link to="/login">
+                <Button variant="ghost" size="sm" className="text-gray-600 hover:text-primary hover:bg-primary/5 font-medium transition-all">
+                  {t('nav.donorLogin')}
+                </Button>
+              </Link>
+            )}
             <Link to="/donate">
               <Button size="sm" className="bg-primary hover:bg-primary/90 text-primary-foreground font-bold shadow-lg shadow-orange-500/20">
-                <Heart className="h-4 w-4 mr-1 fill-current" /> Donate Now
+                <Heart className="h-4 w-4 mr-1 fill-current" /> {t('nav.donate')}
               </Button>
             </Link>
           </div>
 
           {/* Mobile toggle */}
           <button
-            className="md:hidden p-2 rounded-md text-gray-700 hover:bg-gray-100"
+            className="lg:hidden p-2 rounded-md text-gray-700 hover:bg-gray-100"
             onClick={() => setMobileOpen(!mobileOpen)}
           >
             {mobileOpen ? <X className="h-5 w-5" /> : <Menu className="h-5 w-5" />}
@@ -106,8 +145,12 @@ export function Navbar() {
 
       {/* Mobile Menu */}
       {mobileOpen && (
-        <div className="md:hidden border-t border-gray-200 bg-white/98 backdrop-blur-lg">
+        <div className="lg:hidden border-t border-gray-200 bg-white/98 backdrop-blur-lg">
           <div className="px-4 py-3 space-y-1">
+            <div className="pb-3 mb-2 border-b border-gray-100 flex items-center justify-between">
+              <span className="text-sm font-medium text-gray-500">Language</span>
+              <LanguageSwitcher />
+            </div>
             {navLinks.map((link) => (
               <Link
                 key={link.href}
@@ -119,22 +162,31 @@ export function Navbar() {
                     : "text-gray-600 hover:text-primary hover:bg-primary/5"
                 }`}
               >
-                {link.label}
+                {t(`nav.${link.key}`)}
               </Link>
             ))}
-            <div className="pt-3 border-t border-white/10 flex flex-col gap-2">
-              <Link to={isLoggedIn ? "/dashboard" : "/donor/login"} onClick={() => setMobileOpen(false)}>
-                <Button variant="ghost" size="sm" className="w-full text-gray-600 hover:text-primary hover:bg-primary/5 font-medium justify-start transition-all">
-                  {isLoggedIn ? (
-                    <><LayoutDashboard className="h-4 w-4 mr-1.5" />My Dashboard</>
-                  ) : (
-                    "Donor Login"
-                  )}
-                </Button>
-              </Link>
+            <div className="pt-3 border-t border-gray-100 flex flex-col gap-2">
+              {isLoggedIn ? (
+                <>
+                  <Link to={getDashboardLink()} onClick={() => setMobileOpen(false)}>
+                    <Button variant="ghost" size="sm" className="w-full text-gray-600 hover:text-primary hover:bg-primary/5 font-medium justify-start transition-all">
+                      <LayoutDashboard className="h-4 w-4 mr-1.5" />{t('nav.dashboard')}
+                    </Button>
+                  </Link>
+                  <Button variant="ghost" size="sm" onClick={handleSignOut} className="w-full text-red-500 hover:text-red-600 hover:bg-red-50 font-medium justify-start transition-all">
+                    Sign Out
+                  </Button>
+                </>
+              ) : (
+                <Link to="/login" onClick={() => setMobileOpen(false)}>
+                  <Button variant="ghost" size="sm" className="w-full text-gray-600 hover:text-primary hover:bg-primary/5 font-medium justify-start transition-all">
+                    {t('nav.donorLogin')}
+                  </Button>
+                </Link>
+              )}
               <Link to="/donate" onClick={() => setMobileOpen(false)}>
                 <Button size="sm" className="w-full bg-primary hover:bg-primary/90 text-primary-foreground font-bold shadow-lg shadow-orange-500/20">
-                  <Heart className="h-4 w-4 mr-1 fill-current" /> Donate Now
+                  <Heart className="h-4 w-4 mr-1 fill-current" /> {t('nav.donate')}
                 </Button>
               </Link>
             </div>

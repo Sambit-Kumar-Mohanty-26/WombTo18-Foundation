@@ -1,0 +1,296 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Team Orion - Admin Panel (Demo)</title>
+    <style>
+      :root {
+        --bg: #0b1220;
+        --card: #0f1b33;
+        --muted: rgba(255, 255, 255, 0.7);
+        --text: rgba(255, 255, 255, 0.92);
+        --border: rgba(255, 255, 255, 0.12);
+        --accent: #ff7a18;
+      }
+      body {
+        margin: 0;
+        font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, "Apple Color Emoji",
+          "Segoe UI Emoji";
+        background: radial-gradient(1200px 700px at 20% 0%, rgba(255, 122, 24, 0.18), transparent 60%),
+          radial-gradient(900px 600px at 80% 10%, rgba(56, 189, 248, 0.12), transparent 60%),
+          var(--bg);
+        color: var(--text);
+      }
+      .wrap {
+        max-width: 1100px;
+        margin: 0 auto;
+        padding: 28px 18px 60px;
+      }
+      header {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 12px;
+        margin-bottom: 18px;
+      }
+      .title {
+        display: grid;
+        gap: 6px;
+      }
+      h1 {
+        font-size: 20px;
+        margin: 0;
+        letter-spacing: 0.2px;
+      }
+      .subtitle {
+        font-size: 13px;
+        color: var(--muted);
+        margin: 0;
+      }
+      .pill {
+        font-size: 12px;
+        color: var(--muted);
+        border: 1px solid var(--border);
+        padding: 6px 10px;
+        border-radius: 999px;
+        background: rgba(255, 255, 255, 0.03);
+      }
+      .grid {
+        display: grid;
+        grid-template-columns: 1fr;
+        gap: 14px;
+      }
+      @media (min-width: 900px) {
+        .grid {
+          grid-template-columns: 1fr 1fr;
+        }
+      }
+      .card {
+        border: 1px solid var(--border);
+        background: rgba(15, 27, 51, 0.75);
+        backdrop-filter: blur(8px);
+        border-radius: 14px;
+        overflow: hidden;
+      }
+      .card .head {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 10px;
+        padding: 14px 14px 10px;
+        border-bottom: 1px solid var(--border);
+      }
+      .card h2 {
+        font-size: 14px;
+        margin: 0;
+        letter-spacing: 0.2px;
+      }
+      .actions {
+        display: flex;
+        gap: 10px;
+        align-items: center;
+      }
+      button {
+        cursor: pointer;
+        border: 1px solid var(--border);
+        background: rgba(255, 255, 255, 0.04);
+        color: var(--text);
+        padding: 7px 10px;
+        border-radius: 10px;
+        font-size: 12px;
+      }
+      button.primary {
+        border-color: rgba(255, 122, 24, 0.55);
+        background: rgba(255, 122, 24, 0.12);
+      }
+      button:hover {
+        background: rgba(255, 255, 255, 0.06);
+      }
+      .body {
+        padding: 12px 14px 14px;
+      }
+      .muted {
+        color: var(--muted);
+        font-size: 12px;
+        margin: 0;
+      }
+      pre {
+        margin: 10px 0 0;
+        padding: 12px;
+        border-radius: 12px;
+        border: 1px solid var(--border);
+        background: rgba(0, 0, 0, 0.25);
+        color: rgba(255, 255, 255, 0.9);
+        font-size: 12px;
+        overflow: auto;
+      }
+      .row {
+        display: flex;
+        gap: 10px;
+        align-items: center;
+        flex-wrap: wrap;
+        margin-top: 10px;
+      }
+      input {
+        border: 1px solid var(--border);
+        background: rgba(255, 255, 255, 0.04);
+        color: var(--text);
+        padding: 8px 10px;
+        border-radius: 10px;
+        font-size: 12px;
+        outline: none;
+        min-width: 220px;
+      }
+      input:focus {
+        border-color: rgba(255, 122, 24, 0.65);
+      }
+      label {
+        font-size: 12px;
+        color: var(--muted);
+      }
+      a {
+        color: rgba(255, 255, 255, 0.9);
+      }
+      .footer {
+        margin-top: 16px;
+        font-size: 12px;
+        color: var(--muted);
+      }
+      code {
+        font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="wrap">
+      <header>
+        <div class="title">
+          <h1>Admin Panel (Demo)</h1>
+          <p class="subtitle">
+            Simple server-rendered demo page. Uses your existing APIs:
+            <code>/api/admin/donors</code> and <code>/api/admin/programs</code>.
+          </p>
+        </div>
+        <div class="pill">No auth (demo)</div>
+      </header>
+
+      <div class="grid">
+        <section class="card">
+          <div class="head">
+            <h2>Donors</h2>
+            <div class="actions">
+              <button class="primary" id="btnDonors">Fetch donors</button>
+            </div>
+          </div>
+          <div class="body">
+            <p class="muted">Calls <code>GET /api/admin/donors</code> and prints JSON.</p>
+            <pre id="outDonors">Click “Fetch donors”.</pre>
+          </div>
+        </section>
+
+        <section class="card">
+          <div class="head">
+            <h2>Programs</h2>
+            <div class="actions">
+              <button class="primary" id="btnPrograms">Fetch programs</button>
+            </div>
+          </div>
+          <div class="body">
+            <p class="muted">Calls <code>GET /api/admin/programs</code> and prints JSON.</p>
+            <pre id="outPrograms">Click “Fetch programs”.</pre>
+          </div>
+        </section>
+      </div>
+
+      <section class="card" style="margin-top: 14px">
+        <div class="head">
+          <h2>Create program</h2>
+          <div class="actions">
+            <button class="primary" id="btnCreateProgram">Create</button>
+          </div>
+        </div>
+        <div class="body">
+          <p class="muted">Calls <code>POST /api/admin/programs</code> (JSON body).</p>
+          <div class="row">
+            <label>
+              Name<br />
+              <input id="programName" placeholder="Education Fund" />
+            </label>
+            <label>
+              Target amount<br />
+              <input id="programTarget" placeholder="100000" />
+            </label>
+          </div>
+          <pre id="outCreate">Fill fields and click “Create”.</pre>
+          <div class="footer">
+            Tip: Demo donation page is at <a href="/api/demo">/api/demo</a>. Swagger is at <a href="/api/docs">/api/docs</a>.
+          </div>
+        </div>
+      </section>
+    </div>
+
+    <script>
+      const json = (v) => JSON.stringify(v, null, 2);
+      const show = (el, v) => (el.textContent = typeof v === "string" ? v : json(v));
+
+      async function safeFetch(url, opts) {
+        const res = await fetch(url, opts);
+        const text = await res.text();
+        let data = text;
+        try {
+          data = JSON.parse(text);
+        } catch {}
+        if (!res.ok) {
+          const msg = typeof data === "string" ? data : json(data);
+          throw new Error(`${res.status} ${res.statusText}\n${msg}`);
+        }
+        return data;
+      }
+
+      document.getElementById("btnDonors").addEventListener("click", async () => {
+        const out = document.getElementById("outDonors");
+        show(out, "Loading...");
+        try {
+          const data = await safeFetch("/api/admin/donors");
+          show(out, data);
+        } catch (e) {
+          show(out, String(e?.message || e));
+        }
+      });
+
+      document.getElementById("btnPrograms").addEventListener("click", async () => {
+        const out = document.getElementById("outPrograms");
+        show(out, "Loading...");
+        try {
+          const data = await safeFetch("/api/admin/programs");
+          show(out, data);
+        } catch (e) {
+          show(out, String(e?.message || e));
+        }
+      });
+
+      document.getElementById("btnCreateProgram").addEventListener("click", async () => {
+        const out = document.getElementById("outCreate");
+        show(out, "Creating...");
+        const name = document.getElementById("programName").value?.trim();
+        const targetAmount = Number(document.getElementById("programTarget").value);
+        try {
+          const data = await safeFetch("/api/admin/programs", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({
+              name,
+              description: name || "Program",
+              targetAmount,
+            }),
+          });
+          show(out, data);
+        } catch (e) {
+          show(out, String(e?.message || e));
+        }
+      });
+    </script>
+  </body>
+</html>
+

@@ -1,6 +1,7 @@
 import { Avatar, AvatarFallback } from "../ui/avatar";
 import { Badge } from "../ui/badge";
 import { Star } from "lucide-react";
+import { useTranslation } from "react-i18next";
 
 const donors = [
   { name: "Priya Sharma", amount: "5,00,000", initials: "PS" },
@@ -15,16 +16,17 @@ const donors = [
 
 
 export function DonorWall() {
+  const { t } = useTranslation('home');
   return (
     <section className="py-20 bg-gray-50 border-t border-gray-200">
       <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
         <div className="text-center mb-14">
-          <p className="text-primary text-sm mb-2" style={{ fontWeight: 600, textTransform: "uppercase", letterSpacing: "0.05em" }}>Donor Wall of Fame</p>
+          <p className="text-primary text-sm mb-2" style={{ fontWeight: 600, textTransform: "uppercase", letterSpacing: "0.05em" }}>{t('donorWall.badge')}</p>
           <h2 className="text-3xl sm:text-4xl text-gray-900 mb-4" style={{ fontWeight: 700 }}>
-            Our Generous Supporters
+            {t('donorWall.heading')}
           </h2>
           <p className="text-gray-600 max-w-2xl mx-auto">
-            Recognizing the incredible individuals and organizations whose generosity makes our mission possible.
+            {t('donorWall.desc')}
           </p>
         </div>
 
