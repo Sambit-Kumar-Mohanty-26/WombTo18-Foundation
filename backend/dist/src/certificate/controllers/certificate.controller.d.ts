@@ -11,31 +11,31 @@ export declare class CertificateController {
     partnerCert(partnerId: string, res: Response): Promise<void>;
     list(recipientType: string, userId: string): Promise<{
         id: string;
-        type: string;
-        title: string;
-        recipientName: string;
-        recipientType: string;
         donorId: string | null;
+        createdAt: Date;
         volunteerId: string | null;
         partnerId: string | null;
+        title: string;
+        type: string;
+        recipientName: string;
+        recipientType: string;
         fileUrl: string | null;
         shareText: string | null;
         metadata: string | null;
-        createdAt: Date;
     }[]>;
     getByDonor(donorId: string): Promise<{
         id: string;
-        type: string;
-        title: string;
-        recipientName: string;
-        recipientType: string;
         donorId: string | null;
+        createdAt: Date;
         volunteerId: string | null;
         partnerId: string | null;
+        title: string;
+        type: string;
+        recipientName: string;
+        recipientType: string;
         fileUrl: string | null;
         shareText: string | null;
         metadata: string | null;
-        createdAt: Date;
     }[]>;
     verify(certId: string): Promise<{
         success: boolean;
