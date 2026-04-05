@@ -427,6 +427,13 @@ export class CertificateService {
     };
   }
 
+  // Find a certificate record by ID (used by controller for cloud URL check)
+  async findCertRecord(certId: string) {
+    return this.prisma.certificate.findFirst({
+      where: { OR: [{ id: certId }, { id: { contains: certId } }] },
+    });
+  }
+
   // Download a certificate by its ID — regenerate if file is missing
   async downloadOrRegenerate(certId: string, res: Response) {
     // Look up in Certificate table

@@ -37,6 +37,8 @@ const activityStyles: any = {
   System: { bg: "bg-slate-100", text: "text-slate-500", icon: Activity },
 };
 
+import { client } from "../../lib/api/client";
+
 export function AdminDashboard() {
   const [stats, setStats] = useState({
     totalDonations: 0,
@@ -47,9 +49,7 @@ export function AdminDashboard() {
   const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
-    // Fetch real data from the built-in API
-    fetch('http://localhost:3000/admin/stats')
-      .then(res => res.json())
+    client.get<any>('/admin/stats')
       .then(data => {
         if (data) {
           setStats({

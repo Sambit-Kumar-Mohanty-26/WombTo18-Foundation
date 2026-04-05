@@ -399,6 +399,11 @@ let CertificateService = class CertificateService {
             }
         };
     }
+    async findCertRecord(certId) {
+        return this.prisma.certificate.findFirst({
+            where: { OR: [{ id: certId }, { id: { contains: certId } }] },
+        });
+    }
     async downloadOrRegenerate(certId, res) {
         const cert = await this.prisma.certificate.findUnique({
             where: { id: certId },

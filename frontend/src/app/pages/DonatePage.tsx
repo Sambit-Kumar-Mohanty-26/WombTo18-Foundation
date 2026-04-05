@@ -5,18 +5,27 @@ import { DonateSidebar } from "./donate/DonateSidebar";
 import { DonorForm } from "./donate/DonorForm";
 import { PartnerForm } from "./donate/PartnerForm";
 import { VolunteerForm } from "./donate/VolunteerForm";
+import { useTranslation } from "react-i18next";
 
 const TABS = [
-  { id: "donor" as const, label: "Donate", sublabel: "Individual Giving", icon: Heart, color: "#FF9900", bg: "from-[#FF9900] to-[#f97316]", lightBg: "bg-[#FF9900]/8" },
-  { id: "partner" as const, label: "Sponsor", sublabel: "ESG / CSR Partner", icon: Building2, color: "#00AEEF", bg: "from-[#00AEEF] to-[#3b82f6]", lightBg: "bg-[#00AEEF]/8" },
-  { id: "volunteer" as const, label: "Volunteer", sublabel: "Lend Your Expertise", icon: Users, color: "#1D6E3F", bg: "from-[#1D6E3F] to-[#10b981]", lightBg: "bg-[#1D6E3F]/8" },
+  { id: "donor" as const, icon: Heart, color: "#FF9900", bg: "from-[#FF9900] to-[#f97316]", lightBg: "bg-[#FF9900]/8" },
+  { id: "partner" as const, icon: Building2, color: "#00AEEF", bg: "from-[#00AEEF] to-[#3b82f6]", lightBg: "bg-[#00AEEF]/8" },
+  { id: "volunteer" as const, icon: Users, color: "#1D6E3F", bg: "from-[#1D6E3F] to-[#10b981]", lightBg: "bg-[#1D6E3F]/8" },
 ];
 
 type TabId = typeof TABS[number]["id"];
 
 export function DonatePage() {
+  const { t } = useTranslation('donate');
   const [activeTab, setActiveTab] = useState<TabId>("donor");
   const [showMobileSidebar, setShowMobileSidebar] = useState(false);
+
+  // Tab configurations Map for easier localization access
+  const tabInfo: Record<TabId, { label: string; sublabel: string }> = {
+    donor: { label: t('tabs.donate'), sublabel: t('tabs.individual') },
+    partner: { label: t('tabs.sponsor'), sublabel: t('tabs.esg') },
+    volunteer: { label: t('tabs.volunteer'), sublabel: t('tabs.expertise') },
+  };
 
   useEffect(() => {
     if (document.getElementById("razorpay-script")) return;
@@ -76,19 +85,19 @@ export function DonatePage() {
               className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full text-[10px] sm:text-[11px] font-bold tracking-[0.15em] uppercase mb-5 border shadow-sm backdrop-blur-sm"
               style={{ color: activeTabData.color, borderColor: `${activeTabData.color}30`, background: `${activeTabData.color}08` }}
             >
-              <Sparkles className="w-3 h-3" /> Make a Difference Today
+              <Sparkles className="w-3 h-3" /> {t('hero.badge')}
             </motion.div>
 
             {/* Heading */}
             <h1 className="text-[2rem] sm:text-[3.5rem] md:text-[4rem] text-gray-900 mb-3 max-w-3xl" style={{ fontWeight: 900, lineHeight: 1.05, letterSpacing: "-0.025em" }}>
-              Support the{" "}
+              {t('hero.titlePrefix')}
               <span className={`text-transparent bg-clip-text bg-gradient-to-r ${activeTabData.bg} drop-shadow-sm`}>
-                {activeTab === "donor" ? "Mission" : activeTab === "partner" ? "Future" : "Cause"}.
+                {activeTab === "donor" ? t('hero.mission') : activeTab === "partner" ? t('hero.future') : t('hero.cause')}
               </span>
             </h1>
 
             <p className="text-sm sm:text-base text-gray-500 max-w-xl leading-relaxed mb-7">
-              Every action creates real, measurable impact for children across India.
+              {t('hero.subtitle')}
             </p>
           </motion.div>
 
@@ -102,6 +111,7 @@ export function DonatePage() {
               {TABS.map((tab) => {
                 const isActive = activeTab === tab.id;
                 const Icon = tab.icon;
+                const { label, sublabel } = tabInfo[tab.id];
                 return (
                   <button
                     key={tab.id}
@@ -121,8 +131,8 @@ export function DonatePage() {
                     )}
                     <span className="relative z-10 flex items-center gap-1.5">
                       <Icon className="w-3.5 h-3.5" />
-                      <span>{tab.label}</span>
-                      <span className="hidden sm:inline text-[9px] font-medium opacity-75 ml-0.5">({tab.sublabel})</span>
+                      <span>{label}</span>
+                      <span className="hidden sm:inline text-[9px] font-medium opacity-75 ml-0.5">({sublabel})</span>
                     </span>
                   </button>
                 );
@@ -161,7 +171,7 @@ export function DonatePage() {
                   className="w-full sm:w-auto px-6 py-3.5 rounded-xl border-2 border-dashed border-gray-200 text-sm font-bold text-gray-500 hover:text-gray-700 bg-gray-50/50 hover:bg-gray-50 flex items-center justify-center gap-2 transition-all mx-auto"
                 >
                   <BarChart3 className="w-4 h-4 text-[var(--journey-saffron)]" />
-                  {showMobileSidebar ? "Hide Impact Details" : "View Live Impact & Donors"}
+                  {showMobileSidebar ? t('buttons.hideImpact') : t('buttons.viewImpact')}
                 </button>
 
                 <AnimatePresence>
@@ -189,10 +199,10 @@ export function DonatePage() {
         <div className="mx-auto max-w-5xl px-4 sm:px-6 lg:px-8 relative z-10">
           <div className="grid grid-cols-2 md:grid-cols-4 gap-6 sm:gap-8">
             {[
-              { value: "2 min", label: "80G Certificate", icon: FileText, color: "#FF9900" },
-              { value: "100%", label: "Ring-fenced Funds", icon: Shield, color: "#1D6E3F" },
-              { value: "Live", label: "Impact Dashboard", icon: BarChart3, color: "#00AEEF" },
-              { value: "32", label: "Programs to Support", icon: Target, color: "#FF9900" },
+              { value: "2 min", label: t('stats.eightyG'), icon: FileText, color: "#FF9900" },
+              { value: "100%", label: t('stats.ringFenced'), icon: Shield, color: "#1D6E3F" },
+              { value: "Live", label: t('stats.impactDashboard'), icon: BarChart3, color: "#00AEEF" },
+              { value: "32", label: t('stats.programs'), icon: Target, color: "#FF9900" },
             ].map((item, i) => (
               <motion.div
                 key={item.label}

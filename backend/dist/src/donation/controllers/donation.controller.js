@@ -16,6 +16,7 @@ exports.DonationController = void 0;
 const common_1 = require("@nestjs/common");
 const donation_service_1 = require("../services/donation.service");
 const swagger_1 = require("@nestjs/swagger");
+const cache_manager_1 = require("@nestjs/cache-manager");
 let DonationController = class DonationController {
     donationService;
     constructor(donationService) {
@@ -53,6 +54,8 @@ __decorate([
 ], DonationController.prototype, "verify", null);
 __decorate([
     (0, common_1.Get)('stats'),
+    (0, common_1.UseInterceptors)(cache_manager_1.CacheInterceptor),
+    (0, cache_manager_1.CacheTTL)(120),
     (0, swagger_1.ApiOperation)({ summary: 'Get live donation stats and recent donors' }),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", []),
@@ -60,6 +63,8 @@ __decorate([
 ], DonationController.prototype, "getStats", null);
 __decorate([
     (0, common_1.Get)('wall-of-fame'),
+    (0, common_1.UseInterceptors)(cache_manager_1.CacheInterceptor),
+    (0, cache_manager_1.CacheTTL)(180),
     (0, swagger_1.ApiOperation)({ summary: 'Get ranked wall of fame donors' }),
     __param(0, (0, common_1.Query)('filter')),
     __metadata("design:type", Function),

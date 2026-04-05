@@ -16,6 +16,7 @@ exports.BlogController = void 0;
 const common_1 = require("@nestjs/common");
 const blog_service_1 = require("../services/blog.service");
 const swagger_1 = require("@nestjs/swagger");
+const cache_manager_1 = require("@nestjs/cache-manager");
 let BlogController = class BlogController {
     blogService;
     constructor(blogService) {
@@ -31,6 +32,7 @@ let BlogController = class BlogController {
 exports.BlogController = BlogController;
 __decorate([
     (0, common_1.Get)(),
+    (0, cache_manager_1.CacheTTL)(600),
     (0, swagger_1.ApiOperation)({ summary: 'Get all blog posts' }),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", []),
@@ -38,6 +40,7 @@ __decorate([
 ], BlogController.prototype, "findAll", null);
 __decorate([
     (0, common_1.Get)(':slug'),
+    (0, cache_manager_1.CacheTTL)(300),
     (0, swagger_1.ApiOperation)({ summary: 'Get blog post by slug' }),
     __param(0, (0, common_1.Param)('slug')),
     __metadata("design:type", Function),
@@ -47,6 +50,7 @@ __decorate([
 exports.BlogController = BlogController = __decorate([
     (0, swagger_1.ApiTags)('Blogs'),
     (0, common_1.Controller)('blogs'),
+    (0, common_1.UseInterceptors)(cache_manager_1.CacheInterceptor),
     __metadata("design:paramtypes", [blog_service_1.BlogService])
 ], BlogController);
 //# sourceMappingURL=blog.controller.js.map

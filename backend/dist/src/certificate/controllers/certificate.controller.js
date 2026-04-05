@@ -63,6 +63,10 @@ let CertificateController = class CertificateController {
         return this.certificateService.generate80GCertificate(donationId, res);
     }
     async downloadCert(certId, res) {
+        const cert = await this.certificateService.findCertRecord(certId);
+        if (cert?.fileUrl && cert.fileUrl.startsWith('http')) {
+            return res.redirect(cert.fileUrl);
+        }
         const certDir = path.join(process.cwd(), 'public', 'certificates');
         const filePath = path.join(certDir, `${certId}.pdf`);
         if (fs.existsSync(filePath)) {

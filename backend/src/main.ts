@@ -9,15 +9,23 @@ import cookieParser = require('cookie-parser');
 async function bootstrap() {
   const app = await NestFactory.create<NestExpressApplication>(AppModule);
   
-  // Enable CORS for local development
+  // Enable CORS with dynamic origins
+  const allowedOrigins = [
+    process.env.FRONTEND_URL,
+    'http://localhost:5173',
+    'http://localhost:5174',
+    'http://localhost:5175',
+    'http://localhost:5176',
+  ].filter(Boolean) as string[];
+
   app.enableCors({
-    origin: ['http://localhost:5173', 'http://localhost:5174', 'http://localhost:5175', 'http://localhost:5176'],
+    origin: allowedOrigins,
     credentials: true,
   });
   app.useStaticAssets(join(process.cwd(), 'public'), {
     prefix: '/public',
     setHeaders: (res) => {
-      res.set('Access-Control-Allow-Origin', 'http://localhost:5173');
+      res.set('Access-Control-Allow-Origin', process.env.FRONTEND_URL || 'http://localhost:5173');
       res.set('Access-Control-Allow-Methods', 'GET, OPTIONS');
       res.set('Access-Control-Allow-Headers', 'Origin, X-Requested-With, Content-Type, Accept');
     },

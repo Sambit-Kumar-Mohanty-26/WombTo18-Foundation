@@ -29,6 +29,8 @@ const coin_module_1 = require("./coin/coin.module");
 const referral_module_1 = require("./referral/referral.module");
 const leaderboard_module_1 = require("./leaderboard/leaderboard.module");
 const camp_module_1 = require("./camp/camp.module");
+const redis_module_1 = require("./redis/redis.module");
+const storage_module_1 = require("./storage/storage.module");
 let AppModule = class AppModule {
 };
 exports.AppModule = AppModule;
@@ -54,6 +56,8 @@ exports.AppModule = AppModule = __decorate([
             referral_module_1.ReferralModule,
             leaderboard_module_1.LeaderboardModule,
             camp_module_1.CampModule,
+            redis_module_1.RedisModule,
+            storage_module_1.StorageModule,
         ],
         controllers: [app_controller_1.AppController],
         providers: [app_service_1.AppService],

@@ -13,6 +13,7 @@ exports.ProgramController = void 0;
 const common_1 = require("@nestjs/common");
 const program_service_1 = require("../services/program.service");
 const swagger_1 = require("@nestjs/swagger");
+const cache_manager_1 = require("@nestjs/cache-manager");
 let ProgramController = class ProgramController {
     programService;
     constructor(programService) {
@@ -25,6 +26,7 @@ let ProgramController = class ProgramController {
 exports.ProgramController = ProgramController;
 __decorate([
     (0, common_1.Get)(),
+    (0, cache_manager_1.CacheTTL)(600),
     (0, swagger_1.ApiOperation)({ summary: 'Get all donation programs' }),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", []),
@@ -33,6 +35,7 @@ __decorate([
 exports.ProgramController = ProgramController = __decorate([
     (0, swagger_1.ApiTags)('Programs'),
     (0, common_1.Controller)('programs'),
+    (0, common_1.UseInterceptors)(cache_manager_1.CacheInterceptor),
     __metadata("design:paramtypes", [program_service_1.ProgramService])
 ], ProgramController);
 //# sourceMappingURL=program.controller.js.map

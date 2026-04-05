@@ -25,7 +25,14 @@ export class CertificateController {
   @Get('download/:certId')
   @ApiOperation({ summary: 'Download a previously generated certificate PDF' })
   async downloadCert(@Param('certId') certId: string, @Res() res: Response) {
-    // Try to serve the pre-generated PDF file from disk
+    // First check if the certificate record has a cloud URL
+    // If it starts with http, redirect to the cloud URL
+    const cert = await this.certificateService.findCertRecord(certId);
+    if (cert?.fileUrl && cert.fileUrl.startsWith('http')) {
+      return res.redirect(cert.fileUrl);
+    }
+
+    // Try to serve the pre-generated PDF file from disk (local dev)
     const certDir = path.join(process.cwd(), 'public', 'certificates');
     const filePath = path.join(certDir, `${certId}.pdf`);
 

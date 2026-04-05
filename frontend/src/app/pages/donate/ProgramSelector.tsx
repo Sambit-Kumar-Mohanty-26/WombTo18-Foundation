@@ -2,6 +2,7 @@ import { useState, useMemo, useRef } from "react";
 import { motion, AnimatePresence } from "motion/react";
 import { Search, Check, ChevronRight } from "lucide-react";
 import { PROGRAMS, PROGRAM_CATEGORIES } from "./donateData";
+import { useTranslation } from "react-i18next";
 
 const CAT_META: Record<string, { dot: string; label: string }> = {
   "Child Health & Wellness": { dot: "#1D6E3F", label: "Health" },
@@ -24,12 +25,16 @@ export function ProgramSelector({
   selectedPrograms,
   onToggleProgram,
   accentColor,
-  sectionTitle = "Choose Programs",
-  sectionSubtitle = "Select multiple programs and donate together",
+  sectionTitle,
+  sectionSubtitle,
 }: ProgramSelectorProps) {
+  const { t } = useTranslation('donate');
   const [search, setSearch] = useState("");
   const [activeCat, setActiveCat] = useState<string | null>(null);
   const scrollRef = useRef<HTMLDivElement>(null);
+
+  const displayTitle = sectionTitle || t('selector.title');
+  const displaySubtitle = sectionSubtitle || t('selector.subtitle');
 
   const allCats = ["All", ...PROGRAM_CATEGORIES];
 
@@ -38,16 +43,16 @@ export function ProgramSelector({
     if (search.trim()) {
       const q = search.toLowerCase();
       progs = progs.filter(p =>
-        p.name.toLowerCase().includes(q) ||
-        p.category.toLowerCase().includes(q) ||
-        p.description.toLowerCase().includes(q)
+        t(`programs.${p.id}.name`).toLowerCase().includes(q) ||
+        t(`categories.${p.category}`).toLowerCase().includes(q) ||
+        t(`programs.${p.id}.desc`).toLowerCase().includes(q)
       );
     }
     if (activeCat) {
       progs = progs.filter(p => p.category === activeCat);
     }
     return progs;
-  }, [search, activeCat]);
+  }, [search, activeCat, t]);
 
   const selectedCount = Object.keys(selectedPrograms).length;
 
@@ -71,8 +76,8 @@ export function ProgramSelector({
               <span className="text-lg">📋</span>
             </div>
             <div>
-              <h3 className="text-sm sm:text-[15px] font-black text-gray-900 tracking-tight">{sectionTitle}</h3>
-              <p className="text-[10px] sm:text-[11px] text-gray-400 mt-0.5">{sectionSubtitle}</p>
+              <h3 className="text-sm sm:text-[15px] font-black text-gray-900 tracking-tight">{displayTitle}</h3>
+              <p className="text-[10px] sm:text-[11px] text-gray-400 mt-0.5">{displaySubtitle}</p>
             </div>
           </div>
 
@@ -86,7 +91,7 @@ export function ProgramSelector({
                 className="text-[11px] font-black px-3 py-1.5 rounded-full text-white shadow-sm shrink-0"
                 style={{ background: accentColor }}
               >
-                {selectedCount} selected
+                {t('selector.selected', { count: selectedCount })}
               </motion.span>
             )}
           </AnimatePresence>
@@ -98,7 +103,7 @@ export function ProgramSelector({
             value={search}
             onChange={(e) => setSearch(e.target.value)}
             className="w-full pl-9 pr-4 py-2.5 rounded-xl border border-gray-200 bg-white text-sm placeholder:text-gray-300 focus:border-gray-300 focus:ring-2 focus:ring-gray-100 outline-none transition-all duration-200 shadow-[0_1px_2px_rgba(0,0,0,0.04)]"
-            placeholder="Search programs..."
+            placeholder={t('selector.placeholder')}
           />
         </div>
       </div>
@@ -125,7 +130,7 @@ export function ProgramSelector({
                 {meta && !isActive && (
                   <span className="w-2 h-2 rounded-full shrink-0" style={{ background: meta.dot }} />
                 )}
-                {cat === "All" ? "All" : (meta?.label || cat)}
+                {cat === "All" ? t('categories.All', 'All') : t(`categories.${cat}`)}
               </button>
             );
           })}
@@ -227,17 +232,17 @@ export function ProgramSelector({
                           isSelected ? "text-gray-900" : "text-gray-800 group-hover:text-gray-900"
                         }`}
                       >
-                        {prog.name}
+                        {t(`programs.${prog.id}.name`)}
                       </h4>
                       {meta && (
                         <span className="shrink-0 flex items-center gap-1 text-[9px] font-semibold text-gray-400">
                           <span className="w-1.5 h-1.5 rounded-full" style={{ background: meta.dot }} />
-                          {meta.label}
+                          {t(`categories.${prog.category}`)}
                         </span>
                       )}
                     </div>
                     <p className="text-[11px] text-gray-400 truncate leading-relaxed group-hover:text-gray-500 transition-colors">
-                      {prog.description}
+                      {t(`programs.${prog.id}.desc`)}
                     </p>
                   </div>
 
@@ -252,7 +257,7 @@ export function ProgramSelector({
                       ₹{prog.costPerUnit.toLocaleString("en-IN")}
                     </span>
                     <p className="text-[9px] text-gray-400 font-medium mt-0.5">
-                      per {prog.unit.split("/")[0]}
+                      {t('selector.pricePer', { unit: t(`units.${prog.unit.split("/")[0]}`) || prog.unit.split("/")[0] })}
                     </p>
                   </div>
 
@@ -268,8 +273,8 @@ export function ProgramSelector({
             {filteredPrograms.length === 0 && (
               <div className="flex flex-col items-center justify-center py-14 gap-2">
                 <Search className="w-5 h-5 text-gray-300" />
-                <p className="text-xs font-semibold text-gray-400">No programs found</p>
-                <p className="text-[10px] text-gray-300">Try a different search or category</p>
+                <p className="text-xs font-semibold text-gray-400">{t('selector.noPrograms')}</p>
+                <p className="text-[10px] text-gray-300">{t('selector.tryDifferent')}</p>
               </div>
             )}
           </motion.div>
@@ -309,11 +314,11 @@ export function ProgramSelector({
                   )}
                 </div>
                 <span className="text-[11px] font-semibold text-gray-500">
-                  {selectedCount} program{selectedCount > 1 ? "s" : ""}
+                  {t('selector.countPrograms', { count: selectedCount })}
                 </span>
               </div>
               <span className="text-[11px] font-bold" style={{ color: accentColor }}>
-                Configure quantities below ↓
+                {t('selector.configure')}
               </span>
             </div>
           </motion.div>

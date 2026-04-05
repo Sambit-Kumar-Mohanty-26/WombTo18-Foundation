@@ -1,0 +1,279 @@
+{
+  "hero": {
+    "badge": "Make a Difference Today",
+    "titlePrefix": "Support the ",
+    "mission": "Mission.",
+    "future": "Future.",
+    "cause": "Cause.",
+    "subtitle": "Every action creates real, measurable impact for children across India."
+  },
+  "tabs": {
+    "donate": "Donate",
+    "individual": "Individual Giving",
+    "sponsor": "Sponsor",
+    "esg": "ESG / CSR Partner",
+    "volunteer": "Volunteer",
+    "expertise": "Lend Your Expertise"
+  },
+  "sidebar": {
+    "whySupport": {
+      "title": "💚 Why Your Support Matters ✨",
+      "items": [
+        "Every contribution supports child health, education, and climate action.",
+        "One child registered = one tree planted.",
+        "100% transparent. Every rupee is accounted for."
+      ]
+    },
+    "impact": {
+      "title": "Real Impact So Far",
+      "live": "Live",
+      "labels": {
+        "registered": "Children Registered",
+        "planted": "Trees Planted",
+        "onboarded": "Schools Onboarded",
+        "raised": "Raised This Month"
+      }
+    },
+    "goal": {
+      "title": "Monthly Goal",
+      "reached": "of monthly goal reached"
+    },
+    "donors": {
+      "title": "Recent Donors",
+      "live": "Live",
+      "empty": "No recent donations yet today.",
+      "emptySub": "Be the first to make an impact!",
+      "viewAll": "View All Donors"
+    },
+    "time": {
+      "justNow": "Just now",
+      "hoursAgo": "hours ago",
+      "yesterday": "Yesterday",
+      "daysAgo": "days ago"
+    },
+    "trust": {
+      "razorpay": "🔒 Razorpay Secured",
+      "eightyG": "📄 80G Available",
+      "registered": "🏅 Registered NGO"
+    }
+  },
+  "forms": {
+    "details": "Personal Details",
+    "orgDetails": "Organization Details",
+    "fullName": "Full Name",
+    "fullNamePlaceholder": "Rahul Sharma",
+    "email": "Email Address",
+    "emailPlaceholder": "rahul@email.com",
+    "mobile": "Mobile Number",
+    "mobilePlaceholder": "+91 98765 43210",
+    "pan": "PAN (for 80G)",
+    "panPlaceholder": "ABCDE1234F",
+    "orgName": "Organization Name",
+    "orgPlaceholder": "Tata Consultancy Services",
+    "contactPerson": "Contact Person",
+    "contactPlaceholder": "Ananya Patel",
+    "csrCategory": "CSR Focus Area",
+    "additionalNotes": "Additional Notes",
+    "notesPlaceholder": "Specific CSR requirements or preferences...",
+    "volunteerPrompt": "How would you like to help?",
+    "volunteerPlaceholder": "e.g. Teaching, Event organizing, Tech support...",
+    "checkboxes": {
+      "publicName": "Display my name publicly as a donor",
+      "alsoVolunteer": "I'd also like to volunteer with WOMBTO18 🙋"
+    },
+    "selected": {
+      "title": "Your Selected Programs",
+      "qty": "Qty:",
+      "total": "Total Amount",
+      "totalSponsor": "Total Sponsorship"
+    },
+    "razorpay": {
+      "name": "WOMBTO18 Foundation",
+      "descIndividual": "Donation for {{count}} program(s)",
+      "descPartner": "CSR Sponsorship for {{count}} program(s)",
+      "general": "General Donation",
+      "csrSponsorship": "CSR Sponsorship"
+    },
+    "buttons": {
+      "donate": "Donate ₹{{amount}}",
+      "sponsor": "Sponsor ₹{{amount}}",
+      "submit": "Submit Application"
+    },
+    "partner": {
+      "orgDetails": "Organization Details",
+      "orgName": "Organization Name",
+      "orgNamePlaceholder": "Tata Consultancy Services",
+      "contactPerson": "Contact Person",
+      "contactPersonPlaceholder": "Ananya Patel",
+      "csrFocus": "CSR Focus Area",
+      "csrCategories": {
+        "Education": "Education",
+        "Healthcare": "Healthcare",
+        "Environment & Sustainability": "Environment & Sustainability",
+        "Skill Development": "Skill Development",
+        "Rural Development": "Rural Development",
+        "Women Empowerment": "Women Empowerment"
+      },
+      "sponsorshipTitle": "Sponsor Programs",
+      "sponsorshipSubtitle": "Choose multiple programs to sponsor",
+      "selectedTitle": "Your Sponsored Programs",
+      "totalSponsorship": "Total Sponsorship",
+      "additionalNotes": "Additional Notes",
+      "notesPlaceholder": "Specific CSR requirements or preferences...",
+      "trust": "CSR Invoice & 80G Available"
+    },
+    "volunteer": {
+      "personal": "Personal Information",
+      "fullName": "Full Name",
+      "fullNamePlaceholder": "Dr. Priya Singh",
+      "city": "City",
+      "cityPlaceholder": "Bhubaneswar",
+      "profession": "Profession",
+      "professionPlaceholder": "Paediatrician / Developer / Teacher",
+      "linkedin": "LinkedIn Profile",
+      "linkedinPlaceholder": "linkedin.com/in/yourprofile",
+      "skillsTitle": "Skills & Expertise",
+      "skillsSubtitle": "Select all areas where you can contribute:",
+      "availabilityTitle": "Availability",
+      "experience": "Relevant Experience",
+      "experiencePlaceholder": "Brief description of relevant volunteering or professional experience...",
+      "motivation": "Why do you want to volunteer?",
+      "motivationPlaceholder": "What motivates you to join this mission...",
+      "membership": "Membership Contribution",
+      "membershipMin": "A minimum of ₹500 is required to register",
+      "benefits": "View Volunteer Benefits",
+      "submitPay": "Pay & Register as Volunteer",
+      "submitComplete": "Complete Registration",
+      "certNotice": "Every volunteer receives a Certificate of Contribution",
+      "locked": "Locked",
+      "skills": {
+        "Healthcare / Medical": "Healthcare / Medical",
+        "Teaching / Education": "Teaching / Education",
+        "Technology / Web Dev": "Technology / Web Dev",
+        "Content Writing / Design": "Content Writing / Design",
+        "Data Analysis / Research": "Data Analysis / Research",
+        "Event Management": "Event Management",
+        "Counselling / Mental Health": "Counselling / Mental Health",
+        "First Aid / Emergency Response": "First Aid / Emergency Response",
+        "Environmental / Sustainability": "Environmental / Sustainability",
+        "Translation / Regional Languages": "Translation / Regional Languages",
+        "Photography / Videography": "Photography / Videography",
+        "Social Media / Marketing": "Social Media / Marketing"
+      },
+      "availabilityOptions": {
+        "Weekdays (9am-5pm)": "Weekdays (9am-5pm)",
+        "Weekday Evenings": "Weekday Evenings",
+        "Weekends Only": "Weekends Only",
+        "Flexible / Remote": "Flexible / Remote",
+        "Full-time Volunteer": "Full-time Volunteer"
+      }
+    }
+  },
+  "programs": {
+    "p1": { "name": "Full Child Health Screening", "desc": "Complete annual health check-up for one child" },
+    "p2": { "name": "Dental Check-up Camp", "desc": "Dental screening and awareness for students" },
+    "p3": { "name": "Eye Check-up & Glasses", "desc": "Vision screening and free spectacles" },
+    "p4": { "name": "Nutrition Support Program", "desc": "Monthly nutrition supplement for malnourished children" },
+    "p5": { "name": "Mental Wellness Module", "desc": "SEL and mental health sessions for a class" },
+    "p6": { "name": "Vaccination Awareness Drive", "desc": "Immunisation awareness camp at school" },
+    "p7": { "name": "School Adoption Program", "desc": "Full year sponsorship of a school" },
+    "p8": { "name": "Student Scholarship Fund", "desc": "Annual scholarship for one underprivileged student" },
+    "p9": { "name": "Digital Classroom Setup", "desc": "Smart classroom setup for a school" },
+    "p10": { "name": "Library Development", "desc": "Setup/upgrade school library" },
+    "p11": { "name": "STEM Learning Kit", "desc": "Science & math kits for hands-on learning" },
+    "p12": { "name": "Teacher Training Workshop", "desc": "Professional development for teachers" },
+    "p13": { "name": "One Child One Tree", "desc": "Plant & maintain a tree per child enrolled" },
+    "p14": { "name": "School Green Campus", "desc": "Full campus greening program" },
+    "p15": { "name": "Rain Water Harvesting", "desc": "Install rainwater harvesting at school" },
+    "p16": { "name": "Solar Panel for School", "desc": "Solar energy setup for a rural school" },
+    "p17": { "name": "Waste Management Program", "desc": "Waste segregation and composting training" },
+    "p18": { "name": "Carbon Neutral Cohort", "desc": "Offset carbon footprint of child cohort" },
+    "p19": { "name": "Parent Awareness Program", "desc": "Health & education awareness for parents" },
+    "p20": { "name": "Women Health Camp", "desc": "Maternal health check-up camp" },
+    "p21": { "name": "Community First Aid Training", "desc": "First aid certification for community members" },
+    "p22": { "name": "Youth Leadership Program", "desc": "Leadership training for adolescents" },
+    "p23": { "name": "Menstrual Hygiene Initiative", "desc": "Pad distribution and awareness for girls" },
+    "p24": { "name": "Skill Development Workshop", "desc": "Vocational skills for school dropouts" },
+    "p25": { "name": "Student Health Dashboard", "desc": "Digital health tracking platform per school" },
+    "p26": { "name": "AI Health Analytics", "desc": "AI-powered health trend analysis" },
+    "p27": { "name": "Mobile App Development", "desc": "Regional language health app development" },
+    "p28": { "name": "Data Infrastructure", "desc": "Cloud infrastructure for health records" },
+    "p29": { "name": "Emergency Drill Training", "desc": "Fire & earthquake drill at school" },
+    "p30": { "name": "First Aid Kit Distribution", "desc": "Fully stocked first aid kit for school" },
+    "p31": { "name": "Safety Infrastructure", "desc": "CCTV and safety equipment for school" },
+    "p32": { "name": "Disaster Preparedness Program", "desc": "Community disaster readiness training" }
+  },
+  "selector": {
+    "title": "Choose Programs",
+    "subtitle": "Select multiple programs and donate together",
+    "titleSponsor": "Sponsor Programs",
+    "subtitleSponsor": "Choose multiple programs to sponsor",
+    "placeholder": "Search programs...",
+    "quantity": "Number of {{unit}}s",
+    "qtyShort": "Qty:",
+    "chooseSchool": "Choose a school...",
+    "noPrograms": "No programs found matching your search.",
+    "tryDifferent": "Try a different search or category",
+    "selected": "{{count}} selected",
+    "configure": "Configure quantities below ↓",
+    "pricePer": "per {{unit}}",
+    "countPrograms": "{{count}} program(s)"
+  },
+  "categories": {
+    "Child Health & Wellness": "Child Health & Wellness",
+    "Education & Development": "Education & Development",
+    "Climate & Environment": "Climate & Environment",
+    "Community Empowerment": "Community Empowerment",
+    "Technology & Innovation": "Technology & Innovation",
+    "Emergency & Safety": "Emergency & Safety"
+  },
+  "units": {
+    "child": "child",
+    "class": "class",
+    "school": "school",
+    "student": "student",
+    "kit": "kit",
+    "teacher": "teacher",
+    "tree": "tree",
+    "unit": "unit",
+    "library": "library",
+    "classroom": "classroom",
+    "session": "session",
+    "camp": "camp",
+    "person": "person",
+    "girl": "girl",
+    "language": "language",
+    "quarter": "quarter",
+    "district": "district",
+    "community": "community"
+  },
+  "skills": {
+    "Healthcare / Medical": "Healthcare / Medical",
+    "Teaching / Education": "Teaching / Education",
+    "Technology / Web Dev": "Technology / Web Dev",
+    "Content Writing / Design": "Content Writing / Design",
+    "Data Analysis / Research": "Data Analysis / Research",
+    "Event Management": "Event Management",
+    "Counselling / Mental Health": "Counselling / Mental Health",
+    "First Aid / Emergency Response": "First Aid / Emergency Response",
+    "Environmental / Sustainability": "Environmental / Sustainability",
+    "Translation / Regional Languages": "Translation / Regional Languages",
+    "Photography / Videography": "Photography / Videography",
+    "Social Media / Marketing": "Social Media / Marketing"
+  },
+  "stats": {
+    "eightyG": "80G Certificate",
+    "ringFenced": "Ring-fenced Funds",
+    "impactDashboard": "Impact Dashboard",
+    "programs": "Programs to Support"
+  },
+  "toasts": {
+    "required": "Name and email are required",
+    "selectProgram": "Please select at least one program",
+    "minAmount": "Minimum donation is ₹100",
+    "minSponsor": "Minimum sponsorship is ₹100",
+    "paymentCancelled": "Payment cancelled",
+    "verifyFailed": "Verification failed. Please contact support.",
+    "errorGeneral": "Something went wrong"
+  }
+}

@@ -2,6 +2,7 @@ import { Injectable, Logger } from '@nestjs/common';
 import * as path from 'path';
 import * as fs from 'fs';
 import * as QRCode from 'qrcode';
+import { StorageService } from '../../storage/storage.service';
 
 const PDFDocument = require('pdfkit');
 
@@ -11,7 +12,7 @@ export class PdfGeneratorService {
   private readonly publicDir = path.join(process.cwd(), 'public');
   private readonly certDir = path.join(this.publicDir, 'certificates');
 
-  constructor() {
+  constructor(private readonly storage: StorageService) {
     this.ensureDirectories();
   }
 
@@ -245,9 +246,21 @@ export class PdfGeneratorService {
 
         doc.end();
 
-        stream.on('finish', () => {
+        stream.on('finish', async () => {
           this.logger.log(`Generated premium 80G certificate: ${data.certId}`);
-          resolve(`/public/certificates/${data.certId}.pdf`);
+          // Upload to cloud storage if available
+          try {
+            const cloudUrl = await this.storage.uploadFromPath(
+              filePath,
+              `certificates/${data.certId}.pdf`,
+              'application/pdf',
+            );
+            resolve(cloudUrl);
+          } catch (uploadErr) {
+            // Fall back to local path if upload fails
+            this.logger.warn(`Cloud upload failed, using local path: ${uploadErr}`);
+            resolve(`/public/certificates/${data.certId}.pdf`);
+          }
         });
 
         stream.on('error', (err) => {
