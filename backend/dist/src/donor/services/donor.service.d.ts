@@ -10,10 +10,13 @@ export declare class DonorService {
             email: string;
             tier: string;
             totalDonated: number;
+            impactScore: number;
             isVolunteer: boolean;
             showOnLeaderboard: boolean;
             volunteerId: string | null;
             volunteerCoins: number;
+            mobile: string | null;
+            createdAt: Date;
         };
         impact: {
             id: string;
@@ -77,6 +80,8 @@ export declare class DonorService {
         showOnLeaderboard: boolean;
         profileImage: string | null;
         referredById: string | null;
+        twoFactorEnabled: boolean;
+        tokenVersion: number;
     }>;
     becomeVolunteer(donorId: string): Promise<{
         id: string;
@@ -103,6 +108,8 @@ export declare class DonorService {
         showOnLeaderboard: boolean;
         profileImage: string | null;
         referredById: string | null;
+        twoFactorEnabled: boolean;
+        tokenVersion: number;
     }>;
     getProfile(identifier: string): Promise<{
         id: string;
@@ -114,6 +121,7 @@ export declare class DonorService {
         address: string | null;
         tier: string;
         totalDonated: number;
+        impactScore: number;
         isVolunteer: boolean;
         showOnLeaderboard: boolean;
         volunteerId: string | null;
@@ -131,6 +139,7 @@ export declare class DonorService {
         email: string;
         tier: string;
         totalDonated: number;
+        impactScore: number;
         isEligible: boolean;
         emailVerified: boolean;
         mobileVerified: boolean;

@@ -25,6 +25,20 @@ export declare class AuthController {
         redirect: string;
         otpSent: boolean;
     } | {
+        devOtp?: string | undefined;
+        success: boolean;
+        otpSent: boolean;
+        twoFactorPending: boolean;
+        donorId: string;
+        message: string;
+        token?: undefined;
+        name?: undefined;
+        volunteerId?: undefined;
+        eligible?: undefined;
+        isVolunteer?: undefined;
+        role?: undefined;
+        redirect?: undefined;
+    } | {
         success: boolean;
         token: string;
         name: string | null;
@@ -90,5 +104,22 @@ export declare class AuthController {
         role: "VOLUNTEER" | "DONOR" | "PARTNER";
     } | {
         error: string;
+    }>;
+    requestPasswordChange(email: string): Promise<{
+        devOtp?: string | undefined;
+        success: boolean;
+        message: string;
+    }>;
+    updatePassword(email: string, otp: string, newPassword: string): Promise<{
+        success: boolean;
+        message: string;
+    }>;
+    toggle2FA(donorId: string, enabled: boolean): Promise<{
+        success: boolean;
+        message: string;
+    }>;
+    revokeSessions(donorId: string): Promise<{
+        success: boolean;
+        message: string;
     }>;
 }

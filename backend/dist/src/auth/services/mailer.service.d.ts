@@ -16,4 +16,20 @@ export declare class MailerService {
         link?: string;
         selected: boolean;
     }): Promise<void>;
+    sendCampReminderEmail(params: {
+        email: string;
+        volunteerName: string;
+        campName: string;
+        campDate: string;
+        message: string;
+        link?: string;
+    }): Promise<void>;
+    sendCampFollowUpEmail(params: {
+        email: string;
+        volunteerName: string;
+        campName: string;
+        campDate: string;
+        message: string;
+    }): Promise<void>;
+    private buildCampEmail;
 }

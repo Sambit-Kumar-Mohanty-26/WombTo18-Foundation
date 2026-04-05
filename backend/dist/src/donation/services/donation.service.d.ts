@@ -1,10 +1,12 @@
 import { PrismaService } from '../../prisma/services/prisma.service';
 import { PdfGeneratorService } from './pdf-generator.service';
+import { CoinService } from '../../coin/services/coin.service';
 export declare class DonationService {
     private readonly prisma;
     private readonly pdfGenerator;
+    private readonly coinService;
     private razorpay;
-    constructor(prisma: PrismaService, pdfGenerator: PdfGeneratorService);
+    constructor(prisma: PrismaService, pdfGenerator: PdfGeneratorService, coinService: CoinService);
     private buildDonorId;
     createOrder(data: {
         amount: number;

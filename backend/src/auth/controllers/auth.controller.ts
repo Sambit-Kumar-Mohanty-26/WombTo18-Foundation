@@ -160,4 +160,35 @@ export class AuthController {
 
     return result;
   }
+
+  @Post('donor/request-password-change')
+  @ApiOperation({ summary: 'Request OTP for password change' })
+  async requestPasswordChange(@Body('email') email: string) {
+    return this.authService.requestPasswordChange(email);
+  }
+
+  @Post('donor/update-password')
+  @ApiOperation({ summary: 'Verify OTP and update password' })
+  async updatePassword(
+    @Body('email') email: string,
+    @Body('otp') otp: string,
+    @Body('newPassword') newPassword: string,
+  ) {
+    return this.authService.updatePassword(email, otp, newPassword);
+  }
+
+  @Post('donor/toggle-2fa')
+  @ApiOperation({ summary: 'Toggle 2FA for donor' })
+  async toggle2FA(
+    @Body('donorId') donorId: string,
+    @Body('enabled') enabled: boolean,
+  ) {
+    return this.authService.toggleTwoFactor(donorId, enabled);
+  }
+
+  @Post('auth/revoke-sessions')
+  @ApiOperation({ summary: 'Revoke all other sessions' })
+  async revokeSessions(@Body('donorId') donorId: string) {
+    return this.authService.revokeOtherSessions(donorId);
+  }
 }

@@ -180,6 +180,99 @@ export class VolunteerService {
     }));
   }
 
+  /** Get 6-month impact history for the graph */
+  async getImpactHistory(volunteerId: string) {
+    const vol = await this.findByIdOrEmail(volunteerId);
+    const sixMonthsAgo = new Date();
+    sixMonthsAgo.setMonth(sixMonthsAgo.getMonth() - 5);
+    sixMonthsAgo.setDate(1);
+    sixMonthsAgo.setHours(0, 0, 0, 0);
+
+    const [transactions, referrals] = await Promise.all([
+      this.prisma.coinTransaction.findMany({
+        where: { volunteerId: vol.id, createdAt: { gte: sixMonthsAgo } },
+        select: { amount: true, createdAt: true },
+      }),
+      this.prisma.referral.findMany({
+        where: { volunteerId: vol.id, status: 'DONATED', createdAt: { gte: sixMonthsAgo } },
+        select: { createdAt: true },
+      }),
+    ]);
+
+    const months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+    const historyMap: Record<string, { month: string, coins: number, impact: number, sortKey: number }> = {};
+
+    // Initialize last 6 months
+    for (let i = 0; i < 6; i++) {
+      const d = new Date();
+      d.setMonth(d.getMonth() - i);
+      const m = months[d.getMonth()];
+      const year = d.getFullYear();
+      const key = `${year}-${d.getMonth()}`;
+      historyMap[key] = { month: m, coins: 0, impact: 0, sortKey: d.getTime() };
+    }
+
+    // Aggregate transactions
+    transactions.forEach(tx => {
+      const d = new Date(tx.createdAt);
+      const key = `${d.getFullYear()}-${d.getMonth()}`;
+      if (historyMap[key]) historyMap[key].coins += tx.amount;
+    });
+
+    // Aggregate impact (referrals)
+    referrals.forEach(ref => {
+      const d = new Date(ref.createdAt);
+      const key = `${d.getFullYear()}-${d.getMonth()}`;
+      if (historyMap[key]) historyMap[key].impact += 1;
+    });
+
+    return Object.values(historyMap)
+      .sort((a, b) => a.sortKey - b.sortKey)
+      .map(({ month, coins, impact }) => ({ month, coins, impact }));
+  }
+
+  /** Update volunteer profile data */
+  async updateProfile(volunteerId: string, data: {
+    name?: string;
+    mobile?: string;
+    city?: string;
+    profession?: string;
+    skills?: string[];
+    availability?: string;
+    linkedIn?: string;
+    motivation?: string;
+  }) {
+    const vol = await this.findByIdOrEmail(volunteerId);
+    
+    // Update volunteer
+    const updated = await this.prisma.volunteer.update({
+      where: { id: vol.id },
+      data: {
+        name: data.name,
+        mobile: data.mobile,
+        city: data.city,
+        profession: data.profession,
+        skills: data.skills,
+        availability: data.availability,
+        linkedIn: data.linkedIn,
+        motivation: data.motivation,
+      },
+    });
+
+    // Sync to donor record
+    if (data.name || data.mobile) {
+      await this.prisma.donor.update({
+        where: { id: vol.donorId },
+        data: {
+          name: data.name,
+          mobile: data.mobile,
+        },
+      });
+    }
+
+    return updated;
+  }
+
   /** Find volunteer by volunteerId or email */
   private async findByIdOrEmail(identifier: string) {
     const vol = await this.prisma.volunteer.findFirst({
@@ -188,4 +281,83 @@ export class VolunteerService {
     if (!vol) throw new NotFoundException('Volunteer not found');
     return vol;
   }
+
+  /** Get commission overview for a volunteer */
+  async getCommissionsData(volunteerId: string) {
+    const vol = await this.findByIdOrEmail(volunteerId);
+    
+    // As TypeScript might not know about the new fields yet due to Prisma generate issue, cast to any
+    const volAny = vol as any;
+
+    const requests = await (this.prisma as any).withdrawalRequest.findMany({
+      where: { volunteerId: vol.id },
+      orderBy: { createdAt: 'desc' },
+    });
+
+    const totalCoins = vol.totalCoins;
+    const withdrawnThreshold = volAny.withdrawnThreshold || 0;
+    const availableGap = totalCoins - withdrawnThreshold;
+    const isEligible = availableGap >= 100000;
+
+    return {
+      totalCoins,
+      withdrawnThreshold,
+      availableGap,
+      isEligible,
+      eligibleAmountInr: isEligible ? availableGap / 10 : 0,
+      bankDetails: volAny.bankDetails ? JSON.parse(volAny.bankDetails) : null,
+      history: requests,
+    };
+  }
+
+  /** Update bank details */
+  async updateBankDetails(volunteerId: string, bankData: any) {
+    const vol = await this.findByIdOrEmail(volunteerId);
+    return (this.prisma as any).volunteer.update({
+      where: { id: vol.id },
+      data: { bankDetails: JSON.stringify(bankData) },
+    });
+  }
+
+  /** Process a withdrawal request */
+  async requestWithdrawal(volunteerId: string) {
+    const vol = await this.findByIdOrEmail(volunteerId);
+    const volAny = vol as any;
+
+    const totalCoins = vol.totalCoins;
+    const withdrawnThreshold = volAny.withdrawnThreshold || 0;
+    const availableGap = totalCoins - withdrawnThreshold;
+
+    if (availableGap < 100000) {
+      throw new BadRequestException(`Insufficient milestone gap. You need at least 1,00,000 unwithdrawn coins. Gap is only ${availableGap}.`);
+    }
+
+    if (!volAny.bankDetails) {
+      throw new BadRequestException('Please update your bank details before requesting a withdrawal.');
+    }
+
+    const amountInr = availableGap / 10;
+
+    return this.prisma.$transaction(async (tx) => {
+      // 1. Create Request
+      const request = await (tx as any).withdrawalRequest.create({
+        data: {
+          volunteerId: vol.id,
+          amountCoins: availableGap,
+          amountInr: amountInr,
+          status: 'PENDING',
+          bankDetailsSnapshot: volAny.bankDetails,
+        },
+      });
+
+      // 2. Update Threshold
+      await (tx as any).volunteer.update({
+        where: { id: vol.id },
+        data: { withdrawnThreshold: withdrawnThreshold + availableGap },
+      });
+
+      return request;
+    });
+  }
 }
+

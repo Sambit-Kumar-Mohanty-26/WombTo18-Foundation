@@ -27,6 +27,11 @@ export class DonorService {
       programsSupported: 3,
     };
 
+    const totalDonated = donor.totalDonated;
+    const tier = donor.tier;
+    const volunteerCoins = donor.volunteer?.totalCoins || 0;
+    const impactScore = Math.floor(totalDonated / 100) + (tier === 'CHAMPION' ? 1000 : tier === 'PATRON' ? 250 : 0) + volunteerCoins;
+
     return {
       donor: {
         id: donor.id,
@@ -35,10 +40,13 @@ export class DonorService {
         email: donor.email,
         tier: donor.tier,
         totalDonated: donor.totalDonated,
+        impactScore,
         isVolunteer: donor.isVolunteer,
         showOnLeaderboard: donor.showOnLeaderboard,
         volunteerId: donor.volunteer?.volunteerId || null,
         volunteerCoins: donor.volunteer?.totalCoins || 0,
+        mobile: donor.mobile,
+        createdAt: donor.createdAt,
       },
       impact,
     };
@@ -133,6 +141,11 @@ export class DonorService {
     });
     if (!donor) throw new NotFoundException('Donor not found');
 
+    const totalDonated = donor.totalDonated;
+    const tier = donor.tier;
+    const volunteerCoins = donor.volunteer?.totalCoins || 0;
+    const impactScore = Math.floor(totalDonated / 100) + (tier === 'CHAMPION' ? 1000 : tier === 'PATRON' ? 250 : 0) + volunteerCoins;
+
     return {
       id: donor.id,
       donorId: donor.donorId,
@@ -143,6 +156,7 @@ export class DonorService {
       address: donor.address,
       tier: donor.tier,
       totalDonated: donor.totalDonated,
+      impactScore,
       isVolunteer: donor.isVolunteer,
       showOnLeaderboard: donor.showOnLeaderboard,
       volunteerId: donor.volunteer?.volunteerId || null,
@@ -177,12 +191,17 @@ export class DonorService {
 
     if (!donor) throw new NotFoundException('No donations found for this email');
 
+    const totalDonated = donor.totalDonated;
+    const tier = donor.tier;
+    const impactScore = Math.floor(totalDonated / 100) + (tier === 'CHAMPION' ? 1000 : tier === 'PATRON' ? 250 : 0);
+
     return {
       donorId: donor.donorId,
       name: donor.name,
       email: donor.email,
       tier: donor.tier,
       totalDonated: donor.totalDonated,
+      impactScore,
       isEligible: donor.isEligible,
       emailVerified: donor.emailVerified,
       mobileVerified: donor.mobileVerified,

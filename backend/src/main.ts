@@ -9,18 +9,22 @@ import cookieParser = require('cookie-parser');
 async function bootstrap() {
   const app = await NestFactory.create<NestExpressApplication>(AppModule);
   
-  // Serve static assets from public folder (same directory PdfGeneratorService uses)
-  app.useStaticAssets(join(process.cwd(), 'public'), { prefix: '/public' });
-
-  // Global Middleware
-  app.use(cookieParser());
-  app.useGlobalPipes(new ValidationPipe({ whitelist: true, transform: true }));
-  
   // Enable CORS for local development
   app.enableCors({
     origin: ['http://localhost:5173', 'http://localhost:5174', 'http://localhost:5175', 'http://localhost:5176'],
     credentials: true,
   });
+  app.useStaticAssets(join(process.cwd(), 'public'), {
+    prefix: '/public',
+    setHeaders: (res) => {
+      res.set('Access-Control-Allow-Origin', 'http://localhost:5173');
+      res.set('Access-Control-Allow-Methods', 'GET, OPTIONS');
+      res.set('Access-Control-Allow-Headers', 'Origin, X-Requested-With, Content-Type, Accept');
+    },
+  });
+
+  // Global Middleware
+  app.use(cookieParser());
 
   // Global API Prefix
   app.setGlobalPrefix('api');

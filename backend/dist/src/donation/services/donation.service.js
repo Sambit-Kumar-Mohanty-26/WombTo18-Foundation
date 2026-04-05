@@ -46,15 +46,18 @@ exports.DonationService = void 0;
 const common_1 = require("@nestjs/common");
 const prisma_service_1 = require("../../prisma/services/prisma.service");
 const pdf_generator_service_1 = require("./pdf-generator.service");
+const coin_service_1 = require("../../coin/services/coin.service");
 const Razorpay = require("razorpay");
 const crypto = __importStar(require("crypto"));
 let DonationService = class DonationService {
     prisma;
     pdfGenerator;
+    coinService;
     razorpay;
-    constructor(prisma, pdfGenerator) {
+    constructor(prisma, pdfGenerator, coinService) {
         this.prisma = prisma;
         this.pdfGenerator = pdfGenerator;
+        this.coinService = coinService;
         this.razorpay = new Razorpay({
             key_id: process.env.RAZORPAY_KEY_ID || 'rzp_test_placeholder',
             key_secret: process.env.RAZORPAY_KEY_SECRET || 'secret_placeholder',
@@ -247,60 +250,65 @@ let DonationService = class DonationService {
                 isEligible: totalDonated >= 5000,
             },
         });
+        await this.coinService.awardSelfDonationCoins(donor.email, donation.id, donation.amount);
         if (donation.referralCode) {
-            const volunteer = await this.prisma.volunteer.findUnique({
-                where: { volunteerId: donation.referralCode },
+            const referralCode = donation.referralCode.trim().toUpperCase();
+            const volunteerReferrer = await this.prisma.volunteer.findFirst({
+                where: { OR: [{ volunteerId: referralCode }, { id: referralCode }] },
             });
-            if (volunteer && volunteer.email !== donor.email) {
-                const existingReferral = await this.prisma.coinTransaction.findFirst({
+            if (volunteerReferrer && volunteerReferrer.email !== donor.email) {
+                const existingReferral = await this.prisma.referral.findFirst({
                     where: {
-                        volunteerId: volunteer.id,
-                        type: 'REFERRAL',
-                        metadata: { contains: donation.id },
-                    },
+                        referrerType: 'VOLUNTEER',
+                        volunteerId: volunteerReferrer.id,
+                        referredEmail: donor.email,
+                        paymentAmount: donation.amount,
+                        createdAt: { gte: new Date(Date.now() - 1000 * 60 * 60) }
+                    }
                 });
                 if (!existingReferral) {
-                    let coinConfig = await this.prisma.coinConfig.findUnique({ where: { id: 'global' } });
-                    if (!coinConfig) {
-                        coinConfig = await this.prisma.coinConfig.create({ data: { id: 'global' } });
-                    }
-                    let tiers = [];
-                    try {
-                        tiers = JSON.parse(coinConfig.referralTiers);
-                    }
-                    catch {
-                        tiers = [];
-                    }
-                    const matchedTier = tiers.find(t => donation.amount >= t.min && donation.amount <= t.max);
-                    const coinsEarned = matchedTier ? matchedTier.coins : (tiers.length > 0 ? tiers[tiers.length - 1].coins : 50);
-                    await this.prisma.$transaction([
-                        this.prisma.volunteer.update({
-                            where: { id: volunteer.id },
-                            data: { totalCoins: { increment: coinsEarned } },
-                        }),
-                        this.prisma.coinTransaction.create({
+                    const newReferral = await this.prisma.referral.create({
+                        data: {
+                            referrerType: 'VOLUNTEER',
+                            volunteerId: volunteerReferrer.id,
+                            referredName: donor.name,
+                            referredEmail: donor.email,
+                            referredPhone: donor.mobile,
+                            paymentAmount: donation.amount,
+                            status: 'DONATED',
+                            joinedDonorId: donor.id,
+                        },
+                    });
+                    await this.coinService.awardReferralCoins(volunteerReferrer.id, newReferral.id, donation.amount);
+                }
+            }
+            else if (referralCode.startsWith('PTN-')) {
+                const partner = await this.prisma.partner.findUnique({
+                    where: { partnerId: referralCode },
+                });
+                if (partner) {
+                    const existingPartnerReferral = await this.prisma.referral.findFirst({
+                        where: {
+                            partnerId: partner.id,
+                            referredEmail: donor.email,
+                            paymentAmount: donation.amount,
+                            createdAt: { gte: new Date(Date.now() - 1000 * 60 * 60) }
+                        }
+                    });
+                    if (!existingPartnerReferral) {
+                        await this.prisma.referral.create({
                             data: {
-                                volunteerId: volunteer.id,
-                                amount: coinsEarned,
-                                type: 'REFERRAL',
-                                description: `Referral bonus: ${coinsEarned} coins for ₹${donation.amount} donation`,
-                                metadata: JSON.stringify({ donationId: donation.id, donorEmail: donor.email }),
-                            },
-                        }),
-                        this.prisma.referral.create({
-                            data: {
-                                referrerType: 'VOLUNTEER',
-                                volunteerId: volunteer.id,
+                                referrerType: 'PARTNER',
+                                partnerId: partner.id,
                                 referredName: donor.name,
                                 referredEmail: donor.email,
                                 referredPhone: donor.mobile,
                                 paymentAmount: donation.amount,
-                                coinsAwarded: coinsEarned,
                                 status: 'DONATED',
                                 joinedDonorId: donor.id,
                             },
-                        }),
-                    ]);
+                        });
+                    }
                 }
             }
         }
@@ -456,6 +464,7 @@ exports.DonationService = DonationService;
 exports.DonationService = DonationService = __decorate([
     (0, common_1.Injectable)(),
     __metadata("design:paramtypes", [prisma_service_1.PrismaService,
-        pdf_generator_service_1.PdfGeneratorService])
+        pdf_generator_service_1.PdfGeneratorService,
+        coin_service_1.CoinService])
 ], DonationService);
 //# sourceMappingURL=donation.service.js.map

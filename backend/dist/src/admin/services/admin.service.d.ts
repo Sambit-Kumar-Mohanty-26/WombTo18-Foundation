@@ -44,6 +44,8 @@ export declare class AdminService {
         showOnLeaderboard: boolean;
         profileImage: string | null;
         referredById: string | null;
+        twoFactorEnabled: boolean;
+        tokenVersion: number;
     })[]>;
     findAllPrograms(): Promise<{
         id: string;
@@ -93,6 +95,8 @@ export declare class AdminService {
                 showOnLeaderboard: boolean;
                 profileImage: string | null;
                 referredById: string | null;
+                twoFactorEnabled: boolean;
+                tokenVersion: number;
             };
             program: {
                 id: string;

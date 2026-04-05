@@ -82,19 +82,14 @@ export class CoinService {
     };
   }
 
-  /** Award referral coins based on payment amount */
+  /** Award referral coins based on payment amount (1:1 ratio) */
   async awardReferralCoins(volunteerId: string, referralId: string, paymentAmount: number) {
     const volunteer = await this.prisma.volunteer.findFirst({
       where: { OR: [{ volunteerId }, { id: volunteerId }] },
     });
     if (!volunteer) throw new NotFoundException('Volunteer not found');
 
-    const config = await this.getConfig();
-    const tiers: CoinTier[] = JSON.parse(config.referralTiers);
-
-    // Find matching tier
-    const tier = tiers.find(t => paymentAmount >= t.min && paymentAmount <= t.max);
-    const coins = tier ? tier.coins : tiers[tiers.length - 1].coins; // Default to highest tier
+    const coins = Math.floor(paymentAmount); // 1:1 ratio
 
     await this.prisma.$transaction([
       this.prisma.coinTransaction.create({
@@ -113,6 +108,44 @@ export class CoinService {
       this.prisma.referral.update({
         where: { id: referralId },
         data: { coinsAwarded: coins },
+      }),
+    ]);
+
+    return { awarded: coins, paymentAmount, totalCoins: volunteer.totalCoins + coins };
+  }
+
+  /** Award coins to a volunteer for their own donation (1:1 ratio) */
+  async awardSelfDonationCoins(volunteerId: string, donationId: string, paymentAmount: number) {
+    const volunteer = await this.prisma.volunteer.findFirst({
+      where: { OR: [{ volunteerId }, { id: volunteerId }, { email: volunteerId }] },
+    });
+    if (!volunteer) return null; // Not all donors are volunteers
+
+    const coins = Math.floor(paymentAmount); // 1:1 ratio
+
+    // Check if already awarded for this donation (idempotency)
+    const existing = await this.prisma.coinTransaction.findFirst({
+      where: {
+        volunteerId: volunteer.id,
+        type: 'DONATION',
+        metadata: { contains: donationId },
+      },
+    });
+    if (existing) return { alreadyAwarded: true, totalCoins: volunteer.totalCoins };
+
+    await this.prisma.$transaction([
+      this.prisma.coinTransaction.create({
+        data: {
+          volunteerId: volunteer.id,
+          amount: coins,
+          type: 'DONATION',
+          description: `Donation reward: ${coins} coins for ₹${paymentAmount} contribution`,
+          metadata: JSON.stringify({ donationId, paymentAmount }),
+        },
+      }),
+      this.prisma.volunteer.update({
+        where: { id: volunteer.id },
+        data: { totalCoins: { increment: coins } },
       }),
     ]);
 
@@ -161,14 +194,55 @@ export class CoinService {
     return { awarded: config.campJoin, participation };
   }
 
-  /** Award active participation coins (admin-verified via QR scan) */
+  /** Award active participation coins — dynamic pool or fixed fallback */
   async awardCampActiveCoins(volunteerId: string, campId: string) {
     const volunteer = await this.prisma.volunteer.findFirst({
       where: { OR: [{ volunteerId }, { id: volunteerId }] },
     });
     if (!volunteer) throw new NotFoundException('Volunteer not found');
 
-    const config = await this.getConfig();
+    // Fetch camp to check for dynamic pool
+    const camp = await this.prisma.camp.findUnique({
+      where: { id: campId },
+      select: {
+        totalCoinPool: true,
+        _count: {
+          select: { participations: true },
+        },
+      },
+    });
+    if (!camp) throw new NotFoundException('Camp not found');
+
+    let coinsToAward: number;
+    let description: string;
+
+    if (camp.totalCoinPool > 0) {
+      // Dynamic pool: divide by JOINING count
+      const joiningCount = await this.prisma.campParticipation.count({
+        where: {
+          campId,
+          volunteerResponse: 'JOINING',
+          status: { in: ['APPROVED', 'ATTENDED'] },
+        },
+      });
+
+      // Fallback to approved count if no one RSVP'd JOINING
+      const approvedCount = joiningCount > 0 ? joiningCount : await this.prisma.campParticipation.count({
+        where: {
+          campId,
+          status: { in: ['APPROVED', 'ATTENDED'] },
+        },
+      });
+
+      const divisor = approvedCount > 0 ? approvedCount : 1;
+      coinsToAward = Math.floor(camp.totalCoinPool / divisor);
+      description = `Camp reward: ${coinsToAward} coins (pool of ${camp.totalCoinPool} ÷ ${divisor} volunteers)`;
+    } else {
+      // Fixed fallback from global config
+      const config = await this.getConfig();
+      coinsToAward = config.campActive;
+      description = `Active participation bonus: ${coinsToAward} coins`;
+    }
 
     // Check existing participation
     const existing = await this.prisma.campParticipation.findUnique({
@@ -180,8 +254,8 @@ export class CoinService {
     }
 
     const additionalCoins = existing
-      ? config.campActive - existing.coinsAwarded // Upgrade: give difference
-      : config.campActive; // Fresh entry
+      ? coinsToAward - existing.coinsAwarded
+      : coinsToAward;
 
     const txns: any[] = [
       this.prisma.coinTransaction.create({
@@ -189,8 +263,8 @@ export class CoinService {
           volunteerId: volunteer.id,
           amount: additionalCoins,
           type: 'CAMP_ACTIVE',
-          description: `Active participation bonus: ${additionalCoins} additional coins`,
-          metadata: JSON.stringify({ campId }),
+          description,
+          metadata: JSON.stringify({ campId, pool: camp.totalCoinPool }),
         },
       }),
       this.prisma.volunteer.update({
@@ -203,7 +277,7 @@ export class CoinService {
       txns.push(
         this.prisma.campParticipation.update({
           where: { id: existing.id },
-          data: { participationType: 'ACTIVE', coinsAwarded: config.campActive },
+          data: { participationType: 'ACTIVE', coinsAwarded: coinsToAward },
         }),
       );
     } else {
@@ -213,7 +287,7 @@ export class CoinService {
             campId,
             volunteerId: volunteer.id,
             participationType: 'ACTIVE',
-            coinsAwarded: config.campActive,
+            coinsAwarded: coinsToAward,
           },
         }),
       );

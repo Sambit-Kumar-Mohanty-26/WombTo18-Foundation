@@ -20,6 +20,8 @@ export class CampService {
     date: string;
     endDate?: string;
     assignedAdminId?: string;
+    totalCoinPool?: number;
+    purpose?: string;
   }) {
     const expired = new Date(Date.now() - 10 * 60 * 1000);
     return this.prisma.camp.create({
@@ -30,6 +32,8 @@ export class CampService {
         date: new Date(data.date),
         endDate: data.endDate ? new Date(data.endDate) : null,
         assignedAdminId: data.assignedAdminId,
+        totalCoinPool: data.totalCoinPool || 0,
+        purpose: data.purpose || "HEALTH",
         activeQrExpiry: expired,
         activeQrRotatedAt: new Date(0),
       },
@@ -68,6 +72,137 @@ export class CampService {
     return `${this.getFrontendUrl()}/scan?token=${encodeURIComponent(token)}`;
   }
 
+  private getVolunteerCampLink(volunteerId: string) {
+    return `${this.getFrontendUrl()}/volunteer/${encodeURIComponent(volunteerId)}/camps`;
+  }
+
+  private getDayDiff(campDate: Date) {
+    const camp = new Date(campDate);
+    const today = new Date();
+    camp.setHours(0, 0, 0, 0);
+    today.setHours(0, 0, 0, 0);
+    return Math.round((camp.getTime() - today.getTime()) / (24 * 60 * 60 * 1000));
+  }
+
+  private formatCampDate(campDate: Date) {
+    return new Intl.DateTimeFormat('en-IN', {
+      dateStyle: 'medium',
+    }).format(new Date(campDate));
+  }
+
+  private async hasCampNotification(volunteerId: string, type: string, campId: string) {
+    const notificationModel = (this.prisma as any).notification;
+    if (!notificationModel?.findFirst) return false;
+
+    const existing = await notificationModel.findFirst({
+      where: {
+        volunteerId,
+        type,
+        metadata: {
+          contains: `"campId":"${campId}"`,
+        },
+      },
+      select: { id: true },
+    });
+
+    return !!existing;
+  }
+
+  private async syncCampLifecycleEmails() {
+    const camps: any[] = await this.prisma.camp.findMany({
+      include: {
+        participations: {
+          include: { volunteer: true },
+        },
+      },
+    });
+
+    for (const camp of camps) {
+      const diffDays = this.getDayDiff(camp.date);
+      if (diffDays === 1) {
+        await this.sendTomorrowReminders(camp);
+      } else if (diffDays < 0) {
+        await this.sendPostCampFollowUps(camp);
+      }
+    }
+  }
+
+  private async sendTomorrowReminders(camp: any) {
+    const participations = camp.participations.filter((p: any) => p.status === 'APPROVED' || p.status === 'ATTENDED');
+    for (const participation of participations) {
+      if (participation.volunteerResponse === 'NOT_JOINING') continue;
+      const volunteer = participation.volunteer;
+      if (!volunteer?.email) continue;
+
+      const alreadySent = await this.hasCampNotification(volunteer.id, 'CAMP_TOMORROW_REMINDER', camp.id);
+      if (alreadySent) continue;
+
+      const message = participation.volunteerResponse === 'JOINING'
+        ? `Thanks for confirming. Your camp is tomorrow, so please be prepared, keep your phone charged, and arrive on time for ${camp.name}.`
+        : `Your camp is tomorrow. Please be prepared for ${camp.name}, keep your phone charged, and review your dashboard for any last-minute updates.`;
+
+      await (this.prisma as any).notification.create({
+        data: {
+          volunteerId: volunteer.id,
+          type: 'CAMP_TOMORROW_REMINDER',
+          title: `Your camp is tomorrow: ${camp.name}`,
+          message,
+          link: this.getVolunteerCampLink(volunteer.volunteerId),
+          metadata: JSON.stringify({
+            campId: camp.id,
+            campName: camp.name,
+            reminderType: 'TOMORROW',
+          }),
+        },
+      });
+
+      await this.mailerService.sendCampReminderEmail({
+        email: volunteer.email,
+        volunteerName: volunteer.name,
+        campName: camp.name,
+        campDate: this.formatCampDate(camp.date),
+        message,
+        link: this.getVolunteerCampLink(volunteer.volunteerId),
+      });
+    }
+  }
+
+  private async sendPostCampFollowUps(camp: any) {
+    const participations = camp.participations.filter((p: any) => p.status === 'APPROVED' || p.status === 'ATTENDED');
+    for (const participation of participations) {
+      if (participation.volunteerResponse !== 'NOT_JOINING') continue;
+      const volunteer = participation.volunteer;
+      if (!volunteer?.email) continue;
+
+      const alreadySent = await this.hasCampNotification(volunteer.id, 'CAMP_NO_JOIN_FOLLOWUP', camp.id);
+      if (alreadySent) continue;
+
+      const message = `We saw that you couldn't join ${camp.name}. Thank you for letting us know in advance. We appreciate your honesty and would love to welcome you at the next camp.`;
+
+      await (this.prisma as any).notification.create({
+        data: {
+          volunteerId: volunteer.id,
+          type: 'CAMP_NO_JOIN_FOLLOWUP',
+          title: `A warm note after ${camp.name}`,
+          message,
+          metadata: JSON.stringify({
+            campId: camp.id,
+            campName: camp.name,
+            followUpType: 'NOT_JOINING',
+          }),
+        },
+      });
+
+      await this.mailerService.sendCampFollowUpEmail({
+        email: volunteer.email,
+        volunteerName: volunteer.name,
+        campName: camp.name,
+        campDate: this.formatCampDate(camp.date),
+        message,
+      });
+    }
+  }
+
   // Volunteer registers for a camp -> PENDING
   async registerCamp(campId: string, volunteerId: string) {
     const actualVolunteerId = await this.getActualVolunteerId(volunteerId);
@@ -94,6 +229,28 @@ export class CampService {
         participationType: 'NORMAL',
         status: 'PENDING',
         shareSelected: false,
+        volunteerResponse: 'UNRESPONDED',
+      },
+    });
+  }
+
+  async updateVolunteerResponse(campId: string, volunteerId: string, response: 'JOINING' | 'NOT_JOINING') {
+    const actualVolunteerId = await this.getActualVolunteerId(volunteerId);
+    const existing: any = await this.prisma.campParticipation.findUnique({
+      where: { campId_volunteerId: { campId, volunteerId: actualVolunteerId } },
+    });
+
+    if (!existing) throw new NotFoundException('Registration record not found');
+    if (existing.status !== 'APPROVED' && existing.status !== 'ATTENDED') {
+      throw new BadRequestException('You can only RSVP after your registration is approved.');
+    }
+
+    return (this.prisma as any).campParticipation.update({
+      where: { id: existing.id },
+      data: {
+        volunteerResponse: response,
+        responseAt: new Date(),
+        shareSelected: response === 'NOT_JOINING' ? false : existing.shareSelected,
       },
     });
   }
@@ -126,6 +283,9 @@ export class CampService {
     if (!existing) throw new NotFoundException('Registration record not found');
     if (existing.status !== 'APPROVED' && existing.status !== 'ATTENDED') {
       throw new BadRequestException('Approve the volunteer before selecting them for attendance sharing.');
+    }
+    if (existing.volunteerResponse === 'NOT_JOINING') {
+      throw new BadRequestException('This volunteer marked themselves as not joining this camp.');
     }
 
     return (this.prisma as any).campParticipation.update({
@@ -160,8 +320,16 @@ export class CampService {
     const tokens = { attendance: { token: camp.activeQrToken, expiry: camp.activeQrExpiry } };
 
     const approvedCount = camp.participations.filter(p => p.status === 'APPROVED' || p.status === 'ATTENDED').length;
-    const selectedCount = camp.participations.filter(p => p.shareSelected).length;
+    const selectedCount = camp.participations.filter(p => p.shareSelected && p.volunteerResponse !== 'NOT_JOINING').length;
     const attendedCount = camp.participations.filter(p => p.status === 'ATTENDED').length;
+    const joiningCount = camp.participations.filter(p => p.volunteerResponse === 'JOINING').length;
+    const notJoiningCount = camp.participations.filter(p => p.volunteerResponse === 'NOT_JOINING').length;
+    const undecidedCount = camp.participations.filter(p => p.volunteerResponse === 'UNRESPONDED').length;
+
+    // Calculate per-head coin distribution
+    const pool = camp.totalCoinPool || 0;
+    const divisor = joiningCount > 0 ? joiningCount : (approvedCount > 0 ? approvedCount : 1);
+    const coinsPerVolunteer = pool > 0 ? Math.floor(pool / divisor) : 100;
 
     const isExpired = new Date() > new Date(camp.date.getTime() + 24 * 60 * 60 * 1000);
 
@@ -174,14 +342,19 @@ export class CampService {
         attendance: {
           token: tokens.attendance.token,
           url: this.buildAttendanceLink(tokens.attendance.token),
-          label: '100 Coin Attendance QR',
+          label: `${coinsPerVolunteer} Coin Attendance QR`,
         },
       },
       stats: {
         totalParticipants: approvedCount,
         selectedParticipants: selectedCount,
         attendedParticipants: attendedCount,
+        joiningParticipants: joiningCount,
+        notJoiningParticipants: notJoiningCount,
+        undecidedParticipants: undecidedCount,
         windowState: isActive ? 'ACTIVE' : 'INACTIVE',
+        totalCoinPool: pool,
+        coinsPerVolunteer,
       },
     };
   }
@@ -399,6 +572,8 @@ export class CampService {
     });
 
     const filtered = status ? mapped.filter(c => c.status === status) : mapped;
+
+    await this.syncCampLifecycleEmails();
 
     if (page && limit) {
       const safePage = Math.max(1, Math.floor(page));

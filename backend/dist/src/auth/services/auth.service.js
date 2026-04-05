@@ -235,7 +235,32 @@ let AuthService = class AuthService {
                 otpSent: false,
             };
         }
-        const payload = { sub: donor.id, email: donor.email, donorId: donor.donorId };
+        if (donor.twoFactorEnabled) {
+            const emailOtp = this.generateOtp();
+            const emailOtpHash = await this.hashOtp(emailOtp);
+            const otpExpiry = new Date(Date.now() + 10 * 60 * 1000);
+            await this.prisma.donor.update({
+                where: { id: donor.id },
+                data: { emailOtpHash, otpExpiry },
+            });
+            await this.mailerService.sendOtpEmail(donor.email, emailOtp);
+            const debugOtp = this.configService.get('DEBUG_OTP') === 'true';
+            const isProduction = this.configService.get('NODE_ENV') === 'production';
+            return {
+                success: true,
+                otpSent: true,
+                twoFactorPending: true,
+                donorId: donor.donorId,
+                message: 'Two-factor authentication is enabled. Please enter the OTP sent to your email.',
+                ...(!isProduction && debugOtp ? { devOtp: emailOtp } : {}),
+            };
+        }
+        const payload = {
+            sub: donor.id,
+            email: donor.email,
+            donorId: donor.donorId,
+            tokenVersion: donor.tokenVersion || 0
+        };
         const token = this.jwtService.sign(payload);
         await this.prisma.donor.update({
             where: { id: donor.id },
@@ -550,6 +575,97 @@ let AuthService = class AuthService {
             partnerId: user.partnerId || undefined,
             eligible: userType === 'DONOR' ? user.totalDonated >= 5000 : true,
             role: userType,
+        };
+    }
+    async requestPasswordChange(email) {
+        email = this.sanitizeInput(email.toLowerCase());
+        const donor = await this.prisma.donor.findUnique({ where: { email } });
+        if (!donor) {
+            throw new common_1.BadRequestException('No account found with this email.');
+        }
+        const otp = this.generateOtp();
+        const emailOtpHash = await this.hashOtp(otp);
+        const otpExpiry = new Date(Date.now() + 15 * 60 * 1000);
+        await this.prisma.donor.update({
+            where: { id: donor.id },
+            data: { emailOtpHash, otpExpiry },
+        });
+        const subject = 'Your WombTo18 Password Change Code';
+        const text = `Your password change verification code is: ${otp}\n\nThis code is valid for 15 minutes. If you did not request this, please secure your account immediately.`;
+        const html = `
+      <div style="font-family:sans-serif;max-width:480px;margin:0 auto;padding:32px;background:#fff7ed;border-radius:12px;border:1px solid #ffedd5;">
+        <div style="text-align:center;margin-bottom:24px;">
+          <span style="font-size:1.5rem;font-weight:800;color:#f97316;">Security Update</span>
+        </div>
+        <div style="background:white;border-radius:10px;padding:28px;text-align:center;box-shadow:0 10px 15px -3px rgba(0,0,0,0.1);">
+          <p style="color:#1e293b;font-size:1rem;margin-bottom:20px;">Use the code below to verify your password change:</p>
+          <div style="display:inline-block;background:#fff7ed;border:2px solid #fed7aa;border-radius:10px;padding:16px 40px;">
+            <span style="font-size:2.5rem;font-weight:800;letter-spacing:0.2em;color:#ea580c;">${otp}</span>
+          </div>
+          <p style="color:#64748b;font-size:0.85rem;margin-top:20px;">Valid for 15 minutes. <strong>Do not share this code.</strong></p>
+        </div>
+      </div>
+    `;
+        await this.mailerService.sendEmail(email, subject, html, text);
+        const debugOtp = this.configService.get('DEBUG_OTP') === 'true';
+        return {
+            success: true,
+            message: 'Verification code sent to your email.',
+            ...(debugOtp ? { devOtp: otp } : {}),
+        };
+    }
+    async updatePassword(email, otp, newPassword) {
+        email = this.sanitizeInput(email.toLowerCase());
+        const donor = await this.prisma.donor.findUnique({
+            where: { email },
+            select: { id: true, emailOtpHash: true, otpExpiry: true, tokenVersion: true }
+        });
+        if (!donor || !donor.emailOtpHash || !donor.otpExpiry) {
+            throw new common_1.BadRequestException('Invalid request or session expired.');
+        }
+        if (new Date() > donor.otpExpiry) {
+            throw new common_1.BadRequestException('Security code has expired.');
+        }
+        const isValid = await this.verifyOtpHash(otp, donor.emailOtpHash);
+        if (!isValid) {
+            throw new common_1.UnauthorizedException('Invalid security code.');
+        }
+        const strengthError = this.validatePasswordStrength(newPassword);
+        if (strengthError)
+            throw new common_1.BadRequestException(strengthError);
+        const hashedPassword = await bcrypt.hash(newPassword, 12);
+        await this.prisma.donor.update({
+            where: { id: donor.id },
+            data: {
+                password: hashedPassword,
+                emailOtpHash: null,
+                otpExpiry: null,
+                tokenVersion: { increment: 1 }
+            },
+        });
+        return {
+            success: true,
+            message: 'Password updated successfully. Please sign in with your new password.'
+        };
+    }
+    async toggleTwoFactor(userId, enabled) {
+        await this.prisma.donor.update({
+            where: { id: userId },
+            data: { twoFactorEnabled: enabled }
+        });
+        return {
+            success: true,
+            message: `Two-factor authentication ${enabled ? 'enabled' : 'disabled'} successfully.`
+        };
+    }
+    async revokeOtherSessions(userId) {
+        await this.prisma.donor.update({
+            where: { id: userId },
+            data: { tokenVersion: { increment: 1 } }
+        });
+        return {
+            success: true,
+            message: 'All other active sessions have been revoked.'
         };
     }
 };

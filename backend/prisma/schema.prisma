@@ -38,6 +38,8 @@ model Donor {
   referrals         Donor[]       @relation("DonorReferrals")
   volunteer         Volunteer? // One-to-one link if upgraded
   certificates      Certificate[]
+  twoFactorEnabled  Boolean       @default(false)
+  tokenVersion      Int           @default(0)
   createdAt         DateTime      @default(now())
   updatedAt         DateTime      @updatedAt
 }
@@ -72,6 +74,9 @@ model Volunteer {
   campParticipations  CampParticipation[]
   notifications       Notification[]
   certificates        Certificate[]       @relation("VolunteerCerts")
+  withdrawalRequests  WithdrawalRequest[]
+  withdrawnThreshold  Int                 @default(0) // Tracks coins officially cashed out
+  bankDetails         String?             // JSON string or flat text
   createdAt           DateTime            @default(now())
   updatedAt           DateTime            @updatedAt
 }
@@ -137,6 +142,22 @@ model CoinTransaction {
 }
 
 // ─────────────────────────────────────────────────────
+// WITHDRAWAL REQUEST — Volunteer coin cash out requests
+// ─────────────────────────────────────────────────────
+model WithdrawalRequest {
+  id                  String    @id @default(cuid())
+  volunteerId         String
+  volunteer           Volunteer @relation(fields: [volunteerId], references: [id])
+  amountCoins         Int       // Amount of coins withdrawn in this request
+  amountInr           Float     // Amount in INR evaluated at the time
+  status              String    @default("PENDING") // PENDING, APPROVED, REJECTED, PAID
+  bankDetailsSnapshot String?   // Bank details at the time of request
+  adminNotes          String?
+  createdAt           DateTime  @default(now())
+  updatedAt           DateTime  @updatedAt
+}
+
+// ─────────────────────────────────────────────────────
 // COIN CONFIG — Admin-configurable coin reward values
 // ─────────────────────────────────────────────────────
 model CoinConfig {
@@ -171,6 +192,8 @@ model Camp {
   normalQrRotatedAt DateTime?
   activeQrRotatedAt DateTime?
 
+  totalCoinPool  Int                 @default(0) // Total coins to distribute among JOINING volunteers
+  purpose        String              @default("HEALTH") // HEALTH, EDUCATION, ENVIRONMENT, COMMUNITY, YOUTH
   status         String              @default("UPCOMING") // UPCOMING, ACTIVE, COMPLETED
   participations CampParticipation[]
   createdAt      DateTime            @default(now())
@@ -189,6 +212,8 @@ model CampParticipation {
   participationType String    @default("NORMAL") // "NORMAL" | "ACTIVE"
   status            String    @default("PENDING") // "PENDING" | "APPROVED" | "REJECTED" | "ATTENDED"
   shareSelected     Boolean   @default(false)
+  volunteerResponse  String    @default("UNRESPONDED") // "UNRESPONDED" | "JOINING" | "NOT_JOINING"
+  responseAt        DateTime?
   coinsAwarded      Int       @default(0)
   scannedAt         DateTime  @default(now())
   createdAt         DateTime  @default(now())

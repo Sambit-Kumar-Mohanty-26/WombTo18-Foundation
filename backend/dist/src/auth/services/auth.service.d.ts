@@ -48,6 +48,20 @@ export declare class AuthService {
         redirect: string;
         otpSent: boolean;
     } | {
+        devOtp?: string | undefined;
+        success: boolean;
+        otpSent: boolean;
+        twoFactorPending: boolean;
+        donorId: string;
+        message: string;
+        token?: undefined;
+        name?: undefined;
+        volunteerId?: undefined;
+        eligible?: undefined;
+        isVolunteer?: undefined;
+        role?: undefined;
+        redirect?: undefined;
+    } | {
         success: boolean;
         token: string;
         name: string | null;
@@ -103,5 +117,22 @@ export declare class AuthService {
         partnerId: any;
         eligible: boolean;
         role: "VOLUNTEER" | "DONOR" | "PARTNER";
+    }>;
+    requestPasswordChange(email: string): Promise<{
+        devOtp?: string | undefined;
+        success: boolean;
+        message: string;
+    }>;
+    updatePassword(email: string, otp: string, newPassword: string): Promise<{
+        success: boolean;
+        message: string;
+    }>;
+    toggleTwoFactor(userId: string, enabled: boolean): Promise<{
+        success: boolean;
+        message: string;
+    }>;
+    revokeOtherSessions(userId: string): Promise<{
+        success: boolean;
+        message: string;
     }>;
 }

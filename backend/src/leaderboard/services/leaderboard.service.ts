@@ -58,6 +58,45 @@ export class LeaderboardService {
       referralsCount: v.referrals.length,
     }));
   }
+  async getPartnerLeaderboard(limit = 50) {
+    const partners = await this.prisma.partner.findMany({
+      where: { isActive: true },
+      include: {
+        referrals: {
+          where: { status: 'DONATED' },
+          select: { paymentAmount: true }
+        }
+      },
+      take: limit,
+    });
+
+    const ranked = partners.map(p => {
+      const referralDonations = p.referrals.reduce((sum, r) => sum + (r.paymentAmount || 0), 0);
+      const totalImpact = (p.totalSponsored || 0) + referralDonations;
+      
+      // Masking logic: Global CSR Corp -> Glo***orp
+      const name = p.organizationName;
+      let maskedName = name;
+      if (name.length > 5) {
+        maskedName = name.slice(0, 3) + '***' + name.slice(-3);
+      } else if (name.length > 2) {
+         maskedName = name.slice(0, 1) + '***' + name.slice(-1);
+      }
+
+      return {
+        partnerId: p.partnerId,
+        name: maskedName,
+        totalImpact,
+        livesImpacted: Math.floor(totalImpact / 500), // Calculation logic for Lives Impacted
+        category: p.csrCategory || 'Partner',
+      };
+    });
+
+    return ranked
+      .filter(r => r.totalImpact > 0)
+      .sort((a, b) => b.totalImpact - a.totalImpact)
+      .map((r, i) => ({ ...r, rank: i + 1 }));
+  }
 
   /** Get a specific donor's rank */
   async getDonorRank(donorId: string) {

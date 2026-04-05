@@ -19,6 +19,12 @@ export class LeaderboardController {
     return this.leaderboardService.getVolunteerLeaderboard(limit ? parseInt(limit) : 50);
   }
 
+  @Get('partners')
+  @ApiOperation({ summary: 'Get partner leaderboard by total impact' })
+  async partnerLeaderboard(@Query('limit') limit?: string) {
+    return this.leaderboardService.getPartnerLeaderboard(limit ? parseInt(limit) : 50);
+  }
+
   @Get('donor-rank/:donorId')
   @ApiOperation({ summary: 'Get a specific donor rank' })
   async donorRank(@Param('donorId') donorId: string) {

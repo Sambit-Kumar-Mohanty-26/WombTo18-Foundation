@@ -2,19 +2,24 @@
 Object.defineProperty(exports, "__esModule", { value: true });
 const core_1 = require("@nestjs/core");
 const app_module_1 = require("./app.module");
-const common_1 = require("@nestjs/common");
 const swagger_1 = require("@nestjs/swagger");
 const path_1 = require("path");
 const cookieParser = require("cookie-parser");
 async function bootstrap() {
     const app = await core_1.NestFactory.create(app_module_1.AppModule);
-    app.useStaticAssets((0, path_1.join)(process.cwd(), 'public'), { prefix: '/public' });
-    app.use(cookieParser());
-    app.useGlobalPipes(new common_1.ValidationPipe({ whitelist: true, transform: true }));
     app.enableCors({
         origin: ['http://localhost:5173', 'http://localhost:5174', 'http://localhost:5175', 'http://localhost:5176'],
         credentials: true,
     });
+    app.useStaticAssets((0, path_1.join)(process.cwd(), 'public'), {
+        prefix: '/public',
+        setHeaders: (res) => {
+            res.set('Access-Control-Allow-Origin', 'http://localhost:5173');
+            res.set('Access-Control-Allow-Methods', 'GET, OPTIONS');
+            res.set('Access-Control-Allow-Headers', 'Origin, X-Requested-With, Content-Type, Accept');
+        },
+    });
+    app.use(cookieParser());
     app.setGlobalPrefix('api');
     const config = new swagger_1.DocumentBuilder()
         .setTitle('Team Orion API')

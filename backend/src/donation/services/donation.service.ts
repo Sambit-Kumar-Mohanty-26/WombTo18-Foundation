@@ -1,6 +1,7 @@
 import { Injectable, BadRequestException } from '@nestjs/common';
 import { PrismaService } from '../../prisma/services/prisma.service';
 import { PdfGeneratorService } from './pdf-generator.service';
+import { CoinService } from '../../coin/services/coin.service';
 import Razorpay = require('razorpay');
 import * as crypto from 'crypto';
 
@@ -10,7 +11,8 @@ export class DonationService {
 
   constructor(
     private readonly prisma: PrismaService,
-    private readonly pdfGenerator: PdfGeneratorService
+    private readonly pdfGenerator: PdfGeneratorService,
+    private readonly coinService: CoinService
   ) {
     this.razorpay = new Razorpay({
       key_id: process.env.RAZORPAY_KEY_ID || 'rzp_test_placeholder',
@@ -250,68 +252,81 @@ export class DonationService {
       },
     });
 
-    // REFERRAL SYSTEM
-    // Only process if a referralCode was provided and this donation hasn't already been rewarded
+    // VOLUNTEER COIN SYSTEM: 1:1 Ratio (₹1 = 1 Coin)
+    // Case 1: Reward the volunteer for their OWN donation
+    await this.coinService.awardSelfDonationCoins(donor.email, donation.id, donation.amount);
+
+    // Case 2: Reward the REFERRER for this donation
     if (donation.referralCode) {
-      const volunteer = await this.prisma.volunteer.findUnique({
-        where: { volunteerId: donation.referralCode },
+      const referralCode = donation.referralCode.trim().toUpperCase();
+      
+      // Award coins to volunteer referrer (1:1 ratio)
+      const volunteerReferrer = await this.prisma.volunteer.findFirst({
+        where: { OR: [{ volunteerId: referralCode }, { id: referralCode }] },
       });
 
-      // GUARD 1: Volunteer exists
-      // GUARD 2: No self-referral - compare emails since donorId (cuid) vs volunteerId (VOL1001) differ
-      // GUARD 3: No duplicate - check if a referral already exists for this specific donation
-      if (volunteer && volunteer.email !== donor.email) {
-        const existingReferral = await this.prisma.coinTransaction.findFirst({
+      if (volunteerReferrer && volunteerReferrer.email !== donor.email) {
+        // Prevent duplicate processing
+        const existingReferral = await this.prisma.referral.findFirst({
           where: {
-            volunteerId: volunteer.id,
-            type: 'REFERRAL',
-            metadata: { contains: donation.id },
-          },
+            referrerType: 'VOLUNTEER',
+            volunteerId: volunteerReferrer.id,
+            referredEmail: donor.email,
+            paymentAmount: donation.amount,
+            createdAt: { gte: new Date(Date.now() - 1000 * 60 * 60) }
+          }
         });
 
         if (!existingReferral) {
-          // Use CoinConfig tiers for coin calculation (not flat 10%)
-          let coinConfig = await this.prisma.coinConfig.findUnique({ where: { id: 'global' } });
-          if (!coinConfig) {
-            coinConfig = await this.prisma.coinConfig.create({ data: { id: 'global' } });
-          }
-          let tiers: { min: number; max: number; coins: number }[] = [];
-          try { tiers = JSON.parse(coinConfig.referralTiers); } catch { tiers = []; }
-          
-          const matchedTier = tiers.find(t => donation.amount >= t.min && donation.amount <= t.max);
-          const coinsEarned = matchedTier ? matchedTier.coins : (tiers.length > 0 ? tiers[tiers.length - 1].coins : 50);
+          // Create the referral record first
+          const newReferral = await this.prisma.referral.create({
+            data: {
+              referrerType: 'VOLUNTEER',
+              volunteerId: volunteerReferrer.id,
+              referredName: donor.name,
+              referredEmail: donor.email,
+              referredPhone: donor.mobile,
+              paymentAmount: donation.amount,
+              status: 'DONATED',
+              joinedDonorId: donor.id,
+            },
+          });
 
-          await this.prisma.$transaction([
-            // Credit coins to volunteer
-            this.prisma.volunteer.update({
-              where: { id: volunteer.id },
-              data: { totalCoins: { increment: coinsEarned } },
-            }),
-            // Create coin transaction ledger entry
-            this.prisma.coinTransaction.create({
+          // Process the coin reward and update the referral record
+          await this.coinService.awardReferralCoins(volunteerReferrer.id, newReferral.id, donation.amount);
+        }
+      }
+      
+      // Logic for Partner Referral (No coins, just track)
+      else if (referralCode.startsWith('PTN-')) {
+        const partner = await this.prisma.partner.findUnique({
+          where: { partnerId: referralCode },
+        });
+
+        if (partner) {
+          const existingPartnerReferral = await this.prisma.referral.findFirst({
+            where: {
+              partnerId: partner.id,
+              referredEmail: donor.email,
+              paymentAmount: donation.amount,
+              createdAt: { gte: new Date(Date.now() - 1000 * 60 * 60) }
+            }
+          });
+
+          if (!existingPartnerReferral) {
+            await this.prisma.referral.create({
               data: {
-                volunteerId: volunteer.id,
-                amount: coinsEarned,
-                type: 'REFERRAL',
-                description: `Referral bonus: ${coinsEarned} coins for ₹${donation.amount} donation`,
-                metadata: JSON.stringify({ donationId: donation.id, donorEmail: donor.email }),
-              },
-            }),
-            // Create referral tracking record
-            this.prisma.referral.create({
-              data: {
-                referrerType: 'VOLUNTEER',
-                volunteerId: volunteer.id,
+                referrerType: 'PARTNER',
+                partnerId: partner.id,
                 referredName: donor.name,
                 referredEmail: donor.email,
                 referredPhone: donor.mobile,
                 paymentAmount: donation.amount,
-                coinsAwarded: coinsEarned,
                 status: 'DONATED',
                 joinedDonorId: donor.id,
               },
-            }),
-          ]);
+            });
+          }
         }
       }
     }

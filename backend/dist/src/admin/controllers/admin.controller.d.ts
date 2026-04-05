@@ -46,6 +46,8 @@ export declare class AdminController {
         showOnLeaderboard: boolean;
         profileImage: string | null;
         referredById: string | null;
+        twoFactorEnabled: boolean;
+        tokenVersion: number;
     })[]>;
     getStats(): Promise<{
         totalDonations: number;
@@ -77,6 +79,8 @@ export declare class AdminController {
                 showOnLeaderboard: boolean;
                 profileImage: string | null;
                 referredById: string | null;
+                twoFactorEnabled: boolean;
+                tokenVersion: number;
             };
             program: {
                 id: string;

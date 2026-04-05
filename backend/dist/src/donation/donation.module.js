@@ -11,11 +11,13 @@ const common_1 = require("@nestjs/common");
 const donation_controller_1 = require("./controllers/donation.controller");
 const donation_service_1 = require("./services/donation.service");
 const pdf_generator_service_1 = require("./services/pdf-generator.service");
+const coin_module_1 = require("../coin/coin.module");
 let DonationModule = class DonationModule {
 };
 exports.DonationModule = DonationModule;
 exports.DonationModule = DonationModule = __decorate([
     (0, common_1.Module)({
+        imports: [coin_module_1.CoinModule],
         controllers: [donation_controller_1.DonationController],
         providers: [donation_service_1.DonationService, pdf_generator_service_1.PdfGeneratorService],
         exports: [donation_service_1.DonationService],

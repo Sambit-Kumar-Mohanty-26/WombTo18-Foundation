@@ -16,6 +16,8 @@ export class CampController {
     date: string;
     endDate?: string;
     assignedAdminId?: string;
+    totalCoinPool?: number;
+    purpose?: string;
   }) {
     return this.campService.createCamp(body);
   }
@@ -85,6 +87,16 @@ export class CampController {
     @Body('volunteerId') volunteerId: string,
   ) {
     return this.campService.registerCamp(campId, volunteerId);
+  }
+
+  @Post(':campId/response')
+  @ApiOperation({ summary: 'Volunteer confirms whether they are joining the camp' })
+  async updateVolunteerResponse(
+    @Param('campId') campId: string,
+    @Body('volunteerId') volunteerId: string,
+    @Body('response') response: 'JOINING' | 'NOT_JOINING',
+  ) {
+    return this.campService.updateVolunteerResponse(campId, volunteerId, response);
   }
 
   @Post(':campId/registrations/:volunteerId/status')

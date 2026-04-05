@@ -115,6 +115,18 @@ let AuthController = class AuthController {
         }
         return result;
     }
+    async requestPasswordChange(email) {
+        return this.authService.requestPasswordChange(email);
+    }
+    async updatePassword(email, otp, newPassword) {
+        return this.authService.updatePassword(email, otp, newPassword);
+    }
+    async toggle2FA(donorId, enabled) {
+        return this.authService.toggleTwoFactor(donorId, enabled);
+    }
+    async revokeSessions(donorId) {
+        return this.authService.revokeOtherSessions(donorId);
+    }
 };
 exports.AuthController = AuthController;
 __decorate([
@@ -180,6 +192,41 @@ __decorate([
     __metadata("design:paramtypes", [String, String, Object, Object]),
     __metadata("design:returntype", Promise)
 ], AuthController.prototype, "verifyDualOtp", null);
+__decorate([
+    (0, common_1.Post)('donor/request-password-change'),
+    (0, swagger_1.ApiOperation)({ summary: 'Request OTP for password change' }),
+    __param(0, (0, common_1.Body)('email')),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [String]),
+    __metadata("design:returntype", Promise)
+], AuthController.prototype, "requestPasswordChange", null);
+__decorate([
+    (0, common_1.Post)('donor/update-password'),
+    (0, swagger_1.ApiOperation)({ summary: 'Verify OTP and update password' }),
+    __param(0, (0, common_1.Body)('email')),
+    __param(1, (0, common_1.Body)('otp')),
+    __param(2, (0, common_1.Body)('newPassword')),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [String, String, String]),
+    __metadata("design:returntype", Promise)
+], AuthController.prototype, "updatePassword", null);
+__decorate([
+    (0, common_1.Post)('donor/toggle-2fa'),
+    (0, swagger_1.ApiOperation)({ summary: 'Toggle 2FA for donor' }),
+    __param(0, (0, common_1.Body)('donorId')),
+    __param(1, (0, common_1.Body)('enabled')),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [String, Boolean]),
+    __metadata("design:returntype", Promise)
+], AuthController.prototype, "toggle2FA", null);
+__decorate([
+    (0, common_1.Post)('auth/revoke-sessions'),
+    (0, swagger_1.ApiOperation)({ summary: 'Revoke all other sessions' }),
+    __param(0, (0, common_1.Body)('donorId')),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [String]),
+    __metadata("design:returntype", Promise)
+], AuthController.prototype, "revokeSessions", null);
 exports.AuthController = AuthController = __decorate([
     (0, swagger_1.ApiTags)('Authentication'),
     (0, common_1.Controller)(),
