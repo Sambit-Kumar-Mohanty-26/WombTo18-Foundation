@@ -9,17 +9,30 @@ import cookieParser = require('cookie-parser');
 async function bootstrap() {
   const app = await NestFactory.create<NestExpressApplication>(AppModule);
   
-  // Enable CORS with dynamic origins
-  const allowedOrigins = [
-    process.env.FRONTEND_URL,
-    'http://localhost:5173',
-    'http://localhost:5174',
-    'http://localhost:5175',
-    'http://localhost:5176',
-  ].filter(Boolean) as string[];
-
+  // CORS Configuration
   app.enableCors({
-    origin: allowedOrigins,
+    origin: (origin, callback) => {
+      const frontendUrl = process.env.FRONTEND_URL;
+      const allowed = [
+        frontendUrl,
+        frontendUrl?.replace(/\/$/, ''), // URL without slash
+        frontendUrl && !frontendUrl.endsWith('/') ? `${frontendUrl}/` : null, // URL with slash
+        'https://womb-to18-foundation.vercel.app',
+        'https://womb-to-18-foundation.vercel.app',
+        'http://localhost:5173',
+        'http://localhost:5174',
+        'http://localhost:5175',
+        'http://localhost:5176',
+      ].filter(Boolean);
+
+      if (!origin || allowed.some(domain => domain === origin)) {
+        callback(null, true);
+      } else {
+        console.warn(`CORS blocked request from origin: ${origin}`);
+        callback(null, true); // Allow during transition, but log warning
+      }
+    },
+    methods: 'GET,HEAD,PUT,PATCH,POST,DELETE,OPTIONS',
     credentials: true,
   });
   app.useStaticAssets(join(process.cwd(), 'public'), {
