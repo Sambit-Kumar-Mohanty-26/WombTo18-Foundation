@@ -1,6 +1,7 @@
 import { useEffect, useRef, useState } from "react";
 import { motion, useInView } from "motion/react";
 import { PlayCircle, PauseCircle } from "lucide-react";
+import { useTranslation } from "react-i18next";
 
 declare global {
   interface Window {
@@ -94,6 +95,7 @@ function loadYouTubeApi() {
 }
 
 export function HomeVideoSection() {
+  const { t } = useTranslation('home');
   const sectionRef = useRef<HTMLElement>(null);
   const playerRef = useRef<YouTubePlayer | null>(null);
   const manualPauseRef = useRef(false);
@@ -216,13 +218,13 @@ export function HomeVideoSection() {
           className="mx-auto mb-10 max-w-3xl text-center"
         >
           <p className="mb-4 inline-flex items-center gap-2 rounded-full border border-[var(--womb-forest)]/15 bg-white/90 px-4 py-1.5 text-sm font-semibold text-[var(--womb-forest)] shadow-sm">
-            A Closer Look
+            {t('video.badge')}
           </p>
           <h2 className="text-3xl font-extrabold tracking-tight text-gray-900 sm:text-4xl">
-            Watch The Mission In Motion
+            {t('video.heading')}
           </h2>
           <p className="mt-3 text-base leading-relaxed text-gray-600 sm:text-lg italic font-medium">
-            "Witness the unfolding of a legacy — a journey from the first heartbeat to a future of infinite potential. Experience the heartbeat of our mission in every frame."
+            {t('video.desc')}
           </p>
         </motion.div>
 
@@ -236,13 +238,13 @@ export function HomeVideoSection() {
           <div className="flex items-center justify-between border-b border-white/10 bg-white/95 px-4 py-3 backdrop-blur-sm sm:px-6">
             <div>
               <p className="text-sm font-bold uppercase tracking-[0.18em] text-[var(--womb-forest)]">
-                Home Film
+                {t('common:homeFilm', { defaultValue: 'Home Film' })}
               </p>
-              <p className="text-sm text-gray-500">WOMBTO18 Foundation on YouTube</p>
+              <p className="text-sm text-gray-500">{t('common:ytChannel', { defaultValue: 'WOMBTO18 Foundation on YouTube' })}</p>
             </div>
             <div className="flex items-center gap-2 rounded-full bg-gray-900 px-3 py-1.5 text-xs font-semibold text-white">
               {isPlaying ? <PauseCircle className="h-4 w-4" /> : <PlayCircle className="h-4 w-4" />}
-              <span>{isPlaying ? "Playing in view" : "Paused"}</span>
+              <span>{isPlaying ? t('common:playing', { defaultValue: 'Playing in view' }) : t('common:paused', { defaultValue: 'Paused' })}</span>
             </div>
           </div>
 
@@ -260,7 +262,7 @@ export function HomeVideoSection() {
                 aria-label="Enable video interaction"
               >
                 <span className="max-w-xs rounded-full border border-white/15 bg-black/65 px-4 py-2 text-xs font-semibold text-white shadow-xl backdrop-blur-sm sm:text-sm">
-                  Click to interact with video
+                  {t('common:clickInteract', { defaultValue: 'Click to interact with video' })}
                 </span>
               </button>
             )}

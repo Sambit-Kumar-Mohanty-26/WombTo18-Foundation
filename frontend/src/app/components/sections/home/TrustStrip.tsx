@@ -1,12 +1,14 @@
 import { motion } from "motion/react";
 import { ShieldCheck, Receipt, Eye, Sparkles, Award } from "lucide-react";
+import { useTranslation } from "react-i18next";
 
 export function TrustStrip() {
+  const { t } = useTranslation('home');
   const cards = [
     {
       icon: ShieldCheck,
-      title: "Bank-Grade Security",
-      desc: "Razorpay securely processes your payments with PCI-DSS Level 1 Encryption.",
+      title: t('trust.card1Title'),
+      desc: t('trust.card1Desc'),
       color: "text-[var(--womb-forest)]",
       bg: "bg-[var(--womb-forest)]/10 text-[var(--womb-forest)]",
       borderColor: "group-hover:border-[var(--womb-forest)]/40",
@@ -14,8 +16,8 @@ export function TrustStrip() {
     },
     {
       icon: Receipt,
-      title: "Instant 80G Tax Perks",
-      desc: "Receive your tax-deductible 80G certificate directly to your email within 2 minutes.",
+      title: t('trust.card2Title'),
+      desc: t('trust.card2Desc'),
       color: "text-[var(--journey-saffron)]",
       bg: "bg-[var(--journey-saffron)]/15 text-[var(--journey-saffron)]",
       borderColor: "group-hover:border-[var(--journey-saffron)]/40",
@@ -23,8 +25,8 @@ export function TrustStrip() {
     },
     {
       icon: Eye,
-      title: "100% Fund Visibility",
-      desc: "Track every contribution through your personalised, real-time donor dashboard.",
+      title: t('trust.card3Title'),
+      desc: t('trust.card3Desc'),
       color: "text-[var(--future-sky)]",
       bg: "bg-[var(--future-sky)]/15 text-[var(--future-sky)]",
       borderColor: "group-hover:border-[var(--future-sky)]/40",
@@ -73,15 +75,15 @@ export function TrustStrip() {
           >
             <Sparkles className="w-4 h-4 text-[var(--womb-forest)]" />
             <span className="text-[11px] font-black uppercase tracking-[0.2em] text-gray-600">
-              <span className="text-[var(--womb-forest)]">Womb</span>To<span className="text-[var(--journey-saffron)]">18</span> Transparency
+              <span className="text-[var(--womb-forest)]">Womb</span>To<span className="text-[var(--journey-saffron)]">18</span> {t('trust.badge')}
             </span>
           </motion.div>
 
           <h2 className="text-4xl md:text-5xl lg:text-6xl font-black text-gray-900 leading-[1.1] tracking-tight" style={{ fontFamily: "'Poppins', sans-serif" }}>
-            Your Trust is <br />
+            {t('trust.heading1')} <br />
             <span className="relative inline-block mt-1">
               <span className="relative z-10 bg-gradient-to-r from-[var(--womb-forest)] to-emerald-400 bg-clip-text text-transparent">
-                Our Greatest Fuel
+                {t('trust.heading2')}
               </span>
               <motion.div
                 initial={{ scaleX: 0 }}

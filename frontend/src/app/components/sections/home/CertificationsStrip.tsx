@@ -1,9 +1,12 @@
+import { useTranslation } from "react-i18next";
+
 export function CertificationsStrip() {
+  const { t } = useTranslation('home');
   return (
     <div className="bg-white py-10 sm:py-12 border-y border-gray-100">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
         <p className="text-xs sm:text-sm font-bold text-gray-400 uppercase tracking-widest mb-6 sm:mb-8">
-          Verified & Certified By
+          {t('certifications.heading')}
         </p>
 
         <div className="grid grid-cols-2 items-start gap-x-4 gap-y-6 sm:gap-x-6 md:flex md:flex-wrap md:justify-center md:items-center md:gap-12 lg:gap-24">
@@ -12,8 +15,8 @@ export function CertificationsStrip() {
               80G
             </div>
             <div className="text-center">
-              <p className="font-bold text-[11px] leading-tight text-gray-900 md:text-base">Income Tax Dept.</p>
-              <p className="text-[10px] font-semibold text-gray-500 md:text-xs">Government of India</p>
+              <p className="font-bold text-[11px] leading-tight text-gray-900 md:text-base">{t('certifications.cert1Title')}</p>
+              <p className="text-[10px] font-semibold text-gray-500 md:text-xs">{t('certifications.cert1Subtitle')}</p>
             </div>
           </div>
 
@@ -22,8 +25,8 @@ export function CertificationsStrip() {
               12A
             </div>
             <div className="text-center">
-              <p className="font-bold text-[11px] leading-tight text-gray-900 md:text-base">Section 12A</p>
-              <p className="text-[10px] font-semibold text-gray-500 md:text-xs">Registered Non-Profit</p>
+              <p className="font-bold text-[11px] leading-tight text-gray-900 md:text-base">{t('certifications.cert2Title')}</p>
+              <p className="text-[10px] font-semibold text-gray-500 md:text-xs">{t('certifications.cert2Subtitle')}</p>
             </div>
           </div>
 
@@ -32,8 +35,8 @@ export function CertificationsStrip() {
               tech<span className="text-gray-800">soup</span><span className="ml-1 align-top text-[10px]">&reg;</span>
             </div>
             <div className="text-center">
-              <p className="font-bold text-[11px] leading-tight text-gray-900 md:text-base">Validated NGO</p>
-              <p className="text-[10px] font-semibold text-gray-500 md:text-xs">Global Tech Partner</p>
+              <p className="font-bold text-[11px] leading-tight text-gray-900 md:text-base">{t('certifications.cert3Title')}</p>
+              <p className="text-[10px] font-semibold text-gray-500 md:text-xs">{t('certifications.cert3Subtitle')}</p>
             </div>
           </div>
 

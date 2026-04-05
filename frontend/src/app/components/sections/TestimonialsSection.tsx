@@ -1,40 +1,41 @@
 import { useEffect, useRef, useState } from "react";
 import useEmblaCarousel from "embla-carousel-react";
 import { Star, Quote, ChevronLeft, ChevronRight } from "lucide-react";
-
-const testimonials = [
-  {
-    name: "Shruti Bhujbal",
-    role: "Parent - Pune",
-    rating: 5,
-    image: "/images/site-assets/testimonial_parent.png",
-    quote: "WombTo18 has been incredibly structured and practical, covering everything from health to learning in one place.Their simple tools and reminders have made life easier for both parents and teachers.",
-  },
-  {
-    name: "Dhanashree Wagh",
-    role: "School Principal, Maharashtra",
-    rating: 5,
-    image: "/images/site-assets/testimonial_principal.png",
-    quote: "WombTo18 has completely changed the way we look at student well-being.WombTo18 is the partner you need. This is not a program; this is a mission. Highly recommended.",
-  },
-  {
-    name: "anand anasane",
-    role: "CSR Head, Pune",
-    rating: 5,
-    image: "/images/site-assets/testimonial_csr.png",
-    quote: "Best parenting support system. Reminders + milestones + easy guides = peace of mind.Very accurate immunization reminders. Never missed a vaccine after joining.",
-  },
-
-  {
-    name: "Diksha Kadam",
-    role: "School Leader",
-    rating: 5,
-    image: "/images/site-assets/testimonial_diksha_kadam.jpg",
-    quote: "WombTo18 helped our school create a culture of health, empathy, sustainability, and early habit formation. The modules are beautifully crafted, age-appropriate, and easy to integrate into daily routines. Their team handled everything - training, monitoring, implementation, and parent orientation. Most importantly, our children love the activities. From green cohort pledges to emotional well-being exercises to nutrition awareness, it feels like an upgraded version of schooling. Any school that wants long-term, measurable impact must adopt this.",
-  },
-];
+import { useTranslation } from "react-i18next";
 
 export function TestimonialsSection() {
+  const { t } = useTranslation('home');
+
+  const testimonials = [
+    {
+      name: t('testimonials.t1Name'),
+      role: t('testimonials.t1Role'),
+      rating: 5,
+      image: "/images/site-assets/testimonial_parent.png",
+      quote: t('testimonials.t1Quote'),
+    },
+    {
+      name: t('testimonials.t2Name'),
+      role: t('testimonials.t2Role'),
+      rating: 5,
+      image: "/images/site-assets/testimonial_principal.png",
+      quote: t('testimonials.t2Quote'),
+    },
+    {
+      name: t('testimonials.t3Name'),
+      role: t('testimonials.t3Role'),
+      rating: 5,
+      image: "/images/site-assets/testimonial_csr.png",
+      quote: t('testimonials.t3Quote'),
+    },
+    {
+      name: t('testimonials.t4Name'),
+      role: t('testimonials.t4Role'),
+      rating: 5,
+      image: "/images/site-assets/testimonial_diksha_kadam.jpg",
+      quote: t('testimonials.t4Quote'),
+    },
+  ];
   const [emblaRef, emblaApi] = useEmblaCarousel({ loop: true });
   const [expandedCards, setExpandedCards] = useState<Record<number, boolean>>({});
   const [overflowingCards, setOverflowingCards] = useState<Record<number, boolean>>({});
@@ -155,23 +156,23 @@ export function TestimonialsSection() {
     <section className="py-24 bg-[var(--womb-forest)]/5 relative overflow-hidden flex flex-col items-center">
       <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 w-full text-center mb-12">
         <p className="inline-flex items-center gap-2 bg-white text-[var(--womb-forest)] px-4 py-1.5 rounded-full text-sm font-semibold border border-[var(--womb-forest)]/20 shadow-sm mb-4">
-          Beneficiary Voices
+          {t('testimonials.badge')}
         </p>
         <h2 className="text-3xl sm:text-4xl text-gray-900" style={{ fontWeight: 800 }}>
-          The Stories Behind the Numbers
+          {t('testimonials.heading')}
         </h2>
       </div>
 
       <div className="relative max-w-5xl mx-auto px-8 sm:px-16 w-full">
         <div className="overflow-hidden" ref={emblaRef}>
           <div className="flex touch-pan-y">
-            {testimonials.map((t, idx) => (
+            {testimonials.map((testimonial, idx) => (
               <div key={idx} className="flex-[0_0_100%] min-w-0 pl-3 py-4 sm:pl-4">
                 <div className="flex h-full min-h-[430px] sm:min-h-[380px] flex-col gap-5 rounded-3xl border border-gray-100 bg-white p-5 shadow-xl transition-all sm:flex-row sm:gap-8 sm:p-12">
                   <div className="shrink-0 relative">
                     <img
-                      src={t.image}
-                      alt={t.name}
+                      src={testimonial.image}
+                      alt={testimonial.name}
                       className="h-16 w-16 rounded-full border-4 border-[var(--womb-forest)]/20 object-cover shadow-md sm:h-32 sm:w-32"
                     />
                     <div className="absolute -bottom-2 -right-2 sm:-bottom-3 sm:-right-3 bg-white p-1.5 sm:p-2 rounded-full shadow-lg text-[var(--womb-forest)]">
@@ -181,7 +182,7 @@ export function TestimonialsSection() {
 
                   <div className="flex min-w-0 flex-1 flex-col text-left self-stretch">
                     <div className="flex justify-start gap-1 mb-3 sm:mb-4">
-                      {[...Array(t.rating)].map((_, i) => (
+                      {[...Array(testimonial.rating)].map((_, i) => (
                         <Star key={i} className="w-4 h-4 sm:w-5 sm:h-5 fill-amber-400 text-amber-400" />
                       ))}
                     </div>
@@ -253,7 +254,7 @@ export function TestimonialsSection() {
                             expandedCards[idx] ? "" : "line-clamp-6 sm:line-clamp-4"
                           }`}
                         >
-                          "{t.quote}"
+                          "{testimonial.quote}"
                         </p>
                       </div>
                     </div>
@@ -264,13 +265,13 @@ export function TestimonialsSection() {
                         onClick={() => toggleExpanded(idx)}
                         className="mb-4 w-fit text-sm font-semibold text-[var(--womb-forest)] transition-colors hover:text-[#155e33]"
                       >
-                        {expandedCards[idx] ? "Read less" : "Read more"}
+                        {expandedCards[idx] ? t('testimonials.readLess') : t('testimonials.readMore')}
                       </button>
                     )}
 
                     <div className="mt-auto">
-                      <p className="text-base sm:text-lg font-bold text-gray-900">{t.name}</p>
-                      <p className="text-[11px] sm:text-sm font-semibold text-[var(--womb-forest)] uppercase tracking-wider">{t.role}</p>
+                      <p className="text-base sm:text-lg font-bold text-gray-900">{testimonial.name}</p>
+                      <p className="text-[11px] sm:text-sm font-semibold text-[var(--womb-forest)] uppercase tracking-wider">{testimonial.role}</p>
                     </div>
                   </div>
                 </div>

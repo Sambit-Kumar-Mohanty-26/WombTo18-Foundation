@@ -1,8 +1,10 @@
 import { useRef } from "react";
 import { motion, useScroll, useTransform, useInView } from "motion/react";
 import { Quote } from "lucide-react";
+import { useTranslation } from "react-i18next";
 
 export function AnimatedQuoteSection() {
+  const { t } = useTranslation('home');
   const containerRef = useRef<HTMLElement>(null);
   const quoteRef = useRef<HTMLDivElement>(null);
   const isInView = useInView(quoteRef, { once: true, margin: "-100px" });
@@ -66,18 +68,18 @@ export function AnimatedQuoteSection() {
           className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-serif text-gray-900 leading-tight md:leading-tight lg:leading-[1.15] tracking-tight relative"
         >
           <span className="text-transparent bg-clip-text bg-gradient-to-r from-gray-900 via-gray-800 to-gray-600">
-            "The health of our children today dictates the{" "}
+            {t('quote.line1')}
           </span>
           <br className="hidden md:block" />
           <span className="text-transparent bg-clip-text bg-gradient-to-r from-[var(--womb-forest)] to-[#155e33] font-bold drop-shadow-sm">
-            strength of our nation
+            {t('quote.line2')}
           </span>
           <span className="text-transparent bg-clip-text bg-gradient-to-r from-gray-600 to-gray-500">
-            {" "}tomorrow.
+            {" "}{t('quote.line3')}
           </span>
           <br className="hidden lg:block mt-4" />
           <span className="block mt-6 md:mt-8 text-2xl sm:text-3xl md:text-4xl text-[var(--journey-saffron)] font-medium italic drop-shadow-sm">
-            Every intervention matters."
+            {t('quote.line4')}
           </span>
         </motion.blockquote>
         
@@ -88,7 +90,7 @@ export function AnimatedQuoteSection() {
           className="mt-12 md:mt-16 flex items-center justify-center gap-4"
         >
           <div className="h-[1px] w-12 bg-gradient-to-r from-transparent to-[var(--womb-forest)]"></div>
-          <span className="text-sm md:text-base text-gray-500 font-bold tracking-[0.2em] uppercase">The Vision</span>
+          <span className="text-sm md:text-base text-gray-500 font-bold tracking-[0.2em] uppercase">{t('quote.divider')}</span>
           <div className="h-[1px] w-12 bg-gradient-to-l from-transparent to-[var(--womb-forest)]"></div>
         </motion.div>
       </div>

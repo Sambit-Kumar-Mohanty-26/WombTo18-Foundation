@@ -2,47 +2,49 @@ import { ShieldPlus, Syringe, Brain, AlertTriangle, Leaf, Baby } from "lucide-re
 import { Link } from "react-router";
 import { ScrollReveal } from "../ui/ScrollReveal";
 import { motion } from "motion/react";
-
-const programs = [
-  {
-    icon: Baby,
-    title: "Maternal Care",
-    description: "Prenatal stress reduction, bonding exercises, and birth-preparedness support for expecting mothers.",
-    route: "/programmes#maternal-care",
-  },
-  {
-    icon: Leaf,
-    title: "Green Cohort",
-    description: "One enrolled child equals one geo-tagged tree planted—India's first Carbon-Neutral Child Cohort.",
-    route: "/programmes#green-cohort",
-  },
-  {
-    icon: Syringe,
-    title: "Vaccines",
-    description: "Our 9-touchpoint structured reminder system ensuring no child misses a critical dose.",
-    route: "/programmes#vaccines",
-  },
-  {
-    icon: ShieldPlus,
-    title: "Integrated School Health",
-    description: "Annual screenings, doctor-led camps, WASH education, and emergency readiness in our Health Promoting Schools.",
-    route: "/programmes#school-health",
-  },
-  {
-    icon: AlertTriangle,
-    title: "Emergency Preparedness",
-    description: "Hands-on disaster response and first-aid training led by real heroes on school campuses.",
-    route: "/programmes#emergency-preparedness",
-  },
-  {
-    icon: Brain,
-    title: "Mental Wellness",
-    description: "Mental health and emotional regulation support tailored from prenatal stages right through to adolescence.",
-    route: "/programmes#mental-wellness",
-  },
-];
+import { useTranslation } from "react-i18next";
 
 export function ServicesSection() {
+  const { t } = useTranslation('home');
+
+  const programs = [
+    {
+      icon: Baby,
+      title: t('services.prog1Title'),
+      description: t('services.prog1Desc'),
+      route: "/programmes#maternal-care",
+    },
+    {
+      icon: Leaf,
+      title: t('services.prog2Title'),
+      description: t('services.prog2Desc'),
+      route: "/programmes#green-cohort",
+    },
+    {
+      icon: Syringe,
+      title: t('services.prog3Title'),
+      description: t('services.prog3Desc'),
+      route: "/programmes#vaccines",
+    },
+    {
+      icon: ShieldPlus,
+      title: t('services.prog4Title'),
+      description: t('services.prog4Desc'),
+      route: "/programmes#school-health",
+    },
+    {
+      icon: AlertTriangle,
+      title: t('services.prog5Title'),
+      description: t('services.prog5Desc'),
+      route: "/programmes#emergency-preparedness",
+    },
+    {
+      icon: Brain,
+      title: t('services.prog6Title'),
+      description: t('services.prog6Desc'),
+      route: "/programmes#mental-wellness",
+    },
+  ];
   return (
     <section className="py-24 bg-gray-50 relative overflow-hidden">
       <div className="absolute top-0 right-0 w-64 h-64 bg-[var(--womb-forest)]/5 rounded-full blur-3xl -z-0"></div>
@@ -50,13 +52,13 @@ export function ServicesSection() {
       <ScrollReveal className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 relative z-10">
         <div className="text-center mb-16 max-w-3xl mx-auto">
           <p className="inline-flex items-center gap-2 bg-[var(--journey-saffron)]/10 text-[var(--journey-saffron)] px-4 py-1.5 rounded-full text-sm font-semibold border border-[var(--journey-saffron)]/20 shadow-sm mb-4">
-            Programmes at a Glance
+            {t('services.badge')}
           </p>
           <h2 className="text-3xl sm:text-4xl lg:text-5xl text-gray-900 mb-6" style={{ fontWeight: 800 }}>
-            One Seamless Journey. <span style={{ color: 'var(--womb-forest)' }}>One Journey from wombto18. </span>
+            {t('services.heading1')} <span style={{ color: 'var(--womb-forest)' }}>{t('services.heading2')} </span>
           </h2>
           <p className="text-lg text-gray-600">
-            From the moment of conception through adolescence, we unite healthcare, education, and environment.
+            {t('services.desc')}
           </p>
         </div>
 

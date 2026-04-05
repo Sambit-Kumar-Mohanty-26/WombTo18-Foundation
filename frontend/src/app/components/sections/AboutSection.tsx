@@ -2,47 +2,49 @@ import { motion, useScroll, useTransform } from "motion/react";
 import Lenis from "lenis";
 import { Quote, MapPin, Mail } from "lucide-react";
 import React, { useEffect, useRef } from "react";
-
-const letterParagraphs = [
-  {
-    type: "greeting",
-    text: "Dear Friend,",
-  },
-  {
-    type: "dropcap",
-    text: `When I started this journey, I was not simply building a company. I was answering a question that had troubled me for years: why, in a country of 1.4 billion people — with brilliant doctors, dedicated teachers, and parents who would do anything for their children — do we still lose so many to the preventable, the treatable, the entirely avoidable?`,
-  },
-  {
-    type: "body",
-    text: `The answer, I found, was not a shortage of care. It was a shortage of connection. Between the mother and the clinic. Between the school and the home. Between the child's health record and the doctor who needed to see it.`,
-  },
-  {
-    type: "highlight",
-    text: `WOMBTO18 was built to be that connection.`,
-  },
-  {
-    type: "body",
-    text: `The Foundation exists because the most vulnerable children — in underserved communities, in government schools, in families without the time or means to navigate a complex healthcare system — deserve exactly the same standard of integrated care that a well-resourced family in a major city can access. That is not charity. That is justice.`,
-  },
-  {
-    type: "body",
-    text: `We built this with discipline. Every rupee we receive is tracked to its purpose. Every programme we run is measured for its outcome. Every donor who trusts us with their contribution can see, in real time, exactly what their gift has done.`,
-  },
-  {
-    type: "emphasis",
-    text: `Because trust is not something you ask for. It is something you earn — one transparent act at a time.`,
-  },
-  {
-    type: "body",
-    text: `We hold 12A and 80G certification. We are recognised by DPIIT. We are validated by TechSoup India. And we are just beginning.`,
-  },
-  {
-    type: "body",
-    text: `I invite you — whether you are a donor, a partner, a volunteer, or simply someone who believes that every child deserves a healthy start — to join us. Not as a supporter. As a co-builder of something that will outlast all of us.`,
-  },
-];
+import { useTranslation } from "react-i18next";
 
 export function AboutSection() {
+  const { t } = useTranslation('home');
+
+  const letterParagraphs = [
+    {
+      type: "greeting",
+      text: t('about.dear'),
+    },
+    {
+      type: "dropcap",
+      text: t('about.p1'),
+    },
+    {
+      type: "body",
+      text: t('about.p2'),
+    },
+    {
+      type: "highlight",
+      text: t('about.p3'),
+    },
+    {
+      type: "body",
+      text: t('about.p4'),
+    },
+    {
+      type: "body",
+      text: t('about.p5'),
+    },
+    {
+      type: "emphasis",
+      text: t('about.p6'),
+    },
+    {
+      type: "body",
+      text: t('about.p7'),
+    },
+    {
+      type: "body",
+      text: t('about.p8'),
+    },
+  ];
   const scrollContainerRef = useRef<HTMLDivElement>(null);
   const scrollContentRef = useRef<HTMLDivElement>(null);
   const sectionRef = useRef<HTMLDivElement>(null);
@@ -149,11 +151,11 @@ export function AboutSection() {
           className="flex flex-col items-center text-center mb-10 sm:mb-14"
         >
           <p className="inline-flex items-center gap-2 text-[var(--womb-forest)] text-xs font-black tracking-[0.2em] uppercase mb-4">
-            Founder's Note <span className="w-8 h-[2px] bg-gradient-to-r from-[var(--womb-forest)] to-transparent rounded-full ml-2" />
+            {t('about.badge')} <span className="w-8 h-[2px] bg-gradient-to-r from-[var(--womb-forest)] to-transparent rounded-full ml-2" />
           </p>
           <h2 className="text-3xl sm:text-4xl md:text-5xl text-gray-900 tracking-tight" style={{ fontWeight: 900, lineHeight: 1.1 }}>
-            Built From Conviction.{" "}
-            <span className="text-transparent bg-clip-text bg-gradient-to-r from-[var(--journey-saffron)] to-orange-400">Guided by Evidence.</span>
+            {t('about.heading1')}{" "}
+            <span className="text-transparent bg-clip-text bg-gradient-to-r from-[var(--journey-saffron)] to-orange-400">{t('about.heading2')}</span>
           </h2>
         </motion.div>
 
@@ -189,9 +191,9 @@ export function AboutSection() {
               className="bg-white p-5 rounded-2xl shadow-[0_8px_24px_-12px_rgba(0,0,0,0.06)] border border-gray-100"
             >
               <p className="font-extrabold text-gray-900 text-base tracking-tight mb-0.5">Sowjanya Reddy</p>
-              <p className="text-xs font-bold text-[var(--womb-forest)] mb-2">Founder & Director — WOMBTO18 Foundation</p>
+              <p className="text-xs font-bold text-[var(--womb-forest)] mb-2">{t('about.founderRole')}</p>
               <div className="flex flex-col gap-1.5 text-xs text-gray-500">
-                <span className="flex items-center gap-1.5"><MapPin className="w-3 h-3 text-[var(--journey-saffron)]" /> Bangalore, India</span>
+                <span className="flex items-center gap-1.5"><MapPin className="w-3 h-3 text-[var(--journey-saffron)]" /> {t('about.founderLocation')}</span>
               </div>
             </motion.div>
           </motion.div>
@@ -302,7 +304,7 @@ export function AboutSection() {
                     transition={{ duration: 0.8 }}
                     className="mt-8 pt-6 border-t border-gray-100 font-sans"
                   >
-                    <p className="text-base font-bold text-gray-800 italic">With deep gratitude and conviction,</p>
+                    <p className="text-base font-bold text-gray-800 italic">{t('about.closing')}</p>
                     <span className="text-3xl sm:text-4xl text-[var(--womb-forest)]/70 block mt-4 mb-2" style={{ fontFamily: "'Cedarville Cursive', 'Brush Script MT', cursive", transform: "rotate(-3deg)", display: "inline-block" }}>
                       Sowjanya Reddy
                     </span>

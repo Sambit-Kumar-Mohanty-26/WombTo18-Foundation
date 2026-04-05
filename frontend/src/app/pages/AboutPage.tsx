@@ -1,18 +1,12 @@
 import { Heart, Globe, Users, Target, CheckCircle, ArrowRight, Zap, Building2, MonitorSmartphone, MapPin } from "lucide-react";
 import { motion, useTransform, useSpring, useMotionValue, useMotionTemplate, useScroll } from "motion/react";
 import Lenis from "lenis";
-import React, { useEffect, useRef } from "react";
+import React, { useEffect, useRef, useMemo } from "react";
 import { Link } from "react-router";
+import { useTranslation } from "react-i18next";
 
-const womboValues = [
-  { letter: "W", title: "Wellness", desc: "Comprehensive health — physical, mental, emotional — from pregnancy through age 18. Health is not the absence of illness; it is the fullness of a well-supported life." },
-  { letter: "O", title: "Outreach", desc: "We go to communities. We do not wait for communities to come to us. Every initiative is designed with accessibility and equity at its centre." },
-  { letter: "M", title: "Measurable", desc: "Every programme must be measurable. If we cannot measure it, we will not claim it. Accountability is foundational, never optional." },
-  { letter: "B", title: "Belonging", desc: "Every child — regardless of geography, income, or background — belongs within the circle of our care. Inclusion is the mission itself." },
-  { letter: "O", title: "Optimisation", desc: "We use technology, data, and the Health Promoting Schools framework to continuously improve every intervention. Good enough is never good enough." },
-];
-
-function ValueCard({ val, index }: { val: typeof womboValues[0], index: number }) {
+function ValueCard({ val, index }: { val: { letter: string; title: string; desc: string }, index: number }) {
+  const { t } = useTranslation('about');
   const mouseX = useMotionValue(150);
   const mouseY = useMotionValue(200);
 
@@ -215,42 +209,20 @@ const instrumentsOfChange = [
   },
 ];
 
-const presidentLetterParagraphs = [
-  {
-    type: "quote",
-    text: "Equity in child health is not a charity goal. It is a systems problem - and systems problems require institutional answers, not one-time interventions.",
-  },
-  {
-    type: "body",
-    text: "Public health has taught us one lesson above all others: the interventions that save the most lives are rarely the most visible ones. They are the quiet, structural ones - the vaccine that arrives on time, the screening that catches something early, the health worker who is present and trained and trusted.",
-  },
-  {
-    type: "body",
-    text: "The WOMBTO18 Foundation was built on that lesson. We do not run health camps. We do not conduct drives. We build the permanent infrastructure of care inside schools - the institutions that hold a child's life together for thirteen of their most formative years.",
-  },
-  {
-    type: "body",
-    text: "In India today, a child born into a low-income household is not simply disadvantaged by poverty. They are disadvantaged by the absence of systems: no school nurse, no longitudinal health record, no structured process for detecting developmental concerns before they become crises, no connection between the school that sees the child every day and the healthcare provider who sees them once a year.",
-  },
-  {
-    type: "highlight",
-    text: "The Foundation addresses this not by filling gaps one at a time, but by establishing the full continuum.",
-  },
-  {
-    type: "body",
-    text: "From maternal health awareness before birth, through immunisation, nutrition, early childhood development, mental wellness, and specialist referral pathways - we build the structure, train the people, and hold the accountability. What remains behind us in each school is not a programme. It is a functioning system.",
-  },
-  {
-    type: "body",
-    text: "We are grateful to every school that has partnered with us, every donor who has understood that systemic change is slower and more durable than visible impact, and every family that has placed their trust in what we are building. We are not doing this for them. We are doing it with them.",
-  },
-  {
-    type: "emphasis",
-    text: "The years from womb to 18 are not a statistic. They are the entirety of a childhood. They deserve more than good intentions. They deserve a system built to protect them.",
-  },
-];
-
 function PresidentLetterSection() {
+  const { t } = useTranslation('about');
+
+  const presidentLetterParagraphs = [
+    { type: "quote", text: t('presidentLetter.p1') },
+    { type: "body", text: t('presidentLetter.p2') },
+    { type: "body", text: t('presidentLetter.p3') },
+    { type: "body", text: t('presidentLetter.p4') },
+    { type: "highlight", text: t('presidentLetter.p5.text') },
+    { type: "body", text: t('presidentLetter.p6') },
+    { type: "body", text: t('presidentLetter.p7') },
+    { type: "emphasis", text: t('presidentLetter.p8.text') },
+  ];
+
   const scrollContainerRef = useRef<HTMLDivElement>(null);
   const scrollContentRef = useRef<HTMLDivElement>(null);
   const sectionRef = useRef<HTMLDivElement>(null);
@@ -353,11 +325,11 @@ function PresidentLetterSection() {
           className="flex flex-col items-center text-center mb-8 sm:mb-10"
         >
           <p className="inline-flex items-center gap-2 text-[var(--womb-forest)] text-xs font-black tracking-[0.2em] uppercase mb-4">
-            A Letter From The President <span className="w-8 h-[2px] bg-gradient-to-r from-[var(--womb-forest)] to-transparent rounded-full ml-2" />
+            {t('presidentLetter.badge')} <span className="w-8 h-[2px] bg-gradient-to-r from-[var(--womb-forest)] to-transparent rounded-full ml-2" />
           </p>
           <h2 className="max-w-5xl text-3xl sm:text-4xl lg:text-[3.5rem] text-gray-900 tracking-tight" style={{ fontWeight: 900, lineHeight: 1.05 }}>
-            Systems Before Symbolism.{" "}
-            <span className="text-transparent bg-clip-text bg-gradient-to-r from-[var(--journey-saffron)] to-orange-400">Institutions Before Interventions.</span>
+            {t('presidentLetter.heading1')}{" "}
+            <span className="text-transparent bg-clip-text bg-gradient-to-r from-[var(--journey-saffron)] to-orange-400">{t('presidentLetter.heading2')}</span>
           </h2>
         </motion.div>
 
@@ -385,9 +357,9 @@ function PresidentLetterSection() {
               className="bg-white p-5 rounded-2xl shadow-[0_8px_24px_-12px_rgba(0,0,0,0.06)] border border-gray-100"
             >
               <p className="font-extrabold text-gray-900 text-base tracking-tight mb-0.5">Eshwar Reddy</p>
-              <p className="text-xs font-bold text-[var(--womb-forest)] mb-2">Co-Founder & President - WOMBTO18 Foundation</p>
+              <p className="text-xs font-bold text-[var(--womb-forest)] mb-2">{t('presidentLetter.coFounder')}</p>
               <div className="flex flex-col gap-1.5 text-xs text-gray-500">
-                <span className="flex items-center gap-1.5"><MapPin className="w-3 h-3 text-[var(--journey-saffron)]" /> New Jersey, USA</span>
+                <span className="flex items-center gap-1.5"><MapPin className="w-3 h-3 text-[var(--journey-saffron)]" /> {t('presidentLetter.location')}</span>
               </div>
             </motion.div>
           </motion.div>
@@ -488,12 +460,12 @@ function PresidentLetterSection() {
                     transition={{ duration: 0.8 }}
                     className="mt-8 pt-6 border-t border-gray-100 font-sans"
                   >
-                    <p className="text-base font-bold text-gray-800 italic">With purpose,</p>
+                    <p className="text-base font-bold text-gray-800 italic">{t('presidentLetter.closing')}</p>
                     <span className="text-3xl sm:text-4xl text-[var(--womb-forest)]/70 block mt-4 mb-2" style={{ fontFamily: "'Cedarville Cursive', 'Brush Script MT', cursive", transform: "rotate(-3deg)", display: "inline-block" }}>
                       Eshwar Reddy
                     </span>
-                    <p className="text-sm font-semibold text-gray-600">Co-Founder & President</p>
-                    <p className="text-sm text-gray-500">WOMBTO18 Foundation - Section 8 Non-Profit</p>
+                    <p className="text-sm font-semibold text-gray-600">{t('presidentLetter.signatureTitle')}</p>
+                    <p className="text-sm text-gray-500">{t('presidentLetter.legalInfo')}</p>
                   </motion.div>
                 </div>
               </div>
@@ -513,6 +485,101 @@ function PresidentLetterSection() {
 }
 
 export function AboutPage() {
+  const { t } = useTranslation('about');
+
+  const womboValues = useMemo(() => [
+    { letter: t('wombo.w.letter'), title: t('wombo.w.title'), desc: t('wombo.w.desc') },
+    { letter: t('wombo.o1.letter'), title: t('wombo.o1.title'), desc: t('wombo.o1.desc') },
+    { letter: t('wombo.m.letter'), title: t('wombo.m.title'), desc: t('wombo.m.desc') },
+    { letter: t('wombo.b.letter'), title: t('wombo.b.title'), desc: t('wombo.b.desc') },
+    { letter: t('wombo.o2.letter'), title: t('wombo.o2.title'), desc: t('wombo.o2.desc') },
+  ], [t]);
+
+  const storyChapters = useMemo(() => [
+    {
+      number: "01",
+      accent: "var(--womb-forest)",
+      heading: t('story.ch1.heading'),
+      body: t('story.ch1.body'),
+      highlight: t('story.ch1.highlight')
+    },
+    {
+      number: "02",
+      accent: "var(--journey-saffron)",
+      heading: t('story.ch2.heading'),
+      body: t('story.ch2.body'),
+      highlight: t('story.ch2.highlight')
+    },
+    {
+      number: "03",
+      accent: "var(--womb-forest)",
+      heading: t('story.ch3.heading'),
+      body: t('story.ch3.body'),
+      highlight: t('story.ch3.highlight')
+    },
+    {
+      number: "04",
+      accent: "var(--journey-saffron)",
+      heading: t('story.ch4.heading'),
+      body: t('story.ch4.body'),
+      highlight: t('story.ch4.highlight')
+    }
+  ], [t]);
+
+  const advisoryBoard = useMemo(() => [
+    {
+      name: "Eshwar Reddy",
+      role: t('advisoryBoard.m1.role'),
+      image: "/Eshwar Reddy.jpg",
+      bio: [
+        t('advisoryBoard.m1.point1'),
+        t('advisoryBoard.m1.point2'),
+        t('advisoryBoard.m1.point3'),
+        t('advisoryBoard.m1.point4')
+      ]
+    },
+    {
+      name: "Dr. Pramod Jog",
+      role: t('advisoryBoard.m2.role'),
+      image: "/Dr.-Pramod-Jog.jpg",
+      bio: [
+        t('advisoryBoard.m2.point1'),
+        t('advisoryBoard.m2.point2'),
+        t('advisoryBoard.m2.point3'),
+        t('advisoryBoard.m2.point4')
+      ]
+    },
+    {
+      name: "Dr. Tanmay R. Amladi",
+      role: t('advisoryBoard.m3.role'),
+      image: "/Tanmay.webp",
+      bio: [
+        t('advisoryBoard.m3.point1'),
+        t('advisoryBoard.m3.point2'),
+        t('advisoryBoard.m3.point3'),
+        t('advisoryBoard.m3.point4')
+      ]
+    },
+  ], [t]);
+
+  const instrumentsOfChange = useMemo(() => [
+    {
+      title: t('instruments.inst1.title'),
+      icon: Building2,
+      accentClass: "text-[var(--womb-forest)]",
+      glowClass: "bg-[var(--womb-forest)]/18",
+      description: t('instruments.inst1.desc'),
+      label: t('instruments.inst1.label'),
+    },
+    {
+      title: t('instruments.inst2.title'),
+      icon: MonitorSmartphone,
+      accentClass: "text-[var(--journey-saffron)]",
+      glowClass: "bg-[var(--journey-saffron)]/18",
+      description: t('instruments.inst2.desc'),
+      label: t('instruments.inst2.label'),
+    },
+  ], [t]);
 
   return (
     <>
@@ -529,14 +596,14 @@ export function AboutPage() {
             className="flex flex-col items-center text-center w-full max-w-4xl mx-auto"
           >
             <p className="inline-flex items-center gap-2 bg-[var(--journey-saffron)]/10 text-[var(--journey-saffron)] px-5 py-2.5 rounded-full text-[10px] sm:text-xs font-bold tracking-widest uppercase border border-[var(--journey-saffron)]/20 mb-4 sm:mb-6 shadow-sm">
-              Our Story
+              {t('hero.badge')}
             </p>
             <h1 className="text-5xl sm:text-6xl md:text-[4.5rem] text-gray-900 mb-6" style={{ fontWeight: 900, lineHeight: 1.05, letterSpacing: "-0.01em" }}>
-              We Didn't Start With a Plan. <br className="hidden sm:block" />
-              <span className="text-transparent bg-clip-text bg-gradient-to-r from-[var(--journey-saffron)] to-orange-400 drop-shadow-sm">We Started With a Question.</span>
+              {t('hero.title')} <br className="hidden sm:block" />
+              <span className="text-transparent bg-clip-text bg-gradient-to-r from-[var(--journey-saffron)] to-orange-400 drop-shadow-sm">{t('hero.subtitle')}</span>
             </h1>
             <p className="text-lg md:text-xl text-gray-600 max-w-3xl leading-relaxed">
-              Why, in a country of 1.4 billion people — with brilliant doctors, dedicated teachers, and parents who would do anything for their children — do we still lose so many?
+              {t('hero.desc')}
             </p>
           </motion.div>
         </div>
@@ -580,7 +647,7 @@ export function AboutPage() {
                     <div className="w-10 h-10 rounded-xl flex items-center justify-center" style={{ background: `${chapter.accent}15`, border: `1px solid ${chapter.accent}30` }}>
                       <Zap className="w-5 h-5" style={{ color: chapter.accent }} />
                     </div>
-                    <span className="text-xs font-black tracking-[0.2em] uppercase" style={{ color: chapter.accent }}>Chapter {chapter.number}</span>
+                    <span className="text-xs font-black tracking-[0.2em] uppercase" style={{ color: chapter.accent }}>{t('chapter', 'Chapter')} {chapter.number}</span>
                   </div>
                   <h2 className="text-4xl sm:text-5xl font-black text-gray-900 tracking-tight mb-4" style={{ lineHeight: 1.08 }}>
                     {chapter.heading}
@@ -647,7 +714,7 @@ export function AboutPage() {
               />
 
               <div className="grid items-start gap-8 lg:grid-cols-[minmax(0,0.95fr)_minmax(0,1.2fr)] lg:gap-10">
-                <motion.div
+                   <motion.div
                   initial={{ opacity: 0, x: -26 }}
                   whileInView={{ opacity: 1, x: 0 }}
                   viewport={{ once: true }}
@@ -655,22 +722,22 @@ export function AboutPage() {
                   className="text-center lg:text-left"
                 >
                   <p className="mb-3 text-[11px] font-black uppercase tracking-[0.32em] text-gray-500">
-                    Strategic Architecture
+                    {t('strategy.badge')}
                   </p>
                   <h2
                     className="text-3xl font-black tracking-tight text-gray-900 sm:text-4xl md:text-[3.25rem]"
                     style={{ lineHeight: 0.98 }}
                   >
-                    One vision.
+                    {t('strategy.heading1')}
                   </h2>
                   <p
                     className="mt-1 font-serif text-[1.75rem] italic text-[var(--journey-saffron)] sm:text-[2.3rem] md:text-[2.9rem]"
                     style={{ lineHeight: 1.04 }}
                   >
-                    Two instruments of change.
+                    {t('strategy.heading2')}
                   </p>
                   <p className="mt-5 max-w-xl text-sm leading-relaxed text-gray-600 sm:text-base">
-                    The Foundation and the Platform were not built separately. They were built as two halves of the same answer.
+                    {t('strategy.desc')}
                   </p>
                 </motion.div>
 
@@ -683,13 +750,7 @@ export function AboutPage() {
                 >
                   <div className="absolute left-0 top-0 hidden h-full w-px bg-gradient-to-b from-transparent via-[var(--journey-saffron)]/40 to-transparent lg:block" />
                   <div className="pl-0 lg:pl-8">
-                    <p className="text-base font-serif italic leading-[1.75] tracking-tight text-gray-700 sm:text-lg lg:text-[1.32rem]">
-                      India has{" "}
-                      <span className="bg-gradient-to-r from-[var(--journey-saffron)] to-amber-300 bg-clip-text font-black not-italic text-transparent">
-                        450 million children under 18
-                      </span>
-                      . Most of them will pass through a school. Very few will have a health record that travels with them, a system that watches for what might go wrong, or an institution that treats their wellbeing as seriously as their academics.
-                    </p>
+                    <p className="text-base font-serif italic leading-[1.75] tracking-tight text-gray-700 sm:text-lg lg:text-[1.32rem]" dangerouslySetInnerHTML={{ __html: t('strategy.highlight') }} />
                     <motion.p
                       initial={{ opacity: 0, y: 18 }}
                       whileInView={{ opacity: 1, y: 0 }}
@@ -697,7 +758,7 @@ export function AboutPage() {
                       transition={{ duration: 0.8, delay: 0.42 }}
                       className="mt-5 text-xl font-black leading-[1.45] tracking-tight text-gray-900 sm:text-2xl"
                     >
-                      WOMBTO18 was built to change all three of those facts simultaneously, at scale, and for good.
+                      {t('strategy.impact')}
                     </motion.p>
                   </div>
                 </motion.div>
@@ -724,17 +785,11 @@ export function AboutPage() {
               <span className="text-4xl text-[var(--womb-forest)] font-serif font-bold">"</span>
             </div>
 
-            <blockquote className="text-3xl sm:text-4xl md:text-5xl text-gray-900 font-serif italic leading-[1.3] tracking-tight mb-12" style={{ fontWeight: 400 }}>
-              We don't just want to treat children when they fall sick. We want to build the conditions in which they{" "}
-              <span className="not-italic font-black text-transparent bg-clip-text bg-gradient-to-r from-[var(--journey-saffron)] to-orange-400">
-                never become sick
-              </span>{" "}
-              in the first place.
-            </blockquote>
+            <blockquote className="text-3xl sm:text-4xl md:text-5xl text-gray-900 font-serif italic leading-[1.3] tracking-tight mb-12" style={{ fontWeight: 400 }} dangerouslySetInnerHTML={{ __html: t('philosophy.quote1') }} />
 
             <div className="flex items-center justify-center gap-4">
               <div className="w-[60px] h-[1px] bg-gray-300" />
-              <p className="text-sm text-gray-500 font-bold tracking-widest uppercase">Founding Philosophy</p>
+              <p className="text-sm text-gray-500 font-bold tracking-widest uppercase">{t('philosophy.badge')}</p>
               <div className="w-[60px] h-[1px] bg-gray-300" />
             </div>
           </motion.div>
@@ -771,7 +826,7 @@ export function AboutPage() {
                 transition={{ duration: 0.5, delay: 0.4 }}
                 className="text-3xl font-extrabold text-gray-900 mb-4"
               >
-                Our Mission
+                {t('mission.title')}
               </motion.h2>
 
               <motion.p
@@ -781,7 +836,7 @@ export function AboutPage() {
                 transition={{ duration: 0.8, delay: 0.5 }}
                 className="text-lg text-gray-600 leading-relaxed mb-6"
               >
-                To ensure that every child in India — from the moment of conception to the age of 18 — has access to integrated, evidence-based health support, quality education infrastructure, and an environmental legacy worth inheriting.
+                {t('mission.desc')}
               </motion.p>
 
               <motion.div
@@ -790,9 +845,8 @@ export function AboutPage() {
                 viewport={{ once: true }}
                 transition={{ duration: 0.8, delay: 0.6 }}
                 className="text-sm text-gray-500 bg-gray-50/50 p-5 rounded-xl border border-gray-100/80 shadow-inner"
-              >
-                Delivered through a dual-entity model: <strong className="text-gray-900 font-bold">WOMBTO18 Integrated Care Pvt Ltd</strong> drives tech innovation; <strong className="text-gray-900 font-bold">WOMBTO18 Foundation</strong> drives access, equity, and community impact.
-              </motion.div>
+                dangerouslySetInnerHTML={{ __html: t('mission.sub') }}
+              />
             </motion.div>
 
             <motion.div
@@ -821,16 +875,16 @@ export function AboutPage() {
                 transition={{ duration: 0.5, delay: 0.7 }}
                 className="text-3xl font-extrabold text-gray-900 mb-6"
               >
-                Our Vision — 2030
+                {t('vision.title')}
               </motion.h2>
 
               <ul className="space-y-4">
                 {[
-                  "25 million children/families supported with preventive care.",
-                  "300+ schools operating as WHO-standard Health Promoting Schools.",
-                  "Zero preventable child deaths from vaccine-preventable diseases in partners.",
-                  "India’s first Carbon-Neutral Child Cohort — 1 tree per child.",
-                  "Every donor empowered with real-time tracking dashboards."
+                  t('vision.item1'),
+                  t('vision.item2'),
+                  t('vision.item3'),
+                  t('vision.item4'),
+                  t('vision.item5')
                 ].map((item, i) => (
                   <motion.li
                     key={i}
@@ -856,8 +910,8 @@ export function AboutPage() {
       <section className="py-24 bg-white border-b border-gray-100">
         <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-16">
-            <h2 className="text-4xl font-extrabold text-gray-900 mb-4">Core Values</h2>
-            <p className="text-xl text-gray-600 max-w-2xl mx-auto">The philosophical framework driving our operations.</p>
+            <h2 className="text-4xl font-extrabold text-gray-900 mb-4">{t('wombo.badge')}</h2>
+            <p className="text-xl text-gray-600 max-w-2xl mx-auto">{t('wombo.desc')}</p>
           </div>
 
           <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-4 xl:gap-6 items-stretch">
@@ -915,15 +969,15 @@ export function AboutPage() {
             className="text-center mb-20"
           >
             <p className="inline-flex items-center gap-2 bg-[var(--journey-saffron)]/10 text-[var(--journey-saffron)] px-5 py-2 rounded-full text-[10px] font-black tracking-[0.25em] uppercase border border-[var(--journey-saffron)]/20 mb-6 backdrop-blur-sm">
-              <CheckCircle className="w-3.5 h-3.5" /> Verified & Certified
+              <CheckCircle className="w-3.5 h-3.5" /> {t('governance.badge')}
             </p>
             <h2 className="text-4xl sm:text-5xl md:text-6xl font-black tracking-tight mb-4" style={{ lineHeight: 1.05 }}>
-              Governance &{" "}
+              {t('governance.heading1')}{" "}
               <span className="text-transparent bg-clip-text bg-gradient-to-r from-[var(--journey-saffron)] to-amber-300">
-                Certifications
+                {t('governance.heading2')}
               </span>
             </h2>
-            <p className="text-gray-400 text-lg max-w-xl mx-auto">Accountable. Audited. Transparent.</p>
+            <p className="text-gray-400 text-lg max-w-xl mx-auto">{t('governance.desc')}</p>
           </motion.div>
 
           {/* Central Shield + Constellation */}
@@ -992,10 +1046,10 @@ export function AboutPage() {
               className="grid grid-cols-1 md:grid-cols-2 gap-5 max-w-5xl mx-auto relative z-10"
             >
               {[
-                { cert: "12A Registration", desc: "Foundation income is tax-exempt. All activities are public benefit.", icon: "🏛️" },
-                { cert: "80G Certification", desc: "Donations are eligible for tax benefits under Section 80G of the Income Tax Act.", icon: "📜" },
-                { cert: "NGO DARPAN Recognition", desc: "NITI Aayog registered for transparency & funding.", icon: "🚀" },
-                { cert: "TechSoup India", desc: "Verified non-profit for global tech grants.", icon: "🌐" },
+                { cert: t('governance.cert1Title'), desc: t('governance.cert1Desc'), icon: "🏛️" },
+                { cert: t('governance.cert2Title'), desc: t('governance.cert2Desc'), icon: "📜" },
+                { cert: t('governance.cert3Title'), desc: t('governance.cert3Desc'), icon: "🚀" },
+                { cert: t('governance.cert4Title'), desc: t('governance.cert4Desc'), icon: "🌐" },
               ].map((item, i) => (
                 <motion.div
                   key={item.cert}
@@ -1107,16 +1161,16 @@ export function AboutPage() {
                       <path d="M3 9h18M9 21V9" />
                     </svg>
                   </div>
-                  <div className="flex-1 min-w-0">
+                   <div className="flex-1 min-w-0">
                     <h4 className="font-black text-xl sm:text-2xl text-white group-hover:text-[var(--journey-saffron)] transition-colors duration-500 mb-2 tracking-tight">
-                      Section 8 Company
+                      {t('governance.section8Title')}
                     </h4>
                     <p className="text-gray-400 group-hover:text-gray-300 text-sm sm:text-base leading-relaxed transition-colors duration-500">
-                      Incorporated under the Companies Act 2013. Annually audited & publicly accountable — the strongest legal framework for transparent non-profit governance in India.
+                      {t('governance.section8Desc')}
                     </p>
                   </div>
                   <div className="shrink-0 hidden sm:flex items-center gap-2 text-[var(--journey-saffron)] text-xs font-black tracking-widest uppercase opacity-0 group-hover:opacity-100 transition-all duration-500">
-                    Foundation <ArrowRight className="w-4 h-4" />
+                    {t('instruments.inst1.label')} <ArrowRight className="w-4 h-4" />
                   </div>
                 </div>
               </motion.div>
@@ -1130,11 +1184,11 @@ export function AboutPage() {
         <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-16">
             <p className="inline-flex items-center gap-2 bg-[var(--future-sky)]/10 text-[var(--future-sky)] px-4 py-1.5 rounded-full text-sm font-bold tracking-widest uppercase border border-[var(--future-sky)]/20 mb-6">
-              Leadership
+              {t('advisoryBoard.badge')}
             </p>
-            <h2 className="text-4xl font-extrabold text-gray-900 mb-4">Board Members</h2>
+            <h2 className="text-4xl font-extrabold text-gray-900 mb-4">{t('advisoryBoard.heading')}</h2>
             <p className="text-lg text-gray-600 max-w-2xl mx-auto">
-              Guided by clinical depth, national credibility, and global perspective.
+              {t('advisoryBoard.desc')}
             </p>
           </div>
 
@@ -1202,12 +1256,12 @@ export function AboutPage() {
             </div>
 
             <div className="relative z-10">
-              <h3 className="text-3xl md:text-4xl font-extrabold text-white mb-6">Join Our Advisory Board</h3>
+              <h3 className="text-3xl md:text-4xl font-extrabold text-white mb-6">{t('cta.title')}</h3>
               <p className="text-lg md:text-xl text-indigo-100 max-w-2xl mx-auto mb-10 font-medium leading-relaxed">
-                We are actively building our Advisory Board. If you bring subject expertise, policy experience, or health/education credentials — without financial obligation — we welcome your interest.
+                {t('cta.desc')}
               </p>
               <Link to="/advisory-board" className="inline-flex items-center gap-2 bg-white hover:bg-gray-100 text-[var(--womb-forest)] font-extrabold shadow-xl hover:shadow-2xl hover:-translate-y-1 transition-all h-14 px-8 text-base rounded-xl group">
-                Apply Now <ArrowRight className="w-5 h-5 ml-1 group-hover:translate-x-1 transition-transform" />
+                {t('cta.btn')} <ArrowRight className="w-5 h-5 ml-1 group-hover:translate-x-1 transition-transform" />
               </Link>
             </div>
           </motion.div>

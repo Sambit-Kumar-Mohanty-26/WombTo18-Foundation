@@ -1,59 +1,9 @@
 import { motion, useMotionValue, useSpring, useTransform } from "motion/react";
 import { Landmark, FileText, Globe, Building2, ShieldCheck, ArrowRight, Sparkles, CheckCircle2, BadgeCheck } from "lucide-react";
 import { useState, useRef } from "react";
+import { useTranslation } from "react-i18next";
 
-const credentials = [
-  {
-    icon: Landmark,
-    title: "80G Certified",
-    subtitle: "Tax-Deductible Donations",
-    description:
-      "All contributions are eligible for income tax deduction under Section 80G of the Income Tax Act",
-    accentColor: "var(--womb-forest)",
-    accentLight: "rgba(29,110,63,0.08)",
-    accentMedium: "rgba(29,110,63,0.15)",
-    badge: "Verified",
-    stats: "Save up to 50% Tax",
-  },
-  {
-    icon: FileText,
-    title: "12A Certified",
-    subtitle: "Legally Recognised Non-Profit",
-    description:
-      "Registered and certified under Section 12A of the Income Tax Act for tax exemption",
-    accentColor: "var(--journey-saffron)",
-    accentLight: "rgba(255,153,0,0.08)",
-    accentMedium: "rgba(255,153,0,0.15)",
-    badge: "Verified",
-    stats: "Registered Since 2015",
-  },
-  {
-    icon: Globe,
-    title: "TechSoup India",
-    subtitle: "Validated NGO Partner",
-    description:
-      "Verified by TechSoup India — the global standard for NGO technology access and validation",
-    accentColor: "var(--future-sky)",
-    accentLight: "rgba(0,174,239,0.08)",
-    accentMedium: "rgba(0,174,239,0.15)",
-    badge: "Verified",
-    stats: "Tech Access Partner",
-  },
-  {
-    icon: Building2,
-    title: "Section 8",
-    subtitle: "Registered Foundation",
-    description:
-      "Incorporated as a Section 8 Company under the Companies Act, 2013",
-    accentColor: "#7c3aed",
-    accentLight: "rgba(124,58,237,0.08)",
-    accentMedium: "rgba(124,58,237,0.15)",
-    badge: "Verified",
-    stats: "CSR Eligible",
-  },
-];
-
-function CredentialCard({ cred, idx }: { cred: typeof credentials[0]; idx: number }) {
+function CredentialCard({ cred, idx }: { cred: any; idx: number }) {
   const [isHovered, setIsHovered] = useState(false);
   const cardRef = useRef<HTMLDivElement>(null);
   const mouseX = useMotionValue(0);
@@ -218,6 +168,55 @@ function CredentialCard({ cred, idx }: { cred: typeof credentials[0]; idx: numbe
 }
 
 export function OurCredentials() {
+  const { t } = useTranslation('home');
+
+  const credentials = [
+    {
+      icon: Landmark,
+      title: t('credentials.card1Title'),
+      subtitle: t('credentials.card1Subtitle'),
+      description: t('credentials.card1Desc'),
+      accentColor: "var(--womb-forest)",
+      accentLight: "rgba(29,110,63,0.08)",
+      accentMedium: "rgba(29,110,63,0.15)",
+      badge: t('credentials.verified'),
+      stats: t('credentials.card1Stats'),
+    },
+    {
+      icon: FileText,
+      title: t('credentials.card2Title'),
+      subtitle: t('credentials.card2Subtitle'),
+      description: t('credentials.card2Desc'),
+      accentColor: "var(--journey-saffron)",
+      accentLight: "rgba(255,153,0,0.08)",
+      accentMedium: "rgba(255,153,0,0.15)",
+      badge: t('credentials.verified'),
+      stats: t('credentials.card2Stats'),
+    },
+    {
+      icon: Globe,
+      title: t('credentials.card3Title'),
+      subtitle: t('credentials.card3Subtitle'),
+      description: t('credentials.card3Desc'),
+      accentColor: "var(--future-sky)",
+      accentLight: "rgba(0,174,239,0.08)",
+      accentMedium: "rgba(0,174,239,0.15)",
+      badge: t('credentials.verified'),
+      stats: t('credentials.card3Stats'),
+    },
+    {
+      icon: Building2,
+      title: t('credentials.card4Title'),
+      subtitle: t('credentials.card4Subtitle'),
+      description: t('credentials.card4Desc'),
+      accentColor: "#7c3aed",
+      accentLight: "rgba(124,58,237,0.08)",
+      accentMedium: "rgba(124,58,237,0.15)",
+      badge: t('credentials.verified'),
+      stats: t('credentials.card4Stats'),
+    },
+  ];
+
   return (
     <section className="relative py-12 lg:py-16 overflow-hidden" style={{ background: "linear-gradient(180deg, #FFFDF7 0%, #f8f7f2 50%, #FFFDF7 100%)" }}>
       {/* Ambient Background */}
@@ -256,7 +255,7 @@ export function OurCredentials() {
                 >
                   <Sparkles className="w-3.5 h-3.5 text-[var(--womb-forest)]" />
                   <span className="text-[10px] font-extrabold uppercase tracking-[0.2em] text-[var(--womb-forest)]">
-                    Transparency First
+                    {t('credentials.badge')}
                   </span>
                 </motion.div>
                 
@@ -270,12 +269,12 @@ export function OurCredentials() {
                   transition={{ delay: 0.1, duration: 0.7 }}
                 >
                   <span className="text-gray-900">
-                    Trusted &{" "}
+                    {t('credentials.heading1')}
                   </span>
                   <br />
                   <span className="relative inline-block mt-1">
                     <span className="text-transparent bg-clip-text bg-gradient-to-r from-[var(--womb-forest)] to-emerald-400">
-                      Compliant
+                      {t('credentials.heading2')}
                     </span>
                     <motion.div
                       initial={{ scaleX: 0 }}
@@ -295,7 +294,7 @@ export function OurCredentials() {
                   viewport={{ once: true }}
                   transition={{ delay: 0.4, duration: 0.6 }}
                 >
-                  "Your trust is our greatest fuel"
+                  "{t('credentials.quote')}"
                 </motion.p>
               </motion.div>
 
@@ -308,9 +307,9 @@ export function OurCredentials() {
                 className="space-y-2 mt-6"
               >
                 {[
-                  "Government verified & audited",
-                  "100% transparent fund allocation",
-                  "Annual compliance reports published",
+                  t('credentials.check1'),
+                  t('credentials.check2'),
+                  t('credentials.check3'),
                 ].map((item, i) => (
                   <motion.div
                     key={item}
@@ -364,7 +363,7 @@ export function OurCredentials() {
               <div className="flex items-center gap-2 px-4 py-2 rounded-full bg-white/80 backdrop-blur-sm border border-gray-100 shadow-sm">
                 <ShieldCheck className="w-4 h-4 text-[var(--womb-forest)]" />
                 <span className="text-[10px] font-bold uppercase tracking-[0.12em] text-gray-500">
-                  All Certifications Independently Verified
+                  {t('credentials.footer')}
                 </span>
               </div>
             </motion.div>

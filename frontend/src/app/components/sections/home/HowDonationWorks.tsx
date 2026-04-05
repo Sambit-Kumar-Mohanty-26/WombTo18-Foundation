@@ -1,24 +1,27 @@
 import { motion } from "motion/react";
 import { HeartHandshake, ShieldCheck, AreaChart } from "lucide-react";
+import { useTranslation } from "react-i18next";
 
 export function HowDonationWorks() {
+  const { t } = useTranslation('home');
+
   const steps = [
     {
       icon: HeartHandshake,
-      title: "1. You Donate",
-      description: "You make a contribution. An 80G certificate is auto-emailed within 2 minutes.",
+      title: t('howDonation.step1Title'),
+      description: t('howDonation.step1Desc'),
       delay: 0.1
     },
     {
       icon: ShieldCheck,
-      title: "2. Funds Ring-Fenced",
-      description: "100% of designated funds go directly into a programme-specific bank wallet.",
+      title: t('howDonation.step2Title'),
+      description: t('howDonation.step2Desc'),
       delay: 0.4
     },
     {
       icon: AreaChart,
-      title: "3. Impact Tracked",
-      description: "Log into your personal dashboard to see real-time updates on child lives touched.",
+      title: t('howDonation.step3Title'),
+      description: t('howDonation.step3Desc'),
       delay: 0.7
     }
   ];
@@ -30,10 +33,10 @@ export function HowDonationWorks() {
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
         <div className="text-center mb-20 max-w-3xl mx-auto">
           <h2 className="text-3xl sm:text-4xl lg:text-5xl text-gray-900 mb-6" style={{ fontWeight: 800 }}>
-            How Your Donation Works
+            {t('howDonation.heading')}
           </h2>
           <p className="text-lg text-gray-600">
-            A radical commitment to transparency. Every rupee is tracked from your account to a child's health outcome.
+            {t('howDonation.desc')}
           </p>
         </div>
 

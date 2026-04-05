@@ -1,27 +1,29 @@
 import { TrendingUp, Users, Heart, GraduationCap, Home, Stethoscope } from "lucide-react";
 import { motion } from "motion/react";
 import { ScrollReveal } from "../ui/ScrollReveal";
-
-const metrics = [
-  { icon: Users, value: "15,234", label: "Children Supported", color: "text-primary" },
-  { icon: Heart, value: "3,500+", label: "Mothers Cared For", color: "text-primary" },
-  { icon: GraduationCap, value: "8,100", label: "Students Educated", color: "text-primary" },
-  { icon: Stethoscope, value: "45,000", label: "Health Check-ups", color: "text-primary" },
-  { icon: Home, value: "200+", label: "Communities Reached", color: "text-primary" },
-  { icon: TrendingUp, value: "98%", label: "Funds Utilized", color: "text-primary" },
-];
+import { useTranslation } from "react-i18next";
 
 export function ImpactSection() {
+  const { t } = useTranslation('home');
+
+  const metrics = [
+    { icon: Users, value: "15,234", label: t('impact.stat1Label'), color: "text-primary" },
+    { icon: Heart, value: "3,500+", label: t('impact.stat2Label'), color: "text-primary" },
+    { icon: GraduationCap, value: "8,100", label: t('impact.stat3Label'), color: "text-primary" },
+    { icon: Stethoscope, value: "45,000", label: t('impact.stat4Label'), color: "text-primary" },
+    { icon: Home, value: "200+", label: t('impact.stat5Label'), color: "text-primary" },
+    { icon: TrendingUp, value: "98%", label: t('impact.stat6Label'), color: "text-primary" },
+  ];
   return (
     <section className="py-20 bg-white border-t border-gray-200">
       <ScrollReveal className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
         <div className="text-center mb-14">
-          <p className="text-primary text-sm mb-2" style={{ fontWeight: 600, textTransform: "uppercase", letterSpacing: "0.05em" }}>Our Impact</p>
+          <p className="text-primary text-sm mb-2" style={{ fontWeight: 600, textTransform: "uppercase", letterSpacing: "0.05em" }}>{t('impact.badge')}</p>
           <h2 className="text-3xl sm:text-4xl text-gray-900 mb-4" style={{ fontWeight: 700 }}>
-            Numbers That Tell Our Story
+            {t('impact.heading')}
           </h2>
           <p className="text-gray-600 max-w-2xl mx-auto">
-            Every number represents a life changed, a family empowered, and a community strengthened.
+            {t('impact.desc')}
           </p>
         </div>
 

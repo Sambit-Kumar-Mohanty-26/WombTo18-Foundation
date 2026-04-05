@@ -22,7 +22,7 @@ const HERO_IMAGES = [
 ];
 
 export function HeroSection() {
-  const { t } = useTranslation();
+  const { t } = useTranslation('home');
   const containerRef = useRef<HTMLElement>(null);
   const [currentImageIndex, setCurrentImageIndex] = useState(0);
   
@@ -108,7 +108,7 @@ export function HeroSection() {
                 <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-[var(--journey-saffron)] opacity-75"></span>
                 <span className="relative inline-flex rounded-full h-2 w-2 bg-[var(--journey-saffron)]"></span>
               </span>
-              {t('home.heroBadge')}
+              {t('hero.badge')}
             </div>
           </motion.div>
           
@@ -118,13 +118,13 @@ export function HeroSection() {
             className="text-[clamp(2.45rem,12vw,5rem)] text-white tracking-tight drop-shadow-2xl"
             style={{ fontWeight: 800, lineHeight: 1.05 }}
           >
-            {t('home.heroEveryChild')}
+            {t('hero.everyChild')}
             <br className="hidden sm:block" />
-            <span className="text-transparent bg-clip-text bg-gradient-to-r from-green-300 to-[var(--womb-forest)] drop-shadow-[0_2px_10px_rgba(0,0,0,0.8)]">{t('home.heroPregnancy')}</span>
+            <span className="text-transparent bg-clip-text bg-gradient-to-r from-green-300 to-[var(--womb-forest)] drop-shadow-[0_2px_10px_rgba(0,0,0,0.8)]">{t('hero.pregnancy')}</span>
             {" "}
-            <span className="text-[var(--journey-saffron)] drop-shadow-[0_2px_10px_rgba(0,0,0,0.8)]">{t('home.heroTo')} <span className="text-[var(--future-sky)]">{t('home.hero18')}</span></span>
+            <span className="text-[var(--journey-saffron)] drop-shadow-[0_2px_10px_rgba(0,0,0,0.8)]">{t('hero.to')} <span className="text-[var(--future-sky)]">{t('hero.18')}</span></span>
             <br />
-            <span className="text-white/90 font-bold">{t('home.heroHealthy')}</span>
+            <span className="text-white/90 font-bold">{t('hero.healthy')}</span>
           </motion.h1>
           
           {/* Description */}
@@ -132,7 +132,7 @@ export function HeroSection() {
             variants={cinematicReveal} 
             className="max-w-3xl px-2 text-base leading-relaxed font-medium text-white/80 drop-shadow-md sm:px-0 sm:text-lg md:text-2xl"
           >
-            {t('home.heroDesc')} 
+            {t('hero.desc')} 
           </motion.p>
           
           {/* CTA Buttons */}
@@ -143,27 +143,27 @@ export function HeroSection() {
             <Link to="/donate" className="w-full sm:min-w-[200px] sm:flex-1">
               <Button size="lg" className="flex h-auto w-full flex-col items-center justify-center rounded-xl border border-white/10 px-4 py-3 text-white shadow-[0_0_30px_rgba(29,110,63,0.5)] backdrop-blur-sm transition-all hover:-translate-y-1 hover:shadow-[0_0_40px_rgba(29,110,63,0.8)] sm:py-3.5" style={{ backgroundColor: 'var(--womb-forest, #1D6E3F)' }}>
                 <div className="mb-1 flex items-center text-sm font-black sm:text-base lg:text-lg">
-                  <Heart className="h-5 w-5 mr-2 fill-current" /> {t('home.btnDonate')}
+                  <Heart className="h-5 w-5 mr-2 fill-current" /> {t('hero.btnDonate')}
                 </div>
-                <span className="text-[10px] lg:text-xs font-bold opacity-90 tracking-widest uppercase">{t('home.btnDonateSub')}</span>
+                <span className="text-[10px] lg:text-xs font-bold opacity-90 tracking-widest uppercase">{t('hero.btnDonateSub')}</span>
               </Button>
             </Link>
             
             <Link to="/dashboard" className="w-full sm:min-w-[200px] sm:flex-1">
               <Button size="lg" className="flex h-auto w-full flex-col items-center justify-center rounded-xl border border-white/10 px-4 py-3 text-white shadow-[0_0_30px_rgba(255,153,0,0.3)] backdrop-blur-sm transition-all hover:-translate-y-1 hover:shadow-[0_0_40px_rgba(255,153,0,0.6)] sm:py-3.5" style={{ backgroundColor: 'var(--journey-saffron, #FF9900)' }}>
                 <div className="mb-1 flex items-center text-sm font-black sm:text-base lg:text-lg">
-                  <LayoutDashboard className="h-5 w-5 mr-2" /> {t('home.btnDashboard')}
+                  <LayoutDashboard className="h-5 w-5 mr-2" /> {t('hero.btnDashboard')}
                 </div>
-                <span className="text-[10px] lg:text-xs font-bold opacity-90 tracking-widest uppercase">{t('home.btnDashboardSub')}</span>
+                <span className="text-[10px] lg:text-xs font-bold opacity-90 tracking-widest uppercase">{t('hero.btnDashboardSub')}</span>
               </Button>
             </Link>
             
             <Link to="/get-involved" className="w-full sm:min-w-[200px] sm:flex-1">
               <Button size="lg" className="flex h-auto w-full flex-col items-center justify-center rounded-xl border border-white/30 bg-white/10 px-4 py-3 text-white shadow-lg backdrop-blur-md transition-all hover:-translate-y-1 hover:bg-white/20 hover:shadow-xl sm:py-3.5">
                 <div className="mb-1 flex items-center text-sm font-black sm:text-base lg:text-lg">
-                  <Handshake className="h-5 w-5 mr-2" /> {t('home.btnPartner')}
+                  <Handshake className="h-5 w-5 mr-2" /> {t('hero.btnPartner')}
                 </div>
-                <span className="text-[10px] lg:text-xs font-bold opacity-90 tracking-widest uppercase">{t('home.btnPartnerSub')}</span>
+                <span className="text-[10px] lg:text-xs font-bold opacity-90 tracking-widest uppercase">{t('hero.btnPartnerSub')}</span>
               </Button>
             </Link>
           </motion.div>
@@ -180,11 +180,11 @@ export function HeroSection() {
         <div className="flex flex-wrap justify-center gap-4 px-4 overflow-hidden mask-image:linear-gradient(to_right,transparent,black_10%,black_90%,transparent)">
            <div className="flex items-center gap-2 text-white/50 text-xs font-bold tracking-widest uppercase bg-white/5 backdrop-blur-sm px-4 py-2 rounded-full border border-white/10">
               <span className="w-2 h-2 rounded-full bg-[var(--future-sky)]"></span>
-              Verified Section 8 NGO
+              {t('hero.trust1')}
            </div>
            <div className="flex items-center gap-2 text-white/50 text-xs font-bold tracking-widest uppercase bg-white/5 backdrop-blur-sm px-4 py-2 rounded-full border border-white/10">
               <span className="w-2 h-2 rounded-full bg-[var(--journey-saffron)]"></span>
-              12A & 80G Compliant
+              {t('hero.trust2')}
            </div>
         </div>
       </motion.div>

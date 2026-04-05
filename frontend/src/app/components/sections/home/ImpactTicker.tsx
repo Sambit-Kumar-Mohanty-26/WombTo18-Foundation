@@ -1,5 +1,6 @@
 import { useEffect, useState, useRef } from "react";
 import { motion, useInView } from "motion/react";
+import { useTranslation } from "react-i18next";
 
 function AnimatedCounter({ from = 0, to, duration = 2, suffix = "" }: { from?: number, to: number, duration?: number, suffix?: string }) {
   const [count, setCount] = useState(from);
@@ -34,11 +35,12 @@ function AnimatedCounter({ from = 0, to, duration = 2, suffix = "" }: { from?: n
 }
 
 export function ImpactTicker() {
+  const { t } = useTranslation('home');
   const stats = [
-    { value: 12450, suffix: "+", label: "Children Enrolled", color: "var(--womb-forest, #1D6E3F)" },
-    { value: 25, suffix: "", label: "Schools Active", color: "var(--journey-saffron, #FF9900)" },
-    { value: 3210, suffix: "+", label: "80G Certificates Issued", color: "var(--future-sky, #00AEEF)" },
-    { value: 6, suffix: "", label: "States Covered", color: "#10b981" },
+    { value: 12450, suffix: "+", label: t('impactTicker.metric1'), color: "var(--womb-forest, #1D6E3F)" },
+    { value: 25, suffix: "", label: t('impactTicker.metric2'), color: "var(--journey-saffron, #FF9900)" },
+    { value: 3210, suffix: "+", label: t('impactTicker.metric3'), color: "var(--future-sky, #00AEEF)" },
+    { value: 6, suffix: "", label: t('impactTicker.metric4'), color: "#10b981" },
   ];
 
   return (
