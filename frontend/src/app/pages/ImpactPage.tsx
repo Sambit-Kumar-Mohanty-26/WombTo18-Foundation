@@ -328,7 +328,7 @@ export function ImpactPage() {
           </motion.div>
           
           <div className="grid md:grid-cols-3 gap-6 lg:gap-8 perspective-[2000px] items-stretch">
-            {content.sdg.cards.map((sdg, i) => (
+            {content.sdg.cards.map((sdg: any, i: number) => (
               <motion.div
                 key={sdg.id}
                 initial={{ opacity: 0, rotateX: -40, y: 80, filter: 'blur(10px)' }}
@@ -369,7 +369,7 @@ export function ImpactPage() {
                 </p>
 
                 <ul className="space-y-2.5 z-10 mt-auto">
-                  {sdg.points.map((point) => (
+                  {sdg.points.map((point: string) => (
                     <li key={point} className="flex items-start gap-2.5 text-[0.95rem] text-gray-700 leading-snug">
                       <span
                         className="mt-1.5 h-2.5 w-2.5 shrink-0 rounded-full"
@@ -829,7 +829,7 @@ export function ImpactPage() {
             {content.trust.subtitle}
           </p>
           <div className="flex flex-wrap justify-center gap-4">
-            {content.trust.badges.map((badge) => (
+            {content.trust.badges.map((badge: string) => (
               <Badge key={badge} variant="outline" className="px-4 py-2 text-sm border-[#a7e8c3] text-[#155e33] bg-white shadow-sm">
                 <ShieldCheck className="h-3.5 w-3.5 mr-1.5 text-[#1D6E3F]" />
                 {badge}

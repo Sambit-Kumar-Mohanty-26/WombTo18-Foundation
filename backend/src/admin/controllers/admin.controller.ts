@@ -47,4 +47,16 @@ export class AdminController {
   async postReport(@Body() body: any) {
     return { success: true, message: 'Report posted successfully' };
   }
+
+  @Get('donations')
+  @ApiOperation({ summary: 'List all donations with filters' })
+  async getDonations(
+    @Query('startDate') startDate?: string,
+    @Query('endDate') endDate?: string,
+    @Query('programId') programId?: string,
+    @Query('donorSearch') donorSearch?: string,
+    @Query('status') status?: string,
+  ) {
+    return this.adminService.findAllDonations({ startDate, endDate, programId, donorSearch, status });
+  }
 }
