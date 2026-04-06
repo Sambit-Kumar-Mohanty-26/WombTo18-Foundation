@@ -37,16 +37,6 @@ export function VolunteerDashboardHome() {
       try {
         const res = await client.get<VolDashData>(`/volunteers/dashboard?volunteerId=${encodeURIComponent(volId)}`);
         setData(res);
-        // Try claiming first-login coin
-        if (!res.volunteer?.hasClaimedLoginCoin) {
-          try {
-            const coinRes = await client.post<any>("/coins/first-login", { volunteerId: res.volunteer?.volunteerId || volId });
-            if (coinRes.awarded) {
-              toast.success(`🎉 Welcome bonus! +${coinRes.awarded} coins`);
-              setLoginCoinClaimed(true);
-            }
-          } catch { /* already claimed */ }
-        }
       } catch (e: any) {
         console.error("Dashboard fetch error", e);
       } finally {

@@ -51,35 +51,9 @@ export class CoinService {
       where: { OR: [{ volunteerId }, { email: volunteerId }] },
     });
     if (!volunteer) throw new NotFoundException('Volunteer not found');
-    if (volunteer.hasClaimedLoginCoin) {
-      return { alreadyClaimed: true, totalCoins: volunteer.totalCoins };
-    }
-
-    const config = await this.getConfig();
-
-    await this.prisma.$transaction([
-      this.prisma.coinTransaction.create({
-        data: {
-          volunteerId: volunteer.id,
-          amount: config.firstLogin,
-          type: 'FIRST_LOGIN',
-          description: `Welcome bonus: ${config.firstLogin} coins for your first login`,
-        },
-      }),
-      this.prisma.volunteer.update({
-        where: { id: volunteer.id },
-        data: {
-          totalCoins: { increment: config.firstLogin },
-          hasClaimedLoginCoin: true,
-        },
-      }),
-    ]);
-
-    return {
-      awarded: config.firstLogin,
-      totalCoins: volunteer.totalCoins + config.firstLogin,
-      type: 'FIRST_LOGIN',
-    };
+    
+    // First login bonus has been retired
+    return { alreadyClaimed: true, totalCoins: volunteer.totalCoins };
   }
 
   /** Award referral coins based on payment amount (1:1 ratio) */
