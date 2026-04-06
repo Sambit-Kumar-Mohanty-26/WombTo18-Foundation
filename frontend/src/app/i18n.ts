@@ -28,14 +28,14 @@ import orHome from './locales/or/home/translation.json';
 // Programs Page specific translations
 import enPrograms from './locales/en/programs/translation.json';
 import hiPrograms from './locales/hi/programs/translation.json';
-// import mrPrograms from './locales/mr/programs/translation.json';
-// import tePrograms from './locales/te/programs/translation.json';
-// import taPrograms from './locales/ta/programs/translation.json';
-// import knPrograms from './locales/kn/programs/translation.json';
-// import bnPrograms from './locales/bn/programs/translation.json';
-// import guPrograms from './locales/gu/programs/translation.json';
-// import paPrograms from './locales/pa/programs/translation.json';
-// import orPrograms from './locales/or/programs/translation.json';
+import mrPrograms from './locales/mr/programs/translation.json';
+import tePrograms from './locales/te/programs/translation.json';
+import taPrograms from './locales/ta/programs/translation.json';
+import knPrograms from './locales/kn/programs/translation.json';
+import bnPrograms from './locales/bn/programs/translation.json';
+import guPrograms from './locales/gu/programs/translation.json';
+import paPrograms from './locales/pa/programs/translation.json';
+import orPrograms from './locales/or/programs/translation.json';
 
 // About Page specific translations
 import enAbout from './locales/en/about/translation.json';
@@ -52,6 +52,14 @@ import orAbout from './locales/or/about/translation.json';
 // Impact Page specific translations
 import enImpact from './locales/en/impact/translation.json';
 import hiImpact from './locales/hi/impact/translation.json';
+import mrImpact from './locales/mr/impact/translation.json';
+import teImpact from './locales/te/impact/translation.json';
+import taImpact from './locales/ta/impact/translation.json';
+import knImpact from './locales/kn/impact/translation.json';
+import bnImpact from './locales/bn/impact/translation.json';
+import guImpact from './locales/gu/impact/translation.json';
+import paImpact from './locales/pa/impact/translation.json';
+import orImpact from './locales/or/impact/translation.json';
 
 // Transparency Page specific translations
 import enTransparency from './locales/en/transparency/translation.json';
@@ -68,14 +76,14 @@ i18n
     resources: {
       en: { translation: enTranslation, home: enHome, about: enAbout, programs: enPrograms, impact: enImpact, transparency: enTransparency, donate: enDonate },
       hi: { translation: hiTranslation, home: hiHome, about: hiAbout, programs: hiPrograms, impact: hiImpact, transparency: hiTransparency, donate: hiDonate },
-      mr: { translation: mrTranslation, home: mrHome, about: mrAbout },
-      te: { translation: teTranslation, home: teHome, about: teAbout },
-      ta: { translation: taTranslation, home: taHome, about: taAbout },
-      kn: { translation: knTranslation, home: knHome, about: knAbout },
-      bn: { translation: bnTranslation, home: bnHome, about: bnAbout },
-      gu: { translation: guTranslation, home: guHome, about: guAbout },
-      pa: { translation: paTranslation, home: paHome, about: paAbout },
-      or: { translation: orTranslation, home: orHome, about: orAbout }
+      mr: { translation: mrTranslation, home: mrHome, about: mrAbout, programs: mrPrograms },
+      te: { translation: teTranslation, home: teHome, about: teAbout, programs: tePrograms },
+      ta: { translation: taTranslation, home: taHome, about: taAbout, programs: taPrograms },
+      kn: { translation: knTranslation, home: knHome, about: knAbout, programs: knPrograms },
+      bn: { translation: bnTranslation, home: bnHome, about: bnAbout, programs: bnPrograms },
+      gu: { translation: guTranslation, home: guHome, about: guAbout, programs: guPrograms },
+      pa: { translation: paTranslation, home: paHome, about: paAbout, programs: paPrograms },
+      or: { translation: orTranslation, home: orHome, about: orAbout, programs: orPrograms }
     },
     fallbackLng: 'en',
     interpolation: {
