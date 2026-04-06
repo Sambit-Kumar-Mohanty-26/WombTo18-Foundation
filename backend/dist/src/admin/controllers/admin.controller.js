@@ -76,6 +76,9 @@ let AdminController = class AdminController {
     async postReport(body) {
         return { success: true, message: 'Report posted successfully' };
     }
+    async getDonations(startDate, endDate, programId, donorSearch, status) {
+        return this.adminService.findAllDonations({ startDate, endDate, programId, donorSearch, status });
+    }
 };
 exports.AdminController = AdminController;
 __decorate([
@@ -124,6 +127,18 @@ __decorate([
     __metadata("design:paramtypes", [Object]),
     __metadata("design:returntype", Promise)
 ], AdminController.prototype, "postReport", null);
+__decorate([
+    (0, common_1.Get)('donations'),
+    (0, swagger_1.ApiOperation)({ summary: 'List all donations with filters' }),
+    __param(0, (0, common_1.Query)('startDate')),
+    __param(1, (0, common_1.Query)('endDate')),
+    __param(2, (0, common_1.Query)('programId')),
+    __param(3, (0, common_1.Query)('donorSearch')),
+    __param(4, (0, common_1.Query)('status')),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [String, String, String, String, String]),
+    __metadata("design:returntype", Promise)
+], AdminController.prototype, "getDonations", null);
 exports.AdminController = AdminController = __decorate([
     (0, swagger_1.ApiTags)('Admin Panel'),
     (0, common_1.Controller)('admin'),

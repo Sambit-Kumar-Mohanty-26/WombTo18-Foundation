@@ -82,6 +82,7 @@ export declare class AuthController {
         volunteerId: string | undefined;
         eligible: boolean;
         isVolunteer: boolean;
+        profileCompleted: boolean;
         role: string;
         redirect: string;
     } | {

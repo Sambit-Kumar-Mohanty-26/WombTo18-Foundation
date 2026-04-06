@@ -469,10 +469,13 @@ let AuthService = class AuthService {
         const isVolunteer = donor.isVolunteer || ('volunteerId' in donor && !!donor.volunteerId);
         const role = isVolunteer ? 'VOLUNTEER' : 'DONOR';
         let volunteerId;
+        let profileCompleted = false;
         if (isVolunteer) {
             const volRecord = await this.prisma.volunteer.findFirst({ where: { donorId: donor.id } });
-            if (volRecord)
+            if (volRecord) {
                 volunteerId = volRecord.volunteerId;
+                profileCompleted = !!volRecord.city && !!volRecord.profession;
+            }
         }
         return {
             success: true,
@@ -482,8 +485,11 @@ let AuthService = class AuthService {
             volunteerId,
             eligible: donor.totalDonated ? donor.totalDonated >= 5000 : false,
             isVolunteer,
-            role,
-            redirect: isVolunteer ? '/volunteer' : '/donor/dashboard',
+            profileCompleted,
+            role: isVolunteer ? 'VOLUNTEER' : 'DONOR',
+            redirect: isVolunteer
+                ? (profileCompleted ? `/volunteer/${volunteerId || donor.donorId}/dashboard` : `/volunteer-onboarding`)
+                : `/donor/${donor.donorId}/dashboard`,
         };
     }
     async verifyDualOtp(identifier, emailOtp, mobileOtp) {

@@ -108,6 +108,7 @@ export declare class AuthService {
         volunteerId: string | undefined;
         eligible: boolean;
         isVolunteer: boolean;
+        profileCompleted: boolean;
         role: string;
         redirect: string;
     }>;

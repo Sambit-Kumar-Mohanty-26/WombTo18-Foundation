@@ -158,6 +158,34 @@ let AdminService = class AdminService {
             recurring
         };
     }
+    async findAllDonations(filters) {
+        const where = {};
+        if (filters.status && filters.status !== 'ALL') {
+            where.status = filters.status;
+        }
+        if (filters.programId) {
+            where.programId = filters.programId;
+        }
+        if (filters.startDate || filters.endDate) {
+            where.createdAt = {};
+            if (filters.startDate)
+                where.createdAt.gte = new Date(filters.startDate);
+            if (filters.endDate)
+                where.createdAt.lte = new Date(filters.endDate);
+        }
+        if (filters.donorSearch) {
+            where.OR = [
+                { donor: { name: { contains: filters.donorSearch, mode: 'insensitive' } } },
+                { donor: { email: { contains: filters.donorSearch, mode: 'insensitive' } } }
+            ];
+        }
+        return this.prisma.donation.findMany({
+            where,
+            include: { donor: true, program: true },
+            orderBy: { createdAt: 'desc' },
+            take: 200,
+        });
+    }
 };
 exports.AdminService = AdminService;
 exports.AdminService = AdminService = __decorate([
