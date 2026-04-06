@@ -44,6 +44,7 @@ export declare class AuthService {
         volunteerId: string | undefined;
         eligible: boolean;
         isVolunteer: boolean;
+        profileCompleted: boolean;
         role: string;
         redirect: string;
         otpSent: boolean;
@@ -59,6 +60,7 @@ export declare class AuthService {
         volunteerId?: undefined;
         eligible?: undefined;
         isVolunteer?: undefined;
+        profileCompleted?: undefined;
         role?: undefined;
         redirect?: undefined;
     } | {
@@ -72,6 +74,7 @@ export declare class AuthService {
         redirect: string;
         otpSent: boolean;
         volunteerId?: undefined;
+        profileCompleted?: undefined;
     }>;
     donorRegister(data: {
         email: string;
@@ -116,6 +119,7 @@ export declare class AuthService {
         volunteerId: any;
         partnerId: any;
         eligible: boolean;
+        profileCompleted: boolean;
         role: "VOLUNTEER" | "DONOR" | "PARTNER";
     }>;
     requestPasswordChange(email: string): Promise<{

@@ -21,6 +21,7 @@ export declare class AuthController {
         volunteerId: string | undefined;
         eligible: boolean;
         isVolunteer: boolean;
+        profileCompleted: boolean;
         role: string;
         redirect: string;
         otpSent: boolean;
@@ -36,6 +37,7 @@ export declare class AuthController {
         volunteerId?: undefined;
         eligible?: undefined;
         isVolunteer?: undefined;
+        profileCompleted?: undefined;
         role?: undefined;
         redirect?: undefined;
     } | {
@@ -49,6 +51,7 @@ export declare class AuthController {
         redirect: string;
         otpSent: boolean;
         volunteerId?: undefined;
+        profileCompleted?: undefined;
     } | {
         error: string;
     } | {
@@ -101,6 +104,7 @@ export declare class AuthController {
         volunteerId: any;
         partnerId: any;
         eligible: boolean;
+        profileCompleted: boolean;
         role: "VOLUNTEER" | "DONOR" | "PARTNER";
     } | {
         error: string;

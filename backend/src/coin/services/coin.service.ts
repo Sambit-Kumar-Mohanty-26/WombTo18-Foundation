@@ -152,6 +152,43 @@ export class CoinService {
     return { awarded: coins, paymentAmount, totalCoins: volunteer.totalCoins + coins };
   }
 
+  /** Award welcome bonus for volunteer onboarding */
+  async awardWelcomeBonus(volunteerEmail: string, donationId: string, paymentAmount: number) {
+    const volunteer = await this.prisma.volunteer.findUnique({
+      where: { email: volunteerEmail },
+    });
+    if (!volunteer) return null;
+
+    const coins = Math.floor(paymentAmount);
+
+    // Check idempotency
+    const existing = await this.prisma.coinTransaction.findFirst({
+      where: {
+        volunteerId: volunteer.id,
+        type: 'WELCOME_BONUS',
+      },
+    });
+    if (existing) return { alreadyAwarded: true, totalCoins: volunteer.totalCoins };
+
+    await this.prisma.$transaction([
+      this.prisma.coinTransaction.create({
+        data: {
+          volunteerId: volunteer.id,
+          amount: coins,
+          type: 'WELCOME_BONUS',
+          description: `Welcome bonus: ${coins} coins for ₹${paymentAmount} membership payment`,
+          metadata: JSON.stringify({ donationId, paymentAmount }),
+        },
+      }),
+      this.prisma.volunteer.update({
+        where: { id: volunteer.id },
+        data: { totalCoins: { increment: coins } },
+      }),
+    ]);
+
+    return { awarded: coins, totalCoins: volunteer.totalCoins + coins };
+  }
+
   /** Award camp join coins (normal participation via QR scan) */
   async awardCampJoinCoins(volunteerId: string, campId: string) {
     const volunteer = await this.prisma.volunteer.findFirst({

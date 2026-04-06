@@ -44,59 +44,86 @@ var __metadata = (this && this.__metadata) || function (k, v) {
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.MailerService = void 0;
 const common_1 = require("@nestjs/common");
-const nodemailer = __importStar(require("nodemailer"));
 const config_1 = require("@nestjs/config");
+const https = __importStar(require("https"));
 let MailerService = class MailerService {
     configService;
-    transporter = null;
     isEmailDisabled;
-    smtpUser;
-    smtpFrom;
     constructor(configService) {
         this.configService = configService;
         this.isEmailDisabled = this.configService.get('DISABLE_EMAIL') === 'true';
-        this.smtpUser = this.configService.get('SMTP_USER') || '';
-        this.smtpFrom = this.configService.get('SMTP_FROM') || `WombTo18 Team <${this.smtpUser}>`;
-        const host = this.configService.get('SMTP_HOST');
-        const pass = this.configService.get('SMTP_PASS');
-        const port = parseInt(this.configService.get('SMTP_PORT') || '587');
-        const secure = this.configService.get('SMTP_SECURE') === 'true';
-        if (host && this.smtpUser && pass) {
-            this.transporter = nodemailer.createTransport({
-                host,
-                port,
-                secure,
-                auth: {
-                    user: this.smtpUser,
-                    pass,
-                },
+    }
+    makeHttpsRequest(url, method, headers, body) {
+        return new Promise((resolve, reject) => {
+            const parsedUrl = new URL(url);
+            const options = {
+                hostname: parsedUrl.hostname,
+                port: parsedUrl.port || 443,
+                path: parsedUrl.pathname + (parsedUrl.search || ''),
+                method: method,
+                headers: headers,
+            };
+            const req = https.request(options, (res) => {
+                let rawData = '';
+                res.on('data', (chunk) => {
+                    rawData += chunk;
+                });
+                res.on('end', () => {
+                    resolve({ status: res.statusCode || 500, data: rawData });
+                });
             });
-        }
+            req.on('error', (e) => {
+                reject(e);
+            });
+            if (body) {
+                req.write(typeof body === 'string' ? body : JSON.stringify(body));
+            }
+            req.end();
+        });
     }
     async sendEmail(to, subject, html, text) {
         if (this.isEmailDisabled) {
             console.log(`[EMAIL DISABLED] To: ${to} | Subject: ${subject}`);
             return;
         }
-        if (!this.transporter) {
+        const serviceId = this.configService.get('EMAILJS_SERVICE_ID');
+        const templateId = this.configService.get('EMAILJS_TEMPLATE_ID');
+        const publicKey = this.configService.get('EMAILJS_PUBLIC_KEY');
+        const privateKey = this.configService.get('EMAILJS_PRIVATE_KEY');
+        if (!serviceId || !templateId || !publicKey) {
             if (this.configService.get('NODE_ENV') !== 'production') {
-                console.log(`[EMAIL DEV LOG] To: ${to} | Subject: ${subject}`);
-                console.log(`Text: ${text}`);
+                console.log(`[EMAIL DEV LOG] (Missing config) To: ${to} | Subject: ${subject}`);
+                console.log(`Text preview: ${text.substring(0, 50)}...`);
             }
             else {
-                throw new Error('Email transporter not configured. Set SMTP_HOST, SMTP_USER, and SMTP_PASS');
+                throw new Error('Email configuration missing (EMAILJS_SERVICE_ID, etc.)');
             }
             return;
         }
         try {
-            await this.transporter.sendMail({
-                from: this.smtpFrom,
-                to,
-                subject,
-                text,
-                html,
+            const response = await this.makeHttpsRequest('https://api.emailjs.com/api/v1.0/email/send', 'POST', {
+                'Content-Type': 'application/json',
+                'Accept': 'application/json',
+            }, {
+                service_id: serviceId,
+                template_id: templateId,
+                user_id: publicKey,
+                accessToken: privateKey,
+                template_params: {
+                    to_email: to,
+                    to_name: 'WombTo18 User',
+                    from_name: 'WombTo18 Foundation',
+                    subject: subject,
+                    message: html,
+                    reply_to: 'no-reply@wombto18.org',
+                },
             });
-            console.log(`[EMAIL SENT SUCCESS] To: ${to} | Subject: ${subject}`);
+            if (response.status === 200 || response.status === 201) {
+                console.log(`[EMAIL SENT SUCCESS] To: ${to} | Subject: ${subject}`);
+            }
+            else {
+                throw new Error(`EmailJS Error (${response.status}): ${response.data}`);
+            }
         }
         catch (error) {
             const errorMessage = error instanceof Error ? error.message : 'Unknown error';

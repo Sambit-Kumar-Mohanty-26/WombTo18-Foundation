@@ -64,8 +64,8 @@ let AdminController = class AdminController {
     async getDonors() {
         return this.adminService.findAllDonors();
     }
-    async getStats() {
-        return this.adminService.getStats();
+    async getStats(range) {
+        return this.adminService.getStats(range);
     }
     async getPrograms() {
         return this.adminService.findAllPrograms();
@@ -96,8 +96,9 @@ __decorate([
 __decorate([
     (0, common_1.Get)('stats'),
     (0, swagger_1.ApiOperation)({ summary: 'Get administrative metrics' }),
+    __param(0, (0, common_1.Query)('range')),
     __metadata("design:type", Function),
-    __metadata("design:paramtypes", []),
+    __metadata("design:paramtypes", [String]),
     __metadata("design:returntype", Promise)
 ], AdminController.prototype, "getStats", null);
 __decorate([

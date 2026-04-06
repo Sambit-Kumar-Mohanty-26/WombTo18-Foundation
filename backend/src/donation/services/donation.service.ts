@@ -206,7 +206,7 @@ export class DonationService {
         razorpayPaymentId: razorpay_payment_id,
         razorpaySignature: razorpay_signature,
       },
-      include: { donor: true },
+      include: { donor: true, program: true },
     });
 
     await this.prisma.program.update({
@@ -253,8 +253,14 @@ export class DonationService {
     });
 
     // VOLUNTEER COIN SYSTEM: 1:1 Ratio (₹1 = 1 Coin)
-    // Case 1: Reward the volunteer for their OWN donation
-    await this.coinService.awardSelfDonationCoins(donor.email, donation.id, donation.amount);
+    // Handle Welcome Bonus vs Regular Donation
+    if (donation.program.name === 'Volunteer Membership') {
+      const welcomeResult = await this.coinService.awardWelcomeBonus(donor.email, donation.id, donation.amount);
+      // Also award regular self-donation coins for consistency? 
+      // User said "gain that much coin as a welcome bonus", so WELCOME_BONUS is enough.
+    } else {
+      await this.coinService.awardSelfDonationCoins(donor.email, donation.id, donation.amount);
+    }
 
     // Case 2: Reward the REFERRER for this donation
     if (donation.referralCode) {

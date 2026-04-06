@@ -1,11 +1,13 @@
 import { CertificateService } from '../services/certificate.service';
 import type { Response } from 'express';
+import { StorageService } from '../../storage/storage.service';
 export declare class CertificateController {
     private readonly certificateService;
-    constructor(certificateService: CertificateService);
+    private readonly storageService;
+    constructor(certificateService: CertificateService, storageService: StorageService);
     receipt(donationId: string, res: Response): Promise<void>;
     tax80g(donationId: string, res: Response): Promise<void>;
-    downloadCert(certId: string, res: Response): Promise<void>;
+    downloadCert(certId: string, res: Response): Promise<void | Response<any, Record<string, any>>>;
     volunteerCert(volunteerId: string, res: Response): Promise<void>;
     campCert(volunteerId: string, campId: string, res: Response): Promise<void>;
     partnerCert(partnerId: string, res: Response): Promise<void>;
