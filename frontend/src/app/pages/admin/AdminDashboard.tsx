@@ -37,6 +37,7 @@ const activityStyles: any = {
   System: { bg: "bg-slate-100", text: "text-slate-500", icon: Activity },
 };
 
+import { Link } from "react-router";
 import { client } from "../../lib/api/client";
 
 export function AdminDashboard() {
@@ -217,7 +218,7 @@ export function AdminDashboard() {
                  <div className="w-6 h-6 border-2 border-slate-200 border-t-black rounded-full animate-spin" />
               </div>
             ) : stats.recentDonations.length > 0 ? (
-              stats.recentDonations.map((donation: any) => {
+              stats.recentDonations.slice(0, 3).map((donation: any) => {
                 const donorName = donation.donor?.name || donation.donor?.email || "Anonymous";
                 const amount = donation.amount.toLocaleString();
                 const progName = donation.program?.name || "General Fund";
@@ -248,9 +249,12 @@ export function AdminDashboard() {
             )}
           </div>
           
-          <button className="mt-6 w-full pt-6 border-t border-slate-100 text-[11px] font-bold uppercase tracking-[0.15em] hover:text-black text-slate-400 transition-colors flex items-center justify-center gap-2 group">
+          <Link 
+            to="/admin/ledger"
+            className="mt-6 w-full pt-6 border-t border-slate-100 text-[11px] font-bold uppercase tracking-[0.15em] hover:text-black text-slate-400 transition-colors flex items-center justify-center gap-2 group"
+          >
             View Ledger <ArrowRight size={14} className="group-hover:translate-x-1 transition-transform" />
-          </button>
+          </Link>
         </motion.div>
       </div>
     </motion.div>

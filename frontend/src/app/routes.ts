@@ -78,6 +78,7 @@ import { AdminCaseStudies } from "./pages/admin/AdminCaseStudies";
 import { AdminCamps } from "./pages/admin/AdminCamps";
 import { AdminCampCreate } from "./pages/admin/AdminCampCreate";
 import { AdminCampDetail } from "./pages/admin/AdminCampDetail";
+import { AdminLedger } from "./pages/admin/AdminLedger";
 
 export const router = createBrowserRouter([
   {
@@ -184,6 +185,7 @@ export const router = createBrowserRouter([
       { path: "camps", Component: AdminCamps },
       { path: "camps/create", Component: AdminCampCreate },
       { path: "camps/:id", Component: AdminCampDetail },
+      { path: "ledger", Component: AdminLedger },
     ],
   },
 ]);

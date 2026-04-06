@@ -18,6 +18,8 @@ export function AdminDonors() {
   const [mappingStats, setMappingStats] = useState({ oneTime: 0, recurring: 0 });
   const [isLoading, setIsLoading] = useState(true);
   const [searchQuery, setSearchQuery] = useState("");
+  const [currentPage, setCurrentPage] = useState(1);
+  const itemsPerPage = 4;
 
   const containerVariants = {
     hidden: { opacity: 0 },
@@ -48,6 +50,46 @@ export function AdminDonors() {
     d.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
     d.email.toLowerCase().includes(searchQuery.toLowerCase())
   );
+
+  const totalPages = Math.ceil(filteredDonors.length / itemsPerPage);
+  const paginatedDonors = filteredDonors.slice(
+    (currentPage - 1) * itemsPerPage,
+    currentPage * itemsPerPage
+  );
+
+  useEffect(() => {
+    setCurrentPage(1); // Reset to first page on search
+  }, [searchQuery]);
+
+  const handleExportCSV = () => {
+    if (filteredDonors.length === 0) return;
+    
+    const headers = ["Donor Name", "Email", "Classification", "Total Capital", "Last Audit"];
+    const rows = filteredDonors.map(d => [
+      `"${d.name}"`,
+      `"${d.email}"`,
+      `"${d.category}"`,
+      `"₹${d.totalAmount}"`,
+      `"${d.lastDonation}"`
+    ]);
+
+    const csvContent = [
+      headers.join(","),
+      ...rows.map(r => r.join(","))
+    ].join("\n");
+
+    const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+    const link = document.createElement("a");
+    const url = URL.createObjectURL(blob);
+    const date = new Date().toISOString().split('T')[0];
+    
+    link.setAttribute("href", url);
+    link.setAttribute("download", `donor-ledger-${date}.csv`);
+    link.style.visibility = 'hidden';
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+  };
 
   return (
     <motion.div 
@@ -88,7 +130,11 @@ export function AdminDonors() {
             </div>
             <h4 className="text-sm font-black text-black uppercase tracking-widest mb-1.5">Export Ledger</h4>
             <p className="text-[11px] text-slate-400 font-bold leading-relaxed mb-6">Extract complete historical compliance records in CSV format.</p>
-            <button className="w-full py-3 bg-slate-50 hover:bg-slate-100 border border-slate-200 text-xs font-bold uppercase tracking-wider text-black rounded-xl transition-colors">
+            <button 
+              onClick={handleExportCSV}
+              disabled={filteredDonors.length === 0}
+              className="w-full py-3 bg-slate-50 hover:bg-slate-100 border border-slate-200 text-xs font-bold uppercase tracking-wider text-black rounded-xl transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+            >
               Generate CSV
             </button>
         </motion.div>
@@ -135,8 +181,8 @@ export function AdminDonors() {
                 <tr>
                   <td colSpan={5} className="px-8 py-12 text-center text-slate-400 font-bold uppercase tracking-widest">Loading Ledger...</td>
                 </tr>
-              ) : filteredDonors.length > 0 ? (
-                filteredDonors.map((donor) => (
+              ) : paginatedDonors.length > 0 ? (
+                paginatedDonors.map((donor) => (
                   <tr key={donor.id} className="hover:bg-slate-50/50 transition-colors group">
                     <td className="px-8 py-6">
                        <div className="flex items-center gap-4">
@@ -182,6 +228,42 @@ export function AdminDonors() {
           </table>
         </div>
       </motion.div>
+
+      {/* Pagination Controls */}
+      {!isLoading && filteredDonors.length > 0 && (
+        <motion.div variants={itemVariants} className="flex items-center justify-between px-8">
+            <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest leading-relaxed">
+                Showing <span className="text-black">{Math.min(filteredDonors.length, (currentPage - 1) * itemsPerPage + 1)}-{Math.min(filteredDonors.length, currentPage * itemsPerPage)}</span> of <span className="text-black">{filteredDonors.length}</span> Supporters
+            </p>
+            <div className="flex items-center gap-2">
+                <button 
+                    disabled={currentPage === 1}
+                    onClick={() => setCurrentPage(prev => Math.max(1, prev - 1))}
+                    className="h-10 px-4 rounded-xl border border-slate-200 text-[10px] font-black uppercase tracking-widest hover:border-black disabled:opacity-30 disabled:hover:border-slate-200 transition-all"
+                >
+                    Previous
+                </button>
+                <div className="flex items-center gap-1 mx-2">
+                    {Array.from({ length: totalPages }).map((_, i) => (
+                        <button
+                            key={i}
+                            onClick={() => setCurrentPage(i + 1)}
+                            className={`w-8 h-8 rounded-lg text-[10px] font-black transition-all ${currentPage === i + 1 ? 'bg-black text-white' : 'hover:bg-slate-100 text-slate-400'}`}
+                        >
+                            {i + 1}
+                        </button>
+                    ))}
+                </div>
+                <button 
+                    disabled={currentPage === totalPages}
+                    onClick={() => setCurrentPage(prev => Math.min(totalPages, prev + 1))}
+                    className="h-10 px-4 rounded-xl border border-slate-200 text-[10px] font-black uppercase tracking-widest hover:border-black disabled:opacity-30 disabled:hover:border-slate-200 transition-all"
+                >
+                    Next
+                </button>
+            </div>
+        </motion.div>
+      )}
     </motion.div>
   );
 }
