@@ -227,6 +227,7 @@ export class AuthService {
       const token = this.jwtService.sign(payload);
       const volRecord = await this.prisma.volunteer.findFirst({ where: { donorId: donor.id } });
       const volunteerId = volRecord ? volRecord.volunteerId : undefined;
+      const profileCompleted = !!volRecord?.city && !!volRecord?.profession;
       
       // Update emailVerified since password is correct
       await this.prisma.donor.update({
@@ -242,8 +243,9 @@ export class AuthService {
         volunteerId,
         eligible: donor.totalDonated ? donor.totalDonated >= 5000 : false,
         isVolunteer: true,
+        profileCompleted,
         role: 'VOLUNTEER',
-        redirect: `/volunteer/${volunteerId || donor.donorId}/dashboard`,
+        redirect: profileCompleted ? `/volunteer/${volunteerId || donor.donorId}/dashboard` : `/volunteer-onboarding`,
         otpSent: false,
       };
     }
@@ -561,9 +563,13 @@ export class AuthService {
     const role = isVolunteer ? 'VOLUNTEER' : 'DONOR';
 
     let volunteerId: string | undefined;
+    let profileCompleted = false;
     if (isVolunteer) {
       const volRecord = await this.prisma.volunteer.findFirst({ where: { donorId: donor.id } });
-      if (volRecord) volunteerId = volRecord.volunteerId;
+      if (volRecord) {
+        volunteerId = volRecord.volunteerId;
+        profileCompleted = !!volRecord.city && !!volRecord.profession;
+      }
     }
 
     return {
@@ -574,8 +580,11 @@ export class AuthService {
       volunteerId,
       eligible: donor.totalDonated ? donor.totalDonated >= 5000 : false,
       isVolunteer,
-      role,
-      redirect: isVolunteer ? '/volunteer' : '/donor/dashboard',
+      profileCompleted,
+      role: isVolunteer ? 'VOLUNTEER' : 'DONOR',
+      redirect: isVolunteer 
+        ? (profileCompleted ? `/volunteer/${volunteerId || donor.donorId}/dashboard` : `/volunteer-onboarding`)
+        : `/donor/${donor.donorId}/dashboard`,
     };
   }
 
@@ -679,6 +688,12 @@ export class AuthService {
     
     const token = this.jwtService.sign(payload);
 
+    let profileCompleted = false;
+    if (userType === 'VOLUNTEER') {
+      const volRecord = await this.prisma.volunteer.findFirst({ where: { donorId: user.id } });
+      profileCompleted = !!volRecord?.city && !!volRecord?.profession;
+    }
+
     return {
       success: true,
       token,
@@ -687,6 +702,7 @@ export class AuthService {
       volunteerId: user.volunteerId || undefined,
       partnerId: user.partnerId || undefined,
       eligible: userType === 'DONOR' ? user.totalDonated >= 5000 : true,
+      profileCompleted,
       role: userType,
     };
   }

@@ -10,6 +10,7 @@ export interface DonorSession {
   partnerId?: string;
   organizationName?: string;
   role: 'DONOR' | 'VOLUNTEER' | 'PARTNER' | 'ADMIN';
+  profileCompleted?: boolean;
 }
 
 const SESSION_KEY = "donor_session";
@@ -53,7 +54,7 @@ export const auth = {
     return res;
   },
 
-  async verifyOtp(identifier: string, otp: string): Promise<{ success: boolean; token?: string; name?: string; donorId?: string; volunteerId?: string; role?: string }> {
+  async verifyOtp(identifier: string, otp: string): Promise<{ success: boolean; token?: string; name?: string; donorId?: string; volunteerId?: string; role?: string; profileCompleted?: boolean }> {
     const response = await authApi.verifyOtp(identifier, otp);
     if (response.success && response.token) {
       const role = response.role || 'DONOR';
@@ -73,7 +74,7 @@ export const auth = {
     return { success: false };
   },
 
-  async verifyDualOtp(identifier: string, emailOtp: string, mobileOtp?: string): Promise<{ success: boolean; token?: string; name?: string; donorId?: string; volunteerId?: string; role?: string }> {
+  async verifyDualOtp(identifier: string, emailOtp: string, mobileOtp?: string): Promise<{ success: boolean; token?: string; name?: string; donorId?: string; volunteerId?: string; role?: string; profileCompleted?: boolean }> {
     const response = await authApi.verifyDualOtp(identifier, emailOtp, mobileOtp);
     if (response.success && response.token) {
       const role = response.role || 'DONOR';

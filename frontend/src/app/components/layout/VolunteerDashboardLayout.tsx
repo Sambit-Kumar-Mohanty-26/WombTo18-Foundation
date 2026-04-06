@@ -22,6 +22,13 @@ export function VolunteerDashboardLayout() {
       navigate("/login", { replace: true });
     } else {
       setSession(s);
+      
+      // Mandatory Onboarding Guard
+      if (s.role === 'VOLUNTEER' && s.profileCompleted === false) {
+        navigate("/volunteer-onboarding", { replace: true });
+        return;
+      }
+
       const expectedId = s.volunteerId || s.donorId;
       if (id && expectedId && id !== expectedId) {
         navigate(`/volunteer/${expectedId}/dashboard`, { replace: true });

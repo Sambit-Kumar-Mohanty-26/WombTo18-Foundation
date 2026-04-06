@@ -7,15 +7,29 @@ const path_1 = require("path");
 const cookieParser = require("cookie-parser");
 async function bootstrap() {
     const app = await core_1.NestFactory.create(app_module_1.AppModule);
-    const allowedOrigins = [
-        process.env.FRONTEND_URL,
-        'http://localhost:5173',
-        'http://localhost:5174',
-        'http://localhost:5175',
-        'http://localhost:5176',
-    ].filter(Boolean);
     app.enableCors({
-        origin: allowedOrigins,
+        origin: (origin, callback) => {
+            const frontendUrl = process.env.FRONTEND_URL;
+            const allowed = [
+                frontendUrl,
+                frontendUrl?.replace(/\/$/, ''),
+                frontendUrl && !frontendUrl.endsWith('/') ? `${frontendUrl}/` : null,
+                'https://womb-to18-foundation.vercel.app',
+                'https://womb-to-18-foundation.vercel.app',
+                'http://localhost:5173',
+                'http://localhost:5174',
+                'http://localhost:5175',
+                'http://localhost:5176',
+            ].filter(Boolean);
+            if (!origin || allowed.some(domain => domain === origin)) {
+                callback(null, true);
+            }
+            else {
+                console.warn(`CORS blocked request from origin: ${origin}`);
+                callback(null, true);
+            }
+        },
+        methods: 'GET,HEAD,PUT,PATCH,POST,DELETE,OPTIONS',
         credentials: true,
     });
     app.useStaticAssets((0, path_1.join)(process.cwd(), 'public'), {

@@ -1,7 +1,18 @@
 import { motion } from "motion/react";
 import { VolunteerForm } from "./donate/VolunteerForm";
+import { useEffect } from "react";
+import { useNavigate } from "react-router";
 
 export function VolunteerOnboardingPage() {
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    const session = localStorage.getItem("donor_session");
+    if (!session) {
+      navigate("/volunteer/login");
+    }
+  }, [navigate]);
+
   return (
     <div className="min-h-screen bg-[#FFFDF7] pt-24 pb-12 sm:pt-32 relative overflow-hidden">
       <div className="absolute inset-0 bg-gradient-to-b from-[#f0faf4] via-[#fef6ed]/40 to-[#FFFDF7] pointer-events-none" />

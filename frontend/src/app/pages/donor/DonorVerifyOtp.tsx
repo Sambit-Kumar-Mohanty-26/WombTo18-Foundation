@@ -26,9 +26,14 @@ export function DonorVerifyOtp() {
     
     const targetId = payload?.volunteerId || payload?.donorId || 'legacy';
     
-    if (finalRole === 'VOLUNTEER') navigate(`/volunteer/${targetId}/dashboard`, { replace: true });
-    else if (finalRole === 'PARTNER') navigate(`/partner/${targetId}/dashboard`, { replace: true });
-    else navigate(`/donor/${targetId}/dashboard`, { replace: true });
+    if (finalRole === 'VOLUNTEER') {
+      const isComplete = payload?.profileCompleted;
+      navigate(isComplete ? `/volunteer/${targetId}/dashboard` : `/volunteer-onboarding`, { state: { volunteerId: targetId }, replace: true });
+    } else if (finalRole === 'PARTNER') {
+      navigate(`/partner/${targetId}/dashboard`, { replace: true });
+    } else {
+      navigate(`/donor/${targetId}/dashboard`, { replace: true });
+    }
   };
 
   const handleBack = () => {

@@ -4,52 +4,15 @@ export declare class AdminController {
     private readonly adminService;
     constructor(adminService: AdminService);
     getAdminPanel(res: Response): void;
-    getDonors(): Promise<({
-        donations: {
-            id: string;
-            amount: number;
-            currency: string;
-            status: string;
-            razorpayOrderId: string;
-            razorpayPaymentId: string | null;
-            razorpaySignature: string | null;
-            donorId: string;
-            programId: string;
-            displayName: boolean;
-            receiptNumber: string | null;
-            referralCode: string | null;
-            createdAt: Date;
-            updatedAt: Date;
-        }[];
-    } & {
+    getDonors(): Promise<{
         id: string;
-        donorId: string;
-        createdAt: Date;
-        updatedAt: Date;
-        name: string | null;
+        name: string;
         email: string;
-        mobile: string | null;
-        password: string | null;
-        pan: string | null;
-        address: string | null;
-        tier: string;
-        totalDonated: number;
-        otpHash: string | null;
-        otpExpiry: Date | null;
-        emailOtpHash: string | null;
-        mobileOtpHash: string | null;
-        emailVerified: boolean;
-        mobileVerified: boolean;
-        isEligible: boolean;
-        isVolunteer: boolean;
-        isNonDonor: boolean;
-        showOnLeaderboard: boolean;
-        profileImage: string | null;
-        referredById: string | null;
-        twoFactorEnabled: boolean;
-        tokenVersion: number;
-    })[]>;
-    getStats(): Promise<{
+        totalAmount: string;
+        category: string;
+        lastDonation: string;
+    }[]>;
+    getStats(range: string): Promise<{
         totalDonations: number;
         totalDonors: number;
         totalPrograms: number;
@@ -107,6 +70,11 @@ export declare class AdminController {
             createdAt: Date;
             updatedAt: Date;
         })[];
+        chartData: any[];
+        mappingStats: {
+            oneTime: number;
+            recurring: number;
+        };
     }>;
     getPrograms(): Promise<{
         id: string;

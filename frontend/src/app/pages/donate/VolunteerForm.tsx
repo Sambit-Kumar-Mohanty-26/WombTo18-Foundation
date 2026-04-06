@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { motion } from "motion/react";
-import { Users, Mail, MapPin, Briefcase, Clock, Heart, Lock, ArrowRight } from "lucide-react";
+import { Users, Mail, MapPin, Briefcase, Clock, Heart, Lock, ArrowRight, Zap } from "lucide-react";
 import { VOLUNTEER_SKILLS } from "./donateData";
 import { toast } from "sonner";
 import { useNavigate, useSearchParams, Link } from "react-router";
@@ -14,6 +14,7 @@ interface VolunteerFormData {
   name: string; email: string; mobile: string; city: string;
   profession: string; skills: string[]; availability: string;
   experience: string; motivation: string; linkedIn: string;
+  pan: string;
 }
 
 const AVAILABILITY = ["Weekdays (9am-5pm)", "Weekday Evenings", "Weekends Only", "Flexible / Remote", "Full-time Volunteer"];
@@ -22,16 +23,15 @@ export function VolunteerForm() {
   const { t } = useTranslation('donate');
   const [searchParams] = useSearchParams();
   const queryName = searchParams.get("name") || "";
-  const queryEmail = searchParams.get("email") || "";
+  const queryEmail = searchParams.get("email") || JSON.parse(localStorage.getItem("donor_session") || "{}").identifier || "";
   const queryMobile = searchParams.get("mobile") || "";
-  const previousDonation = Number(searchParams.get("amount") || "0");
-  const isPaymentRequired = previousDonation < 500;
 
   const [form, setForm] = useState<VolunteerFormData>({
     name: queryName, email: queryEmail, mobile: queryMobile, city: "", profession: "",
     skills: [], availability: "", experience: "", motivation: "", linkedIn: "",
+    pan: "",
   });
-  const [contributionAmount, setContributionAmount] = useState(500);
+  const [contributionAmount, setContributionAmount] = useState<number | "">(500);
   const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
 
@@ -55,52 +55,70 @@ export function VolunteerForm() {
       toast.error(t('toasts.selectAvailability')); return;
     }
 
-    if (isPaymentRequired && contributionAmount < 500) {
-      toast.error(t('toasts.minVolunteerContribution')); return;
+    if (!contributionAmount || Number(contributionAmount) < 500 || Number(contributionAmount) > 2000) {
+      toast.error("Membership contribution must be between ₹500 and ₹2000"); return;
     }
 
     setLoading(true);
     try {
-      if (isPaymentRequired) {
-        const res = await fetch(`${API}/api/donations/create`, {
-          method: "POST", headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({
-            amount: contributionAmount, email: form.email, name: form.name,
-            mobile: form.mobile, donorType: "INDIVIDUAL",
-            programName: t('forms.razorpay.volunteerTitle'),
-            notes: `Volunteer Registration: ${form.motivation}`,
-          }),
-        });
-        const data = await res.json();
-        if (!res.ok) throw new Error(data.message || "Contribution initialization failed");
+      const res = await fetch(`${API}/api/donations/create`, {
+        method: "POST", headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          amount: Number(contributionAmount), email: form.email, name: form.name,
+          mobile: form.mobile, donorType: "INDIVIDUAL", pan: form.pan,
+          programName: "Volunteer Membership",
+          notes: `Volunteer Registration: ${form.motivation}`,
+        }),
+      });
+      const data = await res.json();
+      if (!res.ok) throw new Error(data.message || "Contribution initialization failed");
 
-        const options = {
-          key: RAZORPAY_KEY, amount: data.amount, currency: "INR",
-          name: t('forms.razorpay.name'), 
-          description: t('forms.razorpay.volunteerTitle'),
-          order_id: data.orderId,
-          prefill: { name: form.name, email: form.email, contact: form.mobile },
-          theme: { color: "#1D6E3F" },
-          handler: async (response: any) => {
-            try {
-              const verifyRes = await fetch(`${API}/api/donations/verify`, {
+      const options = {
+        key: RAZORPAY_KEY, amount: data.amount, currency: "INR",
+        name: t('forms.razorpay.name'), 
+        description: "Impact Volunteer Membership",
+        order_id: data.orderId,
+        prefill: { name: form.name, email: form.email, contact: form.mobile },
+        theme: { color: "#1D6E3F" },
+        handler: async (response: any) => {
+          try {
+            const verifyRes = await fetch(`${API}/api/donations/verify`, {
+              method: "POST", headers: { "Content-Type": "application/json" },
+              body: JSON.stringify(response),
+            });
+            const result = await verifyRes.json();
+            if (result.success) {
+              // Update volunteer profile with extra info immediately after payment
+              await fetch(`${API}/api/volunteers/profile/${encodeURIComponent(form.email)}`, {
                 method: "POST", headers: { "Content-Type": "application/json" },
-                body: JSON.stringify(response),
+                body: JSON.stringify({
+                  ...form,
+                  skills: form.skills,
+                }),
               });
-              const result = await verifyRes.json();
-              if (result.success) {
-                toast.success(t('toasts.registrationSuccess'));
-                navigate("/volunteer-success");
+              
+              toast.success(t('toasts.registrationSuccess'));
+              toast.success(`🎁 Welcome Bonus: ${contributionAmount} coins added!`, {
+                description: "Your 100% cashback is now in your Impact Wallet.",
+                duration: 6000,
+              });
+              
+              // Update local session status to prevent guard from kicking us back
+              const currentSession = JSON.parse(localStorage.getItem("donor_session") || "{}");
+              if (currentSession) {
+                currentSession.profileCompleted = true;
+                localStorage.setItem("donor_session", JSON.stringify(currentSession));
               }
-            } catch { toast.error(t('toasts.verifyFailed')); }
-          },
-          modal: { ondismiss: () => toast.info(t('toasts.paymentCancelled')) },
-        };
-        new window.Razorpay(options).open();
-      } else {
-        toast.success(t('toasts.registrationSubmitted'));
-        navigate("/volunteer-success");
-      }
+
+              // Redirect using the email/ID we have
+              const target = currentSession.volunteerId || currentSession.donorId || queryEmail;
+              window.location.href = `/volunteer/${target}/dashboard`;
+            }
+          } catch { toast.error(t('toasts.verifyFailed')); }
+        },
+        modal: { ondismiss: () => toast.info(t('toasts.paymentCancelled')) },
+      };
+      new window.Razorpay(options).open();
     } catch (err: any) {
       toast.error(err.message || t('toasts.registrationFailed'));
     } finally {
@@ -169,6 +187,13 @@ export function VolunteerForm() {
             <input id="vol-profession" value={form.profession} onChange={e => set("profession", e.target.value)} required
               className="w-full px-4 py-2.5 rounded-xl border border-gray-200 bg-[#FAFAF8] text-sm focus:border-[var(--womb-forest)] focus:ring-2 focus:ring-[var(--womb-forest)]/20 outline-none transition-all" placeholder={t('forms.volunteer.professionPlaceholder')} />
           </div>
+        </div>
+        <div className="grid sm:grid-cols-2 gap-4 mt-4">
+          <div>
+            <label className="text-xs font-semibold text-gray-600 mb-1 block">PAN Number (Optional)</label>
+            <input id="vol-pan" value={form.pan} onChange={e => set("pan", e.target.value.toUpperCase())} maxLength={10}
+              className="w-full px-4 py-2.5 rounded-xl border border-gray-200 bg-[#FAFAF8] text-sm focus:border-[var(--womb-forest)] focus:ring-2 focus:ring-[var(--womb-forest)]/20 outline-none transition-all placeholder:uppercase" placeholder="ABCDE1234F" />
+          </div>
           <div>
             <label className="text-xs font-semibold text-gray-600 mb-1 block">{t('forms.volunteer.linkedin')}</label>
             <input id="vol-linkedin" value={form.linkedIn} onChange={e => set("linkedIn", e.target.value)}
@@ -221,31 +246,44 @@ export function VolunteerForm() {
         </div>
       </div>
 
-      {isPaymentRequired && (
-        <div className="bg-white rounded-2xl p-6 border border-gray-100 shadow-sm">
-          <div className="flex items-center gap-2.5 mb-5">
-            <div className="w-8 h-8 rounded-lg bg-blue-50 flex items-center justify-center">
-              <Heart className="w-4 h-4 text-blue-600" />
-            </div>
-            <div>
-              <h3 className="text-sm font-black text-gray-900 tracking-tight">{t('forms.volunteer.membership')}</h3>
-              <p className="text-[10px] text-gray-400 font-medium">{t('forms.volunteer.membershipMin')}</p>
-            </div>
+      <div className="bg-white rounded-2xl p-6 border border-gray-100 shadow-sm relative overflow-hidden">
+        <div className="absolute top-0 right-0 px-3 py-1 bg-amber-500 text-white text-[10px] font-black uppercase tracking-widest rounded-bl-xl shadow-sm z-10">
+          100% Welcome Bonus
+        </div>
+        <div className="flex items-center gap-2.5 mb-5 pt-2">
+          <div className="w-8 h-8 rounded-lg bg-amber-50 flex items-center justify-center">
+            <Zap className="w-4 h-4 text-amber-600 fill-current" />
           </div>
-          
-          <div className="relative group/price">
-            <span className="absolute left-4 top-1/2 -translate-y-1/2 text-lg font-black text-gray-300 group-focus-within/price:text-blue-600 transition-colors">₹</span>
-            <input 
-              type="number"
-              min="500"
-              value={contributionAmount}
-              onChange={(e) => setContributionAmount(Number(e.target.value))}
-              className="w-full pl-9 pr-4 py-4 rounded-xl border border-gray-100 bg-[#FAFAF8] text-xl font-black text-gray-900 outline-none transition-all focus:bg-white focus:border-blue-200 focus:ring-4 focus:ring-blue-50"
-              placeholder="500"
-            />
+          <div>
+            <h3 className="text-sm font-black text-gray-900 tracking-tight">Active Membership One-time Contribution</h3>
+            <p className="text-[10px] text-amber-600 font-bold uppercase tracking-wide">Min: ₹500 • Max: ₹2000</p>
           </div>
         </div>
-      )}
+        
+        <div className="relative group/price">
+          <span className="absolute left-4 top-1/2 -translate-y-1/2 text-lg font-black text-gray-300 group-focus-within/price:text-amber-600 transition-colors">₹</span>
+          <input 
+            type="number"
+            min="500"
+            max="2000"
+            value={contributionAmount}
+            onChange={(e) => {
+              const val = e.target.value;
+              if (val === "") {
+                setContributionAmount("");
+              } else {
+                setContributionAmount(Number(val));
+              }
+            }}
+            className="w-full pl-9 pr-4 py-4 rounded-xl border border-gray-100 bg-[#FAFAF8] text-xl font-black text-gray-900 outline-none transition-all focus:bg-white focus:border-amber-200 focus:ring-4 focus:ring-amber-50"
+            placeholder="500"
+          />
+        </div>
+        <div className="mt-4 p-3 rounded-xl bg-amber-50 border border-amber-100 flex items-center justify-between">
+          <span className="text-[11px] font-bold text-amber-900/60 uppercase">Instant Bonus Coins</span>
+          <span className="text-lg font-black text-amber-600">{(Number(contributionAmount) || 0).toLocaleString()} Coins</span>
+        </div>
+      </div>
 
       <motion.button 
         type="submit" 
@@ -262,8 +300,8 @@ export function VolunteerForm() {
           <div className="w-5 h-5 border-2 border-white/30 border-t-white rounded-full animate-spin" />
         ) : (
           <>
-            <Users className="w-5 h-5" /> 
-            {isPaymentRequired ? t('forms.volunteer.submitPay') : t('forms.volunteer.submitComplete')}
+            <Zap className="w-5 h-5 fill-current" /> 
+            Pay ₹{(Number(contributionAmount) || 0).toLocaleString()} & Complete Profile
           </>
         )}
       </motion.button>

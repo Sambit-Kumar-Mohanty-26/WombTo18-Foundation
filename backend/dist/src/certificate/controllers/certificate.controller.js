@@ -51,10 +51,13 @@ const swagger_1 = require("@nestjs/swagger");
 const certificate_service_1 = require("../services/certificate.service");
 const path = __importStar(require("path"));
 const fs = __importStar(require("fs"));
+const storage_service_1 = require("../../storage/storage.service");
 let CertificateController = class CertificateController {
     certificateService;
-    constructor(certificateService) {
+    storageService;
+    constructor(certificateService, storageService) {
         this.certificateService = certificateService;
+        this.storageService = storageService;
     }
     async receipt(donationId, res) {
         return this.certificateService.generateReceipt(donationId, res);
@@ -65,6 +68,15 @@ let CertificateController = class CertificateController {
     async downloadCert(certId, res) {
         const cert = await this.certificateService.findCertRecord(certId);
         if (cert?.fileUrl && cert.fileUrl.startsWith('http')) {
+            const pathPart = cert.fileUrl.split('/public/uploads/')[1];
+            if (pathPart) {
+                const file = await this.storageService.download(pathPart);
+                if (file) {
+                    res.setHeader('Content-Type', file.contentType || 'application/pdf');
+                    res.setHeader('Content-Disposition', `attachment; filename=${certId}.pdf`);
+                    return res.send(file.data);
+                }
+            }
             return res.redirect(cert.fileUrl);
         }
         const certDir = path.join(process.cwd(), 'public', 'certificates');
@@ -181,6 +193,7 @@ __decorate([
 exports.CertificateController = CertificateController = __decorate([
     (0, swagger_1.ApiTags)('Certificates'),
     (0, common_1.Controller)('certificates'),
-    __metadata("design:paramtypes", [certificate_service_1.CertificateService])
+    __metadata("design:paramtypes", [certificate_service_1.CertificateService,
+        storage_service_1.StorageService])
 ], CertificateController);
 //# sourceMappingURL=certificate.controller.js.map

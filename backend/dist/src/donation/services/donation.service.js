@@ -208,7 +208,7 @@ let DonationService = class DonationService {
                 razorpayPaymentId: razorpay_payment_id,
                 razorpaySignature: razorpay_signature,
             },
-            include: { donor: true },
+            include: { donor: true, program: true },
         });
         await this.prisma.program.update({
             where: { id: donation.programId },
@@ -250,7 +250,12 @@ let DonationService = class DonationService {
                 isEligible: totalDonated >= 5000,
             },
         });
-        await this.coinService.awardSelfDonationCoins(donor.email, donation.id, donation.amount);
+        if (donation.program.name === 'Volunteer Membership') {
+            const welcomeResult = await this.coinService.awardWelcomeBonus(donor.email, donation.id, donation.amount);
+        }
+        else {
+            await this.coinService.awardSelfDonationCoins(donor.email, donation.id, donation.amount);
+        }
         if (donation.referralCode) {
             const referralCode = donation.referralCode.trim().toUpperCase();
             const volunteerReferrer = await this.prisma.volunteer.findFirst({
