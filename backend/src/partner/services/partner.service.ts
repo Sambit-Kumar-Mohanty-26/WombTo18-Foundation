@@ -1,6 +1,7 @@
 import { Injectable, NotFoundException, BadRequestException } from '@nestjs/common';
 import { PrismaService } from '../../prisma/services/prisma.service';
 import { VerificationService } from '../../verification/verification.service';
+import { MailerService } from '../../auth/services/mailer.service';
 import { Prisma } from '@prisma/client';
 import * as bcrypt from 'bcryptjs';
 
@@ -9,6 +10,7 @@ export class PartnerService {
   constructor(
     private readonly prisma: PrismaService,
     private readonly verificationService: VerificationService,
+    private readonly mailerService: MailerService,
   ) {}
 
   /** Helper to generate informative Partner ID: PTN-CAT-YYMM-SEQ */
@@ -70,6 +72,17 @@ export class PartnerService {
           isActive: true, 
         },
       });
+
+      // Send welcome email (fire-and-forget)
+      console.log(`[PartnerService] Sending welcome email to partner ${partner.partnerId} at ${data.email}`);
+      this.mailerService.sendWelcomePartnerEmail({
+        email: data.email,
+        contactPerson: data.contactPerson,
+        organizationName: data.organizationName,
+        partnerId: partner.partnerId,
+      }).then(() => {
+        console.log(`[PartnerService] Welcome email sent successfully to ${data.email}`);
+      }).catch((err) => console.error('[WELCOME EMAIL ERROR] Partner signup:', err.message));
 
       return {
         success: true,

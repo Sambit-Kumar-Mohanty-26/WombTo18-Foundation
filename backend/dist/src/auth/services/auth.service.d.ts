@@ -121,7 +121,7 @@ export declare class AuthService {
         partnerId: any;
         eligible: boolean;
         profileCompleted: boolean;
-        role: "VOLUNTEER" | "DONOR" | "PARTNER";
+        role: "DONOR" | "VOLUNTEER" | "PARTNER";
     }>;
     requestPasswordChange(email: string): Promise<{
         devOtp?: string | undefined;
