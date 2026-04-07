@@ -76,14 +76,14 @@ i18n
     resources: {
       en: { translation: enTranslation, home: enHome, about: enAbout, programs: enPrograms, impact: enImpact, transparency: enTransparency, donate: enDonate },
       hi: { translation: hiTranslation, home: hiHome, about: hiAbout, programs: hiPrograms, impact: hiImpact, transparency: hiTransparency, donate: hiDonate },
-      mr: { translation: mrTranslation, home: mrHome, about: mrAbout, programs: mrPrograms },
-      te: { translation: teTranslation, home: teHome, about: teAbout, programs: tePrograms },
-      ta: { translation: taTranslation, home: taHome, about: taAbout, programs: taPrograms },
-      kn: { translation: knTranslation, home: knHome, about: knAbout, programs: knPrograms },
-      bn: { translation: bnTranslation, home: bnHome, about: bnAbout, programs: bnPrograms },
-      gu: { translation: guTranslation, home: guHome, about: guAbout, programs: guPrograms },
-      pa: { translation: paTranslation, home: paHome, about: paAbout, programs: paPrograms },
-      or: { translation: orTranslation, home: orHome, about: orAbout, programs: orPrograms }
+      mr: { translation: mrTranslation, home: mrHome, about: mrAbout, programs: mrPrograms, impact: mrImpact },
+      te: { translation: teTranslation, home: teHome, about: teAbout, programs: tePrograms, impact: teImpact },
+      ta: { translation: taTranslation, home: taHome, about: taAbout, programs: taPrograms, impact: taImpact },
+      kn: { translation: knTranslation, home: knHome, about: knAbout, programs: knPrograms, impact: knImpact },
+      bn: { translation: bnTranslation, home: bnHome, about: bnAbout, programs: bnPrograms, impact: bnImpact },
+      gu: { translation: guTranslation, home: guHome, about: guAbout, programs: guPrograms, impact: guImpact },
+      pa: { translation: paTranslation, home: paHome, about: paAbout, programs: paPrograms, impact: paImpact },
+      or: { translation: orTranslation, home: orHome, about: orAbout, programs: orPrograms, impact: orImpact }
     },
     fallbackLng: 'en',
     interpolation: {
