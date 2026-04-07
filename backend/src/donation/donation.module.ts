@@ -8,6 +8,6 @@ import { CoinModule } from '../coin/coin.module';
   imports: [CoinModule],
   controllers: [DonationController],
   providers: [DonationService, PdfGeneratorService],
-  exports: [DonationService],
+  exports: [DonationService, PdfGeneratorService],
 })
 export class DonationModule {}

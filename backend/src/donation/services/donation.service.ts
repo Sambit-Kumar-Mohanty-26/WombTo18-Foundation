@@ -347,7 +347,10 @@ export class DonationService {
       // Save receipt number safely back to donation
       await this.prisma.donation.update({ where: { id: donation.id }, data: { receiptNumber: receiptNum }});
       
-      certId = `80G-${donation.id}`;
+      // Find if donor is also a volunteer to link certificate to both
+      const volunteer = await this.prisma.volunteer.findUnique({ where: { donorId: donor.id } });
+      
+      certId = `CERT-${donation.id}`;
 
       // Check if certificate already exists (idempotency)
       const existingCert = await this.prisma.certificate.findUnique({ where: { id: certId } });
@@ -368,10 +371,11 @@ export class DonationService {
           data: {
             id: certId,
             type: '80G',
-            title: 'Donation Receipt & 80G',
+            title: 'Donation Receipt',
             recipientName: donor.name || 'Anonymous Donor',
             recipientType: 'DONOR',
             donorId: donor.id,
+            volunteerId: volunteer?.id || null, // Link to volunteer if exists
             fileUrl,
             metadata: JSON.stringify({ amount: donation.amount, donationId: donation.id }),
           },

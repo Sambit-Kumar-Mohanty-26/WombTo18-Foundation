@@ -323,7 +323,8 @@ let DonationService = class DonationService {
             const frontendUrl = process.env.FRONTEND_URL || 'http://localhost:5173';
             const receiptNum = `RCPT-${Date.now()}`;
             await this.prisma.donation.update({ where: { id: donation.id }, data: { receiptNumber: receiptNum } });
-            certId = `80G-${donation.id}`;
+            const volunteer = await this.prisma.volunteer.findUnique({ where: { donorId: donor.id } });
+            certId = `CERT-${donation.id}`;
             const existingCert = await this.prisma.certificate.findUnique({ where: { id: certId } });
             if (existingCert) {
                 fileUrl = existingCert.fileUrl;
@@ -342,10 +343,11 @@ let DonationService = class DonationService {
                     data: {
                         id: certId,
                         type: '80G',
-                        title: 'Donation Receipt & 80G',
+                        title: 'Donation Receipt',
                         recipientName: donor.name || 'Anonymous Donor',
                         recipientType: 'DONOR',
                         donorId: donor.id,
+                        volunteerId: volunteer?.id || null,
                         fileUrl,
                         metadata: JSON.stringify({ amount: donation.amount, donationId: donation.id }),
                     },

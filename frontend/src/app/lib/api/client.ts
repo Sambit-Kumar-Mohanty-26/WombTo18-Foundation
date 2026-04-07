@@ -32,7 +32,7 @@ async function apiFetch<T>(endpoint: string, options: RequestInit = {}): Promise
     headers,
   });
   const contentType = response.headers.get('Content-Type');
-  if (contentType && contentType.includes('application/pdf')) {
+  if (contentType && (contentType.includes('application/pdf') || contentType.includes('application/zip'))) {
     return response.blob() as unknown as T;
   }
 

@@ -3,6 +3,7 @@ import { randomUUID } from 'crypto';
 import { PrismaService } from '../../prisma/services/prisma.service';
 import { CoinService } from '../../coin/services/coin.service';
 import { MailerService } from '../../auth/services/mailer.service';
+import { CertificateService } from '../../certificate/services/certificate.service';
 
 @Injectable()
 export class CampService {
@@ -10,6 +11,7 @@ export class CampService {
     private readonly prisma: PrismaService,
     private readonly coinService: CoinService,
     private readonly mailerService: MailerService,
+    private readonly certificateService: CertificateService,
   ) {}
 
   //Create a new camp
@@ -518,6 +520,13 @@ export class CampService {
       data: { status: 'ATTENDED' },
     });
 
+    // Trigger automated certificate generation
+    try {
+      await this.certificateService.generateAutomatedCampCertificate(actualVolunteerId, camp.id);
+    } catch (certErr) {
+      console.error('Failed to generate automated camp certificate:', certErr);
+    }
+
     return this.coinService.awardCampActiveCoins(actualVolunteerId, camp.id);
   }
 
@@ -566,6 +575,13 @@ export class CampService {
       where: { id: existing.id },
       data: { status: 'ATTENDED' },
     });
+
+    // Trigger automated certificate generation
+    try {
+      await this.certificateService.generateAutomatedCampCertificate(actualVolunteerId, camp.id);
+    } catch (certErr) {
+      console.error('Failed to generate automated camp certificate:', certErr);
+    }
 
     return this.coinService.awardCampActiveCoins(actualVolunteerId, camp.id);
   }

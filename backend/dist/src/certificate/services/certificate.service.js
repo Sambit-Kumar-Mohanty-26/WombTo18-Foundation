@@ -1,21 +1,63 @@
 "use strict";
+var __createBinding = (this && this.__createBinding) || (Object.create ? (function(o, m, k, k2) {
+    if (k2 === undefined) k2 = k;
+    var desc = Object.getOwnPropertyDescriptor(m, k);
+    if (!desc || ("get" in desc ? !m.__esModule : desc.writable || desc.configurable)) {
+      desc = { enumerable: true, get: function() { return m[k]; } };
+    }
+    Object.defineProperty(o, k2, desc);
+}) : (function(o, m, k, k2) {
+    if (k2 === undefined) k2 = k;
+    o[k2] = m[k];
+}));
+var __setModuleDefault = (this && this.__setModuleDefault) || (Object.create ? (function(o, v) {
+    Object.defineProperty(o, "default", { enumerable: true, value: v });
+}) : function(o, v) {
+    o["default"] = v;
+});
 var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
     var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
     if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
     else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
     return c > 3 && r && Object.defineProperty(target, key, r), r;
 };
+var __importStar = (this && this.__importStar) || (function () {
+    var ownKeys = function(o) {
+        ownKeys = Object.getOwnPropertyNames || function (o) {
+            var ar = [];
+            for (var k in o) if (Object.prototype.hasOwnProperty.call(o, k)) ar[ar.length] = k;
+            return ar;
+        };
+        return ownKeys(o);
+    };
+    return function (mod) {
+        if (mod && mod.__esModule) return mod;
+        var result = {};
+        if (mod != null) for (var k = ownKeys(mod), i = 0; i < k.length; i++) if (k[i] !== "default") __createBinding(result, mod, k[i]);
+        __setModuleDefault(result, mod);
+        return result;
+    };
+})();
 var __metadata = (this && this.__metadata) || function (k, v) {
     if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
+};
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.CertificateService = void 0;
 const common_1 = require("@nestjs/common");
 const prisma_service_1 = require("../../prisma/services/prisma.service");
+const pdf_generator_service_1 = require("../../donation/services/pdf-generator.service");
+const path = __importStar(require("path"));
+const fs = __importStar(require("fs"));
+const axios_1 = __importDefault(require("axios"));
 let CertificateService = class CertificateService {
     prisma;
-    constructor(prisma) {
+    pdfGenerator;
+    constructor(prisma, pdfGenerator) {
         this.prisma = prisma;
+        this.pdfGenerator = pdfGenerator;
     }
     buildCertificateHTML(data) {
         const accent = data.accentColor || '#1D6E3F';
@@ -169,7 +211,7 @@ let CertificateService = class CertificateService {
             throw new common_1.BadRequestException('Donation not eligible for 80G certificate (minimum ₹5,000)');
         }
         const html = this.buildCertificateHTML({
-            type: '80G Tax Exemption Certificate',
+            type: 'Tax Exemption Certificate',
             title: 'Certificate of Tax Exemption',
             subtitle: 'Issued under Section 80G of the Income Tax Act, 1961',
             recipientName: donation.donor.name || 'Donor',
@@ -222,30 +264,58 @@ let CertificateService = class CertificateService {
             },
         });
     }
-    async generateCampCertificate(volunteerId, campId, res) {
+    async generateAutomatedCampCertificate(volunteerId, campId) {
         const participation = await this.prisma.campParticipation.findUnique({
             where: { campId_volunteerId: { campId, volunteerId } },
             include: { camp: true, volunteer: true },
         });
         if (!participation)
-            throw new common_1.NotFoundException('Camp participation not found');
-        const isActive = participation.participationType === 'ACTIVE';
-        const html = this.buildCertificateHTML({
-            type: isActive ? 'Active Participation' : 'Camp Participation',
-            title: 'Certificate of Camp Participation',
-            subtitle: participation.camp.name,
-            recipientName: participation.volunteer.name,
-            details: [
-                `Camp: <strong>${participation.camp.name}</strong> • Location: <strong>${participation.camp.location}</strong>`,
-                `Date: <strong>${participation.camp.date.toLocaleDateString('en-IN')}</strong>`,
-                `Participation Type: <strong>${isActive ? '⭐ Active Participant' : 'Participant'}</strong>`,
-                `Coins Awarded: <strong>${participation.coinsAwarded}</strong>`,
-            ],
-            dateStr: participation.camp.date.toLocaleDateString('en-IN'),
-            certId: `CAMP-${participation.id.slice(-8).toUpperCase()}`,
-            accentColor: isActive ? '#D97706' : '#1D6E3F',
+            throw new common_1.NotFoundException('Participation record not found');
+        const certId = `CAMP-${participation.id.slice(-8).toUpperCase()}`;
+        const frontendUrl = process.env.FRONTEND_URL || 'http://localhost:5173';
+        const fileUrl = await this.pdfGenerator.generateVolunteerServiceCertificate({
+            volunteerName: participation.volunteer.name,
+            volunteerId: participation.volunteer.volunteerId,
+            campName: participation.camp.name,
+            campLocation: participation.camp.location,
+            campDate: participation.camp.date,
+            creditsAwarded: participation.coinsAwarded || 100,
+            certId,
+            frontendUrl,
+            isExcellent: participation.participationType === 'ACTIVE',
         });
-        await this.htmlToPdf(html, res, `camp_cert_${campId}_${volunteerId}.pdf`);
+        await this.prisma.certificate.upsert({
+            where: { id: certId },
+            update: { fileUrl },
+            create: {
+                id: certId,
+                type: 'CAMP',
+                title: participation.participationType === 'ACTIVE' ? 'Certificate of Excellence' : 'Certificate of Service',
+                recipientName: participation.volunteer.name,
+                recipientType: 'VOLUNTEER',
+                volunteerId: participation.volunteer.id,
+                fileUrl,
+                metadata: JSON.stringify({
+                    campId,
+                    campName: participation.camp.name,
+                    credits: participation.coinsAwarded
+                }),
+            },
+        });
+        return fileUrl;
+    }
+    async generateCampCertificate(volunteerId, campId, res) {
+        const url = await this.generateAutomatedCampCertificate(volunteerId, campId);
+        if (url.startsWith('http')) {
+            return res.redirect(url);
+        }
+        const filePath = path.join(process.cwd(), url);
+        if (fs.existsSync(filePath)) {
+            res.setHeader('Content-Type', 'application/pdf');
+            res.setHeader('Content-Disposition', `attachment; filename=certificate_${campId}.pdf`);
+            return fs.createReadStream(filePath).pipe(res);
+        }
+        throw new common_1.NotFoundException('Certificate file not found');
     }
     async generatePartnerCertificate(partnerId, res) {
         const partner = await this.prisma.partner.findFirst({
@@ -281,52 +351,97 @@ let CertificateService = class CertificateService {
             },
         });
     }
-    async getCertificates(recipientType, userId) {
-        const where = { recipientType: recipientType.toUpperCase() };
-        if (recipientType === 'DONOR')
-            where.donorId = userId;
-        else if (recipientType === 'VOLUNTEER')
-            where.volunteerId = userId;
-        else if (recipientType === 'PARTNER')
-            where.partnerId = userId;
-        return this.prisma.certificate.findMany({
+    async getCertificates(typeStr, userIdOrDisplayId) {
+        const type = typeStr.toUpperCase();
+        let internalId = userIdOrDisplayId;
+        let crossId = null;
+        if (type === 'VOLUNTEER') {
+            const vol = await this.prisma.volunteer.findFirst({
+                where: { OR: [{ volunteerId: userIdOrDisplayId }, { email: userIdOrDisplayId }, { id: userIdOrDisplayId }] },
+            });
+            if (vol) {
+                internalId = vol.id;
+                crossId = vol.donorId;
+            }
+        }
+        else if (type === 'DONOR') {
+            const donor = await this.prisma.donor.findFirst({
+                where: { OR: [{ donorId: userIdOrDisplayId }, { email: userIdOrDisplayId }, { id: userIdOrDisplayId }] },
+            });
+            if (donor) {
+                internalId = donor.id;
+                const vol = await this.prisma.volunteer.findUnique({ where: { donorId: donor.id } });
+                crossId = vol?.id || null;
+            }
+        }
+        const where = {
+            OR: [
+                { donorId: internalId },
+                { volunteerId: internalId },
+                { partnerId: internalId }
+            ]
+        };
+        if (crossId) {
+            where.OR.push({ donorId: crossId }, { volunteerId: crossId });
+        }
+        const internalCerts = await this.prisma.certificate.findMany({
             where,
             orderBy: { createdAt: 'desc' },
+            include: { donor: true, volunteer: true, partner: true }
         });
+        if (type === 'VOLUNTEER') {
+            const participations = await this.prisma.campParticipation.findMany({
+                where: { volunteerId: internalId, status: 'ATTENDED' },
+                include: { camp: true, volunteer: true }
+            });
+            const legacyCerts = participations
+                .filter(p => !internalCerts.some(c => c.type === 'CAMP' && JSON.parse(c.metadata || '{}').campId === p.campId))
+                .map(p => ({
+                id: `CAMP-${p.id.slice(-8).toUpperCase()}`,
+                type: 'CAMP',
+                title: p.participationType === 'ACTIVE' ? 'Certificate of Excellence' : 'Certificate of Service',
+                recipientName: p.volunteer.name,
+                recipientType: 'VOLUNTEER',
+                volunteerId: p.volunteer.id,
+                createdAt: p.camp.date,
+                metadata: JSON.stringify({ campId: p.campId, campName: p.camp.name }),
+            }));
+            return [...internalCerts, ...legacyCerts].sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime());
+        }
+        return internalCerts;
     }
     async verifyCertificate(certId) {
-        if (!certId || !certId.includes('-')) {
-            throw new common_1.BadRequestException('Invalid Certificate ID format');
-        }
-        const formattedId = certId.toUpperCase().trim();
-        const directCert = await this.prisma.certificate.findUnique({
-            where: { id: certId },
+        const formattedId = certId.trim().toUpperCase();
+        const certRecord = await this.prisma.certificate.findUnique({
+            where: { id: formattedId },
+            include: { donor: true, volunteer: true, partner: true }
         });
-        if (directCert) {
-            let meta = {};
-            try {
-                meta = JSON.parse(directCert.metadata || '{}');
+        if (certRecord) {
+            let description = `Official ${certRecord.type} issued to ${certRecord.recipientName}.`;
+            if (certRecord.type === '80G' || certRecord.type === 'DONATION_RECEIPT') {
+                const meta = JSON.parse(certRecord.metadata || '{}');
+                description = `Donation of ₹${meta.amount?.toLocaleString('en-IN') || '—'} for ${certRecord.title}.`;
             }
-            catch { }
             return {
                 success: true,
                 data: {
-                    certId: directCert.id,
+                    certId: certRecord.id,
                     isAuthentic: true,
-                    type: directCert.type,
-                    recipientName: directCert.recipientName,
-                    issueDate: directCert.createdAt,
-                    description: directCert.type === '80G'
-                        ? `Tax Exemption for ₹${(meta.amount || 0).toLocaleString('en-IN')} donation`
-                        : `${directCert.title}`,
-                },
+                    type: certRecord.title,
+                    recipientName: certRecord.recipientName,
+                    issueDate: certRecord.createdAt,
+                    description,
+                    fileUrl: certRecord.fileUrl
+                }
             };
         }
         const [prefix, suffix] = formattedId.split('-');
+        if (!suffix)
+            throw new common_1.NotFoundException('Invalid Certificate ID format');
+        const lowerSuffix = suffix.toLowerCase();
         let isAuthentic = false;
         let details = null;
-        const lowerSuffix = suffix.toLowerCase();
-        if (prefix === 'DON' || prefix === '80G') {
+        if (prefix === 'DON' || prefix === '80G' || prefix === 'CERT') {
             const donations = await this.prisma.donation.findMany({
                 where: { id: { endsWith: lowerSuffix } },
                 include: { donor: true, program: true }
@@ -335,12 +450,10 @@ let CertificateService = class CertificateService {
                 const d = donations[0];
                 isAuthentic = true;
                 details = {
-                    type: prefix === '80G' ? '80G Tax Exemption' : 'Donation Receipt',
+                    type: prefix === '80G' ? '80G Tax Exemption' : 'Impact Certificate',
                     recipientName: d.donor.name || 'Anonymous Donor',
                     issueDate: d.createdAt,
-                    description: prefix === '80G'
-                        ? `Tax Exemption for ₹${d.amount.toLocaleString('en-IN')} donation`
-                        : `Donation of ₹${d.amount.toLocaleString('en-IN')} to ${d.program.name}`
+                    description: `Verified donation of ₹${d.amount.toLocaleString('en-IN')} to ${d.program.name}`
                 };
             }
         }
@@ -354,7 +467,7 @@ let CertificateService = class CertificateService {
                     type: 'Volunteer Appreciation',
                     recipientName: volunteers[0].name,
                     issueDate: new Date(),
-                    description: `Recognized for outstanding volunteering services.`
+                    description: `Verified volunteer profile for ${volunteers[0].name}.`
                 };
             }
         }
@@ -365,25 +478,12 @@ let CertificateService = class CertificateService {
             });
             if (participations.length > 0) {
                 isAuthentic = true;
+                const p = participations[0];
                 details = {
-                    type: participations[0].participationType === 'ACTIVE' ? 'Active Participation' : 'Camp Participation',
-                    recipientName: participations[0].volunteer.name,
-                    issueDate: participations[0].camp.date,
-                    description: `Participated in ${participations[0].camp.name} at ${participations[0].camp.location}`
-                };
-            }
-        }
-        else if (prefix === 'PTR') {
-            const partners = await this.prisma.partner.findMany({
-                where: { id: { endsWith: lowerSuffix } }
-            });
-            if (partners.length > 0) {
-                isAuthentic = true;
-                details = {
-                    type: 'CSR Partnership',
-                    recipientName: partners[0].organizationName,
-                    issueDate: new Date(),
-                    description: `Recognized for corporate social responsibility and partnership.`
+                    type: p.participationType === 'ACTIVE' ? 'Active Service Certificate' : 'Camp Participation',
+                    recipientName: p.volunteer.name,
+                    issueDate: p.camp.date,
+                    description: `Completed service at ${p.camp.name} (${p.camp.location}).`
                 };
             }
         }
@@ -455,10 +555,52 @@ let CertificateService = class CertificateService {
             orderBy: { createdAt: 'desc' },
         });
     }
+    async generateZip(recipientType, userId, res) {
+        try {
+            const certificates = await this.getCertificates(recipientType, userId);
+            if (!certificates || certificates.length === 0) {
+                throw new common_1.NotFoundException('No certificates found to bundle');
+            }
+            const archiver = require('archiver');
+            const archive = archiver('zip', { zlib: { level: 9 } });
+            const zipName = `${recipientType}_Certificates_${new Date().getTime()}.zip`;
+            res.setHeader('Content-Type', 'application/zip');
+            res.setHeader('Content-Disposition', `attachment; filename=${zipName}`);
+            archive.pipe(res);
+            for (const cert of certificates) {
+                try {
+                    const fileName = `${cert.title.replace(/[\s&/]/g, '_')}_${cert.id}.pdf`;
+                    if (cert.fileUrl && cert.fileUrl.startsWith('http')) {
+                        const response = await axios_1.default.get(cert.fileUrl, { responseType: 'arraybuffer' });
+                        archive.append(Buffer.from(response.data), { name: fileName });
+                    }
+                    else {
+                        const localPath = path.join(process.cwd(), 'public', 'certificates', `${cert.id}.pdf`);
+                        if (fs.existsSync(localPath)) {
+                            archive.file(localPath, { name: fileName });
+                        }
+                        else {
+                        }
+                    }
+                }
+                catch (err) {
+                    console.error(`Failed to add certificate ${cert.id} to ZIP:`, err);
+                }
+            }
+            await archive.finalize();
+        }
+        catch (error) {
+            console.error('ZIP Error:', error);
+            if (!res.headersSent) {
+                res.status(500).send('Failed to generate ZIP archive');
+            }
+        }
+    }
 };
 exports.CertificateService = CertificateService;
 exports.CertificateService = CertificateService = __decorate([
     (0, common_1.Injectable)(),
-    __metadata("design:paramtypes", [prisma_service_1.PrismaService])
+    __metadata("design:paramtypes", [prisma_service_1.PrismaService,
+        pdf_generator_service_1.PdfGeneratorService])
 ], CertificateService);
 //# sourceMappingURL=certificate.service.js.map

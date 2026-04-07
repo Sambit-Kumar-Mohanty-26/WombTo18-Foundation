@@ -106,4 +106,14 @@ export class CertificateController {
   async verify(@Param('certId') certId: string) {
     return this.certificateService.verifyCertificate(certId);
   }
+
+  @Get('zip')
+  @ApiOperation({ summary: 'Download all certificates as a ZIP archive' })
+  async downloadZip(
+    @Query('recipientType') recipientType: string,
+    @Query('userId') userId: string,
+    @Res() res: Response,
+  ) {
+    return this.certificateService.generateZip(recipientType, userId, res);
+  }
 }

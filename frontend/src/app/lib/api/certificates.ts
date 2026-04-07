@@ -63,6 +63,11 @@ export const certificateApi = {
     const blob = await client.get<Blob>(`/certificates/partner/${partnerId}`);
     triggerDownload(blob, `partner-cert-${partnerId}.pdf`);
   },
+  /** Download all certificates as a ZIP archive */
+  downloadZip: async (recipientType: string, userId: string) => {
+    const blob = await client.get<Blob>(`/certificates/zip?recipientType=${recipientType}&userId=${userId}`);
+    triggerDownload(blob, `${recipientType}_Certificates.zip`);
+  },
 };
 
 function triggerDownload(blob: Blob, filename: string) {
