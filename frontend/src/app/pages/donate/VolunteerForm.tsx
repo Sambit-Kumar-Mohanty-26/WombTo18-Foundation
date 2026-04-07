@@ -136,7 +136,7 @@ export function VolunteerForm() {
             <Users className="w-4 h-4 text-[var(--womb-forest)]" /> {t('forms.volunteer.personal')}
           </h3>
           <Link 
-            to="/volunteer-benefits"
+            to="/volunteer-policy"
             className="group flex items-center gap-1.5 text-[11px] font-bold text-blue-600 hover:text-blue-700 transition-colors py-1 px-2 rounded-lg hover:bg-blue-50/50"
           >
             <span>{t('forms.volunteer.benefits')}</span>
