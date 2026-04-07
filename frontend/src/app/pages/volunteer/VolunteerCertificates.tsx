@@ -6,11 +6,13 @@ import { Award, Download, Share2, Loader2, FileText } from "lucide-react";
 import { useAuth } from "../../context/AuthContext";
 import { ShareModal } from "../../components/shared/ShareModal";
 import { certificateApi } from "../../lib/api/certificates";
+import { toast } from "sonner";
 
 export function VolunteerCertificates() {
   const { state } = useAuth();
   const [certificates, setCertificates] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
+  const [downloadingZip, setDownloadingZip] = useState(false);
   const [shareCert, setShareCert] = useState<any>(null);
   
   const volId = state.user?.volunteerId || state.user?.identifier || "";
@@ -46,13 +48,42 @@ export function VolunteerCertificates() {
     }
   };
 
+  const handleDownloadAll = async () => {
+    if (certificates.length === 0) return;
+    setDownloadingZip(true);
+    toast.info("Preparing ZIP archive...", { description: "Bundling all your impact achievements." });
+    try {
+      await certificateApi.downloadZip("VOLUNTEER", volId);
+      toast.success("Archive downloaded successfully!");
+    } catch (err) {
+      console.error("ZIP download failed:", err);
+      toast.error("Failed to prepare archive.");
+    } finally {
+      setDownloadingZip(false);
+    }
+  };
+
   if (loading) return <div className="flex items-center justify-center py-20"><Loader2 className="h-8 w-8 animate-spin text-amber-500" /></div>;
 
   return (
     <div className="space-y-6 animate-in fade-in duration-700">
-      <div>
-        <h1 className="text-3xl font-black text-amber-950 tracking-tight">My Certificates</h1>
-        <p className="text-amber-700/50 text-sm font-bold mt-1">Download and share your impact achievements</p>
+      <div className="flex flex-col md:flex-row md:items-end justify-between gap-6">
+        <div>
+          <h1 className="text-3xl font-black text-amber-950 tracking-tight">My Certificates</h1>
+          <p className="text-amber-700/50 text-sm font-bold mt-1">Download and share your impact achievements</p>
+        </div>
+        <Button
+          variant="outline"
+          disabled={downloadingZip || certificates.length === 0}
+          onClick={handleDownloadAll}
+          className="bg-white border-amber-100 text-amber-900 hover:bg-amber-50 font-bold rounded-xl h-11 shadow-sm"
+        >
+          {downloadingZip ? (
+            <><Loader2 className="h-4 w-4 mr-2 animate-spin" /> Preparing...</>
+          ) : (
+            <><Download className="h-4 w-4 mr-2" /> Download All (ZIP)</>
+          )}
+        </Button>
       </div>
 
       <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">

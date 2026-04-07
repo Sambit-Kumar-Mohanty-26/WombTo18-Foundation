@@ -17,6 +17,7 @@ export function DonorCertificates() {
   const [certs, setCerts] = useState<any[]>([]);
   const [certsLoading, setCertsLoading] = useState(true);
   const [downloadingId, setDownloadingId] = useState<string | null>(null);
+  const [downloadingZip, setDownloadingZip] = useState(false);
   const [search, setSearch] = useState("");
 
   const donorName = profile?.name || state.user?.name || state.user?.identifier || "Donor";
@@ -42,7 +43,7 @@ export function DonorCertificates() {
 
   const allDocuments = certs.length > 0 ? certs.map((c: any) => ({
     id: c.id,
-    type: c.type === "80G" ? "80G Tax Certificate" : c.type === "DONATION_RECEIPT" ? "Donation Receipt" : c.title,
+    type: c.type === "80G" || c.type === "DONATION_RECEIPT" ? "Donation Receipt" : c.title,
     recipientName: c.recipientName,
     fileUrl: c.fileUrl,
     amount: (() => { try { return JSON.parse(c.metadata || "{}").amount || 0; } catch { return 0; } })(),
@@ -85,6 +86,24 @@ export function DonorCertificates() {
     }
   }
 
+  async function handleDownloadAll() {
+    if (allDocuments.length === 0) {
+      toast.error("No documents available to bundle.");
+      return;
+    }
+    setDownloadingZip(true);
+    toast.info("Preparing ZIP archive...", { description: "Bundling all your financial documents securely." });
+    try {
+      await certificateApi.downloadZip("DONOR", donorId);
+      toast.success("Archive downloaded successfully!");
+    } catch (err: any) {
+      console.error("ZIP download failed:", err);
+      toast.error("Failed to prepare archive. Please try individual downloads.");
+    } finally {
+      setDownloadingZip(false);
+    }
+  }
+
   if (donorLoading || certsLoading) {
     return (
       <div className="flex flex-col items-center justify-center py-32 space-y-4">
@@ -110,17 +129,20 @@ export function DonorCertificates() {
           <h1 className="text-3xl sm:text-[2.5rem] font-black text-gray-900 tracking-tight leading-none mb-2">
             Tax <span className="text-transparent bg-clip-text bg-gradient-to-r from-[#1D6E3F] to-emerald-500">Certificates</span>
           </h1>
-          <p className="text-gray-500 font-medium">Verified 80G documents and receipts for <span className="font-bold text-gray-800">{donorName}</span>.</p>
+          <p className="text-gray-500 font-medium">Verified documents and receipts for <span className="font-bold text-gray-800">{donorName}</span>.</p>
         </div>
         <div className="flex gap-3">
           <Button
             variant="outline" size="lg"
+            disabled={downloadingZip || allDocuments.length === 0}
             className="bg-white border-gray-200 text-gray-700 hover:bg-gray-50 hover:text-gray-900 font-bold rounded-xl h-12 shadow-[0_4px_15px_-5px_rgba(0,0,0,0.05)] transition-all hover:shadow-[0_8px_20px_-5px_rgba(0,0,0,0.08)] hover:-translate-y-0.5 outline-none"
-            onClick={() => {
-              toast.info("Preparing ZIP archive...", { description: "Bundling all your 80G documents securely." });
-            }}
+            onClick={handleDownloadAll}
           >
-            <Download className="h-4 w-4 mr-2 text-[#1D6E3F]" /> Download All (ZIP)
+            {downloadingZip ? (
+              <><Loader2 className="h-4 w-4 mr-2 animate-spin text-[#1D6E3F]" /> Preparing...</>
+            ) : (
+              <><Download className="h-4 w-4 mr-2 text-[#1D6E3F]" /> Download All (ZIP)</>
+            )}
           </Button>
         </div>
       </motion.div>
@@ -158,7 +180,7 @@ export function DonorCertificates() {
                  <FileCheck2 className="h-10 w-10 text-gray-300" />
               </div>
               <h3 className="text-2xl font-black text-gray-900 mb-2">No Records Available</h3>
-              <p className="text-gray-500 font-medium max-w-sm mx-auto mb-8">Generate your first 80G tax exemption certificate by making a contribution to any active program.</p>
+              <p className="text-gray-500 font-medium max-w-sm mx-auto mb-8">Generate your first tax exemption certificate by making a contribution to any active program.</p>
               <Link to="/donate">
                 <Button size="lg" className="bg-[#1D6E3F] hover:bg-emerald-700 text-white font-black shadow-lg rounded-xl h-12 px-8 transition-transform hover:-translate-y-0.5">
                   Start Donating

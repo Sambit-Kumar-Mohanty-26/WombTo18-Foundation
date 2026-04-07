@@ -20,7 +20,7 @@ exports.DonationModule = DonationModule = __decorate([
         imports: [coin_module_1.CoinModule],
         controllers: [donation_controller_1.DonationController],
         providers: [donation_service_1.DonationService, pdf_generator_service_1.PdfGeneratorService],
-        exports: [donation_service_1.DonationService],
+        exports: [donation_service_1.DonationService, pdf_generator_service_1.PdfGeneratorService],
     })
 ], DonationModule);
 //# sourceMappingURL=donation.module.js.map

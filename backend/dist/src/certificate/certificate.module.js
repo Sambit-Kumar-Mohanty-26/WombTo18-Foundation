@@ -10,11 +10,13 @@ exports.CertificateModule = void 0;
 const common_1 = require("@nestjs/common");
 const certificate_controller_1 = require("./controllers/certificate.controller");
 const certificate_service_1 = require("./services/certificate.service");
+const donation_module_1 = require("../donation/donation.module");
 let CertificateModule = class CertificateModule {
 };
 exports.CertificateModule = CertificateModule;
 exports.CertificateModule = CertificateModule = __decorate([
     (0, common_1.Module)({
+        imports: [donation_module_1.DonationModule],
         controllers: [certificate_controller_1.CertificateController],
         providers: [certificate_service_1.CertificateService],
         exports: [certificate_service_1.CertificateService],

@@ -108,6 +108,9 @@ let CertificateController = class CertificateController {
     async verify(certId) {
         return this.certificateService.verifyCertificate(certId);
     }
+    async downloadZip(recipientType, userId, res) {
+        return this.certificateService.generateZip(recipientType, userId, res);
+    }
 };
 exports.CertificateController = CertificateController;
 __decorate([
@@ -190,6 +193,16 @@ __decorate([
     __metadata("design:paramtypes", [String]),
     __metadata("design:returntype", Promise)
 ], CertificateController.prototype, "verify", null);
+__decorate([
+    (0, common_1.Get)('zip'),
+    (0, swagger_1.ApiOperation)({ summary: 'Download all certificates as a ZIP archive' }),
+    __param(0, (0, common_1.Query)('recipientType')),
+    __param(1, (0, common_1.Query)('userId')),
+    __param(2, (0, common_1.Res)()),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [String, String, Object]),
+    __metadata("design:returntype", Promise)
+], CertificateController.prototype, "downloadZip", null);
 exports.CertificateController = CertificateController = __decorate([
     (0, swagger_1.ApiTags)('Certificates'),
     (0, common_1.Controller)('certificates'),

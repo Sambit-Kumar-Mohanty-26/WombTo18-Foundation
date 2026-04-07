@@ -68,6 +68,7 @@ export function VerifyCertificatePage() {
         /VOL-[a-zA-Z0-9]+/i,
         /CAMP-[a-zA-Z0-9]+/i,
         /PTR-[a-zA-Z0-9]+/i,
+        /CERT-[a-zA-Z0-9]+/i,
         /Certificate\s*ID:\s*([A-Za-z0-9-]+)/i,
       ];
 
@@ -132,6 +133,16 @@ export function VerifyCertificatePage() {
   const handleFileSelect = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (file) handleFileUpload(file);
+  };
+
+  const handleDownload = () => {
+    if (!result?.fileUrl) return;
+    
+    const url = result.fileUrl.startsWith('http') 
+      ? result.fileUrl 
+      : `${import.meta.env.VITE_API_URL || ''}${result.fileUrl}`;
+      
+    window.open(url, '_blank');
   };
 
   return (
@@ -382,9 +393,20 @@ export function VerifyCertificatePage() {
                     <p className="text-emerald-100 text-xs font-semibold uppercase tracking-wider">Verified by WombTo18 Foundation</p>
                   </div>
                 </div>
-                <div className="hidden sm:block text-right">
-                  <div className="text-emerald-100 text-xs font-semibold uppercase tracking-wider mb-0.5">Certificate ID</div>
-                  <div className="font-mono font-bold tracking-widest text-sm bg-white/10 px-3 py-1 rounded-lg">{result.certId}</div>
+                <div className="flex flex-col items-end">
+                  <div className="hidden sm:block text-right mb-2">
+                    <div className="text-emerald-100 text-xs font-semibold uppercase tracking-wider mb-0.5">Certificate ID</div>
+                    <div className="font-mono font-bold tracking-widest text-sm bg-white/10 px-3 py-1 rounded-lg">{result.certId}</div>
+                  </div>
+                  {result.fileUrl && (
+                    <Button 
+                      onClick={handleDownload}
+                      size="sm"
+                      className="bg-white text-[var(--womb-forest)] hover:bg-emerald-50 font-bold border-none shadow-sm h-8"
+                    >
+                      <FileText className="h-3.5 w-3.5 mr-1.5" /> View PDF
+                    </Button>
+                  )}
                 </div>
               </div>
 
