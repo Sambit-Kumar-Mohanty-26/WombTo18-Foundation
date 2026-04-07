@@ -102,7 +102,7 @@ export const router = createBrowserRouter([
       { path: "donation-success", Component: DonationSuccessPage },
       { path: "wall-of-fame", Component: WallOfFamePage },
       { path: "volunteer-onboarding", Component: VolunteerOnboardingPage },
-      { path: "volunteer-benefits", Component: VolunteerBenefitsPage },
+      { path: "volunteer-policy", Component: VolunteerBenefitsPage },
       { path: "volunteer-success", Component: VolunteerSuccessPage },
       { path: "dashboard-preview", Component: DashboardPreviewPage },
       { path: "advisory-board", Component: AdvisoryBoardApplicationPage },
