@@ -76,7 +76,7 @@ export function VolunteerCamps() {
     try {
       setLocalLoading(true);
       const res: any = await client.post(`/camps/${campId}/scan-digital`, { volunteerId: volId });
-      toast.success(res?.awarded ? `Attendance marked! +${res.awarded} coins` : "Attendance successful!");
+      toast.success(res?.awarded ? `Attendance marked! +${res.awarded} credits` : "Attendance successful!");
       setTimeout(() => window.location.reload(), 1000);
     } catch (err: any) {
       toast.error(err.response?.data?.message || "Failed to process attendance");

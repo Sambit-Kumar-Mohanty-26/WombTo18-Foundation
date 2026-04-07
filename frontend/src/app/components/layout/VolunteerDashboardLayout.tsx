@@ -50,12 +50,12 @@ export function VolunteerDashboardLayout() {
   const volId = session.volunteerId || session.donorId || 'admin';
   const volunteerLinks = [
     { href: `/volunteer/${volId}/dashboard`, label: "Dashboard", icon: LayoutDashboard },
-    { href: `/volunteer/${volId}/coins`, label: "My Coins", icon: Coins },
+    { href: `/volunteer/${volId}/coins`, label: "Impact Credits", icon: Coins },
     { href: `/volunteer/${volId}/referrals`, label: "Referrals", icon: Users },
     { href: `/volunteer/${volId}/camps`, label: "Camps", icon: Tent },
     { href: `/volunteer/${volId}/leaderboard`, label: "Leaderboard", icon: Trophy },
     { href: `/volunteer/${volId}/certificates`, label: "Certificates", icon: Award },
-    { href: `/volunteer/${volId}/commissions`, label: "Commissions", icon: Zap },
+    { href: `/volunteer/${volId}/commissions`, label: "Rewards", icon: Zap },
     { href: `/volunteer/${volId}/stats`, label: "Stats", icon: BarChart3 },
     { href: `/volunteer/${volId}/profile`, label: "Profile", icon: User },
   ];

@@ -80,7 +80,7 @@ export function VolunteerScan() {
               <CheckCircle2 className="h-20 w-20 text-emerald-500 mx-auto" />
               <div>
                 <h2 className="text-2xl font-black text-gray-900">Attendance Verified!</h2>
-                <p className="text-gray-500 font-medium mt-1">You just earned coins for participating.</p>
+                <p className="text-gray-500 font-medium mt-1">You just earned impact credits for participating.</p>
               </div>
               <div className="bg-amber-50 border border-amber-100 p-4 rounded-xl inline-block mt-4">
                 <p className="text-amber-800 font-black text-2xl flex items-center justify-center gap-2">

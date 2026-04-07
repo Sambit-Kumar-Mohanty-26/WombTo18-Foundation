@@ -5,6 +5,7 @@ export interface DonorSession {
   eligible: boolean;
   token: string;
   name?: string;
+  mobile?: string;
   donorId?: string;
   volunteerId?: string;
   partnerId?: string;
@@ -63,6 +64,7 @@ export const auth = {
         eligible: response.eligible ?? true,
         token: response.token,
         name: response.name,
+        mobile: (response as any).mobile,
         donorId: response.donorId,
         volunteerId: response.volunteerId,
         partnerId: response.partnerId,
@@ -83,6 +85,7 @@ export const auth = {
         eligible: response.eligible ?? true,
         token: response.token,
         name: response.name,
+        mobile: (response as any).mobile,
         donorId: response.donorId,
         volunteerId: response.volunteerId,
         partnerId: response.partnerId,
@@ -106,11 +109,12 @@ export const auth = {
   },
 
   /** Save volunteer session after upgrade */
-  saveVolunteerSession(data: { identifier: string; volunteerId: string; name: string; donorId: string }) {
+  saveVolunteerSession(data: { identifier: string; volunteerId: string; name: string; mobile?: string; donorId: string }) {
     const existing = auth.getSession();
     const session: DonorSession = {
       identifier: data.identifier,
       name: data.name,
+      mobile: data.mobile,
       donorId: data.donorId,
       volunteerId: data.volunteerId,
       role: 'VOLUNTEER',

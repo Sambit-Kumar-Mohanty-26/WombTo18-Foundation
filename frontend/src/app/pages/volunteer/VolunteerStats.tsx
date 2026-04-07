@@ -30,7 +30,7 @@ const impactData = [
 
 const chartConfig = {
   coins: {
-    label: "Coins Earned",
+    label: "Credits Earned",
     color: "hsl(var(--chart-1))",
   },
   impact: {
@@ -71,7 +71,7 @@ export function VolunteerStats() {
           <CardContent className="p-6">
             <Coins className="h-6 w-6 text-amber-600 mb-4" />
             <p className="text-2xl font-black text-amber-950">{stats?.totalCoins || 0}</p>
-            <p className="text-xs font-bold uppercase tracking-widest text-amber-700/60 mt-1">Total Coins</p>
+            <p className="text-xs font-bold uppercase tracking-widest text-amber-700/60 mt-1">Total Impact Credits</p>
           </CardContent>
         </Card>
         
@@ -107,7 +107,7 @@ export function VolunteerStats() {
              <div className="h-2 w-2 rounded-full bg-emerald-500 animate-pulse" />
              <CardTitle className="text-lg font-black text-gray-900 tracking-tight">Growth & Impact Trend</CardTitle>
           </div>
-          <CardDescription className="font-bold text-gray-400">Monthly breakdown of coins earned and individual impact.</CardDescription>
+          <CardDescription className="font-bold text-gray-400">Monthly breakdown of credits earned and individual impact.</CardDescription>
         </CardHeader>
         <CardContent className="px-0 pb-0">
           <ChartContainer config={chartConfig} className="h-[300px] w-full">
@@ -163,7 +163,7 @@ export function VolunteerStats() {
           <div className="flex items-center justify-center gap-6 mt-6 pt-6 border-t border-gray-50">
              <div className="flex items-center gap-2">
                 <div className="h-3 w-3 rounded-full bg-[var(--color-coins)]" />
-                <span className="text-xs font-black text-gray-500 uppercase tracking-wider">Coins Earned</span>
+                <span className="text-xs font-black text-gray-500 uppercase tracking-wider">Credits Earned</span>
              </div>
              <div className="flex items-center gap-2">
                 <div className="h-3 w-3 rounded-full bg-[var(--color-impact)]" />

@@ -71,7 +71,7 @@ export class CoinService {
           volunteerId: volunteer.id,
           amount: coins,
           type: 'REFERRAL',
-          description: `Referral bonus: ${coins} coins for ₹${paymentAmount} donation by referral`,
+          description: `Referral bonus: ${coins} credits for ₹${paymentAmount} donation by referral`,
           metadata: JSON.stringify({ referralId, paymentAmount }),
         },
       }),
@@ -113,7 +113,7 @@ export class CoinService {
           volunteerId: volunteer.id,
           amount: coins,
           type: 'DONATION',
-          description: `Donation reward: ${coins} coins for ₹${paymentAmount} contribution`,
+          description: `Donation reward: ${coins} credits for ₹${paymentAmount} contribution`,
           metadata: JSON.stringify({ donationId, paymentAmount }),
         },
       }),
@@ -150,7 +150,7 @@ export class CoinService {
           volunteerId: volunteer.id,
           amount: coins,
           type: 'WELCOME_BONUS',
-          description: `Welcome bonus: ${coins} coins for ₹${paymentAmount} membership payment`,
+          description: `Welcome bonus: ${coins} credits for ₹${paymentAmount} membership payment`,
           metadata: JSON.stringify({ donationId, paymentAmount }),
         },
       }),
@@ -192,7 +192,7 @@ export class CoinService {
           volunteerId: volunteer.id,
           amount: config.campJoin,
           type: 'CAMP_JOIN',
-          description: `Camp participation: ${config.campJoin} coins for joining`,
+          description: `Camp participation: ${config.campJoin} credits for joining`,
           metadata: JSON.stringify({ campId }),
         },
       }),
@@ -247,12 +247,12 @@ export class CoinService {
 
       const divisor = approvedCount > 0 ? approvedCount : 1;
       coinsToAward = Math.floor(camp.totalCoinPool / divisor);
-      description = `Camp reward: ${coinsToAward} coins (pool of ${camp.totalCoinPool} ÷ ${divisor} volunteers)`;
+      description = `Camp reward: ${coinsToAward} credits (pool of ${camp.totalCoinPool} ÷ ${divisor} volunteers)`;
     } else {
       // Fixed fallback from global config
       const config = await this.getConfig();
       coinsToAward = config.campActive;
-      description = `Active participation bonus: ${coinsToAward} coins`;
+      description = `Active participation bonus: ${coinsToAward} credits`;
     }
 
     // Check existing participation
