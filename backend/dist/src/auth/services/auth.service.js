@@ -459,9 +459,10 @@ let AuthService = class AuthService {
         if (!isValid) {
             throw new common_1.UnauthorizedException('Invalid OTP. Please check and try again.');
         }
+        const wasAlreadyVerified = donor.emailVerified === true;
         await this.prisma.donor.update({
             where: { id: donor.id },
-            data: { otpHash: null, emailOtpHash: null, mobileOtpHash: null, otpExpiry: null },
+            data: { otpHash: null, emailOtpHash: null, mobileOtpHash: null, otpExpiry: null, emailVerified: true },
         });
         this.resetOtpRateLimit(identifier);
         const payload = { sub: donor.id, email: donor.email, donorId: donor.donorId };
@@ -475,6 +476,23 @@ let AuthService = class AuthService {
             if (volRecord) {
                 volunteerId = volRecord.volunteerId;
                 profileCompleted = !!volRecord.city && !!volRecord.profession;
+            }
+        }
+        if (!wasAlreadyVerified) {
+            if (isVolunteer) {
+                this.mailerService.sendWelcomeVolunteerEmail({
+                    email: donor.email,
+                    name: donor.name || 'Volunteer',
+                    donorId: donor.donorId,
+                    volunteerId,
+                }).catch((err) => console.error('[WELCOME EMAIL ERROR] Volunteer:', err.message));
+            }
+            else {
+                this.mailerService.sendWelcomeDonorEmail({
+                    email: donor.email,
+                    name: donor.name || 'Donor',
+                    donorId: donor.donorId,
+                }).catch((err) => console.error('[WELCOME EMAIL ERROR] Donor:', err.message));
             }
         }
         return {
@@ -552,6 +570,7 @@ let AuthService = class AuthService {
                 throw new common_1.UnauthorizedException('Invalid Mobile SMS OTP.');
             }
         }
+        const wasAlreadyVerified = user.emailVerified === true;
         const updateData = {
             otpHash: null,
             emailOtpHash: null,
@@ -578,6 +597,31 @@ let AuthService = class AuthService {
         if (userType === 'VOLUNTEER') {
             const volRecord = await this.prisma.volunteer.findFirst({ where: { donorId: user.id } });
             profileCompleted = !!volRecord?.city && !!volRecord?.profession;
+        }
+        if (!wasAlreadyVerified) {
+            if (userType === 'PARTNER') {
+                this.mailerService.sendWelcomePartnerEmail({
+                    email: user.email,
+                    contactPerson: user.contactPerson || user.name || 'Partner',
+                    organizationName: user.organizationName || 'Your Organization',
+                    partnerId: user.partnerId,
+                }).catch((err) => console.error('[WELCOME EMAIL ERROR] Partner:', err.message));
+            }
+            else if (userType === 'VOLUNTEER') {
+                this.mailerService.sendWelcomeVolunteerEmail({
+                    email: user.email,
+                    name: user.name || 'Volunteer',
+                    donorId: user.donorId,
+                    volunteerId: user.volunteerId,
+                }).catch((err) => console.error('[WELCOME EMAIL ERROR] Volunteer:', err.message));
+            }
+            else {
+                this.mailerService.sendWelcomeDonorEmail({
+                    email: user.email,
+                    name: user.name || 'Donor',
+                    donorId: user.donorId,
+                }).catch((err) => console.error('[WELCOME EMAIL ERROR] Donor:', err.message));
+            }
         }
         return {
             success: true,

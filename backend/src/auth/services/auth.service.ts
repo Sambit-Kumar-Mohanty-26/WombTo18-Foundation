@@ -549,10 +549,13 @@ export class AuthService {
       throw new UnauthorizedException('Invalid OTP. Please check and try again.');
     }
 
+    // Check if this is the first verification (for welcome email)
+    const wasAlreadyVerified = donor.emailVerified === true;
+
     // Clear OTP after successful verification & reset rate limiter
     await this.prisma.donor.update({
       where: { id: donor.id },
-      data: { otpHash: null, emailOtpHash: null, mobileOtpHash: null, otpExpiry: null },
+      data: { otpHash: null, emailOtpHash: null, mobileOtpHash: null, otpExpiry: null, emailVerified: true },
     });
     this.resetOtpRateLimit(identifier);
 
@@ -569,6 +572,24 @@ export class AuthService {
       if (volRecord) {
         volunteerId = volRecord.volunteerId;
         profileCompleted = !!volRecord.city && !!volRecord.profession;
+      }
+    }
+
+    // Send welcome email on first-time verification (fire-and-forget)
+    if (!wasAlreadyVerified) {
+      if (isVolunteer) {
+        this.mailerService.sendWelcomeVolunteerEmail({
+          email: donor.email,
+          name: donor.name || 'Volunteer',
+          donorId: donor.donorId,
+          volunteerId,
+        }).catch((err) => console.error('[WELCOME EMAIL ERROR] Volunteer:', err.message));
+      } else {
+        this.mailerService.sendWelcomeDonorEmail({
+          email: donor.email,
+          name: donor.name || 'Donor',
+          donorId: donor.donorId,
+        }).catch((err) => console.error('[WELCOME EMAIL ERROR] Donor:', err.message));
       }
     }
 
@@ -661,6 +682,9 @@ export class AuthService {
       }
     }
 
+    // Check if this is the first-time verification (for welcome email)
+    const wasAlreadyVerified = user.emailVerified === true;
+
     // Mark as verified
     const updateData = { 
        otpHash: null, 
@@ -692,6 +716,31 @@ export class AuthService {
     if (userType === 'VOLUNTEER') {
       const volRecord = await this.prisma.volunteer.findFirst({ where: { donorId: user.id } });
       profileCompleted = !!volRecord?.city && !!volRecord?.profession;
+    }
+
+    // Send role-specific welcome email on first-time verification (fire-and-forget)
+    if (!wasAlreadyVerified) {
+      if (userType === 'PARTNER') {
+        this.mailerService.sendWelcomePartnerEmail({
+          email: user.email,
+          contactPerson: user.contactPerson || user.name || 'Partner',
+          organizationName: user.organizationName || 'Your Organization',
+          partnerId: user.partnerId,
+        }).catch((err) => console.error('[WELCOME EMAIL ERROR] Partner:', err.message));
+      } else if (userType === 'VOLUNTEER') {
+        this.mailerService.sendWelcomeVolunteerEmail({
+          email: user.email,
+          name: user.name || 'Volunteer',
+          donorId: user.donorId,
+          volunteerId: user.volunteerId,
+        }).catch((err) => console.error('[WELCOME EMAIL ERROR] Volunteer:', err.message));
+      } else {
+        this.mailerService.sendWelcomeDonorEmail({
+          email: user.email,
+          name: user.name || 'Donor',
+          donorId: user.donorId,
+        }).catch((err) => console.error('[WELCOME EMAIL ERROR] Donor:', err.message));
+      }
     }
 
     return {

@@ -106,7 +106,7 @@ export declare class AuthController {
         partnerId: any;
         eligible: boolean;
         profileCompleted: boolean;
-        role: "VOLUNTEER" | "DONOR" | "PARTNER";
+        role: "DONOR" | "VOLUNTEER" | "PARTNER";
     } | {
         error: string;
     }>;

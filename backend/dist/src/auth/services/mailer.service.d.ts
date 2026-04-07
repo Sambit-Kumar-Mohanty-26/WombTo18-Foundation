@@ -30,4 +30,22 @@ export declare class MailerService {
         message: string;
     }): Promise<void>;
     private buildCampEmail;
+    sendWelcomeDonorEmail(params: {
+        email: string;
+        name: string;
+        donorId: string;
+    }): Promise<void>;
+    sendWelcomeVolunteerEmail(params: {
+        email: string;
+        name: string;
+        donorId: string;
+        volunteerId?: string;
+    }): Promise<void>;
+    sendWelcomePartnerEmail(params: {
+        email: string;
+        contactPerson: string;
+        organizationName: string;
+        partnerId: string;
+    }): Promise<void>;
+    private buildWelcomeEmail;
 }
