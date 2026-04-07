@@ -7,6 +7,8 @@ import { useTranslation } from "react-i18next";
 import dashboard1 from "../../../../public/dashboard/657ae878-799e-44e7-a0e6-759a9b0420dc.jpeg"
 import dashboard2 from "../../../../public/dashboard/WhatsApp Image 2025-11-14 at 12.30.17.jpeg"
 import dashboard3 from "../../../../public/dashboard/ec9e78d6-4820-48e0-abfa-f6af927c9682.jpeg"
+import dashboard4 from "../../../../public/dashboard/Screenshot 2026-04-08 041852.png"
+import dashboard5 from "../../../../public/dashboard/Screenshot 2026-04-08 041911.png"
 
 
 
@@ -19,6 +21,8 @@ const HERO_IMAGES = [
   "https://images.unsplash.com/photo-1594708767771-a7502209ff51?q=80&w=1920&auto=format&fit=crop", // Healthcare
   "https://images.unsplash.com/photo-1542810634-71277d95dcbb?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwyfHxjaGlsZHJlbiUyMGhhcHB5JTIwSW5kaWF8ZW58MHx8fHwxNzczMTM0MDIxfDA&ixlib=rb-4.1.0&q=80&w=1920", // Original Happy children India
   "/images/site-assets/hero_health.png",
+  dashboard4,
+  dashboard5,
 ];
 
 export function HeroSection() {
