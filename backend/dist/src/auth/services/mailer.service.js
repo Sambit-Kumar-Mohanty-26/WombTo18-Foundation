@@ -286,7 +286,7 @@ let MailerService = class MailerService {
             founderMessage: `Welcome to the frontline of change! As a WombTo18 volunteer, you become the bridge between hope and action. You'll lead camps, mentor young minds, and light up communities. Every hour you give ripples into a lifetime of opportunity for a child. I'm personally grateful you chose to stand with us.`,
             dashboardFeatures: [
                 { icon: '🏕️', title: 'Impact Camps', desc: 'Join and lead community service camps' },
-                { icon: '🪙', title: 'Earn Coins', desc: 'Get rewarded for your volunteer hours' },
+                { icon: '🪙', title: 'Earn Credits', desc: 'Get rewarded for your volunteer hours' },
                 { icon: '📜', title: 'Certificates', desc: 'Download verified impact certificates' },
             ],
         });

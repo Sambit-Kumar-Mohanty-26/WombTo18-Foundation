@@ -36,7 +36,7 @@ export function VolunteerLeaderboard() {
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <div>
           <h1 className="text-3xl font-black text-amber-950 tracking-tight">Volunteer Leaderboard</h1>
-          <p className="text-amber-700/50 text-sm font-bold mt-1">Ranked by coins earned through impact</p>
+          <p className="text-amber-700/50 text-sm font-bold mt-1">Ranked by credits earned through impact</p>
         </div>
         <Button onClick={toggleVisibility} variant="outline" className="rounded-xl border-amber-200 text-amber-700 hover:bg-amber-50 font-bold">
           {showOnBoard ? <EyeOff className="h-4 w-4 mr-2" /> : <Eye className="h-4 w-4 mr-2" />}
@@ -54,7 +54,7 @@ export function VolunteerLeaderboard() {
               </div>
               <div>
                 <p className="text-lg font-black">Your Current Rank</p>
-                <p className="text-amber-100/60 text-sm font-bold">{myRank.totalCoins} coins earned</p>
+                <p className="text-amber-100/60 text-sm font-bold">{myRank.totalCoins} credits earned</p>
               </div>
             </div>
             <Trophy className="h-10 w-10 text-amber-200/40" />

@@ -57,7 +57,7 @@ export function VolunteerCommissions() {
   const handleWithdraw = async () => {
     // Check if bank details are updated
     if (!bankData.bankName || !bankData.accountNumber || !bankData.ifscCode || !bankData.accountName) {
-      toast.error("Please update your bank details before requesting a withdrawal.", {
+      toast.error("Please update your reward transfer details before requesting a redemption.", {
         description: "We need your account information to process the bank transfer.",
         duration: 5000,
       });
@@ -66,17 +66,17 @@ export function VolunteerCommissions() {
 
     try {
       setWithdrawSubmitting(true);
-      const loadingToast = toast.loading(`Requesting withdrawal of ₹${data.eligibleAmountInr.toLocaleString()}...`);
+      const loadingToast = toast.loading(`Requesting redemption of ₹${data.eligibleAmountInr.toLocaleString()}...`);
       
       await client.post(`/volunteers/withdraw/${id}`);
       
       toast.dismiss(loadingToast);
-      toast.success("Withdrawal request submitted successfully!", {
+      toast.success("Redemption request submitted successfully!", {
         description: "Our team will verify and process your transfer shortly."
       });
       fetchData();
     } catch (err: any) {
-      toast.error(err.response?.data?.message || "Failed to request withdrawal");
+      toast.error(err.response?.data?.message || "Failed to request redemption");
     } finally {
       setWithdrawSubmitting(false);
     }
@@ -96,18 +96,18 @@ export function VolunteerCommissions() {
     <div className="max-w-5xl mx-auto space-y-6">
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-3xl font-black text-amber-950 tracking-tight">Commissions</h1>
-          <p className="text-sm font-bold text-amber-700/60 uppercase tracking-widest mt-1">Convert Impact to Reward</p>
+          <h1 className="text-3xl font-black text-amber-950 tracking-tight">Impact Rewards</h1>
+          <p className="text-sm font-bold text-amber-700/60 uppercase tracking-widest mt-1">Your impact, recognized</p>
         </div>
       </div>
 
       <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-        {/* Total Coins */}
+        {/* Total Credits */}
         <Card className="border-amber-100 shadow-sm">
           <CardContent className="p-6">
             <div className="flex items-center justify-between">
               <div>
-                <p className="text-[10px] uppercase tracking-widest font-black text-amber-700/50 mb-1">Total Lifetime Coins</p>
+                <p className="text-[10px] uppercase tracking-widest font-black text-amber-700/50 mb-1">Total Impact Credits</p>
                 <div className="flex items-baseline gap-2">
                   <h3 className="text-3xl font-black text-amber-950">{totalCoins.toLocaleString()}</h3>
                 </div>
@@ -125,11 +125,11 @@ export function VolunteerCommissions() {
           <CardContent className="p-6 relative z-10">
             <div className="flex items-center justify-between">
               <div>
-                <p className="text-[10px] uppercase tracking-widest font-black text-emerald-700/50 mb-1">Available GAP Coins</p>
+                <p className="text-[10px] uppercase tracking-widest font-black text-emerald-700/50 mb-1">Redeemable Rewards</p>
                 <div className="flex items-baseline gap-2">
                   <h3 className="text-3xl font-black text-emerald-950">{availableGap.toLocaleString()}</h3>
                 </div>
-                <p className="text-xs font-bold text-emerald-700 mt-1">Value: ₹{(availableGap/10).toLocaleString()}</p>
+                <p className="text-xs font-bold text-emerald-700 mt-1">Reward Value: ₹{(availableGap/10).toLocaleString()}</p>
               </div>
             </div>
           </CardContent>
@@ -138,10 +138,10 @@ export function VolunteerCommissions() {
         {/* Milestone Tracker */}
         <Card className="border-blue-100 shadow-sm relative overflow-hidden">
           <CardContent className="p-6">
-            <p className="text-[10px] uppercase tracking-widest font-black text-blue-700/50 mb-1">To Next Milestone</p>
+            <p className="text-[10px] uppercase tracking-widest font-black text-blue-700/50 mb-1">Next Impact Milestone</p>
             <div className="flex items-baseline gap-2 mb-2">
               <h3 className="text-3xl font-black text-blue-950">{(100000 - (availableGap % 100000)).toLocaleString()}</h3>
-              <span className="text-sm font-bold text-blue-700/60">coins needed</span>
+              <span className="text-sm font-bold text-blue-700/60">credits to go</span>
             </div>
             <div className="w-full bg-blue-100 rounded-full h-2">
               <div className="bg-blue-500 h-2 rounded-full" style={{ width: `${(availableGap % 100000) / 1000}%` }}></div>
@@ -155,11 +155,11 @@ export function VolunteerCommissions() {
         <Card className="border-amber-100/50 shadow-sm">
           <CardHeader className="pb-3 border-b border-amber-50 bg-amber-50/30">
             <CardTitle className="inline-flex items-center gap-2 text-amber-950">
-              <IndianRupee className="h-5 w-5 text-amber-600" />
-              Request Withdrawal
+              <ShieldCheck className="h-5 w-5 text-amber-600" />
+              Claim Your Rewards
             </CardTitle>
             <CardDescription className="text-amber-700/70">
-              Withdrawal unlocks when your available coin gap is ≥ 1,00,000.
+              Rewards can be redeemed once your impact balance reaches 1,00,000 credits.
             </CardDescription>
           </CardHeader>
           <CardContent className="p-6">
@@ -170,12 +170,12 @@ export function VolunteerCommissions() {
               
               <div>
                 <h3 className={`text-xl font-black ${isEligible ? 'text-emerald-900' : 'text-gray-900'}`}>
-                  {isEligible ? `₹${eligibleAmountInr.toLocaleString()} Available` : "Not Eligible Yet"}
+                  {isEligible ? `₹${eligibleAmountInr.toLocaleString()} Available` : "Almost There"}
                 </h3>
                 <p className={`text-xs font-bold mt-2 ${isEligible ? 'text-emerald-700' : 'text-gray-500'}`}>
                   {isEligible 
-                    ? `You have a gap of ${availableGap.toLocaleString()} coins. Cash out now!` 
-                    : `You need ${(100000 - availableGap).toLocaleString()} more coins to hit the 100k difference.`}
+                    ? `You have a total of ${availableGap.toLocaleString()} credits to redeem. Claim now!` 
+                    : `You need ${(100000 - availableGap).toLocaleString()} more credits to unlock your rewards.`}
                 </p>
               </div>
 
@@ -185,7 +185,7 @@ export function VolunteerCommissions() {
                 className={`w-full font-black ${isEligible ? 'bg-gradient-to-r from-emerald-500 to-teal-500 hover:from-emerald-600 hover:to-teal-600 text-white shadow-lg shadow-emerald-500/20' : ''}`}
                 size="lg"
               >
-                {withdrawSubmitting ? "Processing..." : "Withdraw Funds"}
+                {withdrawSubmitting ? "Processing..." : "Redeem Rewards"}
                 <ArrowRight className="h-4 w-4 ml-2" />
               </Button>
 
@@ -203,10 +203,10 @@ export function VolunteerCommissions() {
           <CardHeader className="pb-3 border-b border-amber-50 bg-amber-50/30">
              <CardTitle className="inline-flex items-center gap-2 text-amber-950">
               <Landmark className="h-5 w-5 text-amber-600" />
-              Bank Details
+              Reward Transfer Details
             </CardTitle>
             <CardDescription className="text-amber-700/70">
-              Where should we send your commissions?
+              Where should we send your rewards?
             </CardDescription>
           </CardHeader>
           <CardContent className="p-6">
@@ -230,7 +230,7 @@ export function VolunteerCommissions() {
                 <Input required type="number" placeholder="Enter Ac No." value={bankData.accountNumber} onChange={e => setBankData({...bankData, accountNumber: e.target.value})} className="font-bold tracking-widest border-gray-200 bg-gray-50/50" />
               </div>
               <Button type="submit" disabled={bankSubmitting} className="w-full bg-amber-900 hover:bg-amber-950 text-white font-bold">
-                {bankSubmitting ? "Saving..." : "Save Bank Details"}
+                {bankSubmitting ? "Saving..." : "Save Details"}
               </Button>
             </form>
           </CardContent>
@@ -242,15 +242,15 @@ export function VolunteerCommissions() {
         <CardHeader className="pb-3 border-b border-amber-50">
           <CardTitle className="inline-flex items-center gap-2 text-amber-950 font-black">
             <History className="h-5 w-5 text-amber-600" />
-            Withdrawal History
+            Reward History
           </CardTitle>
         </CardHeader>
         <CardContent className="p-0">
           {history.length === 0 ? (
             <div className="text-center py-10">
               <IndianRupee className="h-10 w-10 text-amber-200 mx-auto mb-3" />
-              <p className="text-amber-950 font-bold">No withdrawals yet</p>
-              <p className="text-sm text-gray-500 mt-1 max-w-sm mx-auto">Your cashout history will appear here once you make your first withdrawal.</p>
+              <p className="text-amber-950 font-bold">No rewards claimed yet</p>
+              <p className="text-sm text-gray-500 mt-1 max-w-sm mx-auto">Your transfer history will appear here once you make your first redemption.</p>
             </div>
           ) : (
             <div className="divide-y divide-gray-100">
@@ -258,7 +258,7 @@ export function VolunteerCommissions() {
                 <div key={req.id} className="p-4 flex items-center justify-between hover:bg-gray-50/50 transition-colors">
                   <div>
                     <h4 className="font-black text-gray-900 text-sm">₹{req.amountInr.toLocaleString()}</h4>
-                    <p className="text-xs font-bold text-gray-500 mt-0.5">{new Date(req.createdAt).toLocaleDateString()} • {req.amountCoins.toLocaleString()} Coins</p>
+                    <p className="text-xs font-bold text-gray-500 mt-0.5">{new Date(req.createdAt).toLocaleDateString()} • {req.amountCoins.toLocaleString()} Credits</p>
                   </div>
                   <div>
                     <Badge className={

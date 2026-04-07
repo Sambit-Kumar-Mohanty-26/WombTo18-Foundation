@@ -53,8 +53,8 @@ export function VolunteerCoins() {
   return (
     <div className="space-y-6 animate-in fade-in duration-700">
       <div>
-        <h1 className="text-3xl font-black text-amber-950 tracking-tight">My Coins</h1>
-        <p className="text-amber-700/50 text-sm font-bold mt-1">Your complete coin transaction history</p>
+        <h1 className="text-3xl font-black text-amber-950 tracking-tight">Impact Credits</h1>
+        <p className="text-amber-700/50 text-sm font-bold mt-1">Full credit transaction history</p>
       </div>
 
       {/* Balance Summary */}
@@ -63,7 +63,7 @@ export function VolunteerCoins() {
           <CardContent className="p-6">
             <Coins className="h-8 w-8 text-amber-200 mb-3" />
             <p className="text-3xl font-black">{balance?.totalCoins || 0}</p>
-            <p className="text-amber-100/60 text-xs font-bold uppercase tracking-widest mt-1">Total Balance</p>
+            <p className="text-amber-100/60 text-xs font-bold uppercase tracking-widest mt-1">Total Impact Credits</p>
           </CardContent>
         </Card>
         {(balance?.breakdown || []).slice(0, 3).map((b: any, i: number) => {
@@ -99,7 +99,7 @@ export function VolunteerCoins() {
                       <Icon className={`h-5 w-5 ${cfg.color}`} />
                     </div>
                     <div>
-                      <p className="text-sm font-bold text-gray-900">{tx.description}</p>
+                      <p className="text-sm font-bold text-gray-900">{tx.description.replace(/\bcoins\b/gi, "credits")}</p>
                       <p className="text-[10px] text-gray-400">{cfg.label} • {new Date(tx.createdAt).toLocaleDateString("en-IN", { day: "numeric", month: "short", year: "numeric" })}</p>
                     </div>
                   </div>
@@ -111,8 +111,8 @@ export function VolunteerCoins() {
             }) : (
               <div className="py-16 text-center text-gray-400">
                 <Coins className="h-10 w-10 mx-auto mb-3 text-gray-200" />
-                <p className="font-bold">No coin transactions yet</p>
-                <p className="text-xs mt-1">Refer people, join camps, and participate actively to earn coins!</p>
+                <p className="font-bold">No impact credits yet</p>
+                <p className="text-xs mt-1">Refer people, join camps, and participate actively to earn credits!</p>
               </div>
             )}
           </div>

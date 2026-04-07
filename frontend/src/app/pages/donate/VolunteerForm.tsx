@@ -22,9 +22,10 @@ const AVAILABILITY = ["Weekdays (9am-5pm)", "Weekday Evenings", "Weekends Only",
 export function VolunteerForm() {
   const { t } = useTranslation('donate');
   const [searchParams] = useSearchParams();
-  const queryName = searchParams.get("name") || "";
-  const queryEmail = searchParams.get("email") || JSON.parse(localStorage.getItem("donor_session") || "{}").identifier || "";
-  const queryMobile = searchParams.get("mobile") || "";
+  const session = JSON.parse(localStorage.getItem("donor_session") || "{}");
+  const queryName = searchParams.get("name") || session.name || "";
+  const queryEmail = searchParams.get("email") || session.identifier || "";
+  const queryMobile = searchParams.get("mobile") || session.mobile || "";
 
   const [form, setForm] = useState<VolunteerFormData>({
     name: queryName, email: queryEmail, mobile: queryMobile, city: "", profession: "",
@@ -98,7 +99,7 @@ export function VolunteerForm() {
               });
               
               toast.success(t('toasts.registrationSuccess'));
-              toast.success(`🎁 Welcome Bonus: ${contributionAmount} coins added!`, {
+              toast.success(`🎁 Welcome Bonus: ${contributionAmount} credits added!`, {
                 description: "Your 100% cashback is now in your Impact Wallet.",
                 duration: 6000,
               });
@@ -280,8 +281,8 @@ export function VolunteerForm() {
           />
         </div>
         <div className="mt-4 p-3 rounded-xl bg-amber-50 border border-amber-100 flex items-center justify-between">
-          <span className="text-[11px] font-bold text-amber-900/60 uppercase">Instant Bonus Coins</span>
-          <span className="text-lg font-black text-amber-600">{(Number(contributionAmount) || 0).toLocaleString()} Coins</span>
+          <span className="text-[11px] font-bold text-amber-900/60 uppercase">Instant Bonus Credits</span>
+          <span className="text-lg font-black text-amber-600">{(Number(contributionAmount) || 0).toLocaleString()} Credits</span>
         </div>
       </div>
 

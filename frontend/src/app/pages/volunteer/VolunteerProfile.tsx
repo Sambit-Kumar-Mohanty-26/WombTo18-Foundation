@@ -195,7 +195,7 @@ export function VolunteerProfile() {
         <div className="flex flex-col gap-3 w-full sm:w-auto z-10">
           <div className="bg-amber-50 p-4 rounded-xl border border-amber-100 text-center sm:text-left">
             <p className="text-[10px] font-black uppercase text-amber-700/50 tracking-widest mb-1">Impact Wallet</p>
-            <p className="text-2xl font-black text-amber-950">{volData?.stats?.totalCoins || 0} <span className="text-sm font-bold text-amber-600">Coins</span></p>
+            <p className="text-2xl font-black text-amber-950">{volData?.stats?.totalCoins || 0} <span className="text-sm font-bold text-amber-600">Credits</span></p>
           </div>
         </div>
       </motion.div>

@@ -62,7 +62,7 @@ export function VolunteerReferrals() {
         {[
           { label: "Total Referrals", value: referrals.length, icon: Users, color: "text-blue-600", bg: "bg-blue-50" },
           { label: "Total Raised", value: `₹${totalDonated.toLocaleString("en-IN")}`, icon: TrendingUp, color: "text-emerald-600", bg: "bg-emerald-50" },
-          { label: "Coins Earned", value: totalCoinsEarned, icon: ArrowUpRight, color: "text-amber-600", bg: "bg-amber-50" },
+          { label: "Credits Earned", value: totalCoinsEarned, icon: ArrowUpRight, color: "text-amber-600", bg: "bg-amber-50" },
         ].map((s, i) => (
           <Card key={i} className="border-none shadow-sm bg-white rounded-2xl">
             <CardContent className="p-5">
@@ -86,7 +86,7 @@ export function VolunteerReferrals() {
             <h3 className="text-lg font-black text-amber-900 mb-2 flex items-center gap-2 justify-center sm:justify-start">
               <QrCode className="h-5 w-5" /> Share Your Referral
             </h3>
-            <p className="text-sm text-amber-700/60 mb-4">When someone donates using your link, you earn coins based on their donation amount!</p>
+            <p className="text-sm text-amber-700/60 mb-4">When someone donates using your link, you earn credits based on their donation amount!</p>
             <div className="flex gap-2">
               <Button onClick={copyLink} className="bg-amber-600 hover:bg-amber-500 text-white font-black rounded-xl">
                 {copied ? <Check className="h-4 w-4 mr-2" /> : <Copy className="h-4 w-4 mr-2" />}
@@ -119,7 +119,7 @@ export function VolunteerReferrals() {
                   <Badge className={`text-[10px] font-bold ${r.status === 'DONATED' ? 'bg-emerald-50 text-emerald-700' : r.status === 'JOINED' ? 'bg-blue-50 text-blue-700' : 'bg-gray-100 text-gray-500'}`}>
                     {r.status}
                   </Badge>
-                  {r.paymentAmount > 0 && <p className="text-xs font-black text-emerald-600 mt-1">₹{r.paymentAmount.toLocaleString()} • +{r.coinsAwarded} coins</p>}
+                  {r.paymentAmount > 0 && <p className="text-xs font-black text-emerald-600 mt-1">₹{r.paymentAmount.toLocaleString()} • +{r.coinsAwarded} credits</p>}
                 </div>
               </div>
             )) : (

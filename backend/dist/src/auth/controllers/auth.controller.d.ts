@@ -78,6 +78,7 @@ export declare class AuthController {
         success: boolean;
         token: string;
         name: string | null;
+        mobile: string | null;
         donorId: string;
         volunteerId: string | undefined;
         eligible: boolean;
@@ -101,6 +102,7 @@ export declare class AuthController {
         success: boolean;
         token: string;
         name: any;
+        mobile: any;
         donorId: any;
         volunteerId: any;
         partnerId: any;

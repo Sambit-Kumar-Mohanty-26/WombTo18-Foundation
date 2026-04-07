@@ -65,7 +65,7 @@ export function VolunteerDashboardHome() {
   const vol = data?.volunteer || {};
 
   const statCards = [
-    { icon: Coins, label: "Total Coins", value: stats.totalCoins.toLocaleString(), color: "text-amber-600", bg: "bg-amber-50", glow: "shadow-amber-500/10" },
+    { icon: Coins, label: "Total Impact Credits", value: stats.totalCoins.toLocaleString(), color: "text-amber-600", bg: "bg-amber-50", glow: "shadow-amber-500/10" },
     { icon: Users, label: "People Referred", value: stats.totalReferrals.toString(), color: "text-blue-600", bg: "bg-blue-50", glow: "shadow-blue-500/10" },
     { icon: Tent, label: "Camps Attended", value: stats.campsAttended.toString(), color: "text-emerald-600", bg: "bg-emerald-50", glow: "shadow-emerald-500/10" },
     { icon: Trophy, label: "Leaderboard Rank", value: `#${stats.leaderboardRank}`, color: "text-purple-600", bg: "bg-purple-50", glow: "shadow-purple-500/10" },
@@ -119,7 +119,7 @@ export function VolunteerDashboardHome() {
             <CardTitle className="text-xl font-black flex items-center gap-2 text-amber-900">
               <QrCode className="h-5 w-5" /> Your Referral QR
             </CardTitle>
-            <CardDescription className="text-amber-700/50 font-bold">Share to earn coins when they donate</CardDescription>
+            <CardDescription className="text-amber-700/50 font-bold">Share to earn credits when they donate</CardDescription>
           </CardHeader>
           <CardContent className="flex flex-col items-center">
             <div className="bg-white p-4 rounded-2xl shadow-xl mb-5 transform group-hover:scale-105 transition-transform duration-500 ring-4 ring-amber-500/5">
@@ -145,7 +145,7 @@ export function VolunteerDashboardHome() {
                   ))}
                 </div>
               ) : (
-                <p className="text-[10px] text-amber-600/40 text-center italic font-medium">Share your QR to start earning!</p>
+                <p className="text-[10px] text-amber-600/40 text-center italic font-medium">Share your QR to start earning credits!</p>
               )}
             </div>
           </CardContent>
@@ -157,9 +157,9 @@ export function VolunteerDashboardHome() {
             <div className="flex items-center justify-between">
               <div>
                 <CardTitle className="text-xl font-black flex items-center gap-2">
-                  <Coins className="h-5 w-5 text-amber-500" /> Coin Activity
+                  <Coins className="h-5 w-5 text-amber-500" /> Credit Activity
                 </CardTitle>
-                <CardDescription>Your recent coin transactions</CardDescription>
+                <CardDescription>Your recent credit history</CardDescription>
               </div>
               <Link to={`/volunteer/${volId}/coins`}>
                 <Button variant="ghost" size="sm" className="text-amber-600 text-xs font-bold">
@@ -188,7 +188,9 @@ export function VolunteerDashboardHome() {
                           <Icon className={`h-4 w-4 ${cfg.color}`} />
                         </div>
                         <div>
-                          <p className="text-sm font-bold text-gray-900">{tx.description}</p>
+                          <p className="text-sm font-bold text-gray-900">
+                            {tx.description.replace(/\bcoins\b/gi, "credits")}
+                          </p>
                           <p className="text-[10px] text-gray-400">
                             {tx.type.replace(/_/g, " ")} • {new Date(tx.createdAt).toLocaleDateString()}
                           </p>
@@ -203,8 +205,8 @@ export function VolunteerDashboardHome() {
               ) : (
                 <div className="py-12 text-center text-gray-400">
                   <Coins className="h-8 w-8 mx-auto mb-2 text-gray-300" />
-                  <p className="text-sm font-bold">No transactions yet</p>
-                  <p className="text-xs">Earn coins by referring people, attending camps, and more!</p>
+                  <p className="text-sm font-bold">No impact credits yet</p>
+                  <p className="text-xs">Earn credits by referring people, attending camps, and more!</p>
                 </div>
               )}
             </div>
@@ -251,7 +253,7 @@ export function VolunteerDashboardHome() {
               <div className="text-center py-8 text-gray-400">
                 <Tent className="h-8 w-8 mx-auto mb-2 text-gray-300" />
                 <p className="text-sm font-bold">No camps yet</p>
-                <p className="text-xs">Join upcoming camps to earn coins!</p>
+                <p className="text-xs">Join upcoming camps to earn credits!</p>
               </div>
             )}
           </CardContent>
@@ -273,7 +275,7 @@ export function VolunteerDashboardHome() {
             <div className="grid grid-cols-2 gap-4 mb-6">
               <div className="bg-white/5 border border-white/10 rounded-xl p-4">
                 <p className="text-2xl font-black text-amber-300">{stats.totalCoins}</p>
-                <p className="text-[10px] text-white/40 font-bold uppercase tracking-widest">Coins Earned</p>
+                <p className="text-[10px] text-white/40 font-bold uppercase tracking-widest">Credits Earned</p>
               </div>
               <div className="bg-white/5 border border-white/10 rounded-xl p-4">
                 <p className="text-2xl font-black text-emerald-300">₹{stats.totalReferralDonations.toLocaleString("en-IN")}</p>
