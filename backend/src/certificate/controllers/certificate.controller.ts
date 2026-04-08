@@ -4,6 +4,7 @@ import { CertificateService } from '../services/certificate.service';
 import type { Response } from 'express';
 import * as path from 'path';
 import * as fs from 'fs';
+import axios from 'axios';
 
 import { StorageService } from '../../storage/storage.service';
 
@@ -34,9 +35,7 @@ export class CertificateController {
     // If it starts with http, redirect to the cloud URL
     const cert = await this.certificateService.findCertRecord(certId);
     if (cert?.fileUrl && cert.fileUrl.startsWith('http')) {
-      // Proxy the download from cloud storage to avoid CORS redirect issues
-      // Extract the internal path from the full public URL
-      const pathPart = cert.fileUrl.split('/public/uploads/')[1];
+      const pathPart = this.extractStoragePath(cert.fileUrl);
       if (pathPart) {
         const file = await this.storageService.download(pathPart);
         if (file) {
@@ -45,7 +44,11 @@ export class CertificateController {
           return res.send(file.data);
         }
       }
-      return res.redirect(cert.fileUrl); // Fallback to redirect if proxy fails
+
+      const response = await axios.get(cert.fileUrl, { responseType: 'arraybuffer' });
+      res.setHeader('Content-Type', response.headers['content-type'] || 'application/pdf');
+      res.setHeader('Content-Disposition', `attachment; filename=${certId}.pdf`);
+      return res.send(Buffer.from(response.data));
     }
 
     // Try to serve the pre-generated PDF file from disk (local dev)
@@ -77,7 +80,33 @@ export class CertificateController {
     @Param('campId') campId: string,
     @Res() res: Response,
   ) {
-    return this.certificateService.generateCampCertificate(volunteerId, campId, res);
+    const url = await this.certificateService.generateAutomatedCampCertificate(volunteerId, campId);
+
+    if (url.startsWith('http')) {
+      const pathPart = this.extractStoragePath(url);
+      if (pathPart) {
+        const file = await this.storageService.download(pathPart);
+        if (file) {
+          res.setHeader('Content-Type', file.contentType || 'application/pdf');
+          res.setHeader('Content-Disposition', `attachment; filename=certificate_${campId}.pdf`);
+          return res.send(file.data);
+        }
+      }
+
+      const response = await axios.get(url, { responseType: 'arraybuffer' });
+      res.setHeader('Content-Type', response.headers['content-type'] || 'application/pdf');
+      res.setHeader('Content-Disposition', `attachment; filename=certificate_${campId}.pdf`);
+      return res.send(Buffer.from(response.data));
+    }
+
+    const filePath = path.join(process.cwd(), url);
+    if (fs.existsSync(filePath)) {
+      res.setHeader('Content-Type', 'application/pdf');
+      res.setHeader('Content-Disposition', `attachment; filename=certificate_${campId}.pdf`);
+      return fs.createReadStream(filePath).pipe(res);
+    }
+
+    throw new NotFoundException('Certificate file not found');
   }
 
   @Get('partner/:partnerId')
@@ -115,5 +144,12 @@ export class CertificateController {
     @Res() res: Response,
   ) {
     return this.certificateService.generateZip(recipientType, userId, res);
+  }
+
+  private extractStoragePath(fileUrl: string) {
+    const marker = '/public/uploads/';
+    const idx = fileUrl.indexOf(marker);
+    if (idx === -1) return null;
+    return fileUrl.slice(idx + marker.length);
   }
 }

@@ -44,6 +44,9 @@ var __metadata = (this && this.__metadata) || function (k, v) {
 var __param = (this && this.__param) || function (paramIndex, decorator) {
     return function (target, key) { decorator(target, key, paramIndex); }
 };
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.CertificateController = void 0;
 const common_1 = require("@nestjs/common");
@@ -51,6 +54,7 @@ const swagger_1 = require("@nestjs/swagger");
 const certificate_service_1 = require("../services/certificate.service");
 const path = __importStar(require("path"));
 const fs = __importStar(require("fs"));
+const axios_1 = __importDefault(require("axios"));
 const storage_service_1 = require("../../storage/storage.service");
 let CertificateController = class CertificateController {
     certificateService;
@@ -68,7 +72,7 @@ let CertificateController = class CertificateController {
     async downloadCert(certId, res) {
         const cert = await this.certificateService.findCertRecord(certId);
         if (cert?.fileUrl && cert.fileUrl.startsWith('http')) {
-            const pathPart = cert.fileUrl.split('/public/uploads/')[1];
+            const pathPart = this.extractStoragePath(cert.fileUrl);
             if (pathPart) {
                 const file = await this.storageService.download(pathPart);
                 if (file) {
@@ -77,7 +81,10 @@ let CertificateController = class CertificateController {
                     return res.send(file.data);
                 }
             }
-            return res.redirect(cert.fileUrl);
+            const response = await axios_1.default.get(cert.fileUrl, { responseType: 'arraybuffer' });
+            res.setHeader('Content-Type', response.headers['content-type'] || 'application/pdf');
+            res.setHeader('Content-Disposition', `attachment; filename=${certId}.pdf`);
+            return res.send(Buffer.from(response.data));
         }
         const certDir = path.join(process.cwd(), 'public', 'certificates');
         const filePath = path.join(certDir, `${certId}.pdf`);
@@ -94,7 +101,29 @@ let CertificateController = class CertificateController {
         return this.certificateService.generateVolunteerCertificate(volunteerId, res);
     }
     async campCert(volunteerId, campId, res) {
-        return this.certificateService.generateCampCertificate(volunteerId, campId, res);
+        const url = await this.certificateService.generateAutomatedCampCertificate(volunteerId, campId);
+        if (url.startsWith('http')) {
+            const pathPart = this.extractStoragePath(url);
+            if (pathPart) {
+                const file = await this.storageService.download(pathPart);
+                if (file) {
+                    res.setHeader('Content-Type', file.contentType || 'application/pdf');
+                    res.setHeader('Content-Disposition', `attachment; filename=certificate_${campId}.pdf`);
+                    return res.send(file.data);
+                }
+            }
+            const response = await axios_1.default.get(url, { responseType: 'arraybuffer' });
+            res.setHeader('Content-Type', response.headers['content-type'] || 'application/pdf');
+            res.setHeader('Content-Disposition', `attachment; filename=certificate_${campId}.pdf`);
+            return res.send(Buffer.from(response.data));
+        }
+        const filePath = path.join(process.cwd(), url);
+        if (fs.existsSync(filePath)) {
+            res.setHeader('Content-Type', 'application/pdf');
+            res.setHeader('Content-Disposition', `attachment; filename=certificate_${campId}.pdf`);
+            return fs.createReadStream(filePath).pipe(res);
+        }
+        throw new common_1.NotFoundException('Certificate file not found');
     }
     async partnerCert(partnerId, res) {
         return this.certificateService.generatePartnerCertificate(partnerId, res);
@@ -110,6 +139,13 @@ let CertificateController = class CertificateController {
     }
     async downloadZip(recipientType, userId, res) {
         return this.certificateService.generateZip(recipientType, userId, res);
+    }
+    extractStoragePath(fileUrl) {
+        const marker = '/public/uploads/';
+        const idx = fileUrl.indexOf(marker);
+        if (idx === -1)
+            return null;
+        return fileUrl.slice(idx + marker.length);
     }
 };
 exports.CertificateController = CertificateController;

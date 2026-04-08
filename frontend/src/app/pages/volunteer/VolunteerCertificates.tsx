@@ -12,6 +12,7 @@ export function VolunteerCertificates() {
   const { state } = useAuth();
   const [certificates, setCertificates] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
+  const [downloadingId, setDownloadingId] = useState<string | null>(null);
   const [downloadingZip, setDownloadingZip] = useState(false);
   const [shareCert, setShareCert] = useState<any>(null);
   
@@ -35,6 +36,8 @@ export function VolunteerCertificates() {
   }, [volId, state.user?.donorId]);
 
   const handleDownload = async (cert: any) => {
+    if (downloadingId) return;
+    setDownloadingId(cert.id);
     try {
       if (cert.type === "DONATION_RECEIPT") await certificateApi.downloadReceipt(cert.donorId);
       else if (cert.type === "80G") await certificateApi.download80G(cert.id);
@@ -43,8 +46,12 @@ export function VolunteerCertificates() {
          const meta = JSON.parse(cert.metadata || '{}');
          await certificateApi.downloadCampCert(cert.volunteerId, meta.campId);
       }
+      toast.success("Download started", { description: "Your certificate is being prepared." });
     } catch (err) {
       console.error("Download failed", err);
+      toast.error("Download failed. Please try again.");
+    } finally {
+      setDownloadingId(null);
     }
   };
 
@@ -104,8 +111,20 @@ export function VolunteerCertificates() {
               <p className="text-sm text-gray-500 mb-4 h-10 line-clamp-2">Awarded to {cert.recipientName} on {new Date(cert.createdAt).toLocaleDateString()}</p>
               
               <div className="flex gap-2">
-                <Button onClick={() => handleDownload(cert)} className="flex-1 bg-gray-900 hover:bg-gray-800 text-white shadow-md">
-                  <Download className="h-4 w-4 mr-2" /> Download
+                <Button
+                  onClick={() => handleDownload(cert)}
+                  disabled={downloadingId === cert.id}
+                  className="flex-1 bg-gray-900 hover:bg-gray-800 text-white shadow-md disabled:opacity-70 disabled:cursor-not-allowed"
+                >
+                  {downloadingId === cert.id ? (
+                    <>
+                      <Loader2 className="h-4 w-4 mr-2 animate-spin" /> Downloading...
+                    </>
+                  ) : (
+                    <>
+                      <Download className="h-4 w-4 mr-2" /> Download
+                    </>
+                  )}
                 </Button>
                 <Button onClick={() => setShareCert(cert)} variant="outline" className="flex-1 border-gray-200 hover:bg-gray-50 text-gray-700">
                   <Share2 className="h-4 w-4 mr-2" /> Share
