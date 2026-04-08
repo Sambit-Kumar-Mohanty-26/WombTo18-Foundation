@@ -6,12 +6,14 @@ interface AuthState {
     identifier: string;
     eligible: boolean;
     name?: string;
+    mobile?: string;
     donorId?: string;
     volunteerId?: string;
     partnerId?: string;
     organizationName?: string;
     role: 'DONOR' | 'VOLUNTEER' | 'PARTNER' | 'ADMIN';
     tier?: string;
+    profileCompleted?: boolean;
   } | null;
   isAuthenticated: boolean;
   isLoaded: boolean;
@@ -67,6 +69,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
           organizationName: session.organizationName,
           role: session.role || 'DONOR',
           tier: session.tier,
+          profileCompleted: session.profileCompleted,
         },
       });
     } else {
@@ -82,6 +85,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
         eligible,
         name,
         role: (role as any) || 'DONOR',
+        profileCompleted: extra?.profileCompleted,
         ...extra,
       },
     });

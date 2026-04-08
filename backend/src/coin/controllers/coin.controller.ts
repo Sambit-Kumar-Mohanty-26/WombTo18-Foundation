@@ -25,6 +25,12 @@ export class CoinController {
     return this.coinService.awardFirstLoginCoins(volunteerId);
   }
 
+  @Post('backfill-volunteer-welcome-bonuses')
+  @ApiOperation({ summary: 'Backfill missed volunteer welcome bonus credits' })
+  async backfillVolunteerWelcomeBonuses(@Body('volunteerIdentifier') volunteerIdentifier?: string) {
+    return this.coinService.backfillVolunteerWelcomeBonuses(volunteerIdentifier);
+  }
+
   @Get('balance/:volunteerId')
   @ApiOperation({ summary: 'Get coin balance and breakdown' })
   async getBalance(@Param('volunteerId') volunteerId: string) {

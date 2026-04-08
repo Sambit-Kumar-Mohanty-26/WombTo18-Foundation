@@ -61,7 +61,7 @@ export function DashboardLayout() {
   return (
     <div className="min-h-screen flex text-slate-800 font-sans selection:bg-[#1D6E3F]/20 relative bg-[#FAFAF8]">
       {/* Background Cinematic Glows */}
-      <div className="absolute inset-0 pointer-events-none overflow-hidden fixed z-0">
+      <div className="absolute inset-0 pointer-events-none overflow-hidden z-0">
         <div className="absolute -top-[10%] -right-[5%] w-[600px] h-[600px] bg-[radial-gradient(ellipse_at_center,_rgba(29,110,63,0.06)_0%,_transparent_70%)] rounded-full blur-[80px]" />
         <div className="absolute -bottom-[10%] -left-[10%] w-[700px] h-[700px] bg-[radial-gradient(ellipse_at_center,_rgba(242,159,5,0.04)_0%,_transparent_70%)] rounded-full blur-[100px]" />
         <div className="absolute inset-0 bg-[radial-gradient(#e5e7eb_1px,transparent_1px)] [background-size:24px_24px] opacity-40" />

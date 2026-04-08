@@ -210,15 +210,35 @@ export class DonorService {
   }
 
   async becomeVolunteer(donorId: string) {
-    const donor = await this.prisma.donor.findUnique({
-      where: { donorId },
+    const donor = await this.prisma.donor.findFirst({
+      where: {
+        OR: [
+          { donorId },
+          { id: donorId },
+          { email: donorId },
+        ],
+      },
     });
     if (!donor) throw new NotFoundException('Donor not found');
 
-    return this.prisma.donor.update({
+    await this.prisma.donor.update({
       where: { id: donor.id },
       data: { isVolunteer: true } as any,
     });
+
+    const volunteer = await this.prisma.volunteer.findFirst({
+      where: { donorId: donor.id },
+      select: { volunteerId: true, city: true, profession: true },
+    });
+
+    return {
+      success: true,
+      donorId: donor.donorId,
+      role: 'VOLUNTEER',
+      profileCompleted: !!(volunteer?.city && volunteer?.profession),
+      volunteerId: volunteer?.volunteerId || null,
+      redirect: '/volunteer-onboarding',
+    };
   }
 
   async getProfile(identifier: string) {

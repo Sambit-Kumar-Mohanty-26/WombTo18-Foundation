@@ -10,7 +10,7 @@ import {
   Trophy, QrCode, Copy, Check, UserPlus, Zap, FileText
 } from "lucide-react";
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from "recharts";
-import { Link } from "react-router";
+import { Link, useNavigate } from "react-router";
 import { toast } from "sonner";
 import { useAuth } from "../../context/AuthContext";
 import { client } from "../../lib/api/client";
@@ -58,11 +58,13 @@ interface LeaderboardEntry {
 export function DonorDashboard() {
   const { state, dispatch } = useAuth();
   const session = state.user;
+  const navigate = useNavigate();
 
   const [profile, setProfile] = useState<DonorProfile | null>(null);
   const [donations, setDonations] = useState<DonationRecord[]>([]);
   const [leaderboard, setLeaderboard] = useState<LeaderboardEntry[]>([]);
   const [loading, setLoading] = useState(true);
+  const [upgrading, setUpgrading] = useState(false);
   const [copied, setCopied] = useState(false);
 
   useEffect(() => {
@@ -115,16 +117,39 @@ export function DonorDashboard() {
   const handleBecomeVolunteer = async () => {
     if (!profile) return;
     try {
-      setLoading(true);
-      await client.post(`/donors/apply-volunteer?donorId=${profile.donorId}`);
-      toast.success("Welcome to the Volunteer Team!");
-      // Refresh purely profile state
-      const dashRes = await client.get<{ donor: DonorProfile }>(`/donors/dashboard?donorId=${profile.donorId}`);
-      setProfile(dashRes.donor);
+      setUpgrading(true);
+      const result = await client.post<any>(`/donors/apply-volunteer?donorId=${profile.donorId}`);
+
+      const currentSession = auth.getSession();
+      if (currentSession) {
+        auth.saveVolunteerSession({
+          identifier: currentSession.identifier,
+          donorId: result?.donorId || profile.donorId,
+          name: currentSession.name || profile.name || "Volunteer",
+          mobile: currentSession.mobile,
+          volunteerId: result?.volunteerId || undefined,
+          profileCompleted: result?.profileCompleted ?? false,
+        });
+        dispatch({
+          type: "UPDATE_ROLE",
+          payload: {
+            role: "VOLUNTEER",
+            donorId: result?.donorId || profile.donorId,
+            profileCompleted: result?.profileCompleted ?? false,
+          },
+        });
+      }
+
+      toast.success("Volunteer access unlocked!");
+      if (result?.profileCompleted) {
+        navigate(`/volunteer/${result?.volunteerId || profile.donorId}/dashboard`, { replace: true });
+      } else {
+        navigate("/volunteer-onboarding", { replace: true });
+      }
     } catch (e: any) {
       toast.error("Application failed. Please try again.");
     } finally {
-      setLoading(false);
+      setUpgrading(false);
     }
   };
 
@@ -404,8 +429,14 @@ export function DonorDashboard() {
                   </div>
                   <h3 className="text-2xl font-black text-gray-900 tracking-tight mb-3">Become a Volunteer</h3>
                   <p className="text-sm text-gray-500 font-medium mb-8 leading-relaxed px-2">Scale your impact. Unlock your personal QR code and earn real rewards by recruiting others.</p>
-                  <Button onClick={handleBecomeVolunteer} className="bg-gray-900 hover:bg-black text-white font-black w-full h-12 shadow-xl shadow-gray-200 rounded-xl transition-all hover:-translate-y-1 text-base">
-                    Apply to Volunteer
+                  <Button onClick={handleBecomeVolunteer} disabled={upgrading} className="bg-gray-900 hover:bg-black text-white font-black w-full h-12 shadow-xl shadow-gray-200 rounded-xl transition-all hover:-translate-y-1 text-base disabled:opacity-70 disabled:cursor-not-allowed">
+                    {upgrading ? (
+                      <>
+                        <Loader2 className="h-4 w-4 mr-2 animate-spin" /> Opening onboarding...
+                      </>
+                    ) : (
+                      "Apply to Volunteer"
+                    )}
                   </Button>
                </div>
             </Card>

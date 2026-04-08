@@ -70,6 +70,7 @@ export const auth = {
         volunteerId: response.volunteerId,
         tier: (response as any).tier,
         partnerId: response.partnerId,
+        profileCompleted: response.profileCompleted,
         role: role as any,
       };
       localStorage.setItem(SESSION_KEY, JSON.stringify(session));
@@ -92,6 +93,7 @@ export const auth = {
         volunteerId: response.volunteerId,
         tier: (response as any).tier,
         partnerId: response.partnerId,
+        profileCompleted: response.profileCompleted,
         role: role as any,
       };
       localStorage.setItem(SESSION_KEY, JSON.stringify(session));
@@ -112,7 +114,7 @@ export const auth = {
   },
 
   /** Save volunteer session after upgrade */
-  saveVolunteerSession(data: { identifier: string; volunteerId: string; name: string; mobile?: string; donorId: string }) {
+  saveVolunteerSession(data: { identifier: string; volunteerId?: string; name: string; mobile?: string; donorId: string; profileCompleted?: boolean }) {
     const existing = auth.getSession();
     const session: DonorSession = {
       identifier: data.identifier,
@@ -122,7 +124,9 @@ export const auth = {
       volunteerId: data.volunteerId,
       role: 'VOLUNTEER',
       token: existing?.token || '',
-      eligible: true,
+      eligible: existing?.eligible ?? true,
+      tier: existing?.tier,
+      profileCompleted: data.profileCompleted ?? false,
     };
     localStorage.setItem(SESSION_KEY, JSON.stringify(session));
   },

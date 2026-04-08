@@ -1,6 +1,7 @@
-import { Controller, Get, Post, Put, Body, Query, Param } from '@nestjs/common';
+import { Controller, Get, Post, Put, Body, Query, Param, UsePipes, ValidationPipe } from '@nestjs/common';
 import { ApiTags, ApiOperation } from '@nestjs/swagger';
 import { VolunteerService } from '../services/volunteer.service';
+import { VolunteerOnboardingDto } from '../dto/volunteer-onboarding.dto';
 
 @ApiTags('Volunteer')
 @Controller('volunteers')
@@ -9,17 +10,17 @@ export class VolunteerController {
 
   @Post('register')
   @ApiOperation({ summary: 'Upgrade donor to volunteer' })
+  @UsePipes(new ValidationPipe({ whitelist: true, transform: true }))
   async register(
-    @Body() body: {
-      donorId: string;
-      city?: string;
-      profession?: string;
-      skills?: string[];
-      availability?: string;
-      linkedIn?: string;
-      motivation?: string;
-    },
+    @Body() body: VolunteerOnboardingDto,
   ) {
+    return this.volunteerService.registerVolunteer(body);
+  }
+
+  @Post('onboard')
+  @ApiOperation({ summary: 'Complete donor to volunteer onboarding' })
+  @UsePipes(new ValidationPipe({ whitelist: true, transform: true }))
+  async onboard(@Body() body: VolunteerOnboardingDto) {
     return this.volunteerService.registerVolunteer(body);
   }
 
@@ -98,4 +99,3 @@ export class VolunteerController {
     return this.volunteerService.requestWithdrawal(volunteerId);
   }
 }
-
