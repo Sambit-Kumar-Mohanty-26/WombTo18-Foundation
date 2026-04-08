@@ -11,6 +11,7 @@ export declare class DonorService {
             tier: string;
             totalDonated: number;
             impactScore: number;
+            leaderboardRank: number;
             isVolunteer: boolean;
             showOnLeaderboard: boolean;
             volunteerId: string | null;
@@ -41,13 +42,25 @@ export declare class DonorService {
         status: string;
         receiptNumber: string | null;
     }[]>;
-    getLeaderboard(): Promise<{
-        donorId: string;
-        name: string | null;
-        tier: string;
-        totalDonated: number;
-        showOnLeaderboard: boolean;
-    }[]>;
+    getLeaderboard(options: {
+        page: number;
+        limit: number;
+        timeframe: string;
+    }): Promise<{
+        data: {
+            donorId: string;
+            name: string | null;
+            tier: string;
+            totalDonated: number;
+            rank: number;
+        }[];
+        meta: {
+            total: number;
+            page: number;
+            limit: number;
+            totalPages: number;
+        };
+    }>;
     getRecruits(donorId: string): Promise<{
         donorId: string;
         createdAt: Date;

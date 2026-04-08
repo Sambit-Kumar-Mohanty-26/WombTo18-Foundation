@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import { Link, Outlet, useLocation, useNavigate, useParams } from "react-router";
-import { Heart, LayoutDashboard, Receipt, FileText, Award, LogOut, Menu, X, ChevronLeft, CalendarDays, User } from "lucide-react";
+import { Heart, LayoutDashboard, Receipt, FileText, Award, LogOut, Menu, X, ChevronLeft, CalendarDays, User, Trophy } from "lucide-react";
 
 import { Button } from "../ui/button";
 import { Avatar, AvatarFallback } from "../ui/avatar";
@@ -10,51 +10,49 @@ import { useAuth } from "../../context/AuthContext";
 import { useDonorData } from "../../lib/useDonorData";
 
 export function DashboardLayout() {
+  const { state, logout } = useAuth();
+  const session = state.user;
+  const isLoaded = state.isLoaded;
+  
   const [sidebarOpen, setSidebarOpen] = useState(false);
-  const [session, setSession] = useState<DonorSession | null>(null);
-  const [isLoading, setIsLoading] = useState(true);
   const location = useLocation();
   const navigate = useNavigate();
   const { id } = useParams();
-
+ 
   // Fetch dynamic donor data (cached across components)
   const { impactScore } = useDonorData();
-
+ 
   useEffect(() => {
-    const currentSession = auth.getSession();
-    if (!currentSession) {
+    if (isLoaded && !session) {
       navigate("/donor/login", { replace: true });
-    } else {
-      setSession(currentSession);
-      setIsLoading(false);
-      const expectedId = currentSession.donorId;
+    } else if (session) {
+      const expectedId = session.donorId;
       if (id && expectedId && id !== expectedId) {
         navigate(`/donor/${expectedId}/dashboard`, { replace: true });
       }
     }
-  }, [navigate, id]);
-
-  if (isLoading || !session) {
-    return <div className="min-h-screen bg-gray-50 flex items-center justify-center text-gray-500">Loading dashboard...</div>;
+  }, [isLoaded, session, navigate, id]);
+ 
+  if (!isLoaded || !session) {
+    return <div className="min-h-screen bg-gray-50 flex items-center justify-center text-gray-500 font-bold uppercase tracking-widest text-xs">Synchronizing Workspace...</div>;
   }
-
+ 
   const donId = session.donorId || 'legacy';
   const allDonorLinks = [
     { href: `/donor/${donId}/dashboard`, label: "Overview", icon: LayoutDashboard, requiredEligibility: true },
     { href: `/donor/${donId}/donations`, label: "My Donations", icon: Receipt, requiredEligibility: false },
+    { href: `/donor/${donId}/leaderboard`, label: "Leaderboard", icon: Trophy, requiredEligibility: false },
     { href: `/donor/${donId}/reports`, label: "Impact Reports", icon: FileText, requiredEligibility: true },
     { href: `/donor/${donId}/certificates`, label: "Receipts & Certificates", icon: Award, requiredEligibility: false },
     { href: `/donor/${donId}/events`, label: "Events", icon: CalendarDays, requiredEligibility: true },
     { href: `/donor/${donId}/profile`, label: "Profile", icon: User, requiredEligibility: false },
   ];
-
+ 
   // Filter links based on donor eligibility
   const visibleLinks = allDonorLinks.filter(link => 
     !link.requiredEligibility || session.eligible
   );
-
-  const { logout } = useAuth();
-
+ 
   const handleLogout = () => {
     logout();
     navigate("/");
@@ -109,7 +107,7 @@ export function DashboardLayout() {
                     {session.identifier.split("@")[0]}
                   </p>
                   <p className="text-[11px] font-bold tracking-[0.15em] uppercase text-[#1D6E3F]/80">
-                    {session.eligible ? "Premium Donor" : "Donor"}
+                    {session.tier ? `${session.tier} Donor` : (session.eligible ? "Premium Donor" : "Donor")}
                   </p>
                 </div>
               </div>

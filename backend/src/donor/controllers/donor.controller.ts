@@ -21,8 +21,16 @@ export class DonorController {
 
   @Get('leaderboard')
   @ApiOperation({ summary: 'Get global donor leaderboard' })
-  async getLeaderboard() {
-    return this.donorService.getLeaderboard();
+  async getLeaderboard(
+    @Query('page') page?: string,
+    @Query('limit') limit?: string,
+    @Query('timeframe') timeframe?: string,
+  ) {
+    return this.donorService.getLeaderboard({
+      page: parseInt(page ?? '1'),
+      limit: parseInt(limit ?? '10'),
+      timeframe: timeframe ?? 'all',
+    });
   }
 
   @Get('recruits/:donorId')

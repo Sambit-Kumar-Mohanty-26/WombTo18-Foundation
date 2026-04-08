@@ -49,6 +49,7 @@ import { DonorCertificates } from "./pages/donor/DonorCertificates";
 import { DonorEvents } from "./pages/donor/DonorEvents";
 import { DonorProfile } from "./pages/donor/DonorProfile";
 import { DonorStats } from "./pages/donor/DonorStats";
+import { DonorLeaderboard } from "./pages/donor/DonorLeaderboard";
 
 // Volunteer Dashboard
 import { VolunteerDashboardHome } from "./pages/volunteer/VolunteerDashboardHome";
@@ -141,6 +142,7 @@ export const router = createBrowserRouter([
       { path: "events", Component: DonorEvents },
       { path: "profile", Component: DonorProfile },
       { path: "stats", Component: DonorStats },
+      { path: "leaderboard", Component: DonorLeaderboard },
       { index: true, Component: DonorDashboard },
     ],
   },
