@@ -9,7 +9,7 @@ export declare class CertificateController {
     tax80g(donationId: string, res: Response): Promise<void>;
     downloadCert(certId: string, res: Response): Promise<void | Response<any, Record<string, any>>>;
     volunteerCert(volunteerId: string, res: Response): Promise<void>;
-    campCert(volunteerId: string, campId: string, res: Response): Promise<void | Response<any, Record<string, any>>>;
+    campCert(volunteerId: string, campId: string, res: Response): Promise<Response<any, Record<string, any>>>;
     partnerCert(partnerId: string, res: Response): Promise<void>;
     list(recipientType: string, userId: string): Promise<(({
         donor: {
@@ -127,4 +127,5 @@ export declare class CertificateController {
         data: any;
     }>;
     downloadZip(recipientType: string, userId: string, res: Response): Promise<void>;
+    private extractStoragePath;
 }
