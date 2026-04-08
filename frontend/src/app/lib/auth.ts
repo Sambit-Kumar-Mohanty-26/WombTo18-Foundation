@@ -4,6 +4,7 @@ export interface DonorSession {
   identifier: string;
   eligible: boolean;
   token: string;
+  tier?: string;
   name?: string;
   mobile?: string;
   donorId?: string;
@@ -67,6 +68,7 @@ export const auth = {
         mobile: (response as any).mobile,
         donorId: response.donorId,
         volunteerId: response.volunteerId,
+        tier: (response as any).tier,
         partnerId: response.partnerId,
         role: role as any,
       };
@@ -88,6 +90,7 @@ export const auth = {
         mobile: (response as any).mobile,
         donorId: response.donorId,
         volunteerId: response.volunteerId,
+        tier: (response as any).tier,
         partnerId: response.partnerId,
         role: role as any,
       };

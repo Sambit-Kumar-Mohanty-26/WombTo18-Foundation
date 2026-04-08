@@ -11,6 +11,7 @@ interface AuthState {
     partnerId?: string;
     organizationName?: string;
     role: 'DONOR' | 'VOLUNTEER' | 'PARTNER' | 'ADMIN';
+    tier?: string;
   } | null;
   isAuthenticated: boolean;
   isLoaded: boolean;
@@ -65,6 +66,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
           partnerId: session.partnerId,
           organizationName: session.organizationName,
           role: session.role || 'DONOR',
+          tier: session.tier,
         },
       });
     } else {

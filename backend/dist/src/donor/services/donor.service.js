@@ -41,6 +41,9 @@ let DonorService = class DonorService {
         const tier = donor.tier;
         const volunteerCoins = donor.volunteer?.totalCoins || 0;
         const impactScore = Math.floor(totalDonated / 100) + (tier === 'CHAMPION' ? 1000 : tier === 'PATRON' ? 250 : 0) + volunteerCoins;
+        const rank = await this.prisma.donor.count({
+            where: { totalDonated: { gt: totalDonated } },
+        }) + 1;
         return {
             donor: {
                 id: donor.id,
@@ -50,6 +53,7 @@ let DonorService = class DonorService {
                 tier: donor.tier,
                 totalDonated: donor.totalDonated,
                 impactScore,
+                leaderboardRank: rank,
                 isVolunteer: donor.isVolunteer,
                 showOnLeaderboard: donor.showOnLeaderboard,
                 volunteerId: donor.volunteer?.volunteerId || null,
@@ -82,19 +86,100 @@ let DonorService = class DonorService {
             receiptNumber: d.receiptNumber,
         }));
     }
-    async getLeaderboard() {
-        return this.prisma.donor.findMany({
-            where: { totalDonated: { gt: 0 } },
-            orderBy: { totalDonated: 'desc' },
-            take: 50,
-            select: {
-                name: true,
-                donorId: true,
-                totalDonated: true,
-                tier: true,
-                showOnLeaderboard: true,
-            },
-        });
+    async getLeaderboard(options) {
+        const { page, limit, timeframe } = options;
+        const skip = (page - 1) * limit;
+        let startDate = null;
+        const now = new Date();
+        if (timeframe === 'month') {
+            startDate = new Date(now.getFullYear(), now.getMonth(), 1);
+        }
+        else if (timeframe === 'year') {
+            startDate = new Date(now.getFullYear(), 0, 1);
+        }
+        else if (timeframe === 'recent') {
+            startDate = new Date(now.getTime() - 30 * 24 * 60 * 60 * 1000);
+        }
+        if (startDate) {
+            const aggregations = await this.prisma.donation.groupBy({
+                by: ['donorId'],
+                _sum: { amount: true },
+                where: {
+                    status: 'SUCCESS',
+                    createdAt: { gte: startDate },
+                },
+                orderBy: {
+                    _sum: { amount: 'desc' },
+                },
+                take: limit,
+                skip: skip,
+            });
+            const donorIds = aggregations.map(a => a.donorId);
+            const donors = await this.prisma.donor.findMany({
+                where: { id: { in: donorIds }, showOnLeaderboard: true },
+                select: {
+                    id: true,
+                    name: true,
+                    donorId: true,
+                    tier: true,
+                },
+            });
+            const result = aggregations.map((a, index) => {
+                const donor = donors.find(d => d.id === a.donorId);
+                return {
+                    rank: skip + index + 1,
+                    name: donor?.name || 'Anonymous Donor',
+                    donorId: donor?.donorId || 'N/A',
+                    totalDonated: a._sum.amount || 0,
+                    tier: donor?.tier || 'DONOR',
+                };
+            }).filter(r => r.donorId !== 'N/A');
+            const totalCount = await this.prisma.donation.groupBy({
+                by: ['donorId'],
+                where: {
+                    status: 'SUCCESS',
+                    createdAt: { gte: startDate },
+                },
+            });
+            return {
+                data: result,
+                meta: {
+                    total: totalCount.length,
+                    page,
+                    limit,
+                    totalPages: Math.ceil(totalCount.length / limit),
+                },
+            };
+        }
+        else {
+            const donors = await this.prisma.donor.findMany({
+                where: { totalDonated: { gt: 0 }, showOnLeaderboard: true },
+                orderBy: { totalDonated: 'desc' },
+                take: limit,
+                skip: skip,
+                select: {
+                    name: true,
+                    donorId: true,
+                    totalDonated: true,
+                    tier: true,
+                },
+            });
+            const totalCount = await this.prisma.donor.count({
+                where: { totalDonated: { gt: 0 }, showOnLeaderboard: true },
+            });
+            return {
+                data: donors.map((d, index) => ({
+                    rank: skip + index + 1,
+                    ...d,
+                })),
+                meta: {
+                    total: totalCount,
+                    page,
+                    limit,
+                    totalPages: Math.ceil(totalCount / limit),
+                },
+            };
+        }
     }
     async getRecruits(donorId) {
         return this.prisma.donor.findMany({

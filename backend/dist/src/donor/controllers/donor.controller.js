@@ -27,8 +27,12 @@ let DonorController = class DonorController {
     async getDonations(donorId) {
         return this.donorService.getDonations(donorId);
     }
-    async getLeaderboard() {
-        return this.donorService.getLeaderboard();
+    async getLeaderboard(page, limit, timeframe) {
+        return this.donorService.getLeaderboard({
+            page: parseInt(page ?? '1'),
+            limit: parseInt(limit ?? '10'),
+            timeframe: timeframe ?? 'all',
+        });
     }
     async getRecruits(donorId) {
         return this.donorService.getRecruits(donorId);
@@ -66,8 +70,11 @@ __decorate([
 __decorate([
     (0, common_1.Get)('leaderboard'),
     (0, swagger_1.ApiOperation)({ summary: 'Get global donor leaderboard' }),
+    __param(0, (0, common_1.Query)('page')),
+    __param(1, (0, common_1.Query)('limit')),
+    __param(2, (0, common_1.Query)('timeframe')),
     __metadata("design:type", Function),
-    __metadata("design:paramtypes", []),
+    __metadata("design:paramtypes", [String, String, String]),
     __metadata("design:returntype", Promise)
 ], DonorController.prototype, "getLeaderboard", null);
 __decorate([

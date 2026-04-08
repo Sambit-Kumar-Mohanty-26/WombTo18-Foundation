@@ -20,6 +20,7 @@ export declare class AuthController {
         donorId: string;
         volunteerId: string | undefined;
         eligible: boolean;
+        tier: string;
         isVolunteer: boolean;
         profileCompleted: boolean;
         role: string;
@@ -36,6 +37,7 @@ export declare class AuthController {
         name?: undefined;
         volunteerId?: undefined;
         eligible?: undefined;
+        tier?: undefined;
         isVolunteer?: undefined;
         profileCompleted?: undefined;
         role?: undefined;
@@ -46,6 +48,7 @@ export declare class AuthController {
         name: string | null;
         donorId: string;
         eligible: boolean;
+        tier: string;
         isVolunteer: boolean;
         role: string;
         redirect: string;
@@ -82,6 +85,7 @@ export declare class AuthController {
         donorId: string;
         volunteerId: string | undefined;
         eligible: boolean;
+        tier: string;
         isVolunteer: boolean;
         profileCompleted: boolean;
         role: string;
@@ -107,6 +111,7 @@ export declare class AuthController {
         volunteerId: any;
         partnerId: any;
         eligible: boolean;
+        tier: any;
         profileCompleted: boolean;
         role: "DONOR" | "VOLUNTEER" | "PARTNER";
     } | {

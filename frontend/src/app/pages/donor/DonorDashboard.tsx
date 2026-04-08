@@ -14,6 +14,7 @@ import { Link } from "react-router";
 import { toast } from "sonner";
 import { useAuth } from "../../context/AuthContext";
 import { client } from "../../lib/api/client";
+import { auth } from "../../lib/auth";
 import { QRCodeCanvas } from "qrcode.react";
 
 // ---- Static demo data ----
@@ -35,6 +36,7 @@ interface DonorProfile {
   donorId: string;
   tier: string;
   totalDonated: number;
+  leaderboardRank?: number;
   isVolunteer: boolean;
 }
 
@@ -53,21 +55,13 @@ interface LeaderboardEntry {
   tier: string;
 }
 
-interface RecruitEntry {
-  name: string | null;
-  email: string;
-  totalDonated: number;
-  createdAt: string;
-}
-
 export function DonorDashboard() {
-  const { state } = useAuth();
+  const { state, dispatch } = useAuth();
   const session = state.user;
 
   const [profile, setProfile] = useState<DonorProfile | null>(null);
   const [donations, setDonations] = useState<DonationRecord[]>([]);
   const [leaderboard, setLeaderboard] = useState<LeaderboardEntry[]>([]);
-  const [recruits, setRecruits] = useState<RecruitEntry[]>([]);
   const [loading, setLoading] = useState(true);
   const [copied, setCopied] = useState(false);
 
@@ -87,20 +81,25 @@ export function DonorDashboard() {
         ]);
 
         if (dashRes.status === "fulfilled") {
-          setProfile(dashRes.value.donor);
+          const fetchedProfile = dashRes.value.donor;
+          setProfile(fetchedProfile);
           
-          // If volunteer, fetch recruits
-          if (dashRes.value.donor.isVolunteer) {
-            try {
-              const recruitsRes = await client.get<RecruitEntry[]>(`/donors/recruits/${dashRes.value.donor.donorId}`);
-              setRecruits(recruitsRes || []);
-            } catch (err) {
-              console.error("Recruit fetch error", err);
+          // Sync tier with session if it's missing or different to update sidebar instantly
+          if (fetchedProfile.tier && fetchedProfile.tier !== session?.tier) {
+            const currentSession = auth.getSession();
+            if (currentSession) {
+              const updatedSession = { ...currentSession, tier: fetchedProfile.tier };
+              localStorage.setItem("donor_session", JSON.stringify(updatedSession));
+              dispatch({ type: "UPDATE_ROLE", payload: { tier: fetchedProfile.tier } });
             }
           }
         }
         if (donaRes.status === "fulfilled") setDonations(donaRes.value ?? []);
-        if (leadRes.status === "fulfilled") setLeaderboard(leadRes.value ?? []);
+        if (leadRes.status === "fulfilled") {
+          // The new API returns { data, meta }
+          const res = leadRes.value as any;
+          setLeaderboard(res.data ?? []);
+        }
 
 
       } catch (e: any) {
@@ -205,8 +204,8 @@ export function DonorDashboard() {
         {[
           { icon: Heart, label: "Total Contribution", value: `₹${(profile?.totalDonated ?? 0).toLocaleString("en-IN")}`, color: "text-[#1D6E3F]", bg: "bg-[#1D6E3F]/10", border: 'border-[#1D6E3F]/20' },
           { icon: TrendingUp, label: "Impact Events", value: donations.length.toString(), color: "text-blue-600", bg: "bg-blue-600/10", border: 'border-blue-600/20' },
-          { icon: UserPlus, label: "Network Recruits", value: recruits.length.toString(), color: "text-amber-600", bg: "bg-amber-500/10", border: 'border-amber-500/20' },
-          { icon: Award, label: "Impact Factor", value: isVolunteer ? "1.5x" : "1.0x", color: "text-indigo-600", bg: "bg-indigo-600/10", border: 'border-indigo-600/20' },
+          { icon: Trophy, label: "Leaderboard Rank", value: `#${profile?.leaderboardRank || " -"}`, color: "text-amber-600", bg: "bg-amber-500/10", border: 'border-amber-500/20' },
+          { icon: Award, label: "Impact Factor", value: profile?.tier === "CHAMPION" ? "1.5x" : profile?.tier === "PATRON" ? "1.25x" : "1.0x", color: "text-indigo-600", bg: "bg-indigo-600/10", border: 'border-indigo-600/20' },
         ].map((stat, i) => (
           <motion.div
             key={stat.label}
@@ -312,17 +311,24 @@ export function DonorDashboard() {
       <div className="grid lg:grid-cols-3 gap-6">
         <motion.div initial={{ opacity: 0, scale: 0.95 }} animate={{ opacity: 1, scale: 1 }} transition={{ duration: 0.7, delay: 0.4 }} className="lg:col-span-2 flex">
           <Card className="w-full border-gray-100 shadow-[0_15px_40px_-15px_rgba(0,0,0,0.06)] bg-white rounded-[1.5rem] overflow-hidden flex flex-col">
-            <CardHeader className="bg-gray-50/50 border-b border-gray-100 pb-5 pt-6 px-6 sm:px-8 flex-row items-center justify-between">
-              <div>
-                <CardTitle className="text-xl font-black flex items-center gap-2 tracking-tight">
-                  <div className="p-1.5 bg-amber-100 rounded-lg"><Trophy className="h-5 w-5 text-amber-600" /></div> Supporter Standings
-                </CardTitle>
-                <CardDescription className="font-semibold text-gray-400 mt-1 text-xs">Global contribution leaderboard for FY 2026</CardDescription>
+            <CardHeader className="bg-gray-50/50 border-b border-gray-100 pb-5 pt-6 px-6 sm:px-8">
+              <div className="flex items-center justify-between w-full">
+                <div>
+                  <CardTitle className="text-xl font-black flex items-center gap-2 tracking-tight">
+                    <div className="p-1.5 bg-amber-100 rounded-lg"><Trophy className="h-5 w-5 text-amber-600" /></div> Supporter Standings
+                  </CardTitle>
+                  <CardDescription className="font-semibold text-gray-400 mt-1 text-xs">Global contribution leaderboard for FY 2026</CardDescription>
+                </div>
+                <Link to={`/donor/${profile?.donorId}/leaderboard`}>
+                  <Button variant="ghost" size="sm" className="text-amber-600 hover:text-amber-700 hover:bg-amber-50 font-bold rounded-xl h-9">
+                    See All <ArrowRight className="h-4 w-4 ml-1" />
+                  </Button>
+                </Link>
               </div>
             </CardHeader>
             <CardContent className="p-0 flex-1 flex flex-col">
               <div className="divide-y divide-gray-50 flex-1">
-                {leaderboard.length > 0 ? leaderboard.map((l, i) => (
+                {leaderboard.length > 0 ? leaderboard.slice(0, 5).map((l, i) => (
                   <div key={i} className="flex items-center justify-between p-4 px-6 sm:px-8 hover:bg-gray-50/80 transition-colors group">
                     <div className="flex items-center gap-4">
                       <div className={`h-10 w-10 rounded-full flex items-center justify-center font-black text-sm shadow-sm group-hover:scale-110 transition-transform ${i === 0 ? 'bg-gradient-to-br from-amber-300 to-amber-500 text-white' : i === 1 ? 'bg-gradient-to-br from-slate-300 to-slate-400 text-white' : i === 2 ? 'bg-gradient-to-br from-orange-300 to-orange-500 text-white' : 'bg-gray-100 text-gray-500'}`}>
@@ -383,20 +389,8 @@ export function DonorDashboard() {
                   </Button>
                   
                   <div className="pt-5 border-t border-gray-100">
-                     <p className="text-[10px] uppercase tracking-[0.2em] font-black text-gray-400 mb-3 text-center">Recent Recruits</p>
-                     {recruits.length > 0 ? (
-                       <div className="space-y-2.5">
-                          {recruits.slice(0, 3).map((r, ri) => (
-                             <div key={ri} className="flex items-center justify-between bg-white p-2.5 px-3 rounded-xl shadow-sm border border-gray-100">
-                                <span className="font-bold text-gray-700 text-xs truncate max-w-[120px]">{r.name || "Anonymous"}</span>
-                                <Badge className="bg-emerald-50 text-[#1D6E3F] text-[9px] border-none shadow-none font-black uppercase tracking-wider px-1.5 py-0">Verified</Badge>
-                             </div>
-                          ))}
-                          {recruits.length > 3 && <p className="text-[10px] text-center text-gray-400 font-bold mt-2 pt-2 border-t border-gray-50">+ {recruits.length - 3} more</p>}
-                       </div>
-                     ) : (
-                       <p className="text-[11px] text-gray-400 text-center font-bold px-2">No recruits yet. Share your QR to build your network!</p>
-                     )}
+                     <p className="text-[10px] uppercase tracking-[0.2em] font-black text-gray-400 mb-3 text-center">Impact Network</p>
+                     <p className="text-[11px] text-gray-400 text-center font-bold px-2">Share your personal QR to spread the word and invite others to join our cause!</p>
                   </div>
                 </div>
               </CardContent>
