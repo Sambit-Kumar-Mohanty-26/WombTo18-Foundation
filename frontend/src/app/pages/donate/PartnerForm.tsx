@@ -8,6 +8,7 @@ import { useTranslation } from "react-i18next";
 
 const API = import.meta.env.VITE_API_URL || "http://localhost:6001";
 const RAZORPAY_KEY = import.meta.env.VITE_RAZORPAY_KEY || "rzp_test_SNjaYRsZlPUZpp";
+const PAN_REGEX = /^[A-Z]{5}[0-9]{4}[A-Z]{1}$/;
 
 interface PartnerFormData {
   organizationName: string; contactPerson: string; email: string;
@@ -74,6 +75,10 @@ export function PartnerForm() {
     if (!form.email || !form.organizationName || !form.contactPerson) {
       toast.error(t('toasts.requiredPartner')); return;
     }
+    if (form.panNumber && !PAN_REGEX.test(form.panNumber.trim().toUpperCase())) {
+      toast.error("Please enter a valid PAN number (e.g. ABCDE1234F).");
+      return;
+    }
     if (Object.keys(selectedPrograms).length === 0 && totalAmount < 100) { toast.error(t('toasts.selectProgram')); return; }
     if (totalAmount < 100) { toast.error(t('toasts.minSponsorship')); return; }
     setLoading(true);
@@ -137,7 +142,7 @@ export function PartnerForm() {
           <PInput id="partner-contact" label={t('forms.partner.contactPerson')} required value={form.contactPerson} onChange={(e: any) => set("contactPerson", e.target.value)} placeholder={t('forms.partner.contactPersonPlaceholder')} />
           <PInput id="partner-email" label={t('forms.email')} required type="email" value={form.email} onChange={(e: any) => set("email", e.target.value)} placeholder={t('forms.emailPlaceholder')} />
           <PInput id="partner-mobile" label={t('forms.mobile')} value={form.mobile} onChange={(e: any) => set("mobile", e.target.value)} placeholder={t('forms.mobilePlaceholder')} />
-          <PInput id="partner-pan" label={t('forms.pan')} value={form.panNumber} onChange={(e: any) => set("panNumber", e.target.value.toUpperCase())} placeholder={t('forms.panPlaceholder')} maxLength={10} style={{ textTransform: "uppercase" }} />
+          <PInput id="partner-pan" label={t('forms.pan')} value={form.panNumber} onChange={(e: any) => set("panNumber", e.target.value.toUpperCase())} placeholder={t('forms.panPlaceholder')} maxLength={10} pattern={PAN_REGEX.source} title="PAN must match ABCDE1234F format" style={{ textTransform: "uppercase" }} />
         </div>
         <div className="mt-4">
           <label className="text-[11px] font-bold text-gray-400 tracking-wide uppercase mb-1.5 block">{t('forms.partner.csrFocus')}</label>
