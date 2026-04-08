@@ -10,6 +10,7 @@ import { useTranslation } from "react-i18next";
 
 const API = import.meta.env.VITE_API_URL || "http://localhost:6001";
 const RAZORPAY_KEY = import.meta.env.VITE_RAZORPAY_KEY || "rzp_test_SNjaYRsZlPUZpp";
+const PAN_REGEX = /^[A-Z]{5}[0-9]{4}[A-Z]{1}$/;
 declare global { interface Window { Razorpay: any; } }
 
 interface DonorFormData {
@@ -87,6 +88,10 @@ export function DonorForm() {
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
     if (!form.email || !form.name) { toast.error(t('toasts.required')); return; }
+    if (form.pan && !PAN_REGEX.test(form.pan.trim().toUpperCase())) {
+      toast.error("Please enter a valid PAN number (e.g. ABCDE1234F).");
+      return;
+    }
     if (Object.keys(selectedPrograms).length === 0 && totalAmount < 100) { toast.error(t('toasts.selectProgram')); return; }
     if (totalAmount < 100) { toast.error(t('toasts.minAmount')); return; }
     setLoading(true);
@@ -166,7 +171,7 @@ export function DonorForm() {
           <PremiumInput id="donor-name" label={t('forms.fullName')} required value={form.name} onChange={(e: any) => set("name", e.target.value)} placeholder={t('forms.fullNamePlaceholder')} />
           <PremiumInput id="donor-email" label={t('forms.email')} required type="email" value={form.email} onChange={(e: any) => set("email", e.target.value)} placeholder={t('forms.emailPlaceholder')} readOnly={!!state.user} className={state.user ? "opacity-70 bg-gray-50 cursor-not-allowed w-full px-4 py-2.5 rounded-xl border border-gray-200 text-sm text-gray-800 outline-none" : undefined} />
           <PremiumInput id="donor-mobile" label={t('forms.mobile')} value={form.mobile} onChange={(e: any) => set("mobile", e.target.value)} placeholder={t('forms.mobilePlaceholder')} />
-          <PremiumInput id="donor-pan" label={t('forms.pan')} value={form.pan} onChange={(e: any) => set("pan", e.target.value.toUpperCase())} maxLength={10} placeholder={t('forms.panPlaceholder')} style={{ textTransform: "uppercase" }} />
+          <PremiumInput id="donor-pan" label={t('forms.pan')} value={form.pan} onChange={(e: any) => set("pan", e.target.value.toUpperCase())} maxLength={10} placeholder={t('forms.panPlaceholder')} pattern={PAN_REGEX.source} title="PAN must match ABCDE1234F format" style={{ textTransform: "uppercase" }} />
         </div>
       </motion.div>
 

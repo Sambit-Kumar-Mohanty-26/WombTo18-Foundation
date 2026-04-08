@@ -8,6 +8,7 @@ import { useTranslation } from "react-i18next";
 
 const API = import.meta.env.VITE_API_URL || "http://localhost:6001";
 const RAZORPAY_KEY = import.meta.env.VITE_RAZORPAY_KEY || "rzp_test_SNjaYRsZlPUZpp";
+const PAN_REGEX = /^[A-Z]{5}[0-9]{4}[A-Z]{1}$/;
 declare global { interface Window { Razorpay: any; } }
 
 interface VolunteerFormData {
@@ -58,6 +59,10 @@ export function VolunteerForm() {
 
     if (!contributionAmount || Number(contributionAmount) < 500 || Number(contributionAmount) > 2000) {
       toast.error("Membership contribution must be between ₹500 and ₹2000"); return;
+    }
+    if (form.pan && !PAN_REGEX.test(form.pan.trim().toUpperCase())) {
+      toast.error("Please enter a valid PAN number (e.g. ABCDE1234F).");
+      return;
     }
 
     setLoading(true);
@@ -192,7 +197,7 @@ export function VolunteerForm() {
         <div className="grid sm:grid-cols-2 gap-4 mt-4">
           <div>
             <label className="text-xs font-semibold text-gray-600 mb-1 block">PAN Number (Optional)</label>
-            <input id="vol-pan" value={form.pan} onChange={e => set("pan", e.target.value.toUpperCase())} maxLength={10}
+            <input id="vol-pan" value={form.pan} onChange={e => set("pan", e.target.value.toUpperCase())} maxLength={10} pattern={PAN_REGEX.source} title="PAN must match ABCDE1234F format"
               className="w-full px-4 py-2.5 rounded-xl border border-gray-200 bg-[#FAFAF8] text-sm focus:border-[var(--womb-forest)] focus:ring-2 focus:ring-[var(--womb-forest)]/20 outline-none transition-all placeholder:uppercase" placeholder="ABCDE1234F" />
           </div>
           <div>
