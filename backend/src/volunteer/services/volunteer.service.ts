@@ -1,47 +1,69 @@
 import { Injectable, NotFoundException, BadRequestException } from '@nestjs/common';
 import { PrismaService } from '../../prisma/services/prisma.service';
+import { VolunteerOnboardingDto } from '../dto/volunteer-onboarding.dto';
+import { CoinService } from '../../coin/services/coin.service';
 
 @Injectable()
 export class VolunteerService {
-  constructor(private readonly prisma: PrismaService) {}
+  constructor(
+    private readonly prisma: PrismaService,
+    private readonly coinService: CoinService,
+  ) {}
 
   /** Upgrade a donor to volunteer */
-  async registerVolunteer(data: {
-    donorId: string;
-    city?: string;
-    profession?: string;
-    skills?: string[];
-    availability?: string;
-    linkedIn?: string;
-    motivation?: string;
-  }) {
-    // Find donor by donorId (e.g. DNR1023)
-    const donor = await this.prisma.donor.findUnique({
-      where: { donorId: data.donorId },
+  async registerVolunteer(data: VolunteerOnboardingDto) {
+    const donor = await this.prisma.donor.findFirst({
+      where: {
+        OR: [
+          { donorId: data.donorId },
+          { id: data.donorId },
+          { email: data.donorId },
+        ],
+      },
       include: { volunteer: true },
     });
     if (!donor) throw new NotFoundException('Donor not found');
-    if (donor.volunteer) throw new BadRequestException('Already registered as a volunteer');
 
-    // Generate volunteer ID
-    const lastVol = await this.prisma.volunteer.findFirst({ orderBy: { createdAt: 'desc' } });
-    const nextId = lastVol ? parseInt(lastVol.volunteerId.replace('VOL', '')) + 1 : 1001;
+    const volunteerPayload = {
+      email: donor.email,
+      name: donor.name || 'Volunteer',
+      mobile: donor.mobile || '',
+      city: data.city,
+      profession: data.profession,
+      skills: data.skills || [],
+      availability: data.availability,
+      linkedIn: data.linkedIn,
+      motivation: data.motivation,
+    };
 
-    const volunteer = await this.prisma.volunteer.create({
-      data: {
-        volunteerId: `VOL${nextId}`,
-        donorId: donor.id,
-        email: donor.email,
-        name: donor.name || 'Volunteer',
-        mobile: donor.mobile || '',
-        city: data.city,
-        profession: data.profession,
-        skills: data.skills || [],
-        availability: data.availability,
-        linkedIn: data.linkedIn,
-        motivation: data.motivation,
-      },
-    });
+    let volunteer = donor.volunteer;
+    if (volunteer) {
+      volunteer = await this.prisma.volunteer.update({
+        where: { id: volunteer.id },
+        data: volunteerPayload,
+      });
+    } else {
+      const date = new Date();
+      const yy = date.getFullYear().toString().substring(2);
+      const mm = (date.getMonth() + 1).toString().padStart(2, '0');
+      const dd = date.getDate().toString().padStart(2, '0');
+      
+      const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
+      let randomStr = '';
+      for (let i = 0; i < 4; i++) {
+        randomStr += chars.charAt(Math.floor(Math.random() * chars.length));
+      }
+      
+      const newId = `W18-VOLD-${yy}${mm}${dd}-${randomStr}`;
+
+      volunteer = await this.prisma.volunteer.create({
+        data: {
+          volunteerId: newId,
+          donorId: donor.id,
+          ...volunteerPayload,
+        },
+      });
+    }
 
     // Mark donor as volunteer
     await this.prisma.donor.update({
@@ -49,7 +71,34 @@ export class VolunteerService {
       data: { isVolunteer: true },
     });
 
-    return volunteer;
+    const latestVolunteerMembershipDonation = await this.prisma.donation.findFirst({
+      where: {
+        donorId: donor.id,
+        status: 'SUCCESS',
+        program: {
+          name: 'Volunteer Membership',
+        },
+      },
+      orderBy: { createdAt: 'desc' },
+    });
+
+    const welcomeBonus = latestVolunteerMembershipDonation
+      ? await this.coinService.awardWelcomeBonus(
+          donor.email,
+          latestVolunteerMembershipDonation.id,
+          latestVolunteerMembershipDonation.amount,
+        )
+      : null;
+
+    return {
+      success: true,
+      profileCompleted: true,
+      role: 'VOLUNTEER',
+      donorId: donor.donorId,
+      volunteerId: volunteer.volunteerId,
+      volunteer,
+      welcomeBonus,
+    };
   }
 
   /** Get full volunteer dashboard data */

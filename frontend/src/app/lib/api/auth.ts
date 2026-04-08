@@ -12,6 +12,7 @@ export interface LoginResponse {
   role?: string;
   redirect?: string;
   isVolunteer?: boolean;
+  profileCompleted?: boolean;
   message?: string;
   devOtp?: string;
   devMobileOtp?: string;
@@ -37,6 +38,7 @@ export interface VerifyOtpResponse {
   partnerId?: string;
   eligible?: boolean;
   role?: string;
+  profileCompleted?: boolean;
   donor?: {
     id: string;
     email: string;

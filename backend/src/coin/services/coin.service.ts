@@ -163,6 +163,111 @@ export class CoinService {
     return { awarded: coins, totalCoins: volunteer.totalCoins + coins };
   }
 
+  /** Backfill missed welcome bonuses for volunteer memberships */
+  async backfillVolunteerWelcomeBonuses(volunteerIdentifier?: string) {
+    let targetDonorId: string | null = null;
+
+    if (volunteerIdentifier) {
+      const volunteer = await this.prisma.volunteer.findFirst({
+        where: {
+          OR: [
+            { volunteerId: volunteerIdentifier },
+            { id: volunteerIdentifier },
+            { email: volunteerIdentifier },
+          ],
+        },
+        select: { donorId: true },
+      });
+
+      if (!volunteer) {
+        throw new NotFoundException('Volunteer not found');
+      }
+
+      targetDonorId = volunteer.donorId;
+    }
+
+    const donations = await this.prisma.donation.findMany({
+      where: {
+        status: 'SUCCESS',
+        program: {
+          name: 'Volunteer Membership',
+        },
+        ...(targetDonorId ? { donorId: targetDonorId } : {}),
+      },
+      include: {
+        donor: {
+          include: {
+            volunteer: true,
+          },
+        },
+      },
+      orderBy: { createdAt: 'asc' },
+    });
+
+    const results: Array<{
+      donationId: string;
+      email: string;
+      status: 'AWARDED' | 'SKIPPED' | 'NO_VOLUNTEER';
+      awarded?: number;
+      totalCoins?: number;
+    }> = [];
+
+    for (const donation of donations) {
+      const volunteer = donation.donor.volunteer;
+      if (!volunteer) {
+        results.push({
+          donationId: donation.id,
+          email: donation.donor.email,
+          status: 'NO_VOLUNTEER',
+        });
+        continue;
+      }
+
+      const existingBonus = await this.prisma.coinTransaction.findFirst({
+        where: {
+          volunteerId: volunteer.id,
+          type: 'WELCOME_BONUS',
+        },
+      });
+
+      if (existingBonus) {
+        results.push({
+          donationId: donation.id,
+          email: donation.donor.email,
+          status: 'SKIPPED',
+        });
+        continue;
+      }
+
+      const awarded = await this.awardWelcomeBonus(donation.donor.email, donation.id, donation.amount);
+
+      if (awarded?.awarded) {
+        results.push({
+          donationId: donation.id,
+          email: donation.donor.email,
+          status: 'AWARDED',
+          awarded: awarded.awarded,
+          totalCoins: awarded.totalCoins,
+        });
+      } else {
+        results.push({
+          donationId: donation.id,
+          email: donation.donor.email,
+          status: 'NO_VOLUNTEER',
+        });
+      }
+    }
+
+    return {
+      success: true,
+      processed: results.length,
+      awarded: results.filter((item) => item.status === 'AWARDED').length,
+      skipped: results.filter((item) => item.status === 'SKIPPED').length,
+      noVolunteer: results.filter((item) => item.status === 'NO_VOLUNTEER').length,
+      results,
+    };
+  }
+
   /** Award camp join coins (normal participation via QR scan) */
   async awardCampJoinCoins(volunteerId: string, campId: string) {
     const volunteer = await this.prisma.volunteer.findFirst({

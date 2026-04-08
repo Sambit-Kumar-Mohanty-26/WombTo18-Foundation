@@ -65,32 +65,12 @@ export declare class DonorController {
         totalDonated: number;
     }[]>;
     becomeVolunteer(donorId: string): Promise<{
-        id: string;
+        success: boolean;
         donorId: string;
-        createdAt: Date;
-        updatedAt: Date;
-        name: string | null;
-        email: string;
-        mobile: string | null;
-        password: string | null;
-        pan: string | null;
-        address: string | null;
-        tier: string;
-        totalDonated: number;
-        otpHash: string | null;
-        otpExpiry: Date | null;
-        emailOtpHash: string | null;
-        mobileOtpHash: string | null;
-        emailVerified: boolean;
-        mobileVerified: boolean;
-        isEligible: boolean;
-        isVolunteer: boolean;
-        isNonDonor: boolean;
-        showOnLeaderboard: boolean;
-        profileImage: string | null;
-        referredById: string | null;
-        twoFactorEnabled: boolean;
-        tokenVersion: number;
+        role: string;
+        profileCompleted: boolean;
+        volunteerId: string | null;
+        redirect: string;
     }>;
     toggleLeaderboard(donorId: string, show: boolean): Promise<{
         id: string;
