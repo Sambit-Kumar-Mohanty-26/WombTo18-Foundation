@@ -4,6 +4,7 @@ import { motion } from "motion/react";
 import { CheckCircle2, Download, LayoutDashboard, Heart, Lock, Sparkles, CreditCard, ChevronRight, Users, Loader2 } from "lucide-react";
 import { toast } from "sonner";
 import { certificateApi } from "../lib/api/certificates";
+import { useAuth } from "../context/AuthContext";
 
 export function DonationSuccessPage() {
   const [searchParams] = useSearchParams();
@@ -18,6 +19,11 @@ export function DonationSuccessPage() {
   const donorId = searchParams.get("donorId") || "";
   const email = searchParams.get("email") || "";
   const certificateUrl = searchParams.get("certificateUrl") || "";
+  const userExists = searchParams.get("userExists") === "true";
+  const isVolunteerAlready = searchParams.get("isVolunteer") === "true";
+  
+  const { state } = useAuth();
+  const isLoggedIn = !!state.user;
 
   const [countdown, setCountdown] = useState(5);
   const [downloading, setDownloading] = useState(false);
@@ -67,13 +73,54 @@ export function DonationSuccessPage() {
     }
   }
 
-  function enterDashboard() {
-    // If donor has a donorId, navigate to donor login with their email pre-filled
-    if (email) {
-      navigate(`/donor/login?email=${encodeURIComponent(email)}&from=donation`);
-    } else {
-      navigate("/donor/login");
+  function getDashboardInfo() {
+    if (isLoggedIn) {
+      return {
+        title: "Welcome Back!",
+        description: "You're already logged in. Head over to your dashboard to see your updated impact and rewards.",
+        buttonText: "Enter Dashboard",
+        icon: LayoutDashboard,
+        color: "var(--womb-forest)",
+        target: state.user?.volunteerId ? "/volunteer/dashboard" : "/donor/dashboard"
+      };
     }
+
+    if (userExists) {
+      return {
+        title: "Access Your Profile",
+        description: "An account with this email already exists. Please login to securely view your certificates and track your impact.",
+        buttonText: "Login to Dashboard",
+        icon: Lock,
+        color: "var(--journey-saffron)",
+        target: `/donor/login?email=${encodeURIComponent(email)}&from=donation`
+      };
+    }
+
+    if (wantsToVolunteer) {
+      return {
+        title: "Finish Your Setup",
+        description: "Since you expressed interest in volunteering, please complete your profile to start earning Impact Rewards.",
+        buttonText: "Complete Volunteer Profile",
+        icon: Users,
+        color: "var(--womb-forest)",
+        target: `/volunteer/onboarding?name=${encodeURIComponent(searchParams.get("name") || "")}&email=${encodeURIComponent(email)}&mobile=${encodeURIComponent(searchParams.get("mobile") || "")}&amount=${amount}`
+      };
+    }
+
+    return {
+      title: "Track Your Impact",
+      description: "Create a password to securely access your 80G receipts and see exactly how your donation is being used.",
+      buttonText: "Register to Dashboard",
+      icon: Sparkles,
+      color: "var(--womb-forest)",
+      target: `/donor/register?email=${encodeURIComponent(email)}&name=${encodeURIComponent(searchParams.get("name") || "")}`
+    };
+  }
+
+  const dashInfo = getDashboardInfo();
+
+  function enterDashboard() {
+    navigate(dashInfo.target);
   }
 
   return (
@@ -166,70 +213,34 @@ export function DonationSuccessPage() {
            transition={{ duration: 0.6, delay: 0.4 }}
            className="mb-8"
         >
-          {wantsToVolunteer ? (
-            <div className="rounded-3xl border border-[var(--womb-forest)]/20 bg-gradient-to-br from-[#f0faf4] to-emerald-50/50 p-6 sm:p-8 shadow-sm text-center sm:text-left">
-              <div className="flex flex-col sm:flex-row items-center sm:items-start gap-5">
-                <div className="w-14 h-14 rounded-2xl bg-[var(--womb-forest)]/10 flex items-center justify-center shrink-0">
-                  <Users className="w-7 h-7 text-[var(--womb-forest)]" />
-                </div>
-                <div className="flex-1">
-                  <h3 className="text-xl font-black text-gray-900 mb-2">Volunteer Registration</h3>
-                  <p className="text-[14px] text-gray-600 leading-relaxed mb-5">
-                    Thank you for offering your time. You are being securely redirected to complete your volunteer profile in{" "}
-                    <span className="font-bold text-[var(--womb-forest)]">{countdown}s</span>...
-                  </p>
-                  <button
-                    onClick={() => navigate(`/volunteer-onboarding?name=${encodeURIComponent(searchParams.get("name") || "")}&email=${encodeURIComponent(searchParams.get("email") || "")}&mobile=${encodeURIComponent(searchParams.get("mobile") || "")}&amount=${amount}`)}
-                    className="group inline-flex items-center gap-2 bg-gradient-to-r from-[var(--womb-forest)] to-emerald-500 text-white px-6 py-3 rounded-xl font-bold text-sm shadow-[0_4px_15px_-3px_rgba(29,110,63,0.3)] hover:shadow-lg transition-all duration-300"
-                  >
-                    <span>Continue to Profile Now</span>
-                    <ChevronRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
-                  </button>
-                </div>
-              </div>
-            </div>
-          ) : isDashboardEligible ? (
-             <div className="rounded-3xl border border-[var(--journey-saffron)]/20 bg-gradient-to-br from-white to-[#fff9f0] p-6 sm:p-8 shadow-sm text-left">
-                <div className="flex items-start gap-4">
-                  <div className="w-12 h-12 rounded-2xl bg-[var(--journey-saffron)]/15 flex items-center justify-center shrink-0">
-                    <Heart className="w-6 h-6 text-[var(--journey-saffron)]" />
-                  </div>
-                  <div>
-                    <h3 className="text-lg font-black text-gray-900 mb-1">Donor Dashboard Unlocked!</h3>
-                    <p className="text-sm text-gray-600 leading-relaxed mb-5">
-                      Because your contribution is ₹5,000 or above, you have exclusive access to view real-time tracking of your funds and impact reports.
-                    </p>
-                    <button
-                      onClick={enterDashboard}
-                      className="group inline-flex items-center gap-2 bg-gradient-to-r from-[var(--journey-saffron)] to-orange-500 text-white px-6 py-3 rounded-xl font-bold text-sm shadow-[0_4px_15px_-3px_rgba(255,153,0,0.4)] hover:shadow-[0_8px_25px_-5px_rgba(255,153,0,0.5)] transition-all duration-300"
-                    >
-                      <LayoutDashboard className="w-4 h-4" /> Enter Dashboard
-                      <ChevronRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
-                    </button>
-                  </div>
-                </div>
-             </div>
-          ) : (
-            <div className="rounded-3xl border border-gray-200 bg-gray-50/80 p-6 sm:p-8 text-left">
-               <div className="flex items-start gap-4">
-                 <div className="w-10 h-10 rounded-xl bg-gray-200/60 flex items-center justify-center shrink-0">
-                   <Lock className="w-5 h-5 text-gray-500" />
+            <div className={`rounded-3xl border p-6 sm:p-8 shadow-sm text-left transition-all duration-300`} 
+                 style={{ backgroundColor: dashInfo.color === "var(--womb-forest)" ? "#f0faf450" : "#fff9f050", borderColor: `${dashInfo.color}20` }}>
+               <div className="flex flex-col sm:flex-row items-center sm:items-start gap-5">
+                 <div className="w-14 h-14 rounded-2xl flex items-center justify-center shrink-0" 
+                      style={{ backgroundColor: `${dashInfo.color}15` }}>
+                   <dashInfo.icon className="w-7 h-7" style={{ color: dashInfo.color }} />
                  </div>
                  <div className="flex-1">
-                   <h3 className="text-base font-black text-gray-900 mb-1">Impact Dashboard Preview</h3>
-                   <p className="text-[13px] text-gray-500 leading-relaxed mb-4">
-                     You can view a sample of our transparency dashboard. Cumulative donations of ₹5,000+ unlock full personalized access.
+                   <h3 className="text-xl font-black text-gray-900 mb-2">{dashInfo.title}</h3>
+                   <p className="text-[14px] text-gray-600 leading-relaxed mb-5">
+                     {dashInfo.description}
                    </p>
                    <button
-                     onClick={() => navigate("/dashboard-preview")}
-                     className="group inline-flex items-center gap-2 bg-white border border-gray-200 text-gray-700 hover:text-gray-900 hover:bg-gray-50 px-5 py-2.5 rounded-xl font-bold text-sm shadow-sm transition-all duration-200"
+                     onClick={enterDashboard}
+                     className="group inline-flex items-center gap-2 text-white px-7 py-3.5 rounded-2xl font-black text-sm transition-all duration-300 shadow-lg hover:shadow-xl"
+                     style={{ 
+                       background: dashInfo.color === "var(--womb-forest)" 
+                         ? "linear-gradient(to right, var(--womb-forest), #10b981)" 
+                         : "linear-gradient(to right, var(--journey-saffron), #f97316)",
+                       boxShadow: `0 8px 25px -8px ${dashInfo.color}70`
+                     }}
                    >
-                     <LayoutDashboard className="w-4 h-4 text-gray-400 group-hover:text-gray-600" /> View Preview
+                     <span>{dashInfo.buttonText}</span>
+                     <ChevronRight className="w-4.5 h-4.5 group-hover:translate-x-1 transition-transform" />
                    </button>
                  </div>
                </div>
             </div>
-          )}
         </motion.div>
 
         {/* Home Button */}
