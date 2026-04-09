@@ -47,6 +47,19 @@ export declare class DonationService {
         donationId: string;
         donorId: string | null;
         email: string | null;
+        userExists?: undefined;
+        isVolunteer?: undefined;
+    } | {
+        success: boolean;
+        tier: string;
+        dashboardUnlocked: boolean;
+        certificateUrl: string | null;
+        certId: string | null;
+        donationId: string;
+        donorId: string;
+        email: string;
+        userExists: boolean;
+        isVolunteer: boolean;
     }>;
     getSidebarStats(): Promise<{
         childrenRegistered: number;

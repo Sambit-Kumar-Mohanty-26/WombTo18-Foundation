@@ -365,7 +365,9 @@ let DonationService = class DonationService {
             certId: certId,
             donationId: donation.id,
             donorId: updatedDonor.donorId,
-            email: donor.email,
+            email: updatedDonor.email,
+            userExists: !!updatedDonor.password,
+            isVolunteer: updatedDonor.isVolunteer,
         };
     }
     async getSidebarStats() {
