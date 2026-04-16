@@ -22,11 +22,13 @@ import { LeaderboardModule } from './leaderboard/leaderboard.module';
 import { CampModule } from './camp/camp.module';
 import { RedisModule } from './redis/redis.module';
 import { StorageModule } from './storage/storage.module';
+import { WhatsappModule } from './whatsapp/whatsapp.module';
 
 @Module({
   imports: [
     ConfigModule.forRoot({ isGlobal: true }),
     PrismaModule,
+    WhatsappModule,
     AuthModule,
     DonorModule,
     DonationModule,

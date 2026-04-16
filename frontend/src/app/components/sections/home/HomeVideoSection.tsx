@@ -101,7 +101,7 @@ export function HomeVideoSection() {
   const manualPauseRef = useRef(false);
   const internalPauseRef = useRef(false);
   const hasStartedPlaybackRef = useRef(false);
-  const isInView = useInView(sectionRef, { amount: 0.6, margin: "-10% 0px -10% 0px" });
+  const isInView = useInView(sectionRef, { once: false, amount: 0.6, margin: "-10% 0px -10% 0px" });
   const [playerReady, setPlayerReady] = useState(false);
   const [isPlaying, setIsPlaying] = useState(false);
   const [isInteractive, setIsInteractive] = useState(false);
@@ -213,7 +213,7 @@ export function HomeVideoSection() {
         <motion.div
           initial={{ opacity: 0, y: 24 }}
           whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true, amount: 0.3 }}
+          viewport={{ once: false, amount: 0.3 }}
           transition={{ duration: 0.7 }}
           className="mx-auto mb-10 max-w-3xl text-center"
         >
@@ -231,7 +231,7 @@ export function HomeVideoSection() {
         <motion.div
           initial={{ opacity: 0, y: 30, scale: 0.98 }}
           whileInView={{ opacity: 1, y: 0, scale: 1 }}
-          viewport={{ once: true, amount: 0.25 }}
+          viewport={{ once: false, amount: 0.25 }}
           transition={{ duration: 0.8, type: "spring" }}
           className="overflow-hidden rounded-[2rem] border border-white/70 bg-black shadow-[0_30px_80px_-30px_rgba(0,0,0,0.35)]"
         >

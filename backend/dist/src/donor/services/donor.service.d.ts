@@ -94,7 +94,8 @@ export declare class DonorService {
         profileImage: string | null;
         referredById: string | null;
         twoFactorEnabled: boolean;
-        tokenVersion: number;
+        resetPasswordToken: string | null;
+        resetPasswordExpires: Date | null;
     }>;
     becomeVolunteer(donorId: string): Promise<{
         success: boolean;

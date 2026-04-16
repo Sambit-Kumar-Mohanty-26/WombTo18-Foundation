@@ -4,6 +4,7 @@ import { PrismaService } from '../../prisma/services/prisma.service';
 import { CoinService } from '../../coin/services/coin.service';
 import { MailerService } from '../../auth/services/mailer.service';
 import { CertificateService } from '../../certificate/services/certificate.service';
+import { WhatsappService } from '../../whatsapp/whatsapp.service';
 
 @Injectable()
 export class CampService {
@@ -12,6 +13,7 @@ export class CampService {
     private readonly coinService: CoinService,
     private readonly mailerService: MailerService,
     private readonly certificateService: CertificateService,
+    private readonly whatsappService: WhatsappService,
   ) {}
 
   //Create a new camp
@@ -181,6 +183,21 @@ export class CampService {
         message,
         link: this.getVolunteerCampLink(volunteer.volunteerId),
       });
+    }
+
+    // Bulk WhatsApp camp reminder (fire-and-forget, single API call for all volunteers)
+    const whatsappRecipients = participations
+      .filter((p: any) => p.volunteerResponse !== 'NOT_JOINING' && p.volunteer?.mobile)
+      .map((p: any) => ({
+        mobile: p.volunteer.mobile,
+        name: p.volunteer.name || 'Volunteer',
+        campName: camp.name,
+        campLink: this.getVolunteerCampLink(p.volunteer.volunteerId),
+      }));
+
+    if (whatsappRecipients.length > 0) {
+      console.log(`[CampService] Sending bulk WhatsApp camp reminder to ${whatsappRecipients.length} volunteer(s)`);
+      this.whatsappService.sendCampReminderBulk(whatsappRecipients);
     }
   }
 

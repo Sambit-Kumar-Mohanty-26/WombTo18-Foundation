@@ -5,7 +5,7 @@ import { useTranslation } from "react-i18next";
 function AnimatedCounter({ from = 0, to, duration = 2, suffix = "" }: { from?: number, to: number, duration?: number, suffix?: string }) {
   const [count, setCount] = useState(from);
   const nodeRef = useRef<HTMLSpanElement>(null);
-  const inView = useInView(nodeRef, { once: true, amount: 0.5 });
+  const inView = useInView(nodeRef, { once: false, amount: 0.5 });
 
   useEffect(() => {
     if (inView) {
@@ -64,7 +64,7 @@ export function ImpactTicker() {
               key={stat.label}
               initial={{ opacity: 0, y: 20 }}
               whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }}
+              viewport={{ once: false, amount: 0.3 }}
               transition={{ delay: i * 0.1, duration: 0.6, type: "spring" }}
               className="flex flex-col items-center justify-center p-2"
             >

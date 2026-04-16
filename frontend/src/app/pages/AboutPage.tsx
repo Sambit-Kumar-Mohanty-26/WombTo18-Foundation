@@ -38,7 +38,7 @@ function ValueCard({ val, index }: { val: { letter: string; title: string; desc:
       <motion.div
         initial="hidden"
         whileInView="visible"
-        viewport={{ once: true, margin: "-50px" }}
+        viewport={{ once: false, margin: "-50px" }}
         variants={{
           hidden: { opacity: 0, y: 40, scale: 0.95 },
           visible: {
@@ -61,13 +61,13 @@ function ValueCard({ val, index }: { val: { letter: string; title: string; desc:
           rotateY,
           transformStyle: "preserve-3d",
         }}
-        className="relative group w-full will-change-transform sm:h-full sm:min-h-[300px] lg:min-h-[320px]"
+        className="relative group w-full will-change-transform sm:h-full sm:min-h-[210px] lg:min-h-[230px]"
       >
         {/* Cinematic Ambient Glow */}
         <div className="absolute -inset-0.5 rounded-[1.2rem] bg-gradient-to-br from-[var(--womb-forest)]/40 via-transparent to-[var(--journey-saffron)]/40 opacity-0 group-hover:opacity-100 blur-xl transition-all duration-700 pointer-events-none" />
 
         {/* Main Card */}
-        <div className="relative bg-[#fdfcfb] rounded-[1rem] p-4 sm:p-5 lg:p-6 xl:p-8 pt-7 sm:pt-8 xl:pt-10 border border-gray-200/50 shadow-sm overflow-hidden flex flex-col items-center justify-start text-center transition-all duration-700 group-hover:bg-white group-hover:border-[var(--womb-forest)]/20 group-hover:shadow-[0_20px_40px_-15px_rgba(29,110,63,0.15)] z-10 w-full sm:h-full">
+        <div className="relative bg-[#fdfcfb] rounded-[1rem] p-4 sm:p-5 lg:p-6 xl:p-8 pt-6 sm:pt-7 xl:pt-8 pb-6 sm:pb-7 xl:pb-8 border border-gray-200/50 shadow-sm overflow-hidden flex flex-col items-center justify-start text-center transition-all duration-700 group-hover:bg-white group-hover:border-[var(--womb-forest)]/20 group-hover:shadow-[0_20px_40px_-15px_rgba(29,110,63,0.15)] z-10 w-full sm:h-full">
 
           {/* Spotlight */}
           <motion.div
@@ -183,8 +183,8 @@ const storyChapters = [
     number: "04",
     accent: "var(--journey-saffron)",
     heading: "Today",
-    body: "WOMBTO18 Foundation operates as India's first integrated child health non-profit platform — uniting <strong>32 health services</strong> across pregnancy, infancy, childhood, and adolescence. Delivered through schools, hospitals, and communities. Serving 25 schools today. Scaling to 300.",
-    highlight: "32 health services united"
+    body: "WOMBTO18 Foundation operates as India's first integrated child health non-profit platform — uniting <strong>32 services</strong> across pregnancy, infancy, childhood, and adolescence. Delivered through schools, hospitals, and communities. Serving 25 schools today. Scaling to 300.",
+    highlight: "32 services united"
   }
 ];
 
@@ -320,7 +320,7 @@ function PresidentLetterSection() {
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true }}
+          viewport={{ once: false }}
           transition={{ duration: 0.7 }}
           className="flex flex-col items-center text-center mb-8 sm:mb-10"
         >
@@ -352,7 +352,7 @@ function PresidentLetterSection() {
             <motion.div
               initial={{ opacity: 0, y: 20 }}
               whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }}
+              viewport={{ once: false }}
               transition={{ delay: 0.3, duration: 0.6 }}
               className="bg-white p-5 rounded-2xl shadow-[0_8px_24px_-12px_rgba(0,0,0,0.06)] border border-gray-100"
             >
@@ -431,7 +431,7 @@ function PresidentLetterSection() {
                       key={i}
                       initial={{ opacity: 0, y: 15 }}
                       whileInView={{ opacity: 1, y: 0 }}
-                      viewport={{ once: true, root: scrollContainerRef, margin: "-20px" }}
+                      viewport={{ once: false, root: scrollContainerRef, margin: "-20px" }}
                       transition={{ duration: 0.5, delay: i * 0.05, ease: "easeOut" }}
                     >
                       {para.type === "quote" && (
@@ -456,7 +456,7 @@ function PresidentLetterSection() {
                   <motion.div
                     initial={{ opacity: 0 }}
                     whileInView={{ opacity: 1 }}
-                    viewport={{ once: true, root: scrollContainerRef }}
+                    viewport={{ once: false, root: scrollContainerRef }}
                     transition={{ duration: 0.8 }}
                     className="mt-8 pt-6 border-t border-gray-100 font-sans"
                   >
@@ -493,6 +493,7 @@ export function AboutPage() {
     { letter: t('wombo.m.letter'), title: t('wombo.m.title'), desc: t('wombo.m.desc') },
     { letter: t('wombo.b.letter'), title: t('wombo.b.title'), desc: t('wombo.b.desc') },
     { letter: t('wombo.o2.letter'), title: t('wombo.o2.title'), desc: t('wombo.o2.desc') },
+    { letter: t('wombo.i.letter'), title: t('wombo.i.title'), desc: t('wombo.i.desc') },
   ], [t]);
 
   const storyChapters = useMemo(() => [
@@ -593,7 +594,7 @@ export function AboutPage() {
             initial={{ opacity: 0, y: 30, scale: 0.95 }}
             animate={{ opacity: 1, y: 0, scale: 1 }}
             transition={{ duration: 0.8, ease: "easeOut" }}
-            className="flex flex-col items-center text-center w-full max-w-4xl mx-auto"
+            className="flex flex-col items-center text-center w-full max-w-5xl mx-auto"
           >
             <p className="inline-flex items-center gap-2 bg-[var(--journey-saffron)]/10 text-[var(--journey-saffron)] px-5 py-2.5 rounded-full text-[10px] sm:text-xs font-bold tracking-widest uppercase border border-[var(--journey-saffron)]/20 mb-4 sm:mb-6 shadow-sm">
               {t('hero.badge')}
@@ -602,7 +603,7 @@ export function AboutPage() {
               {t('hero.title')} <br className="hidden sm:block" />
               <span className="text-transparent bg-clip-text bg-gradient-to-r from-[var(--journey-saffron)] to-orange-400 drop-shadow-sm">{t('hero.subtitle')}</span>
             </h1>
-            <p className="text-lg md:text-xl text-gray-600 max-w-3xl leading-relaxed">
+            <p className="text-lg md:text-xl text-gray-600 max-w-5xl leading-relaxed">
               {t('hero.desc')}
             </p>
           </motion.div>
@@ -618,7 +619,7 @@ export function AboutPage() {
           <motion.div
             initial={{ opacity: 0, scale: 0.5 }}
             whileInView={{ opacity: 1, scale: 1 }}
-            viewport={{ once: true, margin: "-200px" }}
+            viewport={{ once: false, margin: "-200px" }}
             transition={{ duration: 1.5 }}
             className={`absolute ${i % 2 === 0 ? "top-[-20%] right-[-10%]" : "bottom-[-20%] left-[-10%]"} w-[600px] h-[600px] rounded-full blur-[150px] pointer-events-none`}
             style={{ background: `radial-gradient(ellipse at center, ${chapter.accent} 0%, transparent 70%)`, opacity: 0.06 }}
@@ -700,7 +701,7 @@ export function AboutPage() {
           <motion.div
             initial={{ opacity: 0, y: 36, scale: 0.96 }}
             whileInView={{ opacity: 1, y: 0, scale: 1 }}
-            viewport={{ once: true, margin: "-100px" }}
+            viewport={{ once: false, margin: "-100px" }}
             transition={{ duration: 0.9, ease: [0.22, 1, 0.36, 1] }}
             className="mx-auto max-w-6xl overflow-hidden rounded-[2rem] border border-[#1D6E3F]/10 bg-[linear-gradient(135deg,rgba(255,255,255,0.92),rgba(255,255,255,0.78))] shadow-[0_36px_90px_-42px_rgba(0,0,0,0.18)] backdrop-blur-sm"
           >
@@ -708,7 +709,7 @@ export function AboutPage() {
               <motion.div
                 initial={{ width: 0, opacity: 0 }}
                 whileInView={{ width: 96, opacity: 1 }}
-                viewport={{ once: true }}
+                viewport={{ once: false }}
                 transition={{ duration: 1, delay: 0.18 }}
                 className="mx-auto mb-7 h-px bg-gradient-to-r from-transparent via-[var(--journey-saffron)] to-transparent"
               />
@@ -717,7 +718,7 @@ export function AboutPage() {
                    <motion.div
                   initial={{ opacity: 0, x: -26 }}
                   whileInView={{ opacity: 1, x: 0 }}
-                  viewport={{ once: true }}
+                  viewport={{ once: false }}
                   transition={{ duration: 0.75, delay: 0.16 }}
                   className="text-center lg:text-left"
                 >
@@ -744,7 +745,7 @@ export function AboutPage() {
                 <motion.div
                   initial={{ opacity: 0, x: 26 }}
                   whileInView={{ opacity: 1, x: 0 }}
-                  viewport={{ once: true }}
+                  viewport={{ once: false }}
                   transition={{ duration: 0.9, delay: 0.28 }}
                   className="relative"
                 >
@@ -754,7 +755,7 @@ export function AboutPage() {
                     <motion.p
                       initial={{ opacity: 0, y: 18 }}
                       whileInView={{ opacity: 1, y: 0 }}
-                      viewport={{ once: true }}
+                      viewport={{ once: false }}
                       transition={{ duration: 0.8, delay: 0.42 }}
                       className="mt-5 text-xl font-black leading-[1.45] tracking-tight text-gray-900 sm:text-2xl"
                     >
@@ -778,7 +779,7 @@ export function AboutPage() {
           <motion.div
             initial={{ opacity: 0, scale: 0.9 }}
             whileInView={{ opacity: 1, scale: 1 }}
-            viewport={{ once: true, margin: "-100px" }}
+            viewport={{ once: false, margin: "-100px" }}
             transition={{ duration: 1.2, ease: [0.22, 1, 0.36, 1] }}
           >
             <div className="w-16 h-16 mx-auto rounded-2xl bg-[var(--womb-forest)]/10 border border-[var(--womb-forest)]/20 flex items-center justify-center mb-10">
@@ -812,7 +813,7 @@ export function AboutPage() {
               <motion.div
                 initial={{ scale: 0, rotate: -45 }}
                 whileInView={{ scale: 1, rotate: 0 }}
-                viewport={{ once: true }}
+                viewport={{ once: false }}
                 transition={{ type: "spring", bounce: 0.5, duration: 1, delay: 0.2 }}
                 className="w-16 h-16 rounded-2xl bg-gradient-to-br from-[var(--journey-saffron)]/10 to-[var(--journey-saffron)]/5 flex items-center justify-center mb-6 border border-[var(--journey-saffron)]/20 shadow-inner"
               >
@@ -822,7 +823,7 @@ export function AboutPage() {
               <motion.h2
                 initial={{ opacity: 0, x: -20 }}
                 whileInView={{ opacity: 1, x: 0 }}
-                viewport={{ once: true }}
+                viewport={{ once: false }}
                 transition={{ duration: 0.5, delay: 0.4 }}
                 className="text-3xl font-extrabold text-gray-900 mb-4"
               >
@@ -832,7 +833,7 @@ export function AboutPage() {
               <motion.p
                 initial={{ opacity: 0 }}
                 whileInView={{ opacity: 1 }}
-                viewport={{ once: true }}
+                viewport={{ once: false }}
                 transition={{ duration: 0.8, delay: 0.5 }}
                 className="text-lg text-gray-600 leading-relaxed mb-6"
               >
@@ -842,7 +843,7 @@ export function AboutPage() {
               <motion.div
                 initial={{ opacity: 0, y: 20 }}
                 whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true }}
+                viewport={{ once: false }}
                 transition={{ duration: 0.8, delay: 0.6 }}
                 className="text-sm text-gray-500 bg-gray-50/50 p-5 rounded-xl border border-gray-100/80 shadow-inner"
                 dangerouslySetInnerHTML={{ __html: t('mission.sub') }}
@@ -861,7 +862,7 @@ export function AboutPage() {
               <motion.div
                 initial={{ y: -80, opacity: 0, scale: 0.8, rotate: -20 }}
                 whileInView={{ y: 0, opacity: 1, scale: 1, rotate: 0 }}
-                viewport={{ once: true }}
+                viewport={{ once: false }}
                 transition={{ type: "spring", bounce: 0.6, duration: 1.2, delay: 0.5 }}
                 className="w-16 h-16 rounded-2xl bg-gradient-to-br from-[var(--future-sky)]/10 to-[var(--future-sky)]/5 flex items-center justify-center mb-6 border border-[var(--future-sky)]/20 shadow-inner"
               >
@@ -871,7 +872,7 @@ export function AboutPage() {
               <motion.h2
                 initial={{ opacity: 0, x: -20 }}
                 whileInView={{ opacity: 1, x: 0 }}
-                viewport={{ once: true }}
+                viewport={{ once: false }}
                 transition={{ duration: 0.5, delay: 0.7 }}
                 className="text-3xl font-extrabold text-gray-900 mb-6"
               >
@@ -890,7 +891,7 @@ export function AboutPage() {
                     key={i}
                     initial={{ opacity: 0, x: 30 }}
                     whileInView={{ opacity: 1, x: 0 }}
-                    viewport={{ once: true }}
+                    viewport={{ once: false }}
                     transition={{ duration: 0.5, ease: "easeOut", delay: 0.8 + (i * 0.15) }}
                     className="flex items-start gap-4"
                   >
@@ -914,7 +915,7 @@ export function AboutPage() {
             <p className="text-xl text-gray-600 max-w-2xl mx-auto">{t('wombo.desc')}</p>
           </div>
 
-          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-4 xl:gap-6 items-stretch">
+          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4 xl:gap-8 items-stretch">
             {womboValues.map((val, i) => (
               <ValueCard key={val.title} val={val} index={i} />
             ))}
@@ -1026,7 +1027,7 @@ export function AboutPage() {
                   strokeDasharray="6 4"
                   initial={{ pathLength: 0, opacity: 0 }}
                   whileInView={{ pathLength: 1, opacity: 0.3 }}
-                  viewport={{ once: true }}
+                  viewport={{ once: false }}
                   transition={{ duration: 1.2, delay: 0.5 + i * 0.15, ease: "easeOut" }}
                 />
               ))}

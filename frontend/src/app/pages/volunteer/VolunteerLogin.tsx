@@ -136,6 +136,15 @@ export function VolunteerLogin() {
             <div className="space-y-1.5">
               <Label className="text-amber-900 font-bold">Password</Label>
               <Input required type="password" value={passwordLogin} onChange={e => setPasswordLogin(e.target.value)} className="bg-amber-50/50 border-amber-100 h-12 rounded-xl" placeholder="••••••••" />
+              <div className="flex justify-end pr-1">
+                <button
+                  type="button"
+                  onClick={() => navigate("/forgot-password?type=VOLUNTEER")}
+                  className="text-[11px] font-bold text-amber-600/60 hover:text-amber-600 transition-colors"
+                >
+                  Forgot Password?
+                </button>
+              </div>
             </div>
             
             <Button disabled={loading} type="submit" className="w-full h-14 bg-gradient-to-r from-amber-500 to-orange-500 hover:from-amber-600 hover:to-orange-600 text-white font-black text-sm rounded-xl shadow-lg shadow-amber-500/25 mt-4">

@@ -47,7 +47,7 @@ export function HowDonationWorks() {
               className="h-full bg-[var(--journey-saffron)] rounded-full"
               initial={{ width: "0%" }}
               whileInView={{ width: "100%" }}
-              viewport={{ once: true }}
+              viewport={{ once: false }}
               transition={{ duration: 1.5, ease: "easeInOut", delay: 0.2 }}
             />
           </div>
@@ -58,7 +58,7 @@ export function HowDonationWorks() {
                 key={step.title}
                 initial={{ opacity: 0, y: 30 }}
                 whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true }}
+                viewport={{ once: false }}
                 transition={{ duration: 0.6, delay: step.delay }}
                 className="flex flex-col items-center"
               >

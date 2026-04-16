@@ -116,7 +116,7 @@ const getPrograms = (t: any) => {
   return [
     { ...programsData[0], icon: Baby, image: "/images/site-assets/program_prenatal.png" },
     { ...programsData[1], icon: HeartPulse, image: "/images/site-assets/program_childhood.png" },
-    { ...programsData[2], icon: Apple, image: "/images/site-assets/Mid-Day-meal-3.jpg" },
+    // { ...programsData[2], icon: Apple, image: "/images/site-assets/Mid-Day-meal-3.jpg" },
     { ...programsData[3], icon: GraduationCap, image: "/images/site-assets/Education-Support-01.jpg" },
     { ...programsData[4], icon: Users, image: "/images/site-assets/National-Youth-Policy_Featured-Image-1.jpg" },
     { ...programsData[5], icon: Shield, image: "https://images.unsplash.com/photo-1488521787991-ed7bbaae773c?q=80&w=800&auto=format&fit=crop" }
@@ -560,7 +560,7 @@ export function ServicesPage() {
           {/* Category Filters */}
           <div className="flex items-center justify-center sm:justify-start gap-3 sm:gap-4 flex-wrap mb-10">
             <span className="text-sm text-gray-400 font-bold uppercase tracking-wider hidden sm:block mr-2">{t('programsSection.categoriesLabel')}</span>
-            {["All Programs", "Health", "Education", "Nutrition", "Community"].map((cat) => (
+            {["All Programs", "Health", "Education", "Community"].map((cat) => (
               <Badge
                 key={cat}
                 onClick={() => setActiveCategory(cat)}

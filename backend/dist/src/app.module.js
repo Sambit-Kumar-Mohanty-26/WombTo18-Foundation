@@ -31,6 +31,7 @@ const leaderboard_module_1 = require("./leaderboard/leaderboard.module");
 const camp_module_1 = require("./camp/camp.module");
 const redis_module_1 = require("./redis/redis.module");
 const storage_module_1 = require("./storage/storage.module");
+const whatsapp_module_1 = require("./whatsapp/whatsapp.module");
 let AppModule = class AppModule {
 };
 exports.AppModule = AppModule;
@@ -39,6 +40,7 @@ exports.AppModule = AppModule = __decorate([
         imports: [
             config_1.ConfigModule.forRoot({ isGlobal: true }),
             prisma_module_1.PrismaModule,
+            whatsapp_module_1.WhatsappModule,
             auth_module_1.AuthModule,
             donor_module_1.DonorModule,
             donation_module_1.DonationModule,

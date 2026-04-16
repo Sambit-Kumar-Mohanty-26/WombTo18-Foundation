@@ -161,20 +161,31 @@ export class AuthController {
     return result;
   }
 
-  @Post('donor/request-password-change')
-  @ApiOperation({ summary: 'Request OTP for password change' })
-  async requestPasswordChange(@Body('email') email: string) {
-    return this.authService.requestPasswordChange(email);
+
+  @Post('auth/forgot-password')
+  @ApiOperation({ summary: 'Request a secure password reset link' })
+  async forgotPassword(
+    @Body('email') email: string,
+    @Body('type') type: 'DONOR' | 'PARTNER' | 'VOLUNTEER',
+  ) {
+    if (!email || !type) {
+      return { error: 'Email and user type are required.' };
+    }
+    return this.authService.forgotPassword(email, type);
   }
 
-  @Post('donor/update-password')
-  @ApiOperation({ summary: 'Verify OTP and update password' })
-  async updatePassword(
+  @Post('auth/reset-password')
+  @ApiOperation({ summary: 'Reset password using a secure link token' })
+  async resetPassword(
     @Body('email') email: string,
-    @Body('otp') otp: string,
+    @Body('token') token: string,
+    @Body('type') type: 'DONOR' | 'PARTNER' | 'VOLUNTEER',
     @Body('newPassword') newPassword: string,
   ) {
-    return this.authService.updatePassword(email, otp, newPassword);
+    if (!email || !token || !type || !newPassword) {
+      return { error: 'All fields are required.' };
+    }
+    return this.authService.resetPassword({ email, token, type, newPassword });
   }
 
   @Post('donor/toggle-2fa')

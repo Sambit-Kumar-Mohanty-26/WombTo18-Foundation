@@ -98,7 +98,8 @@ export declare class DonorController {
         profileImage: string | null;
         referredById: string | null;
         twoFactorEnabled: boolean;
-        tokenVersion: number;
+        resetPasswordToken: string | null;
+        resetPasswordExpires: Date | null;
     }>;
     getProfile(donorId: string): Promise<{
         id: string;

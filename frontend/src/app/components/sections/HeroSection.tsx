@@ -72,24 +72,29 @@ export function HeroSection() {
       
       {/* Cinematic Background Image Carousel with Slow Zoom & Parallax */}
       <motion.div style={{ y }} className="absolute inset-0 w-full h-full bg-black">
-        {HERO_IMAGES.map((imgSrc, index) => (
-          <motion.img
-            key={imgSrc}
-            src={imgSrc}
-            alt={`Hero storytelling image ${index + 1}`}
-            className="absolute inset-0 w-full h-full object-cover object-[center_30%]"
-            initial={false}
-            animate={{ 
-              opacity: index === currentImageIndex ? 1 : 0,
-              scale: index === currentImageIndex ? 1 : 1.1,
-              zIndex: index === currentImageIndex ? 1 : 0
-            }}
-            transition={{ 
-              opacity: { duration: 1.5, ease: "easeInOut" },
-              scale: { duration: 12, ease: "linear" } 
-            }}
-          />
-        ))}
+        {HERO_IMAGES.map((imgSrc, index) => {
+          const isScreenshot = imgSrc === dashboard4 || imgSrc === dashboard5;
+          return (
+            <motion.img
+              key={imgSrc}
+              src={imgSrc}
+              alt={`Hero storytelling image ${index + 1}`}
+              className={`absolute inset-0 w-full h-full ${
+                isScreenshot ? "object-cover object-top" : "object-cover object-[center_30%]"
+              }`}
+              initial={false}
+              animate={{ 
+                opacity: index === currentImageIndex ? 1 : 0,
+                scale: index === currentImageIndex ? 1 : (isScreenshot ? 1.05 : 1.1),
+                zIndex: index === currentImageIndex ? 1 : 0
+              }}
+              transition={{ 
+                opacity: { duration: 1.5, ease: "easeInOut" },
+                scale: { duration: 12, ease: "linear" } 
+              }}
+            />
+          );
+        })}
         
         {/* Sophisticated Dark Gradient Overlays for Readability & Drama */}
         <div className="absolute inset-0 bg-gradient-to-b from-[#2A2A2A]/80 via-[#2A2A2A]/40 to-[#2A2A2A]/95 mix-blend-multiply z-1" />

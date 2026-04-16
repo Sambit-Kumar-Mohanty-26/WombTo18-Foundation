@@ -68,7 +68,7 @@ export function ServicesSection() {
               key={program.title}
               initial={{ opacity: 0, y: 20 }}
               whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }}
+              viewport={{ once: false }}
               transition={{ delay: idx * 0.1, duration: 0.5 }}
               whileHover={{ y: -8 }}
               className="group h-full"
