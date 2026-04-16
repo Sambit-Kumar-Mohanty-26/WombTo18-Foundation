@@ -260,4 +260,65 @@ export class VerificationService {
       throw new HttpException('Failed to communicate with EmailJS API: ' + (error.message || error), HttpStatus.INTERNAL_SERVER_ERROR);
     }
   }
+
+  async sendAdvisoryDraftLink(email: string, resumeUrl: string, name: string): Promise<any> {
+    const serviceId = this.configService.get<string>('EMAILJS_SERVICE_ID');
+    const templateId = this.configService.get<string>('EMAILJS_TEMPLATE_ID');
+    const publicKey = this.configService.get<string>('EMAILJS_PUBLIC_KEY');
+    const privateKey = this.configService.get<string>('EMAILJS_PRIVATE_KEY');
+
+    if (!serviceId || !templateId || !publicKey) {
+      console.warn("EMAILJS keys are missing. Simulating draft link email dispatch.");
+      console.log(`[RESUME LINK] for ${email}: ${resumeUrl}`);
+      return { success: true, message: "Mock Email sent successfully due to missing API keys." };
+    }
+
+    try {
+      const response = await this.makeHttpsRequest('https://api.emailjs.com/api/v1.0/email/send', 'POST', {
+        'Content-Type': 'application/json',
+        'Accept': 'application/json'
+      }, {
+        service_id: serviceId,
+        template_id: templateId,
+        user_id: publicKey,
+        accessToken: privateKey,
+        template_params: {
+          to_email: email,
+          to_name: name || "Advisory Board Applicant",
+          from_name: "WOMBTO18 Advisory Board",
+          subject: "Resume Your Advisory Board Application - WOMBTO18",
+          message: `<div style="font-family: 'Georgia', serif; padding: 20px; color: #333; max-width: 600px; margin: auto; border: 1px solid #e2e8f0; border-radius: 16px; background: #ffffff;">
+                      <div style="text-align: center; margin-bottom: 30px;">
+                        <h1 style="color: #2F4F4F; margin: 0; font-size: 24px;">WOMBTO18</h1>
+                        <p style="color: #666; font-size: 12px; margin-top: 5px;">Integrated Child Health Platform</p>
+                      </div>
+                      <h2 style="color: #2F4F4F; text-align: center;">Resume Your Application</h2>
+                      <p>Hello ${name || 'Expert'},</p>
+                      <p>We saved your progress on the <strong>Advisory Board Application</strong>. You can continue from where you left off by clicking the secure button below:</p>
+                      <div style="text-align: center; margin: 30px 0;">
+                        <a href="${resumeUrl}" style="display: inline-block; padding: 14px 32px; background-color: #2F4F4F; color: white; text-decoration: none; border-radius: 12px; font-weight: bold; font-size: 16px; box-shadow: 0 4px 12px rgba(47, 79, 79, 0.2);">Resume Application</a>
+                      </div>
+                      <p style="font-size: 12px; color: #718096; line-height: 1.6;">
+                        This link is unique to your application. For security, please do not share this email. 
+                        Your draft will remain saved until you complete the final submission.
+                      </p>
+                      <div style="border-top: 1px solid #edf2f7; margin-top: 40px; padding-top: 20px; text-align: center;">
+                        <p style="font-size: 11px; color: #a0aec0; margin: 0;">Powered by OTAAT Tech - WOMBTO18 Foundation</p>
+                      </div>
+                    </div>`,
+          reply_to: "no-reply@wombto18.org",
+        }
+      });
+
+      if (response.status === 200 || response.status === 201) {
+        return { success: true, message: "Resume link email sent successfully" };
+      }
+      
+      console.error('EmailJS Error:', response.data);
+      throw new HttpException('EmailJS rejected request: ' + response.data, HttpStatus.BAD_REQUEST);
+    } catch (error: any) {
+      console.error("EmailJS Critical Error:", error);
+      throw new HttpException('Failed to communicate with EmailJS API: ' + (error.message || error), HttpStatus.INTERNAL_SERVER_ERROR);
+    }
+  }
 }

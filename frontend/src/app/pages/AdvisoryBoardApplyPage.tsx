@@ -1,5 +1,5 @@
 import { useState, useEffect, useRef } from "react";
-import { Link } from "react-router";
+import { Link, useSearchParams } from "react-router";
 import { motion, AnimatePresence } from "motion/react";
 import Lenis from "lenis";
 import { 
@@ -150,9 +150,19 @@ export function AdvisoryBoardApplyPage() {
     firstName: "", lastName: "", mobile: "", email: "", city: "", state: "", linkedInUrl: "", designation: "", organization: "",
     primaryDomains: [] as string[], secondaryDomains: [] as string[], customDomain: "",
     experienceYears: "", qualification: "", expertiseSummary: "", majorAchievements: "", previousRoles: "", contributionAreas: [] as string[],
-    documents: { photo: null as File|null, cv: null as File|null, bio: null as File|null, qualificationProof: null as File|null, registration: null as File|null, idProof: null as File|null },
+    documents: { 
+      photo: null as File|null, photoUrl: "",
+      cv: null as File|null, cvUrl: "",
+      bio: null as File|null, bioUrl: "",
+      qualificationProof: null as File|null, qualificationProofUrl: "",
+      registration: null as File|null, registrationUrl: "",
+      idProof: null as File|null, idProofUrl: ""
+    },
     whyJoin: "", contributions6Months: "", availability: "" as "passive"|"active"|"strategic"|"", declarations: [false, false, false, false, false]
   });
+  const [searchParams] = useSearchParams();
+  const [isResuming, setIsResuming] = useState(false);
+  const [isSavingDraft, setIsSavingDraft] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
 
   const [mobileVerified, setMobileVerified] = useState(false);
@@ -212,6 +222,33 @@ export function AdvisoryBoardApplyPage() {
       return () => { cancelAnimationFrame(frameId); lenis.destroy(); };
     }
   }, [step]);
+
+  // Resume draft logic
+  useEffect(() => {
+    const draftToken = searchParams.get("draft");
+    if (draftToken) {
+      const fetchDraft = async () => {
+        try {
+          setIsResuming(true);
+          const res = await fetch(`${API}/api/advisory-applications/draft/${draftToken}`);
+          const result = await res.json();
+          if (res.ok && result.success) {
+            setFormData(result.data);
+            setStep(result.currentStep || 4);
+            setEmailVerified(true); // Email must have been verified to save draft
+            success("Application progress resumed successfully!");
+          } else {
+            error(result.message || "Draft link expired or invalid.");
+          }
+        } catch (e) {
+          error("Failed to load your draft. Please try again later.");
+        } finally {
+          setIsResuming(false);
+        }
+      };
+      fetchDraft();
+    }
+  }, [searchParams]);
 
   // Fetch accurate Indian states on mount
   useEffect(() => {
@@ -308,6 +345,55 @@ export function AdvisoryBoardApplyPage() {
     setFormData(prev => ({ ...prev, [key]: value }));
   };
 
+  const handleSaveDraft = async () => {
+    if (!formData.email) {
+      error("Please enter your email to save progress.");
+      return;
+    }
+    try {
+      setIsSavingDraft(true);
+      const draftData = new FormData();
+      draftData.append('email', formData.email);
+      draftData.append('currentStep', String(step));
+      draftData.append('origin', window.location.origin);
+      
+      // We send the JSON data minus the actual File objects (URLs are kept)
+      const dataToSave = { ...formData, documents: { ...formData.documents } };
+      // Clear File objects but keep URLs
+      Object.keys(dataToSave.documents).forEach((key) => {
+        const k = key as keyof typeof dataToSave.documents;
+        if (dataToSave.documents[k] instanceof File) {
+          (dataToSave.documents as any)[k] = null;
+        }
+      });
+      draftData.append('formData', JSON.stringify(dataToSave));
+
+      // Also upload any new files provided in Step 4
+      const docs = formData.documents as Record<string, any>;
+      Object.keys(docs).forEach(docKey => {
+        if (docs[docKey] instanceof File) {
+          draftData.append(docKey, docs[docKey]);
+        }
+      });
+
+      const res = await fetch(`${API}/api/advisory-applications/draft`, {
+        method: 'POST',
+        body: draftData
+      });
+
+      const result = await res.json();
+      if (res.ok) {
+        success("Progress saved! A resume link has been sent to your email.");
+      } else {
+        throw new Error(result.message);
+      }
+    } catch (e: any) {
+      error(e.message || "Failed to save progress.");
+    } finally {
+      setIsSavingDraft(false);
+    }
+  };
+
   const handleNext = () => {
     if (step < 6) {
       setDirection(1);
@@ -329,9 +415,14 @@ export function AdvisoryBoardApplyPage() {
         }
       });
 
-      const docs = formData.documents as Record<string, File | null>;
+      const docs = formData.documents as Record<string, any>;
       Object.keys(docs).forEach(docKey => {
-        if (docs[docKey]) submitData.append(docKey, docs[docKey] as Blob);
+        if (docs[docKey] instanceof File) {
+          submitData.append(docKey, docs[docKey]);
+        } else if (typeof docs[docKey] === 'string' && docs[docKey].length > 0) {
+          // Pass URL to backend for resumed drafts
+          submitData.append(docKey + 'Url', docs[docKey]);
+        }
       });
 
       const res = await fetch(`${API}/api/advisory-applications`, {
@@ -390,6 +481,16 @@ export function AdvisoryBoardApplyPage() {
         return prev;
       }
     });
+  };
+
+  const isUploadedAll = () => {
+    const docs = formData.documents as any;
+    return (docs.cv || docs.cvUrl) && 
+           (docs.photo || docs.photoUrl) && 
+           (docs.bio || docs.bioUrl) && 
+           (docs.idProof || docs.idProofUrl) && 
+           (docs.qualificationProof || docs.qualificationProofUrl) && 
+           (docs.registration || docs.registrationUrl);
   };
 
   const currentScore = calculateAdvisoryScore(formData);
@@ -883,7 +984,9 @@ export function AdvisoryBoardApplyPage() {
                     { key: "registration", title: "Registration certificate*", desc: "Council-issued certificate", ext: ".pdf, .jpg, .jpeg" },
                   ].map((doc) => {
                     const fileObj = (formData.documents as any)[doc.key];
-                    const isUploaded = !!fileObj;
+                    const fileUrl = (formData.documents as any)[`${doc.key}Url`];
+                    const isUploaded = !!fileObj || !!fileUrl;
+                    const displayFileName = fileObj ? fileObj.name : fileUrl ? fileUrl.split('/').pop() : doc.desc;
                     return (
                       <div key={doc.key} className="border border-[#E8DFCE] rounded-xl p-4 flex items-center gap-4 bg-gray-50 overflow-hidden relative group">
                         {isUploaded && <motion.div layoutId={`bg-${doc.key}`} className="absolute inset-0 bg-green-50 z-0 border-l-4 border-green-500" />}
@@ -892,7 +995,7 @@ export function AdvisoryBoardApplyPage() {
                         </div>
                         <div className="flex-1 min-w-0 relative z-10">
                           <h4 className={`text-[13px] font-extrabold truncate ${isUploaded ? 'text-green-900' : 'text-gray-900'}`}>{doc.title}</h4>
-                          <p className="text-[10px] text-gray-500 truncate">{isUploaded ? fileObj.name : doc.desc}</p>
+                          <p className="text-[10px] text-gray-500 truncate">{displayFileName}</p>
                         </div>
                         <div className="relative z-10 shrink-0">
                           <input 
@@ -919,10 +1022,23 @@ export function AdvisoryBoardApplyPage() {
                 </div>
 
                 <div className="flex justify-between pt-4 border-t border-gray-100">
-                  <button onClick={handleBack} className="inline-flex items-center gap-2 text-gray-500 font-bold px-4 h-12 hover:text-gray-800 transition-colors">
-                    Back
-                  </button>
-                  <button onClick={handleNext} disabled={!formData.documents.cv || !formData.documents.photo || !formData.documents.bio || !formData.documents.idProof || !formData.documents.qualificationProof || !formData.documents.registration} className="inline-flex items-center gap-2 bg-[var(--womb-forest)] disabled:bg-gray-300 disabled:cursor-not-allowed text-white px-8 h-12 rounded-xl font-bold shadow-sm hover:shadow-md transition-all">
+                  <div className="flex gap-4">
+                    <button onClick={handleBack} className="inline-flex items-center gap-2 text-gray-500 font-bold px-4 h-12 hover:text-gray-800 transition-colors">
+                      Back
+                    </button>
+                    <button 
+                      onClick={handleSaveDraft}
+                      disabled={isSavingDraft}
+                      className="inline-flex items-center gap-2 text-[var(--womb-forest)] font-extrabold px-6 h-12 rounded-xl bg-emerald-50 hover:bg-emerald-100 transition-all border border-emerald-100 text-xs shadow-sm"
+                    >
+                      {isSavingDraft ? (
+                        <>Saving... <div className="w-3.5 h-3.5 border-2 border-[var(--womb-forest)] border-t-transparent rounded-full animate-spin" /></>
+                      ) : (
+                        <>Save Progress <Mail className="w-3.5 h-3.5" /></>
+                      )}
+                    </button>
+                  </div>
+                  <button onClick={handleNext} disabled={!isUploadedAll()} className="inline-flex items-center gap-2 bg-[var(--womb-forest)] disabled:bg-gray-300 disabled:cursor-not-allowed text-white px-8 h-12 rounded-xl font-bold shadow-sm hover:shadow-md transition-all">
                     Continue <ArrowRight className="w-4 h-4" />
                   </button>
                 </div>
