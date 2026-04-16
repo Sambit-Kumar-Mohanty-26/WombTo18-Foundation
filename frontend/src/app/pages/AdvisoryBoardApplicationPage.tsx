@@ -40,7 +40,8 @@ import {
   Briefcase,
   TrendingUp,
   Megaphone,
-  Landmark
+  Landmark,
+  Target
 } from "lucide-react";
 
 type DomainCategory = "HEALTHCARE" | "CHILD DEV" | "EDUCATION" | "SAFETY" | "SOCIAL" | "CONTENT" | "TECH" | "BUSINESS" | "POLICY";
@@ -112,9 +113,8 @@ const processSteps = [
   {
     num: "02",
     icon: Search,
-    title: "Verification & scoring",
     desc: "3-level verification — automated, manual review, and optional video call for senior profiles.",
-    bullets: ["100-point auto-scoring", "LinkedIn & credential check", "Domain alignment review", "Background validation"]
+    bullets: ["Credential verification", "LinkedIn & bio check", "Domain alignment review", "Background validation"]
   },
   {
     num: "03",
@@ -140,13 +140,11 @@ const whyJoinPoints = [
   { icon: Zap, title: "Flexible commitment", desc: "1 to 10+ hours/month — we design engagement around your schedule" }
 ];
 
-const scoringCriteria = [
-  { label: "Domain relevance", points: 25, width: "100%" },
-  { label: "Experience depth", points: 20, width: "80%" },
-  { label: "Strategic value", points: 15, width: "60%" },
-  { label: "Intent quality", points: 15, width: "60%" },
-  { label: "Credibility signals", points: 15, width: "60%" },
-  { label: "Documents complete", points: 10, width: "40%" },
+const selectionPhilosophy = [
+  { icon: Target, title: "Strategic impact", desc: "Priority given to leaders who can influence national child health policy and infrastructure." },
+  { icon: Flame, title: "Mission alignment", desc: "Deep commitment to the womb-to-18 integrated care vision and grassroots transformation." },
+  { icon: Microscope, title: "Domain excellence", desc: "Recognized mastery in specialized expertise areas with proven professional credentials." },
+  { icon: Handshake, title: "Collaborative spirit", desc: "Ability to engage across multidisciplinary domains — from clinical to tech and policy." },
 ];
 
 export function AdvisoryBoardApplicationPage() {
@@ -197,7 +195,7 @@ export function AdvisoryBoardApplicationPage() {
               </div>
               
               <p className="text-sm font-semibold text-gray-500 flex items-center gap-2">
-                <span className="w-2 h-2 rounded-full bg-[var(--journey-saffron)]" /> Limited slots open per domain · Applications reviewed fortnightly
+                <span className="w-2 h-2 rounded-full bg-[var(--journey-saffron)]" /> Direct advisory role · Applications reviewed fortnightly
               </p>
             </motion.div>
 
@@ -505,7 +503,7 @@ export function AdvisoryBoardApplicationPage() {
               </div>
             </div>
 
-            {/* Right Column - Scoring Module */}
+            {/* Right Column - Selection Philosophy */}
             <motion.div 
               initial={{ opacity: 0, y: 30 }}
               whileInView={{ opacity: 1, y: 0 }}
@@ -515,38 +513,38 @@ export function AdvisoryBoardApplicationPage() {
             >
               <div className="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-[var(--journey-saffron)] to-[var(--womb-forest)]" />
               <div className="p-8 sm:p-10">
-                <h3 className="text-xl font-extrabold text-gray-900 mb-8">How your application is scored</h3>
+                <h3 className="text-xl font-extrabold text-gray-900 mb-8 font-serif">Selection Philosophy</h3>
                 
-                <div className="space-y-5 mb-10">
-                  {scoringCriteria.map((item, i) => (
-                    <div key={i}>
-                      <div className="flex justify-between items-end mb-2">
-                        <span className="text-xs font-bold text-gray-600">{item.label}</span>
-                        <span className="text-xs font-extrabold text-[var(--womb-forest)]">{item.points} pts</span>
+                <div className="space-y-6">
+                  {selectionPhilosophy.map((item, i) => (
+                    <motion.div 
+                      key={i}
+                      initial={{ opacity: 0, x: 20 }}
+                      whileInView={{ opacity: 1, x: 0 }}
+                      viewport={{ once: true }}
+                      transition={{ duration: 0.5, delay: i * 0.1 }}
+                      className="flex gap-4 group"
+                    >
+                      <div className="w-10 h-10 rounded-xl bg-white border border-gray-100 shadow-sm flex items-center justify-center shrink-0 group-hover:border-[var(--womb-forest)]/30 transition-colors">
+                        <item.icon className="w-4 h-4 text-[var(--womb-forest)]" />
                       </div>
-                      <div className="h-2 w-full bg-white rounded-full overflow-hidden border border-[#E8DFCE]">
-                        <motion.div 
-                          initial={{ width: 0 }}
-                          whileInView={{ width: item.width }}
-                          viewport={{ once: true }}
-                          transition={{ duration: 1, delay: i * 0.1, ease: "easeOut" }}
-                          className="h-full bg-[var(--womb-forest)] rounded-full"
-                        />
+                      <div>
+                        <h4 className="text-sm font-extrabold text-gray-800 mb-1 tracking-tight">{item.title}</h4>
+                        <p className="text-[11px] text-gray-400 font-medium leading-relaxed">{item.desc}</p>
                       </div>
-                    </div>
+                    </motion.div>
                   ))}
                 </div>
 
-                <div className="border-t border-[#E8DFCE] pt-8 mt-8">
-                  <div className="flex justify-between items-end mb-6">
-                    <span className="text-base font-extrabold text-gray-900">Total score</span>
-                    <span className="text-4xl font-black text-[var(--womb-forest)] font-serif tracking-tighter leading-none">100</span>
-                  </div>
-                  
-                  <div className="bg-white px-4 py-4 rounded-xl border border-[#E8DFCE] text-center text-xs font-medium text-gray-600 leading-relaxed space-y-1 shadow-sm">
-                    <p><span className="text-[var(--womb-forest)] font-bold">≥ 65</span> = approved</p>
-                    <p><span className="text-[var(--womb-forest)] font-bold">50–64</span> = shortlisted for call</p>
-                    <p><span className="text-[var(--womb-forest)] font-bold">&lt; 50</span> = contributor tier offered</p>
+                <div className="border-t border-[#E8DFCE] pt-8 mt-10">
+                  <div className="bg-white px-5 py-5 rounded-xl border border-dashed border-emerald-200 text-left text-xs font-semibold text-gray-600 leading-relaxed shadow-sm flex gap-4 items-start">
+                    <div className="w-8 h-8 rounded-full bg-emerald-50 text-emerald-600 flex items-center justify-center shrink-0">
+                      <Target className="w-4 h-4" />
+                    </div>
+                    <div>
+                      <p className="text-gray-900 font-bold mb-1">Our Evaluation Standard</p>
+                      <p className="text-[11px] text-gray-500 font-medium">We assess every applicant on their ability to catalyze change. Numerical scoring happens in the background to ensure consistency, but our focus is on qualitative impact.</p>
+                    </div>
                   </div>
                 </div>
               </div>
@@ -594,32 +592,6 @@ export function AdvisoryBoardApplicationPage() {
             </p>
           </motion.div>
 
-          {/* Slots Counter */}
-          <motion.div
-            initial={{ opacity: 0, y: 15 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            transition={{ duration: 0.6, delay: 0.3 }}
-            className="flex justify-center gap-6 sm:gap-8 mb-10"
-          >
-            {[
-              { value: "5", label: "Healthcare slots" },
-              { value: "3", label: "Tech & AI slots" },
-              { value: "4", label: "Education slots" },
-            ].map((slot, i) => (
-              <motion.div
-                key={i}
-                initial={{ opacity: 0, scale: 0.8 }}
-                whileInView={{ opacity: 1, scale: 1 }}
-                viewport={{ once: true }}
-                transition={{ duration: 0.4, delay: 0.4 + i * 0.12, type: "spring", stiffness: 120 }}
-                className="text-center"
-              >
-                <div className="text-2xl sm:text-3xl font-black text-[var(--womb-forest)]" style={{ fontFamily: "'Georgia', 'Times New Roman', serif" }}>{slot.value}</div>
-                <p className="text-[10px] sm:text-[11px] font-bold text-gray-400 uppercase tracking-wider mt-1">{slot.label}</p>
-              </motion.div>
-            ))}
-          </motion.div>
 
           {/* CTA Button */}
           <motion.div
@@ -633,7 +605,6 @@ export function AdvisoryBoardApplicationPage() {
             </Link>
           </motion.div>
 
-          {/* Trust signals */}
           <motion.div
             initial={{ opacity: 0 }}
             whileInView={{ opacity: 1 }}
@@ -643,7 +614,7 @@ export function AdvisoryBoardApplicationPage() {
           >
             <span className="flex items-center gap-1.5"><ShieldCheck className="w-3.5 h-3.5 text-emerald-400" /> 10–14 day review</span>
             <span className="hidden sm:block w-1 h-1 rounded-full bg-gray-300" />
-            <span className="flex items-center gap-1.5"><Activity className="w-3.5 h-3.5 text-emerald-400" /> 100-point scoring</span>
+            <span className="flex items-center gap-1.5"><Heart className="w-3.5 h-3.5 text-emerald-400" /> Mission alignment</span>
             <span className="hidden sm:block w-1 h-1 rounded-full bg-gray-300" />
             <span className="flex items-center gap-1.5"><Users className="w-3.5 h-3.5 text-emerald-400" /> Honorary advisory role</span>
           </motion.div>
