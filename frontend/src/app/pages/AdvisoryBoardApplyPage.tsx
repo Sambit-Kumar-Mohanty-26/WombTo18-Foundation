@@ -126,21 +126,6 @@ function SearchableSelect({ options, value, onChange, placeholder, disabled = fa
   );
 }
 
-// Components
-const ScoreOdometer = ({ value }: { value: number }) => {
-  return (
-    <div className="relative overflow-hidden h-[80px] sm:h-[100px] flex items-center justify-center font-serif text-6xl sm:text-[5rem] font-black text-[var(--womb-forest)] leading-none tracking-tighter">
-      <motion.div
-        initial={{ y: 50, opacity: 0 }}
-        animate={{ y: 0, opacity: 1 }}
-        key={value}
-        transition={{ type: "spring", stiffness: 100, damping: 15 }}
-      >
-        {value}
-      </motion.div>
-    </div>
-  );
-};
 
 export function AdvisoryBoardApplyPage() {
   const { success, error } = useToast();
@@ -1056,28 +1041,32 @@ export function AdvisoryBoardApplyPage() {
                 transition={{ duration: 0.4, ease: "easeInOut" }}
                 className="bg-white rounded-[2rem] border border-[#E8DFCE] p-6 lg:p-0 shadow-[0_20px_40px_-15px_rgba(189,179,161,0.2)] overflow-hidden"
               >
-                <div className="grid lg:grid-cols-12 min-h-[500px]">
-                  {/* Left Form */}
-                  <div className="lg:col-span-8 p-6 lg:p-10">
-                    <div className="flex items-center gap-3 border-b border-gray-100 pb-5 mb-6">
+                <div className="max-w-4xl mx-auto">
+                  <div className="p-6 lg:p-12">
+                    <div className="flex items-center gap-3 border-b border-gray-100 pb-5 mb-8">
                       <div className="w-10 h-10 rounded-xl bg-indigo-50 text-indigo-600 flex items-center justify-center shrink-0">
                         <Heart className="w-5 h-5" />
                       </div>
                       <div>
                         <h2 className="text-xl font-extrabold text-gray-900 tracking-tight">Step 5 — Intent & alignment</h2>
-                        <p className="text-[11px] font-medium text-gray-500">Heavily weighted. Generic answers score low.</p>
+                        <p className="text-[11px] font-medium text-gray-500">Selection is based on qualitative mission alignment and strategic impact.</p>
                       </div>
                     </div>
 
-                    <div className="space-y-6">
+                    <div className="space-y-8">
                       <div>
                         <label className={labelClass}>Why do you want to join WOMBTO18?*</label>
-                        <textarea className={`${inputClass} h-20 py-3 resize-none`} placeholder="Specific reason..." value={formData.whyJoin} onChange={(e) => updateForm('whyJoin', e.target.value)} />
+                        <textarea 
+                          className={`${inputClass} h-32 py-4 resize-none`} 
+                          placeholder="Please share how your expertise aligns with our mission to integrate child health across India..." 
+                          value={formData.whyJoin} 
+                          onChange={(e) => updateForm('whyJoin', e.target.value)} 
+                        />
                       </div>
 
                       <div>
                         <label className={labelClass}>Availability commitment*</label>
-                        <div className="grid sm:grid-cols-3 gap-3">
+                        <div className="grid sm:grid-cols-3 gap-4">
                           {[
                             { id: "passive", title: "Passive advisor", desc: "1-2 hrs/mo" },
                             { id: "active", title: "Active advisor", desc: "3-5 hrs/mo" },
@@ -1086,17 +1075,17 @@ export function AdvisoryBoardApplyPage() {
                             <button
                               key={t.id}
                               onClick={() => updateForm('availability', t.id)}
-                              className={`p-3 rounded-xl border text-left transition-all ${formData.availability === t.id ? 'bg-[var(--womb-forest)] border-[var(--womb-forest)]' : 'bg-white border-gray-200 hover:border-gray-300'}`}
+                              className={`p-4 rounded-xl border text-left transition-all group ${formData.availability === t.id ? 'bg-[var(--womb-forest)] border-[var(--womb-forest)] shadow-md' : 'bg-white border-gray-200 hover:border-gray-300'}`}
                             >
-                              <div className={`text-xs font-black mb-1 ${formData.availability === t.id ? 'text-white' : 'text-gray-900'}`}>{t.title}</div>
-                              <div className={`text-[10px] font-medium ${formData.availability === t.id ? 'text-green-100' : 'text-gray-500'}`}>{t.desc}</div>
+                              <div className={`text-sm font-black mb-1 ${formData.availability === t.id ? 'text-white' : 'text-gray-900'}`}>{t.title}</div>
+                              <div className={`text-[11px] font-medium ${formData.availability === t.id ? 'text-green-100' : 'text-gray-500'}`}>{t.desc}</div>
                             </button>
                           ))}
                         </div>
                       </div>
 
-                      <div className="space-y-3 pt-2">
-                        <label className="flex items-start gap-3 cursor-pointer group">
+                      <div className="bg-emerald-50 rounded-2xl p-5 border border-emerald-100">
+                        <label className="flex items-start gap-4 cursor-pointer group">
                           <input 
                             type="checkbox" 
                             className="hidden"
@@ -1107,53 +1096,32 @@ export function AdvisoryBoardApplyPage() {
                               updateForm('declarations', newDec);
                             }}
                           />
-                          <div className={`mt-0.5 w-5 h-5 rounded border flex items-center justify-center shrink-0 transition-colors ${formData.declarations[0] ? 'bg-[var(--womb-forest)] border-transparent' : 'bg-white border-gray-300 group-hover:border-[var(--womb-forest)]'}`}>
-                            {formData.declarations[0] && <Check className="w-3 h-3 text-white" />}
+                          <div className={`mt-0.5 w-6 h-6 rounded-lg border flex items-center justify-center shrink-0 transition-all ${formData.declarations[0] ? 'bg-[var(--womb-forest)] border-transparent' : 'bg-white border-emerald-200 group-hover:border-[var(--womb-forest)] shadow-sm'}`}>
+                            {formData.declarations[0] && <Check className="w-4 h-4 text-white" />}
                           </div>
-                          <span className="text-xs font-bold text-gray-600 leading-tight">I confirm all information provided is accurate and consent to verification of my credentials.</span>
+                          <div>
+                            <p className="text-xs font-extrabold text-gray-800 leading-tight mb-1">Confirmation of Accuracy</p>
+                            <p className="text-[11px] text-gray-500 font-medium">I confirm all information provided is accurate and consent to verification of my credentials by the WOMBTO18 committee.</p>
+                          </div>
                         </label>
                       </div>
                     </div>
 
-                    <div className="flex justify-between pt-6 mt-6 border-t border-gray-100">
+                    <div className="flex justify-between pt-8 mt-10 border-t border-gray-100">
                       <button onClick={handleBack} className="inline-flex items-center gap-2 text-gray-500 font-bold px-4 h-12 hover:text-gray-800 transition-colors">
                         Back
                       </button>
                       <button 
                         onClick={handleSubmit} 
                         disabled={!formData.whyJoin || !formData.availability || !formData.declarations[0] || isSubmitting} 
-                        className="inline-flex items-center gap-2 bg-[var(--journey-saffron)] text-white px-10 h-12 rounded-xl font-black shadow-[0_10px_20px_-10px_rgba(255,156,59,0.5)] hover:shadow-[0_15px_30px_-10px_rgba(255,156,59,0.6)] hover:-translate-y-0.5 transition-all disabled:opacity-50 disabled:grayscale disabled:cursor-not-allowed"
+                        className="inline-flex items-center gap-3 bg-[var(--journey-saffron)] text-white px-12 h-12 rounded-xl font-black shadow-[0_10px_20px_-10px_rgba(255,156,59,0.5)] hover:shadow-[0_15px_30px_-10px_rgba(255,156,59,0.6)] hover:-translate-y-0.5 transition-all disabled:opacity-50 disabled:grayscale disabled:cursor-not-allowed"
                       >
-                        {isSubmitting ? "Submitting..." : "Submit Application"}
+                        {isSubmitting ? (
+                          <>Submitting... <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin" /></>
+                        ) : (
+                          <>Submit Application <CheckSquare className="w-4 h-4" /></>
+                        )}
                       </button>
-                    </div>
-                  </div>
-
-                  {/* Right Score Panel */}
-                  <div className="lg:col-span-4 bg-[#F8F4EA] lg:border-l border-[#E8DFCE] p-6 lg:p-10 flex flex-col justify-center items-center text-center">
-                    <div className="w-12 h-12 rounded-full bg-white shadow-sm flex items-center justify-center text-[var(--journey-saffron)] mb-6">
-                      <BarChart3 className="w-6 h-6" />
-                    </div>
-                    <div className="text-[11px] font-bold text-gray-500 uppercase tracking-widest mb-2">Live App Score</div>
-                    
-                    <ScoreOdometer value={currentScore} />
-                    
-                    <div className="w-full max-w-[200px] h-2 bg-gray-200 rounded-full mb-6 overflow-hidden">
-                      <motion.div 
-                        className="h-full bg-[var(--womb-forest)]"
-                        initial={{ width: 0 }}
-                        animate={{ width: `${currentScore}%` }}
-                        transition={{ duration: 1 }}
-                      />
-                    </div>
-
-                    <div className="bg-white p-4 rounded-xl shadow-sm text-left w-full space-y-2 border border-[#E8DFCE]">
-                      <div className={`text-[10px] font-bold flex justify-between ${currentScore >= 65 ? 'text-[var(--womb-forest)]' : 'text-gray-400'}`}>
-                        <span>≥ 65 Approvals</span> {currentScore >= 65 && <Check className="w-3 h-3" />}
-                      </div>
-                      <div className={`text-[10px] font-bold flex justify-between ${(currentScore >= 50 && currentScore < 65) ? 'text-[var(--journey-saffron)]' : 'text-gray-400'}`}>
-                        <span>50-64 Orientation</span> {(currentScore >= 50 && currentScore < 65) && <Check className="w-3 h-3" />}
-                      </div>
                     </div>
                   </div>
                 </div>
@@ -1179,9 +1147,8 @@ export function AdvisoryBoardApplyPage() {
                   </div>
                 </div>
 
-                <h2 className="text-3xl sm:text-4xl font-black text-gray-900 mb-4" style={{ fontFamily: "Georgia" }}>Application Received</h2>
                 <p className="text-gray-500 font-medium max-w-md mx-auto mb-8">
-                  Thank you, {formData.firstName}. Your estimated score is <strong className="text-[var(--womb-forest)] text-lg">{currentScore}/100</strong>. Our screening committee will review your profile and get back to you within 10-14 working days.
+                  Thank you, {formData.firstName}. Your profile has been successfully received by our screening committee. We will review your expertise and mission alignment and get back to you within 10-14 working days.
                 </p>
 
                 <div className="p-4 bg-orange-50 rounded-xl border border-orange-100 text-orange-800 text-xs font-bold max-w-sm mx-auto mb-10 flex items-center justify-center gap-2">
