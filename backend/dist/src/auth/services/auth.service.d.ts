@@ -3,13 +3,15 @@ import { PrismaService } from '../../prisma/services/prisma.service';
 import { MailerService } from './mailer.service';
 import { ConfigService } from '@nestjs/config';
 import { VerificationService } from '../../verification/verification.service';
+import { WhatsappService } from '../../whatsapp/whatsapp.service';
 export declare class AuthService {
     private readonly prisma;
     private readonly jwtService;
     private readonly mailerService;
     private readonly verificationService;
     private readonly configService;
-    constructor(prisma: PrismaService, jwtService: JwtService, mailerService: MailerService, verificationService: VerificationService, configService: ConfigService);
+    private readonly whatsappService;
+    constructor(prisma: PrismaService, jwtService: JwtService, mailerService: MailerService, verificationService: VerificationService, configService: ConfigService, whatsappService: WhatsappService);
     private generateIdentityId;
     private checkLoginRateLimit;
     private checkOtpRateLimit;
@@ -128,14 +130,18 @@ export declare class AuthService {
         eligible: boolean;
         tier: any;
         profileCompleted: boolean;
-        role: "DONOR" | "VOLUNTEER" | "PARTNER";
+        role: "VOLUNTEER" | "DONOR" | "PARTNER";
     }>;
-    requestPasswordChange(email: string): Promise<{
-        devOtp?: string | undefined;
+    forgotPassword(email: string, type: 'DONOR' | 'PARTNER' | 'VOLUNTEER'): Promise<{
         success: boolean;
         message: string;
     }>;
-    updatePassword(email: string, otp: string, newPassword: string): Promise<{
+    resetPassword(data: {
+        email: string;
+        token: string;
+        type: 'DONOR' | 'PARTNER' | 'VOLUNTEER';
+        newPassword: string;
+    }): Promise<{
         success: boolean;
         message: string;
     }>;

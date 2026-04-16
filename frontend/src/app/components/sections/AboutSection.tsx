@@ -146,7 +146,7 @@ export function AboutSection() {
         <motion.div 
           initial={{ opacity: 0, y: 20 }}
           whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true }}
+          viewport={{ once: false }}
           transition={{ duration: 0.7 }}
           className="flex flex-col items-center text-center mb-10 sm:mb-14"
         >
@@ -166,7 +166,7 @@ export function AboutSection() {
           <motion.div 
             initial={{ opacity: 0, x: -40 }}
             whileInView={{ opacity: 1, x: 0 }}
-            viewport={{ once: true }}
+            viewport={{ once: false }}
             transition={{ duration: 0.8, ease: [0.22, 1, 0.36, 1] }}
             className="lg:col-span-4 flex flex-col gap-5"
           >
@@ -186,7 +186,7 @@ export function AboutSection() {
             <motion.div 
               initial={{ opacity: 0, y: 20 }}
               whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }}
+              viewport={{ once: false }}
               transition={{ delay: 0.3, duration: 0.6 }}
               className="bg-white p-5 rounded-2xl shadow-[0_8px_24px_-12px_rgba(0,0,0,0.06)] border border-gray-100"
             >
@@ -202,7 +202,7 @@ export function AboutSection() {
           <motion.div 
             initial={{ opacity: 0, x: 40 }}
             whileInView={{ opacity: 1, x: 0 }}
-            viewport={{ once: true }}
+            viewport={{ once: false }}
             transition={{ duration: 0.8, delay: 0.15, ease: [0.22, 1, 0.36, 1] }}
             className="lg:col-span-8 relative min-h-0 flex flex-col"
           >
@@ -270,7 +270,7 @@ export function AboutSection() {
                       key={i}
                       initial={{ opacity: 0, y: 15 }}
                       whileInView={{ opacity: 1, y: 0 }}
-                      viewport={{ once: true, root: scrollContainerRef, margin: "-20px" }}
+                      viewport={{ once: false, root: scrollContainerRef, margin: "-20px" }}
                       transition={{ duration: 0.5, delay: i * 0.05, ease: "easeOut" }}
                     >
                       {para.type === "greeting" && (
@@ -300,7 +300,7 @@ export function AboutSection() {
                   <motion.div 
                     initial={{ opacity: 0 }} 
                     whileInView={{ opacity: 1 }} 
-                    viewport={{ once: true, root: scrollContainerRef }}
+                    viewport={{ once: false, root: scrollContainerRef }}
                     transition={{ duration: 0.8 }}
                     className="mt-8 pt-6 border-t border-gray-100 font-sans"
                   >

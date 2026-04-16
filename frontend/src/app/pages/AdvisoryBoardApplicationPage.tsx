@@ -216,7 +216,7 @@ export function AdvisoryBoardApplicationPage() {
                   <div className="grid grid-cols-2 gap-3 mb-6">
                     {[
                       { value: "25+", label: "Schools onboarded", icon: Building2, color: "var(--womb-forest)", bg: "from-emerald-50 to-green-50" },
-                      { value: "32", label: "Health services", icon: Stethoscope, color: "var(--journey-saffron)", bg: "from-amber-50 to-orange-50" },
+                      { value: "32", label: "Services", icon: Stethoscope, color: "var(--journey-saffron)", bg: "from-amber-50 to-orange-50" },
                       { value: "0–18", label: "Age coverage", icon: Heart, color: "var(--womb-forest)", bg: "from-emerald-50 to-teal-50" },
                       { value: "300", label: "Schools target", icon: Activity, color: "var(--journey-saffron)", bg: "from-orange-50 to-amber-50" },
                     ].map((stat, i) => (

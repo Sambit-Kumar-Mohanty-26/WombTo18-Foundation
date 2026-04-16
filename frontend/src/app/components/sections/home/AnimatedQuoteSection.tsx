@@ -7,7 +7,7 @@ export function AnimatedQuoteSection() {
   const { t } = useTranslation('home');
   const containerRef = useRef<HTMLElement>(null);
   const quoteRef = useRef<HTMLDivElement>(null);
-  const isInView = useInView(quoteRef, { once: true, margin: "-100px" });
+  const isInView = useInView(quoteRef, { once: false, margin: "-100px" });
 
   const { scrollYProgress } = useScroll({
     target: containerRef,

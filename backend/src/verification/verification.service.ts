@@ -206,4 +206,58 @@ export class VerificationService {
       throw new HttpException('Failed to communicate with EmailJS API: ' + (error.message || error), HttpStatus.INTERNAL_SERVER_ERROR);
     }
   }
+
+  async sendForgotPasswordEmail(email: string, resetUrl: string, type: string): Promise<any> {
+    const serviceId = this.configService.get<string>('EMAILJS_SERVICE_ID');
+    const templateId = this.configService.get<string>('EMAILJS_TEMPLATE_ID');
+    const publicKey = this.configService.get<string>('EMAILJS_PUBLIC_KEY');
+    const privateKey = this.configService.get<string>('EMAILJS_PRIVATE_KEY');
+
+    if (!serviceId || !templateId || !publicKey) {
+      console.warn("EMAILJS keys are missing. Simulating forgot password email dispatch.");
+      console.log(`[FORGOT PASSWORD] Link for ${email} (${type}): ${resetUrl}`);
+      return { success: true, message: "Mock Email sent successfully due to missing API keys." };
+    }
+
+    try {
+      const response = await this.makeHttpsRequest('https://api.emailjs.com/api/v1.0/email/send', 'POST', {
+        'Content-Type': 'application/json',
+        'Accept': 'application/json'
+      }, {
+        service_id: serviceId,
+        template_id: templateId,
+        user_id: publicKey,
+        accessToken: privateKey,
+        template_params: {
+          to_email: email,
+          to_name: type.charAt(0).toUpperCase() + type.slice(1).toLowerCase(),
+          from_name: "WOMBTO18 Foundation",
+          subject: "Reset Your Password - WOMBTO18 Foundation",
+          message: `<div style="font-family: Arial, sans-serif; padding: 20px; color: #333; max-width: 500px; margin: auto; border: 1px solid #eee; border-radius: 12px; background: linear-gradient(to bottom, #f0fdf4, #ffffff);">
+                      <h2 style="color: #166534; text-align: center;">Password Reset Request</h2>
+                      <p>We received a request to reset the password for your ${type.toLowerCase()} account.</p>
+                      <p>Click the secure button below to set a new password. This link will expire in 1 hour:</p>
+                      <div style="text-align: center; margin: 30px 0;">
+                        <a href="${resetUrl}" style="display: inline-block; padding: 14px 28px; background-color: #166534; color: white; text-decoration: none; border-radius: 10px; font-weight: bold; font-size: 16px; box-shadow: 0 4px 12px rgba(22, 101, 52, 0.2);">Reset My Password</a>
+                      </div>
+                      <p style="font-size: 12px; color: #666; text-align: center;">If you did not request a password reset, you can safely ignore this email.</p>
+                      <div style="border-top: 1px solid #eee; margin-top: 30px; padding-top: 20px; font-size: 11px; color: #999; text-align: center;">
+                        WOMBTO18 Foundation — India's Integrated Child Health Platform
+                      </div>
+                    </div>`,
+          reply_to: "support@wombto18.org",
+        }
+      });
+
+      if (response.status === 200 || response.status === 201) {
+        return { success: true, message: "Reset password email sent successfully" };
+      }
+      
+      console.error('EmailJS Error:', response.data);
+      throw new HttpException('EmailJS rejected request: ' + response.data, HttpStatus.BAD_REQUEST);
+    } catch (error: any) {
+      console.error("EmailJS Critical Error:", error);
+      throw new HttpException('Failed to communicate with EmailJS API: ' + (error.message || error), HttpStatus.INTERNAL_SERVER_ERROR);
+    }
+  }
 }

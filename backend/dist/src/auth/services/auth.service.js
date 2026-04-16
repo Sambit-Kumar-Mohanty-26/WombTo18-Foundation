@@ -50,6 +50,8 @@ const mailer_service_1 = require("./mailer.service");
 const config_1 = require("@nestjs/config");
 const bcrypt = __importStar(require("bcryptjs"));
 const verification_service_1 = require("../../verification/verification.service");
+const whatsapp_service_1 = require("../../whatsapp/whatsapp.service");
+const crypto = __importStar(require("crypto"));
 const otpAttempts = new Map();
 const MAX_OTP_ATTEMPTS = 5;
 const OTP_LOCKOUT_MS = 15 * 60 * 1000;
@@ -63,12 +65,14 @@ let AuthService = class AuthService {
     mailerService;
     verificationService;
     configService;
-    constructor(prisma, jwtService, mailerService, verificationService, configService) {
+    whatsappService;
+    constructor(prisma, jwtService, mailerService, verificationService, configService, whatsappService) {
         this.prisma = prisma;
         this.jwtService = jwtService;
         this.mailerService = mailerService;
         this.verificationService = verificationService;
         this.configService = configService;
+        this.whatsappService = whatsappService;
     }
     generateIdentityId(role) {
         const date = new Date();
@@ -488,6 +492,9 @@ let AuthService = class AuthService {
                     donorId: donor.donorId,
                     volunteerId,
                 }).catch((err) => console.error('[WELCOME EMAIL ERROR] Volunteer:', err.message));
+                if (donor.mobile) {
+                    this.whatsappService.sendWelcomeVolunteer(donor.mobile, donor.name || 'Volunteer');
+                }
             }
             else {
                 this.mailerService.sendWelcomeDonorEmail({
@@ -495,6 +502,9 @@ let AuthService = class AuthService {
                     name: donor.name || 'Donor',
                     donorId: donor.donorId,
                 }).catch((err) => console.error('[WELCOME EMAIL ERROR] Donor:', err.message));
+                if (donor.mobile) {
+                    this.whatsappService.sendWelcomeDonor(donor.mobile, donor.name || 'Donor');
+                }
             }
         }
         return {
@@ -610,6 +620,9 @@ let AuthService = class AuthService {
                     organizationName: user.organizationName || 'Your Organization',
                     partnerId: user.partnerId,
                 }).catch((err) => console.error('[WELCOME EMAIL ERROR] Partner:', err.message));
+                if (user.mobile) {
+                    this.whatsappService.sendWelcomePartner(user.mobile, user.contactPerson || user.name || 'Partner');
+                }
             }
             else if (userType === 'VOLUNTEER') {
                 this.mailerService.sendWelcomeVolunteerEmail({
@@ -618,6 +631,9 @@ let AuthService = class AuthService {
                     donorId: user.donorId,
                     volunteerId: user.volunteerId,
                 }).catch((err) => console.error('[WELCOME EMAIL ERROR] Volunteer:', err.message));
+                if (user.mobile) {
+                    this.whatsappService.sendWelcomeVolunteer(user.mobile, user.name || 'Volunteer');
+                }
             }
             else {
                 this.mailerService.sendWelcomeDonorEmail({
@@ -625,6 +641,9 @@ let AuthService = class AuthService {
                     name: user.name || 'Donor',
                     donorId: user.donorId,
                 }).catch((err) => console.error('[WELCOME EMAIL ERROR] Donor:', err.message));
+                if (user.mobile) {
+                    this.whatsappService.sendWelcomeDonor(user.mobile, user.name || 'Donor');
+                }
             }
         }
         return {
@@ -641,76 +660,78 @@ let AuthService = class AuthService {
             role: userType,
         };
     }
-    async requestPasswordChange(email) {
+    async forgotPassword(email, type) {
         email = this.sanitizeInput(email.toLowerCase());
-        const donor = await this.prisma.donor.findUnique({ where: { email } });
-        if (!donor) {
-            throw new common_1.BadRequestException('No account found with this email.');
+        let user;
+        if (type === 'PARTNER') {
+            user = await this.prisma.partner.findUnique({ where: { email } });
+            if (!user) {
+                throw new common_1.BadRequestException('No partner account found with this institutional email.');
+            }
         }
-        const otp = this.generateOtp();
-        const emailOtpHash = await this.hashOtp(otp);
-        const otpExpiry = new Date(Date.now() + 15 * 60 * 1000);
-        await this.prisma.donor.update({
-            where: { id: donor.id },
-            data: { emailOtpHash, otpExpiry },
-        });
-        const subject = 'Your WombTo18 Password Change Code';
-        const text = `Your password change verification code is: ${otp}\n\nThis code is valid for 15 minutes. If you did not request this, please secure your account immediately.`;
-        const html = `
-      <div style="font-family:sans-serif;max-width:480px;margin:0 auto;padding:32px;background:#fff7ed;border-radius:12px;border:1px solid #ffedd5;">
-        <div style="text-align:center;margin-bottom:24px;">
-          <span style="font-size:1.5rem;font-weight:800;color:#f97316;">Security Update</span>
-        </div>
-        <div style="background:white;border-radius:10px;padding:28px;text-align:center;box-shadow:0 10px 15px -3px rgba(0,0,0,0.1);">
-          <p style="color:#1e293b;font-size:1rem;margin-bottom:20px;">Use the code below to verify your password change:</p>
-          <div style="display:inline-block;background:#fff7ed;border:2px solid #fed7aa;border-radius:10px;padding:16px 40px;">
-            <span style="font-size:2.5rem;font-weight:800;letter-spacing:0.2em;color:#ea580c;">${otp}</span>
-          </div>
-          <p style="color:#64748b;font-size:0.85rem;margin-top:20px;">Valid for 15 minutes. <strong>Do not share this code.</strong></p>
-        </div>
-      </div>
-    `;
-        await this.mailerService.sendEmail(email, subject, html, text);
-        const debugOtp = this.configService.get('DEBUG_OTP') === 'true';
-        return {
-            success: true,
-            message: 'Verification code sent to your email.',
-            ...(debugOtp ? { devOtp: otp } : {}),
-        };
+        else {
+            user = await this.prisma.donor.findUnique({ where: { email } });
+            if (!user) {
+                throw new common_1.BadRequestException(`No ${type.toLowerCase()} account found with this email. Please register first.`);
+            }
+            if (type === 'VOLUNTEER' && !user.isVolunteer) {
+                throw new common_1.BadRequestException('This email is registered as a donor, but not as a volunteer. Please log in as a donor.');
+            }
+        }
+        const resetToken = crypto.randomBytes(32).toString('hex');
+        const resetTokenHash = crypto.createHash('sha256').update(resetToken).digest('hex');
+        const resetTokenExpires = new Date(Date.now() + 3600000);
+        if (type === 'PARTNER') {
+            await this.prisma.partner.update({
+                where: { id: user.id },
+                data: { resetPasswordToken: resetTokenHash, resetPasswordExpires: resetTokenExpires },
+            });
+        }
+        else {
+            await this.prisma.donor.update({
+                where: { id: user.id },
+                data: { resetPasswordToken: resetTokenHash, resetPasswordExpires: resetTokenExpires },
+            });
+        }
+        const frontendUrl = this.configService.get('FRONTEND_URL') || 'http://localhost:5173';
+        const resetUrl = `${frontendUrl}/reset-password?token=${resetToken}&email=${email}&type=${type}`;
+        await this.verificationService.sendForgotPasswordEmail(email, resetUrl, type);
+        return { success: true, message: 'Password reset link sent to your email.' };
     }
-    async updatePassword(email, otp, newPassword) {
-        email = this.sanitizeInput(email.toLowerCase());
-        const donor = await this.prisma.donor.findUnique({
-            where: { email },
-            select: { id: true, emailOtpHash: true, otpExpiry: true, tokenVersion: true }
-        });
-        if (!donor || !donor.emailOtpHash || !donor.otpExpiry) {
-            throw new common_1.BadRequestException('Invalid request or session expired.');
+    async resetPassword(data) {
+        const email = this.sanitizeInput(data.email.toLowerCase());
+        const resetTokenHash = crypto.createHash('sha256').update(data.token).digest('hex');
+        let user;
+        if (data.type === 'PARTNER') {
+            user = await this.prisma.partner.findUnique({
+                where: { email, resetPasswordToken: resetTokenHash, resetPasswordExpires: { gt: new Date() } },
+            });
         }
-        if (new Date() > donor.otpExpiry) {
-            throw new common_1.BadRequestException('Security code has expired.');
+        else {
+            user = await this.prisma.donor.findUnique({
+                where: { email, resetPasswordToken: resetTokenHash, resetPasswordExpires: { gt: new Date() } },
+            });
         }
-        const isValid = await this.verifyOtpHash(otp, donor.emailOtpHash);
-        if (!isValid) {
-            throw new common_1.UnauthorizedException('Invalid security code.');
+        if (!user) {
+            throw new common_1.BadRequestException('Invalid or expired password reset token.');
         }
-        const strengthError = this.validatePasswordStrength(newPassword);
-        if (strengthError)
-            throw new common_1.BadRequestException(strengthError);
-        const hashedPassword = await bcrypt.hash(newPassword, 12);
-        await this.prisma.donor.update({
-            where: { id: donor.id },
-            data: {
-                password: hashedPassword,
-                emailOtpHash: null,
-                otpExpiry: null,
-                tokenVersion: { increment: 1 }
-            },
-        });
-        return {
-            success: true,
-            message: 'Password updated successfully. Please sign in with your new password.'
-        };
+        const passwordError = this.validatePasswordStrength(data.newPassword);
+        if (passwordError)
+            throw new common_1.BadRequestException(passwordError);
+        const hashedNewPassword = await bcrypt.hash(data.newPassword, 12);
+        if (data.type === 'PARTNER') {
+            await this.prisma.partner.update({
+                where: { id: user.id },
+                data: { password: hashedNewPassword, resetPasswordToken: null, resetPasswordExpires: null },
+            });
+        }
+        else {
+            await this.prisma.donor.update({
+                where: { id: user.id },
+                data: { password: hashedNewPassword, resetPasswordToken: null, resetPasswordExpires: null },
+            });
+        }
+        return { success: true, message: 'Password updated successfully! You can now sign in.' };
     }
     async toggleTwoFactor(userId, enabled) {
         await this.prisma.donor.update({
@@ -740,6 +761,7 @@ exports.AuthService = AuthService = __decorate([
         jwt_1.JwtService,
         mailer_service_1.MailerService,
         verification_service_1.VerificationService,
-        config_1.ConfigService])
+        config_1.ConfigService,
+        whatsapp_service_1.WhatsappService])
 ], AuthService);
 //# sourceMappingURL=auth.service.js.map

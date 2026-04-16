@@ -5,6 +5,8 @@ import { MailerService } from './mailer.service';
 import { ConfigService } from '@nestjs/config';
 import * as bcrypt from 'bcryptjs';
 import { VerificationService } from '../../verification/verification.service';
+import { WhatsappService } from '../../whatsapp/whatsapp.service';
+import * as crypto from 'crypto';
 
 // Simple in-memory rate limiter for OTP attempts
 const otpAttempts = new Map<string, { count: number; lastAttempt: number; lockedUntil?: number }>();
@@ -25,6 +27,7 @@ export class AuthService {
     private readonly mailerService: MailerService,
     private readonly verificationService: VerificationService,
     private readonly configService: ConfigService,
+    private readonly whatsappService: WhatsappService,
   ) {}
 
   private generateIdentityId(role: 'DNR' | 'VOL' | 'PTN'): string {
@@ -577,7 +580,7 @@ export class AuthService {
       }
     }
 
-    // Send welcome email on first-time verification (fire-and-forget)
+    // Send welcome email + WhatsApp on first-time verification (fire-and-forget)
     if (!wasAlreadyVerified) {
       if (isVolunteer) {
         this.mailerService.sendWelcomeVolunteerEmail({
@@ -586,12 +589,22 @@ export class AuthService {
           donorId: donor.donorId,
           volunteerId,
         }).catch((err) => console.error('[WELCOME EMAIL ERROR] Volunteer:', err.message));
+
+        // WhatsApp welcome (fire-and-forget)
+        if (donor.mobile) {
+          this.whatsappService.sendWelcomeVolunteer(donor.mobile, donor.name || 'Volunteer');
+        }
       } else {
         this.mailerService.sendWelcomeDonorEmail({
           email: donor.email,
           name: donor.name || 'Donor',
           donorId: donor.donorId,
         }).catch((err) => console.error('[WELCOME EMAIL ERROR] Donor:', err.message));
+
+        // WhatsApp welcome (fire-and-forget)
+        if (donor.mobile) {
+          this.whatsappService.sendWelcomeDonor(donor.mobile, donor.name || 'Donor');
+        }
       }
     }
 
@@ -722,7 +735,7 @@ export class AuthService {
       profileCompleted = !!volRecord?.city && !!volRecord?.profession;
     }
 
-    // Send role-specific welcome email on first-time verification (fire-and-forget)
+    // Send role-specific welcome email + WhatsApp on first-time verification (fire-and-forget)
     if (!wasAlreadyVerified) {
       if (userType === 'PARTNER') {
         this.mailerService.sendWelcomePartnerEmail({
@@ -731,6 +744,11 @@ export class AuthService {
           organizationName: user.organizationName || 'Your Organization',
           partnerId: user.partnerId,
         }).catch((err) => console.error('[WELCOME EMAIL ERROR] Partner:', err.message));
+
+        // WhatsApp welcome (fire-and-forget)
+        if (user.mobile) {
+          this.whatsappService.sendWelcomePartner(user.mobile, user.contactPerson || user.name || 'Partner');
+        }
       } else if (userType === 'VOLUNTEER') {
         this.mailerService.sendWelcomeVolunteerEmail({
           email: user.email,
@@ -738,12 +756,22 @@ export class AuthService {
           donorId: user.donorId,
           volunteerId: user.volunteerId,
         }).catch((err) => console.error('[WELCOME EMAIL ERROR] Volunteer:', err.message));
+
+        // WhatsApp welcome (fire-and-forget)
+        if (user.mobile) {
+          this.whatsappService.sendWelcomeVolunteer(user.mobile, user.name || 'Volunteer');
+        }
       } else {
         this.mailerService.sendWelcomeDonorEmail({
           email: user.email,
           name: user.name || 'Donor',
           donorId: user.donorId,
         }).catch((err) => console.error('[WELCOME EMAIL ERROR] Donor:', err.message));
+
+        // WhatsApp welcome (fire-and-forget)
+        if (user.mobile) {
+          this.whatsappService.sendWelcomeDonor(user.mobile, user.name || 'Donor');
+        }
       }
     }
 
@@ -764,96 +792,90 @@ export class AuthService {
 
   //Advanced Security Methods
 
-  async requestPasswordChange(email: string) {
+  async forgotPassword(email: string, type: 'DONOR' | 'PARTNER' | 'VOLUNTEER') {
     email = this.sanitizeInput(email.toLowerCase());
     
-    const donor = await this.prisma.donor.findUnique({ where: { email } });
-    if (!donor) {
-      // For security, don't reveal if account exists, but for change password we usually do
-      throw new BadRequestException('No account found with this email.');
+    let user;
+    if (type === 'PARTNER') {
+      user = await this.prisma.partner.findUnique({ where: { email } });
+      if (!user) {
+        throw new BadRequestException('No partner account found with this institutional email.');
+      }
+    } else {
+      // For both DONOR and VOLUNTEER, we use the Donor model
+      user = await this.prisma.donor.findUnique({ where: { email } });
+      
+      if (!user) {
+        throw new BadRequestException(`No ${type.toLowerCase()} account found with this email. Please register first.`);
+      }
+
+      if (type === 'VOLUNTEER' && !user.isVolunteer) {
+        throw new BadRequestException('This email is registered as a donor, but not as a volunteer. Please log in as a donor.');
+      }
     }
 
-    const otp = this.generateOtp();
-    const emailOtpHash = await this.hashOtp(otp);
-    const otpExpiry = new Date(Date.now() + 15 * 60 * 1000); // 15 mins
+    const resetToken = crypto.randomBytes(32).toString('hex');
+    const resetTokenHash = crypto.createHash('sha256').update(resetToken).digest('hex');
+    const resetTokenExpires = new Date(Date.now() + 3600000); // 1 hour
 
-    await this.prisma.donor.update({
-      where: { id: donor.id },
-      data: { emailOtpHash, otpExpiry },
-    });
+    if (type === 'PARTNER') {
+      await this.prisma.partner.update({
+        where: { id: user.id },
+        data: { resetPasswordToken: resetTokenHash, resetPasswordExpires: resetTokenExpires },
+      });
+    } else {
+      await this.prisma.donor.update({
+        where: { id: user.id },
+        data: { resetPasswordToken: resetTokenHash, resetPasswordExpires: resetTokenExpires },
+      });
+    }
 
-    // Custom email for password change
-    const subject = 'Your WombTo18 Password Change Code';
-    const text = `Your password change verification code is: ${otp}\n\nThis code is valid for 15 minutes. If you did not request this, please secure your account immediately.`;
-    const html = `
-      <div style="font-family:sans-serif;max-width:480px;margin:0 auto;padding:32px;background:#fff7ed;border-radius:12px;border:1px solid #ffedd5;">
-        <div style="text-align:center;margin-bottom:24px;">
-          <span style="font-size:1.5rem;font-weight:800;color:#f97316;">Security Update</span>
-        </div>
-        <div style="background:white;border-radius:10px;padding:28px;text-align:center;box-shadow:0 10px 15px -3px rgba(0,0,0,0.1);">
-          <p style="color:#1e293b;font-size:1rem;margin-bottom:20px;">Use the code below to verify your password change:</p>
-          <div style="display:inline-block;background:#fff7ed;border:2px solid #fed7aa;border-radius:10px;padding:16px 40px;">
-            <span style="font-size:2.5rem;font-weight:800;letter-spacing:0.2em;color:#ea580c;">${otp}</span>
-          </div>
-          <p style="color:#64748b;font-size:0.85rem;margin-top:20px;">Valid for 15 minutes. <strong>Do not share this code.</strong></p>
-        </div>
-      </div>
-    `;
-    await this.mailerService.sendEmail(email, subject, html, text);
+    const frontendUrl = this.configService.get<string>('FRONTEND_URL') || 'http://localhost:5173';
+    const resetUrl = `${frontendUrl}/reset-password?token=${resetToken}&email=${email}&type=${type}`;
 
-    const debugOtp = this.configService.get<string>('DEBUG_OTP') === 'true';
-    return {
-      success: true,
-      message: 'Verification code sent to your email.',
-      ...(debugOtp ? { devOtp: otp } : {}),
-    };
+    await this.verificationService.sendForgotPasswordEmail(email, resetUrl, type);
+
+    return { success: true, message: 'Password reset link sent to your email.' };
   }
 
-  async updatePassword(email: string, otp: string, newPassword: string) {
-    email = this.sanitizeInput(email.toLowerCase());
-    
-    const donor = await this.prisma.donor.findUnique({ 
-      where: { email },
-      // @ts-ignore
-      select: { id: true, emailOtpHash: true, otpExpiry: true, tokenVersion: true }
-    });
+  async resetPassword(data: { email: string; token: string; type: 'DONOR' | 'PARTNER' | 'VOLUNTEER'; newPassword: string }) {
+    const email = this.sanitizeInput(data.email.toLowerCase());
+    const resetTokenHash = crypto.createHash('sha256').update(data.token).digest('hex');
 
-    if (!donor || !donor.emailOtpHash || !donor.otpExpiry) {
-      throw new BadRequestException('Invalid request or session expired.');
+    let user;
+    if (data.type === 'PARTNER') {
+      user = await this.prisma.partner.findUnique({
+        where: { email, resetPasswordToken: resetTokenHash, resetPasswordExpires: { gt: new Date() } },
+      });
+    } else {
+      user = await this.prisma.donor.findUnique({
+        where: { email, resetPasswordToken: resetTokenHash, resetPasswordExpires: { gt: new Date() } },
+      });
     }
 
-    if (new Date() > donor.otpExpiry) {
-      throw new BadRequestException('Security code has expired.');
+    if (!user) {
+      throw new BadRequestException('Invalid or expired password reset token.');
     }
 
-    const isValid = await this.verifyOtpHash(otp, donor.emailOtpHash);
-    if (!isValid) {
-      throw new UnauthorizedException('Invalid security code.');
+    const passwordError = this.validatePasswordStrength(data.newPassword);
+    if (passwordError) throw new BadRequestException(passwordError);
+
+    const hashedNewPassword = await bcrypt.hash(data.newPassword, 12);
+
+    if (data.type === 'PARTNER') {
+      await this.prisma.partner.update({
+        where: { id: user.id },
+        data: { password: hashedNewPassword, resetPasswordToken: null, resetPasswordExpires: null },
+      });
+    } else {
+      await this.prisma.donor.update({
+        where: { id: user.id },
+        data: { password: hashedNewPassword, resetPasswordToken: null, resetPasswordExpires: null },
+      });
     }
 
-    const strengthError = this.validatePasswordStrength(newPassword);
-    if (strengthError) throw new BadRequestException(strengthError);
-
-    const hashedPassword = await bcrypt.hash(newPassword, 12);
-
-    // Update password AND increment tokenVersion to log out other sessions
-    await this.prisma.donor.update({
-      where: { id: donor.id },
-      data: { 
-        password: hashedPassword,
-        emailOtpHash: null,
-        otpExpiry: null,
-        // @ts-ignore
-        tokenVersion: { increment: 1 }
-      },
-    });
-
-    return { 
-      success: true, 
-      message: 'Password updated successfully. Please sign in with your new password.' 
-    };
+    return { success: true, message: 'Password updated successfully! You can now sign in.' };
   }
-
   async toggleTwoFactor(userId: string, enabled: boolean) {
     await this.prisma.donor.update({
       where: { id: userId },

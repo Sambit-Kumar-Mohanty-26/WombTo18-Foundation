@@ -2,6 +2,7 @@ import { Injectable, NotFoundException, BadRequestException } from '@nestjs/comm
 import { PrismaService } from '../../prisma/services/prisma.service';
 import { VerificationService } from '../../verification/verification.service';
 import { MailerService } from '../../auth/services/mailer.service';
+import { WhatsappService } from '../../whatsapp/whatsapp.service';
 import { Prisma } from '@prisma/client';
 import * as bcrypt from 'bcryptjs';
 
@@ -11,6 +12,7 @@ export class PartnerService {
     private readonly prisma: PrismaService,
     private readonly verificationService: VerificationService,
     private readonly mailerService: MailerService,
+    private readonly whatsappService: WhatsappService,
   ) {}
 
   /** Helper to generate informative Partner ID: PTN-CAT-YYMM-SEQ */
@@ -83,6 +85,11 @@ export class PartnerService {
       }).then(() => {
         console.log(`[PartnerService] Welcome email sent successfully to ${data.email}`);
       }).catch((err) => console.error('[WELCOME EMAIL ERROR] Partner signup:', err.message));
+
+      // Send welcome WhatsApp (fire-and-forget)
+      if (data.mobile) {
+        this.whatsappService.sendWelcomePartner(data.mobile, data.contactPerson);
+      }
 
       return {
         success: true,

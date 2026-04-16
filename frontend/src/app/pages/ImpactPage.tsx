@@ -93,7 +93,7 @@ const CustomTooltip = ({ active, payload }: any) => {
 const programSpend = [
   { program: "Prenatal", baseline: 0.5, target: 80 },
   { program: "Early Child", baseline: 0.4, target: 65 },
-  { program: "Nutrition", baseline: 0.8, target: 110 },
+  // { program: "Nutrition", baseline: 0.8, target: 110 },
   { program: "Education", baseline: 1.0, target: 145 },
   { program: "Youth", baseline: 0.5, target: 65 },
   { program: "Protection", baseline: 0.2, target: 35 },
@@ -110,7 +110,7 @@ const yearlyImpact = [
 const programProgress = [
   { program: "Prenatal & Maternal Care", utilized: 0, allocated: 2500000, beneficiaries: "Target: Scaling phased" },
   { program: "Early Childhood Development", utilized: 0, allocated: 1800000, beneficiaries: "Target: Scaling phased" },
-  { program: "Nutrition Programs", utilized: 0, allocated: 3200000, beneficiaries: "Target: Scaling phased" },
+  // { program: "Nutrition Programs", utilized: 0, allocated: 3200000, beneficiaries: "Target: Scaling phased" },
   { program: "Education Support", utilized: 0, allocated: 4100000, beneficiaries: "Target: Scaling phased" },
   { program: "Youth Empowerment", utilized: 0, allocated: 1500000, beneficiaries: "Target: Scaling phased" },
   { program: "Child Protection", utilized: 0, allocated: 1000000, beneficiaries: "Target: Scaling phased" },

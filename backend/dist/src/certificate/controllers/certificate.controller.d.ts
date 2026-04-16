@@ -38,7 +38,8 @@ export declare class CertificateController {
             profileImage: string | null;
             referredById: string | null;
             twoFactorEnabled: boolean;
-            tokenVersion: number;
+            resetPasswordToken: string | null;
+            resetPasswordExpires: Date | null;
         } | null;
         volunteer: {
             id: string;
@@ -77,6 +78,8 @@ export declare class CertificateController {
             mobileOtpHash: string | null;
             emailVerified: boolean;
             mobileVerified: boolean;
+            resetPasswordToken: string | null;
+            resetPasswordExpires: Date | null;
             isActive: boolean;
             partnerId: string;
             organizationName: string;

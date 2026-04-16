@@ -43,7 +43,8 @@ export declare class AdminController {
                 profileImage: string | null;
                 referredById: string | null;
                 twoFactorEnabled: boolean;
-                tokenVersion: number;
+                resetPasswordToken: string | null;
+                resetPasswordExpires: Date | null;
             };
             program: {
                 id: string;
@@ -125,7 +126,8 @@ export declare class AdminController {
             profileImage: string | null;
             referredById: string | null;
             twoFactorEnabled: boolean;
-            tokenVersion: number;
+            resetPasswordToken: string | null;
+            resetPasswordExpires: Date | null;
         };
         program: {
             id: string;

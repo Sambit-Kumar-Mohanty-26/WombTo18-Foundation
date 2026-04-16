@@ -32,6 +32,8 @@ import { VolunteerSuccessPage } from "./pages/VolunteerSuccessPage";
 import { AdvisoryBoardApplicationPage } from "./pages/AdvisoryBoardApplicationPage";
 import { AdvisoryBoardApplyPage } from "./pages/AdvisoryBoardApplyPage";
 import { EmailVerificationPage } from "./pages/EmailVerificationPage";
+import { ForgotPasswordPage } from "./pages/auth/ForgotPasswordPage";
+import { ResetPasswordPage } from "./pages/auth/ResetPasswordPage";
 
 // Login & Auth
 import { DonorLogin } from "./pages/donor/DonorLogin";
@@ -109,6 +111,8 @@ export const router = createBrowserRouter([
       { path: "advisory-board", Component: AdvisoryBoardApplicationPage },
       { path: "advisory-board/apply", Component: AdvisoryBoardApplyPage },
       { path: "verify-email", Component: EmailVerificationPage },
+      { path: "forgot-password", Component: ForgotPasswordPage },
+      { path: "reset-password", Component: ResetPasswordPage },
       { path: "donor/login", Component: DonorLogin },
       { path: "donor/verify-otp", Component: DonorVerifyOtp },
       { path: "volunteer/login", Component: VolunteerLogin },

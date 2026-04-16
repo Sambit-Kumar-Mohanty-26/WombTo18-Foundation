@@ -32,7 +32,7 @@ function CredentialCard({ cred, idx }: { cred: any; idx: number }) {
       ref={cardRef}
       initial={{ opacity: 0, y: 40 }}
       whileInView={{ opacity: 1, y: 0 }}
-      viewport={{ once: true, margin: "-50px" }}
+      viewport={{ once: false, margin: "-50px" }}
       transition={{ delay: idx * 0.12, duration: 0.7, ease: [0.22, 1, 0.36, 1] }}
       onMouseEnter={() => setIsHovered(true)}
       onMouseLeave={handleMouseLeave}
@@ -237,7 +237,7 @@ export function OurCredentials() {
               <motion.div
                 initial={{ opacity: 0, y: 30 }}
                 whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true }}
+                viewport={{ once: false }}
                 transition={{ duration: 0.8, ease: [0.22, 1, 0.36, 1] }}
                 className="mb-6"
               >
@@ -245,7 +245,7 @@ export function OurCredentials() {
                 <motion.div
                   initial={{ scale: 0.8, opacity: 0 }}
                   whileInView={{ scale: 1, opacity: 1 }}
-                  viewport={{ once: true }}
+                  viewport={{ once: false }}
                   transition={{ delay: 0.2, duration: 0.5 }}
                   className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full mb-6 shadow-sm"
                   style={{
@@ -265,7 +265,7 @@ export function OurCredentials() {
                   style={{ fontFamily: "'Poppins', sans-serif" }}
                   initial={{ opacity: 0, y: 20 }}
                   whileInView={{ opacity: 1, y: 0 }}
-                  viewport={{ once: true }}
+                  viewport={{ once: false }}
                   transition={{ delay: 0.1, duration: 0.7 }}
                 >
                   <span className="text-gray-900">
@@ -279,7 +279,7 @@ export function OurCredentials() {
                     <motion.div
                       initial={{ scaleX: 0 }}
                       whileInView={{ scaleX: 1 }}
-                      viewport={{ once: true }}
+                      viewport={{ once: false }}
                       transition={{ delay: 0.6, duration: 0.8, ease: [0.22, 1, 0.36, 1] }}
                       className="absolute -bottom-1.5 left-0 w-full h-1 bg-gradient-to-r from-[var(--womb-forest)] to-emerald-300 rounded-full origin-left"
                     />
@@ -291,7 +291,7 @@ export function OurCredentials() {
                   style={{ fontFamily: "'Poppins', sans-serif" }}
                   initial={{ opacity: 0 }}
                   whileInView={{ opacity: 1 }}
-                  viewport={{ once: true }}
+                  viewport={{ once: false }}
                   transition={{ delay: 0.4, duration: 0.6 }}
                 >
                   "{t('credentials.quote')}"
@@ -302,7 +302,7 @@ export function OurCredentials() {
               <motion.div
                 initial={{ opacity: 0, y: 20 }}
                 whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true }}
+                viewport={{ once: false }}
                 transition={{ delay: 0.6, duration: 0.7 }}
                 className="space-y-2 mt-6"
               >
@@ -315,7 +315,7 @@ export function OurCredentials() {
                     key={item}
                     initial={{ opacity: 0, x: -15 }}
                     whileInView={{ opacity: 1, x: 0 }}
-                    viewport={{ once: true }}
+                    viewport={{ once: false }}
                     transition={{ delay: 0.7 + i * 0.1, duration: 0.5 }}
                     className="flex items-center gap-2"
                   >
@@ -331,7 +331,7 @@ export function OurCredentials() {
               <motion.div
                 initial={{ opacity: 0, scale: 0.95 }}
                 whileInView={{ opacity: 1, scale: 1 }}
-                viewport={{ once: true }}
+                viewport={{ once: false }}
                 transition={{ duration: 0.8, delay: 0.3 }}
                 className="relative mt-8 overflow-hidden rounded-2xl group max-w-[85%]"
               >
@@ -356,7 +356,7 @@ export function OurCredentials() {
             <motion.div
               initial={{ opacity: 0, y: 20 }}
               whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }}
+              viewport={{ once: false }}
               transition={{ delay: 0.5, duration: 0.6 }}
               className="mt-10 flex items-center justify-center gap-3 flex-wrap"
             >

@@ -1,12 +1,14 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { PrismaService } from '../../prisma/services/prisma.service';
 import { CoinService } from '../../coin/services/coin.service';
+import { WhatsappService } from '../../whatsapp/whatsapp.service';
 
 @Injectable()
 export class ReferralService {
   constructor(
     private readonly prisma: PrismaService,
     private readonly coinService: CoinService,
+    private readonly whatsappService: WhatsappService,
   ) {}
 
   /** Create a referral when someone uses a referral link/QR */
@@ -34,7 +36,7 @@ export class ReferralService {
       partnerId = partner.id;
     }
 
-    return this.prisma.referral.create({
+    const referral = await this.prisma.referral.create({
       data: {
         referrerType: data.referrerType,
         volunteerId,
@@ -45,6 +47,32 @@ export class ReferralService {
         status: 'JOINED',
       },
     });
+
+    // Send WhatsApp referral notification to the referrer (fire-and-forget)
+    const referredIdentifier = data.referredName || data.referredEmail;
+    if (data.referrerType === 'PARTNER' && partnerId) {
+      const partner = await this.prisma.partner.findUnique({ where: { id: partnerId } });
+      if (partner?.mobile) {
+        this.whatsappService.sendPartnerReferralNotification(
+          partner.mobile,
+          partner.contactPerson || 'Partner',
+          partner.partnerId,
+          referredIdentifier,
+        );
+      }
+    } else if (data.referrerType === 'VOLUNTEER' && volunteerId) {
+      const vol = await this.prisma.volunteer.findUnique({ where: { id: volunteerId } });
+      if (vol?.mobile) {
+        this.whatsappService.sendVolunteerReferralNotification(
+          vol.mobile,
+          vol.name || 'Volunteer',
+          vol.volunteerId,
+          referredIdentifier,
+        );
+      }
+    }
+
+    return referral;
   }
 
   /** Process a payment from a referred person - award coins to referrer */

@@ -113,18 +113,21 @@ export declare class AuthController {
         eligible: boolean;
         tier: any;
         profileCompleted: boolean;
-        role: "DONOR" | "VOLUNTEER" | "PARTNER";
+        role: "VOLUNTEER" | "DONOR" | "PARTNER";
     } | {
         error: string;
     }>;
-    requestPasswordChange(email: string): Promise<{
-        devOtp?: string | undefined;
+    forgotPassword(email: string, type: 'DONOR' | 'PARTNER' | 'VOLUNTEER'): Promise<{
         success: boolean;
         message: string;
+    } | {
+        error: string;
     }>;
-    updatePassword(email: string, otp: string, newPassword: string): Promise<{
+    resetPassword(email: string, token: string, type: 'DONOR' | 'PARTNER' | 'VOLUNTEER', newPassword: string): Promise<{
         success: boolean;
         message: string;
+    } | {
+        error: string;
     }>;
     toggle2FA(donorId: string, enabled: boolean): Promise<{
         success: boolean;

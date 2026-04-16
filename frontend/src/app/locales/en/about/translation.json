@@ -24,8 +24,8 @@
     },
     "ch4": {
       "heading": "Today",
-      "body": "WOMBTO18 Foundation operates as India's first integrated child health non-profit platform — uniting <strong>32 health services</strong> across pregnancy, infancy, childhood, and adolescence. Delivered through schools, hospitals, and communities. Serving 25 schools today. Scaling to 300.",
-      "highlight": "32 health services united"
+      "body": "WOMBTO18 Foundation operates as India's first integrated child health non-profit platform — uniting <strong>32 services</strong> across pregnancy, infancy, childhood, and adolescence. Delivered through schools, hospitals, and communities. Serving 25 schools today. Scaling to 300.",
+      "highlight": "32 services united"
     }
   },
   "strategy": {
@@ -92,6 +92,11 @@
       "letter": "O",
       "title": "Optimisation",
       "desc": "We use technology, data, and the Health Promoting Schools framework to continuously improve every intervention. Good enough is never good enough."
+    },
+    "i": {
+      "letter": "I",
+      "title": "0–18 Inclusivity",
+      "desc": "We are committed to continuity of care and equity at every stage—from pregnancy to adolescence. No child is left behind. Every milestone matters."
     }
   },
   "governance": {

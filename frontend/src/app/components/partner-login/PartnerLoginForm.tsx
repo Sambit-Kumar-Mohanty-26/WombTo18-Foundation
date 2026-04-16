@@ -9,24 +9,27 @@ import { partnerApi } from "../../lib/api/partner";
 import { auth } from "../../lib/auth";
 import { motion, AnimatePresence } from "motion/react";
 
+import { useNavigate } from "react-router";
+ 
 const loginSchema = z.object({
   email: z.string().email("A valid institutional email is required"),
   password: z.string().min(6, "Security password must be at least 6 characters"),
 });
-
+ 
 type LoginFormData = z.infer<typeof loginSchema>;
-
+ 
 interface PartnerLoginFormProps {
   onSuccess: (role: string, partnerId?: string) => void;
 }
-
+ 
 export function PartnerLoginForm({ onSuccess }: PartnerLoginFormProps) {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [step, setStep] = useState<'LOGIN' | 'OTP'>('LOGIN');
   const [identifier, setIdentifier] = useState("");
   const { login } = useAuth();
   const [devOtp, setDevOtp] = useState<string | null>(null);
-
+  const navigate = useNavigate();
+ 
   const { register, handleSubmit, formState: { errors } } = useForm<LoginFormData>({
     resolver: zodResolver(loginSchema),
   });
@@ -127,6 +130,15 @@ export function PartnerLoginForm({ onSuccess }: PartnerLoginFormProps) {
                 />
               </div>
               {errors.password && <p className="text-[10px] text-red-500 mt-1.5 ml-1 font-bold">{errors.password.message}</p>}
+              <div className="flex justify-end mt-2">
+                <button
+                  type="button"
+                  onClick={() => navigate("/forgot-password?type=PARTNER")}
+                  className="text-[10px] font-black text-gray-400 hover:text-sky-600 uppercase tracking-widest transition-colors"
+                >
+                  Forgot Password?
+                </button>
+              </div>
             </div>
 
             <button 

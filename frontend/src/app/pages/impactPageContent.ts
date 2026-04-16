@@ -152,7 +152,7 @@ export const impactPageContent = {
     programSpendTitle: 'Phased Scaling Allocation (INR Cr)',
     programSpendLegendBaseline: 'Baseline Foundation',
     programSpendLegendTarget: 'Full Scale Objective',
-    programSpendPrograms: ['Prenatal', 'Early Child', 'Nutrition', 'Education', 'Youth', 'Protection'],
+    programSpendPrograms: ['Prenatal', 'Early Child', /* 'Nutrition', */ 'Education', 'Youth', 'Protection'],
     growthTitle: '5-Year Exponential Output Scaling',
     growthSeries: {
       children: 'Children',
@@ -168,7 +168,7 @@ export const impactPageContent = {
     items: [
       { program: 'Prenatal & Maternal Care', beneficiaries: 'Target: Scaling phased' },
       { program: 'Early Childhood Development', beneficiaries: 'Target: Scaling phased' },
-      { program: 'Nutrition Programs', beneficiaries: 'Target: Scaling phased' },
+      // { program: 'Nutrition Programs', beneficiaries: 'Target: Scaling phased' },
       { program: 'Education Support', beneficiaries: 'Target: Scaling phased' },
       { program: 'Youth Empowerment', beneficiaries: 'Target: Scaling phased' },
       { program: 'Child Protection', beneficiaries: 'Target: Scaling phased' },

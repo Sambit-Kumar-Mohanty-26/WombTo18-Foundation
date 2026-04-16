@@ -115,11 +115,17 @@ let AuthController = class AuthController {
         }
         return result;
     }
-    async requestPasswordChange(email) {
-        return this.authService.requestPasswordChange(email);
+    async forgotPassword(email, type) {
+        if (!email || !type) {
+            return { error: 'Email and user type are required.' };
+        }
+        return this.authService.forgotPassword(email, type);
     }
-    async updatePassword(email, otp, newPassword) {
-        return this.authService.updatePassword(email, otp, newPassword);
+    async resetPassword(email, token, type, newPassword) {
+        if (!email || !token || !type || !newPassword) {
+            return { error: 'All fields are required.' };
+        }
+        return this.authService.resetPassword({ email, token, type, newPassword });
     }
     async toggle2FA(donorId, enabled) {
         return this.authService.toggleTwoFactor(donorId, enabled);
@@ -193,23 +199,25 @@ __decorate([
     __metadata("design:returntype", Promise)
 ], AuthController.prototype, "verifyDualOtp", null);
 __decorate([
-    (0, common_1.Post)('donor/request-password-change'),
-    (0, swagger_1.ApiOperation)({ summary: 'Request OTP for password change' }),
+    (0, common_1.Post)('auth/forgot-password'),
+    (0, swagger_1.ApiOperation)({ summary: 'Request a secure password reset link' }),
     __param(0, (0, common_1.Body)('email')),
+    __param(1, (0, common_1.Body)('type')),
     __metadata("design:type", Function),
-    __metadata("design:paramtypes", [String]),
+    __metadata("design:paramtypes", [String, String]),
     __metadata("design:returntype", Promise)
-], AuthController.prototype, "requestPasswordChange", null);
+], AuthController.prototype, "forgotPassword", null);
 __decorate([
-    (0, common_1.Post)('donor/update-password'),
-    (0, swagger_1.ApiOperation)({ summary: 'Verify OTP and update password' }),
+    (0, common_1.Post)('auth/reset-password'),
+    (0, swagger_1.ApiOperation)({ summary: 'Reset password using a secure link token' }),
     __param(0, (0, common_1.Body)('email')),
-    __param(1, (0, common_1.Body)('otp')),
-    __param(2, (0, common_1.Body)('newPassword')),
+    __param(1, (0, common_1.Body)('token')),
+    __param(2, (0, common_1.Body)('type')),
+    __param(3, (0, common_1.Body)('newPassword')),
     __metadata("design:type", Function),
-    __metadata("design:paramtypes", [String, String, String]),
+    __metadata("design:paramtypes", [String, String, String, String]),
     __metadata("design:returntype", Promise)
-], AuthController.prototype, "updatePassword", null);
+], AuthController.prototype, "resetPassword", null);
 __decorate([
     (0, common_1.Post)('donor/toggle-2fa'),
     (0, swagger_1.ApiOperation)({ summary: 'Toggle 2FA for donor' }),

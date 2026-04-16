@@ -254,6 +254,15 @@ function LoginTab({ onSuccess }: DonorLoginFormProps) {
             {errors.password.message}
           </motion.p>
         )}
+        <div className="flex justify-end mt-1">
+          <button
+            type="button"
+            onClick={() => navigate("/forgot-password?type=DONOR")}
+            className="text-[11px] font-bold text-gray-400 hover:text-[var(--womb-forest)] transition-colors"
+          >
+            Forgot Password?
+          </button>
+        </div>
       </motion.div>
 
       <motion.div custom={2} variants={inputWrapperVariants} className="pt-3">

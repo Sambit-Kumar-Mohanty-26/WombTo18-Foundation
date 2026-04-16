@@ -89,6 +89,12 @@ export const authApi = {
   updatePassword: (data: { email: string; otp: string; newPassword: string }) =>
     client.post<{ success: boolean; message: string }>('/donor/update-password', data),
 
+  forgotPassword: (email: string, type: 'DONOR' | 'PARTNER' | 'VOLUNTEER') =>
+    client.post<{ success: boolean; message: string }>('/auth/forgot-password', { email, type }),
+
+  resetPassword: (data: { email: string; token: string; type: string; newPassword: string }) =>
+    client.post<{ success: boolean; message: string }>('/auth/reset-password', data),
+
   toggle2FA: (donorId: string, enabled: boolean) =>
     client.post<{ success: boolean; message: string }>('/donor/toggle-2fa', { donorId, enabled }),
 

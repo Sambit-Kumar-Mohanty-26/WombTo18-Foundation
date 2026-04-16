@@ -155,6 +155,14 @@ export const auth = {
     localStorage.setItem(SESSION_KEY, JSON.stringify(session));
   },
 
+  forgotPassword(email: string, type: 'DONOR' | 'PARTNER' | 'VOLUNTEER') {
+    return authApi.forgotPassword(email, type);
+  },
+
+  resetPassword(data: { email: string; token: string; type: string; newPassword: string }) {
+    return authApi.resetPassword(data);
+  },
+
   getSession(): DonorSession | null {
     const sessionStr = localStorage.getItem(SESSION_KEY);
     if (!sessionStr) return null;

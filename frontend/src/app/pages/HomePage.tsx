@@ -20,7 +20,7 @@ export function HomePage() {
       <AnimatedQuoteSection />
       <HomeVideoSection />
       <OurCredentials />
-      <TrustStrip />
+{/* <TrustStrip /> */}
       <ServicesSection />
       <HowDonationWorks />
       <AboutSection />
