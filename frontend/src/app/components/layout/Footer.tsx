@@ -8,20 +8,12 @@ export function Footer() {
         <div className="grid grid-cols-2 lg:grid-cols-4 gap-x-6 gap-y-8 sm:gap-10">
           {/* Brand */}
           <div className="col-span-2 lg:col-span-1">
-            <div className="flex items-center gap-2 mb-3">
+            <div className="flex items-center mb-4 sm:mb-6">
               <img 
-                src="/Wombto18 foundation logo.svg" 
+                src="/Foundation_logo2.png" 
                 alt="WombTo18 Foundation" 
-                className="h-9 sm:h-10 w-auto object-contain"
+                className="h-10 sm:h-12 w-auto object-contain"
               />
-              <div className="flex flex-col leading-tight">
-                <span className="text-base sm:text-lg font-extrabold tracking-tight" style={{ lineHeight: 1.2 }}>
-                  <span style={{ color: '#1D6E3F' }}>Womb</span>
-                  <span style={{ color: '#FF9900' }}>To</span>
-                  <span style={{ color: '#00AEEF' }}>18</span>
-                </span>
-                <p className="text-[10px] text-[#1D6E3F] font-bold uppercase tracking-wider" style={{ lineHeight: 1 }}>Foundation</p>
-              </div>
             </div>
             <p className="text-sm text-slate-600 mb-4 sm:mb-6 leading-relaxed max-w-md">
               Nurturing every child from conception to adulthood. Building a foundation of health, education, and opportunity.

@@ -31,13 +31,14 @@ export function LoginSelectionPage() {
       <motion.div variants={containerVariants} initial="hidden" animate="visible" className="w-full max-w-6xl z-20 flex flex-col items-center">
         <motion.div variants={itemVariants} className="text-center mb-12 relative w-full">
           <div className="absolute -inset-10 bg-gradient-to-b from-white to-transparent opacity-80 blur-2xl -z-10 rounded-full" />
-          <img src="/Wombto18 foundation logo.svg" alt="WombTo18 Logo" className="h-14 md:h-16 w-auto mx-auto mb-6 drop-shadow-xl" />
+          <img 
+            src="/Foundation_logo2.png" 
+            alt="WombTo18 Foundation" 
+            className="h-20 md:h-24 w-auto mx-auto mb-4 drop-shadow-xl" 
+          />
           
-          <h1 className="text-3xl md:text-5xl font-black text-gray-900 tracking-tight mb-3">
-            <span className="text-[var(--womb-forest)]">Womb</span>
-            <span className="text-[var(--journey-saffron)]">To</span>
-            <span className="text-[var(--future-sky)]">18</span>
-            <span className="ml-3 font-light text-gray-400">Portals</span>
+          <h1 className="text-2xl md:text-3xl font-black text-gray-900 tracking-tight mb-3">
+            Impact <span className="font-light text-gray-400">Portals</span>
           </h1>
           
           <div className="h-1.5 w-24 bg-gradient-to-r from-[var(--womb-forest)] via-[var(--journey-saffron)] to-[var(--future-sky)] mx-auto rounded-full mb-6 shadow-sm" />

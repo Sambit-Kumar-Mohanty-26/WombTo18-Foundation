@@ -42,6 +42,38 @@ export function VolunteerCommissions() {
 
   const handleBankUpdate = async (e: React.FormEvent) => {
     e.preventDefault();
+
+    // Validations
+    const ifscRegex = /^[A-Z]{4}0[A-Z0-9]{6}$/;
+    const accountNameRegex = /^[a-zA-Z\s]+$/;
+    const accountNumberRegex = /^\d{9,18}$/;
+
+    if (bankData.bankName.trim().length < 3) {
+      toast.error("Invalid Bank Name", { description: "Bank name must be at least 3 characters long." });
+      return;
+    }
+
+    if (!ifscRegex.test(bankData.ifscCode.toUpperCase())) {
+      toast.error("Invalid IFSC Code", { 
+        description: "Standard format required: 4 letters, then '0', then 6 characters (e.g., HDFC0001234)." 
+      });
+      return;
+    }
+
+    if (!accountNameRegex.test(bankData.accountName)) {
+      toast.error("Invalid Account Holder Name", { 
+        description: "Name should only contain alphabets and spaces." 
+      });
+      return;
+    }
+
+    if (!accountNumberRegex.test(String(bankData.accountNumber))) {
+      toast.error("Invalid Account Number", { 
+        description: "Account number must be between 9 and 18 digits long." 
+      });
+      return;
+    }
+
     try {
       setBankSubmitting(true);
       await client.put(`/volunteers/bank-details/${id}`, bankData);
