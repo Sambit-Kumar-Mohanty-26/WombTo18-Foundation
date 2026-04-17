@@ -133,18 +133,18 @@ export function VolunteerCamps() {
         <header className="space-y-3 md:space-y-4">
           <div className="flex items-center gap-3 bg-amber-50 w-fit px-4 py-1.5 rounded-full border border-amber-100/50">
              <div className="h-2 w-2 rounded-full bg-amber-500 animate-ping" />
-             <span className="text-[10px] font-black uppercase tracking-widest text-amber-700">Live Mission Hub</span>
+             <span className="text-[10px] font-black uppercase tracking-widest text-amber-700">Volunteer Hub</span>
           </div>
-          <h1 className="text-4xl md:text-5xl font-black text-slate-950 tracking-tighter leading-none">Your Expeditions</h1>
+          <h1 className="text-4xl md:text-5xl font-black text-slate-950 tracking-tighter leading-none">My Volunteering Journey</h1>
           <p className="text-slate-500 text-sm font-bold max-w-lg leading-relaxed">
-            Monitor active deployments, discover new community missions, and review your historical impact journey across the globe.
+            Monitor active registrations, discover new volunteering opportunities, and review your historical impact journey.
           </p>
         </header>
         
         <div className="flex items-center gap-4 md:gap-6 bg-slate-50/50 p-4 rounded-2xl border border-slate-100 w-full md:w-auto">
            <div className="text-right">
-             <p className="text-[10px] font-black uppercase tracking-widest text-slate-400 mb-1">Total Deployments</p>
-             <p className="text-3xl font-black text-amber-600 leading-none">{myCamps.length}</p>
+             <p className="text-[10px] font-black uppercase tracking-widest text-slate-400 mb-1">Camps Joined</p>
+             <p className="text-3xl font-black text-amber-600 leading-none">{myCamps.filter((c: any) => c.status === 'ATTENDED').length}</p>
            </div>
            <div className="h-12 w-[1px] bg-slate-200" />
            <div className="text-right">
@@ -163,9 +163,9 @@ export function VolunteerCamps() {
             </div>
             <div>
                <p className="text-[9px] md:text-[10px] font-bold text-slate-500 uppercase tracking-[0.25em] mb-1" style={{ fontFamily: "'Inter', sans-serif" }}>
-                 Mission Hub
+                 Active Camps
                </p>
-               <h2 className="text-2xl md:text-3xl font-extrabold tracking-tight text-slate-900 leading-none" style={{ fontFamily: "'Poppins', sans-serif" }}>Active Operations</h2>
+               <h2 className="text-2xl md:text-3xl font-extrabold tracking-tight text-slate-900 leading-none" style={{ fontFamily: "'Poppins', sans-serif" }}>Registered Camps</h2>
             </div>
           </div>
         </div>
@@ -247,7 +247,7 @@ export function VolunteerCamps() {
                                  <Tent className="h-4 w-4 md:h-6 md:w-6 text-rose-500" />
                                </div>
                                <Badge className={`border border-slate-200 shadow-sm text-[7px] md:text-[10px] font-bold px-2 py-1 md:px-3 md:py-1.5 rounded-full uppercase tracking-widest ${isCampDay ? "bg-rose-500 text-white animate-pulse" : "bg-white/80 text-slate-600 backdrop-blur-md"}`} style={{ fontFamily: "'Inter', sans-serif" }}>
-                                 {isCampDay ? "DEPLOY TODAY" : `${diffDays} DAYS TO GO`}
+                                 {isCampDay ? "CAMP TODAY" : `${diffDays} DAYS TO GO`}
                                </Badge>
                           </div>
                           <div className="mt-4 md:mt-8 mb-3 md:mb-6 relative z-10">
@@ -256,7 +256,7 @@ export function VolunteerCamps() {
                                     <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-amber-400 opacity-75"></span>
                                     <span className="relative inline-flex rounded-full h-1.5 w-1.5 md:h-2 md:w-2 bg-amber-500"></span>
                                  </span>
-                                 Mission Code
+                                 Camp Title
                                </p>
                                <h3 className="text-xl md:text-3xl font-extrabold text-slate-900 leading-none mb-1 tracking-tight" style={{ fontFamily: "'Poppins', sans-serif" }}>{camp.name}</h3>
                           </div>
@@ -280,9 +280,26 @@ export function VolunteerCamps() {
                                <p className="text-xs md:text-sm text-slate-600 leading-relaxed max-w-lg pr-2 md:pr-4" style={{ fontFamily: "'Inter', sans-serif", lineHeight: 1.6 }}>{camp.description}</p>
                              </div>
                              <div className="flex flex-col items-start sm:items-end gap-2 md:gap-3 shrink-0">
-                               <div className="inline-flex items-center gap-1.5 md:gap-2 px-2.5 py-1 md:px-4 md:py-1.5 rounded-full border border-slate-200 bg-white/80 shadow-sm backdrop-blur-sm">
-                                  <span className="h-1.5 w-1.5 md:h-2 md:w-2 rounded-full bg-rose-400 shadow-[0_0_8px_rgba(244,63,94,0.4)]" />
-                                  <span className="text-[8px] md:text-[10px] font-bold text-slate-600 uppercase tracking-widest" style={{ fontFamily: "'Inter', sans-serif" }}>Registration Approved</span>
+                               <div className={`inline-flex items-center gap-1.5 md:gap-2 px-2.5 py-1 md:px-4 md:py-1.5 rounded-full border shadow-sm backdrop-blur-sm ${
+                                 participation?.status === 'PENDING' ? 'border-amber-200 bg-amber-50 text-amber-700' :
+                                 participation?.status === 'APPROVED' ? 'border-emerald-200 bg-emerald-50 text-emerald-700' :
+                                 participation?.status === 'REJECTED' ? 'border-rose-200 bg-rose-50 text-rose-700' :
+                                 participation?.status === 'ATTENDED' ? 'border-indigo-200 bg-indigo-50 text-indigo-700' :
+                                 'border-slate-200 bg-white/80 text-slate-600'
+                               }`}>
+                                  <span className={`h-1.5 w-1.5 md:h-2 md:w-2 rounded-full ${
+                                    participation?.status === 'PENDING' ? 'bg-amber-400' :
+                                    participation?.status === 'APPROVED' ? 'bg-emerald-400' :
+                                    participation?.status === 'REJECTED' ? 'bg-rose-400' :
+                                    participation?.status === 'ATTENDED' ? 'bg-indigo-400' :
+                                    'bg-slate-400'
+                                  }`} />
+                                  <span className="text-[8px] md:text-[10px] font-bold uppercase tracking-widest" style={{ fontFamily: "'Inter', sans-serif" }}>
+                                    {participation?.status === 'PENDING' ? 'Pending Approval' : 
+                                     participation?.status === 'REJECTED' ? 'Registration Rejected' :
+                                     participation?.status === 'ATTENDED' ? 'Attendance Marked' :
+                                     'Registration Approved'}
+                                  </span>
                                </div>
                                {responseState === "JOINING" && (
                                  <div className="inline-flex items-center gap-1.5 md:gap-2 px-2.5 py-1 md:px-4 md:py-1.5 rounded-full border border-emerald-200 bg-emerald-50 backdrop-blur-sm shadow-sm">
@@ -337,7 +354,7 @@ export function VolunteerCamps() {
                                     <button onClick={() => handleScanDigital(camp.id)} disabled={localLoading} className="w-full h-14 bg-gradient-to-r from-slate-900 to-slate-800 hover:from-slate-800 hover:to-slate-700 text-white font-extrabold tracking-[0.2em] text-xs uppercase rounded-xl shadow-[0_4px_20px_0_rgba(0,0,0,0.15)] flex items-center justify-center gap-3 relative overflow-hidden transition-all active:scale-95 mt-2" style={{ fontFamily: "'Inter', sans-serif" }}>
                                       <div className="absolute inset-0 bg-white/10 -translate-x-full group-hover/btn:translate-x-full transition-transform duration-1000" />
                                       <Rocket className="h-4 w-4" />
-                                      {localLoading ? "LOGGING..." : "INITIATE MISSION LOGGING"}
+                                      {localLoading ? "LOGGING..." : "MARK ATTENDANCE"}
                                     </button>
                                   );
                                 }
@@ -352,7 +369,7 @@ export function VolunteerCamps() {
 
                                 return (
                                   <div className="h-14 bg-[#FF9900]/10 backdrop-blur-md rounded-2xl flex items-center justify-center gap-3 text-[#FF9900] border border-[#FF9900]/20 font-bold text-xs uppercase tracking-widest transition-all shadow-sm">
-                                    <Sparkles className="h-4 w-4" /> Ready for Deployment
+                                    <Sparkles className="h-4 w-4" /> Ready for Volunteering
                                   </div>
                                 );
                               }
@@ -372,8 +389,8 @@ export function VolunteerCamps() {
                   <Rocket className="h-8 w-8" />
                </div>
                <div className="space-y-1">
-                 <p className="text-lg font-black text-slate-900">No active operations found.</p>
-                 <p className="text-xs font-bold text-slate-500">Scan available opportunities below to begin a new mission.</p>
+                 <p className="text-lg font-black text-slate-900">No active camps found.</p>
+                 <p className="text-xs font-bold text-slate-500">Scan available opportunities below to join a camp.</p>
                </div>
             </div>
           )}
@@ -386,7 +403,7 @@ export function VolunteerCamps() {
           <div className="h-8 w-8 md:h-10 md:w-10 rounded-xl md:rounded-2xl bg-amber-500 shadow-lg shadow-amber-200 flex items-center justify-center">
             <Sparkles className="h-4 w-4 md:h-5 md:w-5 text-white" />
           </div>
-          <h2 className="text-xl md:text-2xl font-black text-slate-900 leading-tight">Available Missions</h2>
+          <h2 className="text-xl md:text-2xl font-black text-slate-900 leading-tight">Available Opportunities</h2>
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
@@ -427,7 +444,7 @@ export function VolunteerCamps() {
           <div className="h-8 w-8 md:h-10 md:w-10 rounded-xl bg-slate-950 flex items-center justify-center shadow-lg shadow-slate-900/20">
             <History className="h-4 w-4 md:h-4 md:w-4 text-white" />
           </div>
-          <h2 className="text-2xl md:text-3xl font-extrabold tracking-tight text-slate-900 leading-none" style={{ fontFamily: "'Poppins', sans-serif" }}>Deployment Log</h2>
+          <h2 className="text-2xl md:text-3xl font-extrabold tracking-tight text-slate-900 leading-none" style={{ fontFamily: "'Poppins', sans-serif" }}>Volunteering History</h2>
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4 md:gap-6 relative">
@@ -447,6 +464,56 @@ export function VolunteerCamps() {
                         <Badge className={`text-[9px] font-bold border-none px-2.5 py-0.5 rounded-full uppercase tracking-widest ${cp.participationType === "ACTIVE" ? "bg-amber-100 text-amber-700 shadow-[0_0_10px_rgba(245,158,11,0.2)]" : "bg-slate-100 text-slate-600 shadow-sm"}`} style={{ fontFamily: "'Inter', sans-serif" }}>
                           {cp.participationType}
                         </Badge>
+                        
+                        {(() => {
+                          const now = new Date();
+                          const campDate = new Date(cp.camp?.date || cp.createdAt);
+                          const isPassed = campDate < now;
+
+                          if (cp.status === 'ATTENDED') {
+                            return (
+                              <Badge className="text-[9px] font-bold bg-indigo-50 text-indigo-700 border border-indigo-100 px-2 py-0.5 rounded-full flex items-center gap-1">
+                                <CheckCircle2 className="h-2.5 w-2.5" /> ATTENDED
+                              </Badge>
+                            );
+                          }
+                          if (cp.status === 'REJECTED') {
+                            return (
+                              <Badge className="text-[9px] font-bold bg-rose-50 text-rose-700 border border-rose-100 px-2 py-0.5 rounded-full flex items-center gap-1">
+                                <XCircle className="h-2.5 w-2.5" /> REJECTED
+                              </Badge>
+                            );
+                          }
+                          if (cp.volunteerResponse === 'NOT_JOINING') {
+                            return (
+                              <Badge className="text-[9px] font-bold bg-slate-50 text-slate-600 border border-slate-100 px-2 py-0.5 rounded-full flex items-center gap-1">
+                                <ArrowUpRight className="h-2.5 w-2.5 rotate-90" /> OPTED OUT
+                              </Badge>
+                            );
+                          }
+                          if (cp.volunteerResponse === 'JOINING' && cp.status === 'APPROVED' && isPassed) {
+                            return (
+                              <Badge className="text-[9px] font-bold bg-amber-50 text-amber-700 border border-amber-100 px-2 py-0.5 rounded-full flex items-center gap-1">
+                                <Activity className="h-2.5 w-2.5 text-amber-500" /> MISSED
+                              </Badge>
+                            );
+                          }
+                          if (cp.status === 'PENDING') {
+                            return (
+                              <Badge className="text-[9px] font-bold bg-yellow-50 text-yellow-700 border border-yellow-100 px-2 py-0.5 rounded-full flex items-center gap-1">
+                                <Clock3 className="h-2.5 w-2.5" /> PENDING
+                              </Badge>
+                            );
+                          }
+                          if (cp.status === 'APPROVED') {
+                            return (
+                              <Badge className="text-[9px] font-bold bg-emerald-50 text-emerald-700 border border-emerald-100 px-2 py-0.5 rounded-full flex items-center gap-1">
+                                <Star className="h-2.5 w-2.5 fill-current" /> REGISTERED
+                              </Badge>
+                            );
+                          }
+                          return null;
+                        })()}
 
                         <span className="text-[10px] font-semibold text-slate-400 tracking-wide" style={{ fontFamily: "'Inter', sans-serif" }}>
                           {new Date(cp.camp?.date || cp.createdAt).toLocaleDateString('en-US', { day: 'numeric', month: 'short', year: 'numeric' })}
@@ -467,14 +534,14 @@ export function VolunteerCamps() {
           ) : (
             <div className="col-span-1 md:col-span-2 py-32 text-center bg-slate-50/50 rounded-[4rem] border border-dashed border-slate-200">
               <History className="h-12 w-12 text-slate-200 mx-auto mb-4" />
-              <p className="text-xs font-bold text-slate-400 uppercase tracking-[0.25em]" style={{ fontFamily: "'Inter', sans-serif" }}>No Deployment Records Located</p>
+              <p className="text-xs font-bold text-slate-400 uppercase tracking-[0.25em]" style={{ fontFamily: "'Inter', sans-serif" }}>No Volunteering Records Found</p>
             </div>
           )}
         </div>
         
         {sortedHistory.length > historyPageSize && (
           <div className="flex items-center justify-between pt-4 bg-white/50 backdrop-blur-sm p-6 rounded-3xl border border-slate-100">
-            <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest">Showing {pagedHistory.length} of {sortedHistory.length} deployments</p>
+            <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest">Showing {pagedHistory.length} of {sortedHistory.length} records</p>
             <div className="flex gap-2">
               <button onClick={() => historyPage > 1 && setHistoryPage(p => p - 1)} disabled={historyPage === 1} className="h-10 px-6 rounded-xl border border-slate-200 font-black text-[10px] uppercase tracking-widest hover:bg-slate-50 transition-all disabled:opacity-30 group flex items-center gap-2">
                 Previous

@@ -10,6 +10,7 @@ import { client } from "../../lib/api/client";
 export function VolunteerLogin() {
   const [isLogin, setIsLogin] = useState(true);
   const [loading, setLoading] = useState(false);
+  const [showPassword, setShowPassword] = useState(false);
   const navigate = useNavigate();
   const [searchParams] = useSearchParams();
   const returnTo = searchParams.get('returnUrl') || "/volunteer/dashboard";
@@ -135,7 +136,23 @@ export function VolunteerLogin() {
             </div>
             <div className="space-y-1.5">
               <Label className="text-amber-900 font-bold">Password</Label>
-              <Input required type="password" value={passwordLogin} onChange={e => setPasswordLogin(e.target.value)} className="bg-amber-50/50 border-amber-100 h-12 rounded-xl" placeholder="••••••••" />
+              <div className="relative">
+                <Input 
+                  required 
+                  type={showPassword ? "text" : "password"} 
+                  value={passwordLogin} 
+                  onChange={e => setPasswordLogin(e.target.value)} 
+                  className="bg-amber-50/50 border-amber-100 h-12 rounded-xl pr-10" 
+                  placeholder="••••••••" 
+                />
+                <button
+                  type="button"
+                  onClick={() => setShowPassword(!showPassword)}
+                  className="absolute right-3 top-1/2 -translate-y-1/2 text-amber-400 hover:text-amber-600 transition-colors"
+                >
+                  {showPassword ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
+                </button>
+              </div>
               <div className="flex justify-end pr-1">
                 <button
                   type="button"

@@ -66,20 +66,12 @@ export function Navbar() {
       <div className="mx-auto w-full px-4 sm:px-6 lg:px-10 xl:px-16">
         <div className="flex h-16 items-center justify-between">
           {/* Logo */}
-          <Link to="/" className="flex items-center gap-2">
+          <Link to="/" className="flex items-center">
             <img 
-              src="/Wombto18 foundation logo.svg" 
+              src="/Foundation_logo2.png" 
               alt="WombTo18 Foundation" 
               className="h-12 w-auto object-contain"
             />
-            <div className="flex flex-col leading-tight">
-              <span className="text-xl font-extrabold tracking-tight" style={{ lineHeight: 1.2 }}>
-                <span style={{ color: '#1D6E3F' }}>Womb</span>
-                <span style={{ color: '#FF9900' }}>To</span>
-                <span style={{ color: '#00AEEF' }}>18</span>
-              </span>
-              <span className="text-[10px] text-[#1D6E3F] font-bold uppercase tracking-wider" style={{ lineHeight: 1 }}>Foundation</span>
-            </div>
           </Link>
 
           {/* Desktop Nav */}

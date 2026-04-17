@@ -131,7 +131,7 @@ export class VolunteerService {
       _sum: { paymentAmount: true },
     });
     const campsAttended = await this.prisma.campParticipation.count({
-      where: { volunteerId: volunteer.id },
+      where: { volunteerId: volunteer.id, status: 'ATTENDED' },
     });
 
     // Leaderboard rank
@@ -409,4 +409,3 @@ export class VolunteerService {
     });
   }
 }
-
