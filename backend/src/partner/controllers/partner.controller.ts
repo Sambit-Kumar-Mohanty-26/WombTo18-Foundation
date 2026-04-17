@@ -110,4 +110,16 @@ export class PartnerController {
   async listAll() {
     return this.partnerService.listAll();
   }
+
+  @Get('profile/:id')
+  @ApiOperation({ summary: 'Get partner profile' })
+  async getProfile(@Param('id') id: string) {
+    return this.partnerService.getProfile(id);
+  }
+
+  @Post('profile/:id')
+  @ApiOperation({ summary: 'Update partner profile' })
+  async updateProfile(@Param('id') id: string, @Body() data: any) {
+    return this.partnerService.updateProfile(id, data);
+  }
 }

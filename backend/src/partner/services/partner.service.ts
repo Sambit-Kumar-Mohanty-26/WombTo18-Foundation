@@ -290,4 +290,47 @@ export class PartnerService {
       },
     });
   }
+
+  /** Get partner profile */
+  async getProfile(partnerId: string) {
+    const partner = await this.prisma.partner.findFirst({
+      where: { OR: [{ partnerId }, { id: partnerId }] },
+      include: {
+        referrals: { where: { status: 'DONATED' } }
+      }
+    });
+    if (!partner) throw new NotFoundException('Partner not found');
+
+    const referralDonations = partner.referrals.reduce((sum, r) => sum + (r.paymentAmount || 0), 0);
+    const totalImpact = (partner.totalSponsored || 0) + referralDonations;
+    const livesImpacted = Math.floor(totalImpact / 500);
+
+    let status = 'BRONZE';
+    if (totalImpact > 200000) status = 'PLATINUM';
+    else if (totalImpact > 100000) status = 'GOLD';
+    else if (totalImpact > 25000) status = 'SILVER';
+
+    return {
+      ...partner,
+      totalImpact,
+      status,
+      livesImpacted,
+    };
+  }
+
+  /** Update partner profile */
+  async updateProfile(id: string, data: any) {
+    // Only allow updating specific fields
+    const { organizationName, contactPerson, mobile, panNumber, csrCategory } = data;
+    return this.prisma.partner.update({
+      where: { id },
+      data: {
+        organizationName,
+        contactPerson,
+        mobile,
+        panNumber,
+        csrCategory,
+      },
+    });
+  }
 }

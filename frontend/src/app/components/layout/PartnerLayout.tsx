@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import { Link, Outlet, useLocation, useNavigate, useParams } from "react-router";
-import { LayoutDashboard, Bell, LogOut, Menu, X, ChevronLeft, Link2, Award, BarChart3, Search, Command, ShieldCheck, Sparkles } from "lucide-react";
+import { LayoutDashboard, Bell, LogOut, Menu, X, ChevronLeft, Link2, Award, BarChart3, Search, Command, ShieldCheck, Sparkles, User } from "lucide-react";
 import { Avatar, AvatarFallback } from "../ui/avatar";
 import { useAuth } from "../../context/AuthContext";
 import { motion, AnimatePresence } from "motion/react";
@@ -46,6 +46,7 @@ export function PartnerLayout() {
   const ptnId = expectedId || 'N/A';
   const partnerLinks = [
     { href: `/partner/${ptnId}/dashboard`, label: "Dashboard", icon: LayoutDashboard },
+    { href: `/partner/${ptnId}/profile`, label: "Profile", icon: User },
     { href: `/partner/${ptnId}/referrals`, label: "Referrals", icon: Link2 },
     { href: `/partner/${ptnId}/stats`, label: "Statistics", icon: BarChart3 },
     { href: `/partner/${ptnId}/certificates`, label: "Documents", icon: Award },

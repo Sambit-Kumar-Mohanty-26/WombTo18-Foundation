@@ -21,7 +21,7 @@
       { "doc": "Board Meeting Summaries", "freq": "Within 30 days of each meeting", "access": "PDF download — public page" },
       { "doc": "80G Registration Certificate", "freq": "Permanent (updated if reissued)", "access": "Transparency Centre download" },
       { "doc": "12A Certificate", "freq": "Permanent", "access": "Transparency Centre download" },
-      { "doc": "DPIIT / TechSoup Certificates", "freq": "Permanent", "access": "Transparency Centre download" },
+      { "doc": "TechSoup Certificates", "freq": "Permanent", "access": "Transparency Centre download" },
       { "doc": "Programme Targets vs Actuals", "freq": "Quarterly", "access": "Live public dashboard" },
       { "doc": "Donor Honour Board", "freq": "Monthly refresh", "access": "Public dashboard" }
     ]

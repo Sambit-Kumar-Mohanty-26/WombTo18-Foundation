@@ -236,7 +236,7 @@ export function DonorForm() {
                         <span className="text-xl">{prog.icon}</span>
                         <div>
                           <h4 className="text-[13px] font-bold text-gray-900">{t(`programs.${prog.id}.name`)}</h4>
-                          <p className="text-[10px] text-gray-400">₹{prog.costPerUnit.toLocaleString("en-IN")} {t('selector.pricePer', 'per {{unit}}', { unit: t(`units.${prog.unit.split("/")[0]}`) || prog.unit.split("/")[0] })}</p>
+                          <p className="text-[10px] text-gray-400">{t(`programs.${prog.id}.name`)}</p>
                         </div>
                       </div>
                       
@@ -325,7 +325,7 @@ export function DonorForm() {
           ) : (
             <>
               <Heart className="w-4.5 h-4.5" />
-              <span className="text-[15px]">{t('forms.buttons.donate', { amount: totalAmount.toLocaleString("en-IN") })}</span>
+              <span className="text-[15px]">{t('tabs.donate')}</span>
             </>
           )}
         </motion.button>

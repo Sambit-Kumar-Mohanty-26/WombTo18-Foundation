@@ -26,7 +26,7 @@ export class AdvisoryController {
   ) {
     try {
       return await this.advisoryService.saveDraft(body, files);
-    } catch (e) {
+    } catch (e: any) {
       throw new HttpException(e.message || 'Draft saving failed', HttpStatus.BAD_REQUEST);
     }
   }
@@ -35,7 +35,7 @@ export class AdvisoryController {
   async getDraft(@Param('token') token: string) {
     try {
       return await this.advisoryService.getDraft(token);
-    } catch (e) {
+    } catch (e: any) {
       throw new HttpException(e.message || 'Draft retrieval failed', HttpStatus.NOT_FOUND);
     }
   }
@@ -66,7 +66,7 @@ export class AdvisoryController {
   ) {
     try {
       return await this.advisoryService.createApplication(body, files);
-    } catch (e) {
+    } catch (e: any) {
       throw new HttpException(e.message || 'Submission failed', HttpStatus.BAD_REQUEST);
     }
   }

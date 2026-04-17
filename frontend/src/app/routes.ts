@@ -70,6 +70,7 @@ import { PartnerReferrals } from "./pages/partner/PartnerReferrals";
 import { PartnerCertificates } from "./pages/partner/PartnerCertificates";
 import { PartnerStats } from "./pages/partner/PartnerStats";
 import { PartnerSignup } from "./pages/partner/PartnerSignup";
+import { PartnerProfile } from "./pages/partner/PartnerProfile";
 
 // Admin Dashboard
 import { AdminDashboard } from "./pages/admin/AdminDashboard";
@@ -174,6 +175,7 @@ export const router = createBrowserRouter([
       { path: "referrals", Component: PartnerReferrals },
       { path: "certificates", Component: PartnerCertificates },
       { path: "stats", Component: PartnerStats },
+      { path: "profile", Component: PartnerProfile },
       { index: true, Component: PartnerDashboard },
     ],
   },
