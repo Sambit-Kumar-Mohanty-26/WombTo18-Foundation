@@ -248,17 +248,25 @@ export function PartnerForm() {
           className="w-full px-4 py-2.5 rounded-xl border border-gray-200 bg-white text-sm placeholder:text-gray-300 focus:border-[var(--future-sky)] focus:ring-2 focus:ring-[var(--future-sky)]/10 outline-none transition-all resize-none shadow-[0_1px_2px_rgba(0,0,0,0.04)]" placeholder={t('forms.partner.notesPlaceholder')} />
       </motion.div>
 
-      <motion.button type="submit" disabled={loading || totalAmount < 100 || Object.keys(selectedPrograms).length === 0}
-        whileHover={{ scale: 1.005 }} whileTap={{ scale: 0.995 }}
-        className="group w-full py-3.5 rounded-2xl bg-gradient-to-r from-[var(--future-sky)] to-blue-500 text-white font-black shadow-[0_4px_15px_-3px_rgba(0,174,239,0.4)] hover:shadow-[0_8px_25px_-5px_rgba(0,174,239,0.5)] disabled:opacity-50 disabled:cursor-not-allowed disabled:shadow-none transition-all duration-300 flex items-center justify-center gap-2.5 relative overflow-hidden">
-        <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/10 to-transparent -translate-x-full group-hover:translate-x-full transition-transform duration-1000" />
-        {loading ? <div className="w-5 h-5 border-2 border-white/30 border-t-white rounded-full animate-spin" /> : (
-          <><Building2 className="w-4.5 h-4.5" /><span className="text-[15px]">{t('forms.buttons.sponsor', { amount: totalAmount.toLocaleString("en-IN") })}</span></>
+      <motion.button 
+        type="submit" 
+        disabled={loading}
+        whileHover={{ scale: loading ? 1 : 1.01 }} 
+        whileTap={{ scale: loading ? 1 : 0.98 }}
+        className={`w-full py-4 rounded-2xl text-white text-lg font-black shadow-lg transition-all duration-300 flex items-center justify-center gap-3 ${
+          loading 
+            ? "bg-gray-400 cursor-not-allowed" 
+            : "bg-[var(--future-sky)] hover:bg-blue-600 shadow-blue-500/20 hover:shadow-xl hover:shadow-blue-500/30"
+        }`}
+      >
+        {loading ? (
+          <div className="w-5 h-5 border-2 border-white/30 border-t-white rounded-full animate-spin" />
+        ) : (
+          <>
+            {t('forms.partner.submit')}
+          </>
         )}
       </motion.button>
-      <div className="flex items-center justify-center gap-2 text-[10px] text-gray-400">
-        <Lock className="w-3 h-3" /><span>{t('sidebar.trust.razorpay')} • {t('forms.partner.trust')}</span>
-      </div>
     </form>
   );
 }

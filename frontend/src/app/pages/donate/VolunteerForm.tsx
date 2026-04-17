@@ -273,8 +273,13 @@ export function VolunteerForm() {
             min="500"
             max="2000"
             value={contributionAmount}
+            onKeyDown={(e) => {
+              if (["e", "E", "+", "-", "."].includes(e.key)) {
+                e.preventDefault();
+              }
+            }}
             onChange={(e) => {
-              const val = e.target.value;
+              const val = e.target.value.replace(/\D/g, "");
               if (val === "") {
                 setContributionAmount("");
               } else {
@@ -307,12 +312,12 @@ export function VolunteerForm() {
         ) : (
           <>
             <Zap className="w-5 h-5 fill-current" /> 
-            Pay ₹{(Number(contributionAmount) || 0).toLocaleString()} & Complete Profile
+            Pay & Complete Profile
           </>
         )}
       </motion.button>
       <p className="text-center text-[10px] text-gray-400">
-        🏅 {t('forms.volunteer.certNotice')}
+        ?? {t('forms.volunteer.certNotice')}
       </p>
     </motion.form>
   );

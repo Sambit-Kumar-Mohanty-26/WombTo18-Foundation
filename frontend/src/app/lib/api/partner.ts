@@ -59,4 +59,10 @@ export const partnerApi = {
 
   getLeaderboard: (limit = 10) =>
     client.get<any[]>(`/leaderboard/partners?limit=${limit}`),
+
+  getProfile: (id: string) =>
+    client.get<any>(`/partners/profile/${id}`),
+
+  updateProfile: (id: string, data: any) =>
+    client.post<any>(`/partners/profile/${id}`, data),
 };

@@ -246,20 +246,7 @@ export function ProgramSelector({
                     </p>
                   </div>
 
-                  <div className="shrink-0 text-right">
-                    <span
-                      className={`
-                        text-xs font-black tracking-tight transition-colors duration-300
-                        ${isSelected ? "" : "text-gray-600"}
-                      `}
-                      style={isSelected ? { color: accentColor } : {}}
-                    >
-                      ₹{prog.costPerUnit.toLocaleString("en-IN")}
-                    </span>
-                    <p className="text-[9px] text-gray-400 font-medium mt-0.5">
-                      {t('selector.pricePer', { unit: t(`units.${prog.unit.split("/")[0]}`) || prog.unit.split("/")[0] })}
-                    </p>
-                  </div>
+                  {/* Price hidden at user request */}
 
                   <ChevronRight
                     className={`w-3.5 h-3.5 shrink-0 transition-all duration-300 ${
