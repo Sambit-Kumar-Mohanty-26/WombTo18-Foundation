@@ -16,7 +16,7 @@ export function VolunteerLogin() {
   const returnTo = searchParams.get('returnUrl') || "/volunteer/dashboard";
 
   // Login form state
-  const [emailLogin, setEmailLogin] = useState("");
+  const [emailLogin, setEmailLogin] = useState(searchParams.get("email") || "");
   const [passwordLogin, setPasswordLogin] = useState("");
 
   // Register form state

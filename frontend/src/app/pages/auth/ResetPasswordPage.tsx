@@ -115,7 +115,14 @@ export function ResetPasswordPage() {
 
       if (response.success) {
         toast.success("Password updated successfully!");
-        navigate("/login", { replace: true });
+        
+        let loginPath = "/login";
+        if (type === "VOLUNTEER") loginPath = "/volunteer/login";
+        else if (type === "PARTNER") loginPath = "/partner/login";
+        else if (type === "DONOR") loginPath = "/donor/login";
+        else if (type === "ADMIN") loginPath = "/admin/login";
+        
+        navigate(`${loginPath}?email=${encodeURIComponent(email)}`, { replace: true });
       } else {
         toast.error(response.message || "Failed to reset password.");
       }
