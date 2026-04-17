@@ -9,7 +9,7 @@ import { partnerApi } from "../../lib/api/partner";
 import { auth } from "../../lib/auth";
 import { motion, AnimatePresence } from "motion/react";
 
-import { useNavigate } from "react-router";
+import { useNavigate, useSearchParams } from "react-router";
  
 const loginSchema = z.object({
   email: z.string().email("A valid institutional email is required"),
@@ -29,9 +29,12 @@ export function PartnerLoginForm({ onSuccess }: PartnerLoginFormProps) {
   const { login } = useAuth();
   const [devOtp, setDevOtp] = useState<string | null>(null);
   const navigate = useNavigate();
+  const [searchParams] = useSearchParams();
+  const prefillEmail = searchParams.get("email") || "";
  
   const { register, handleSubmit, formState: { errors } } = useForm<LoginFormData>({
     resolver: zodResolver(loginSchema),
+    defaultValues: { email: prefillEmail },
   });
 
   const otpForm = useForm<{ otp: string }>({
